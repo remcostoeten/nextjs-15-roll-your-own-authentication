@@ -2,11 +2,19 @@
 
 ### Without any externaal libraires like NextAuth, Lucia or Clerk.
 
+> A bareboness, non styled, no bells, no whistles, the bare minimum dependencies version is on the git branch `barebones`. The `main` branch has some UI components, extra styling, and a few other things like a develop utillity indicator to check session.
+
 > [!NOTICE]  
 > Highly experimental and a work in progres
 
 A repository to showcase rolling your own authentication without utilizing external auth libraries. Using the latest NextJS 15 & React 19 API such as `useFormState`, `server actions`, protected routes via `middleware` and adhering to strong SOLID principles with a scalable and bullet proof base to builld on top of.
 
+## Features
+
+- Sign in
+- Sign up
+- Sign out
+- 
 ## Future features
 
 <small>or rather, missing features</small>
