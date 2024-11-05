@@ -1,0 +1,115 @@
+## To Document
+
+Document what to document, including rough setup + file + preferably line number and solution (e.g. code block, tooltip, diagram, filetree)
+
+tldr to explain:
+
+-   src/core/scripts
+-   generate-turso-db.py
+-   src/shared/hooks/use-user.ts
+-   src/shared/hooks/use-loading.ts
+    -> combination of these two
+    -> demo page or section in Docs
+-   explain project structure
+-   enviorment variables
+-   validation env flag
+-   indicator env flag
+-   useUser hook client vs get-user server
+-   useLoading hook
+-   Roles (admin / user) + the hooks
+
+## Versions
+
+There are two versions. Barebones and more complete
+
+Barebones is indicated with 🚗 💨
+
+Full is indicated with 💨🚀
+
+✅ means implemented
+📍 means not implemented yet
+🖇️ means need work
+
+## User storage
+
+Session is handled through JWT. User credentials are stored in a database. We use `drizzle-orm` as an ORM to interact with the database, which is `sqlite` via `Turso`. It has 500 free databases per user and billlion read/writes a month and setup is very easy. 📍 In `src/core/scripts` you can find script which auto creates a Turso database en copys the enviorment variables to your clipboard. Read the `readme.mdx` in that directory.
+
+## Barebones 🚗 💨
+
+`git checkout feature/barebones-version`
+
+Consits off
+✅ - Minimal project setup without any bloat following SOLID architecture
+🖇️ - Register with credentials
+🖇️ - Login with credentials
+✅ - Access private/public routes through middleware
+✅ - Session through JWT
+
+## Advanced version 💨🚀
+
+`git checkout master`
+
+Consists off
+✅ - More advanced project setup following SOLID architecture which serves a solid foundation for scalable projects.
+✅ - Register with credentials - Password strength validation and 📍ui
+📍 - Show hide password toggle
+
+-   Login with credentials
+    📍 - Show hide password toggle
+    📍 - Remember me toggle through local storage
+    📍 - Toast notification succes/error messages
+    ✅ - Access private/public routes through middleware
+    ✅ - Session through JWT
+    🖇️ - Developer utillity component to indicate current session toggleable through a enviorment variable
+    ✅ - Disable validation via env for testing purpose
+    📍 - Dashboard route with current user information (session, credentials, token duration, any other user fields) - Little more advanced sign-up process for completer user profile stored in database
+    📍 - A navbar with content based on session (e.g. do not show sign-in/up routes, show log out button)
+
+## Docs rougly setup
+
+1. intro.
+
+-   Bash on other auth libs and cry how hard it is to setup
+
+2. tech.
+3. setup
+
+-   Side by side tree comparison of barebones and advanced version
+
+4. Features
+    - Barebones
+    - Advanced
+5. User storage
+6. Middleware
+7. Deployment (db setup)
+8. Possible improvements / roadmap
+
+## Middleware
+
+-   explain constant for protected routes
+-   explain contant for public routes
+
+## Nice to haves
+
+-   Diagram of the project structure
+-   CLI commands for setup
+    -   Create next app with this template
+    -   Turso database setup
+-   CLI for integrating into existing project
+-   Vercel temlpate
+-   social oauth?
+-   idk how resend works but maybe that too
+    | - forgot password
+    | - confirm registration
+    |--> configurable via simple setup file with booleans
+
+## usual kisses and goobyes
+
+-- Ask for star because e-penor needs inccreasement
+-- Link to socials
+
+-   Twitter
+-   Github
+-   If due to skillisues i can not implement oauth ask others to contribute
+
+MIT, Issues are creatable - no garantuees I will look into it.

@@ -1,45 +1,20 @@
-// src/features/auth/helper/get-auth-state.ts
 'use server'
 
-import { cookies } from 'next/headers'
-import { SessionUser } from '../types'
-import { db } from '@/db'
-import { users } from '@/db/schema'
-import { eq } from 'drizzle-orm'
+import { getSession } from '../session'
 
-type AuthStateResponse = {
-	isAuthenticated: boolean
-	user?: SessionUser
-}
+export async function getAuthState() {
+	const session = await getSession()
 
-export async function getAuthState(): Promise<AuthStateResponse> {
-	const cookieStore = await cookies()
-	const sessionId = cookieStore.get('session-id')?.value
-
-	if (!sessionId) {
+	if (!session) {
 		return { isAuthenticated: false }
 	}
 
-	try {
-		const user = await db.query.users.findFirst({
-			where: eq(users.id, sessionId)
-		})
-
-		if (!user) {
-			return { isAuthenticated: false }
+	return {
+		isAuthenticated: true,
+		user: {
+			userId: session.userId,
+			email: session.email,
+			role: session.role ?? 'user'
 		}
-
-		const sessionUser: SessionUser = {
-			userId: user.id,
-			email: user.email,
-			role: user.role ?? 'user'
-		}
-
-		return {
-			isAuthenticated: true,
-			user: sessionUser
-		}
-	} catch {
-		return { isAuthenticated: false }
 	}
 }

@@ -3,7 +3,7 @@ export type User = {
 	email: string
 	password: string
 	createdAt: string
-	role: 'user' | 'admin' | null
+	role: 'user' | 'admin'
 }
 
 export type SessionUser = {

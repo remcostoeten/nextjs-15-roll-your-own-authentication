@@ -1,4 +1,4 @@
-import Header from '@/components/header'
+import Navigation from '@/components/navigation'
 import { geistMono, geistSans } from '@/core/config/fonts'
 import { RootMetadata } from '@/core/config/metadata'
 import '@/core/styles/globals.css'
@@ -12,7 +12,7 @@ export default function RootLayout({ children }: PageProps) {
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				<Header />
+				<Navigation />
 				<AuthIndicator />
 				{children}
 			</body>
