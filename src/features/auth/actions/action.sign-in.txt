@@ -1,0 +1,46 @@
+'use server'
+
+import { redirect } from 'next/navigation'
+import { authService, sessionManager } from '.'
+import { AuthState } from '../types'
+import { signInSchema } from '../validations/models'
+
+export async function signIn(
+	prevState: AuthState,
+	formData: FormData
+): Promise<AuthState> {
+	try {
+		const validatedFields = signInSchema.safeParse({
+			email: formData.get('email'),
+			password: formData.get('password')
+		})
+
+		if (!validatedFields.success) {
+			return {
+				error: {
+					...validatedFields.error.flatten().fieldErrors
+				}
+			}
+		}
+
+		const { email, password } = validatedFields.data
+		const user = await authService.validateUser(email, password)
+
+		if (!user) {
+			return {
+				error: {
+					_form: ['Invalid email or password']
+				}
+			}
+		}
+
+		await sessionManager.setSession(user.id, user.email)
+		redirect('/dashboard')
+	} catch {
+		return {
+			error: {
+				_form: ['Failed to sign in. Please try again.']
+			}
+		}
+	}
+}

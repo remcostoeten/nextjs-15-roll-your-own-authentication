@@ -1,0 +1,39 @@
+'use server'
+
+import { redirect } from 'next/navigation'
+import { authService, sessionManager } from '.'
+import { AuthState } from '../types'
+import { signUpSchema } from '../validations/models'
+
+export async function signUp(
+	prevState: AuthState,
+	formData: FormData
+): Promise<AuthState> {
+	try {
+		const validatedFields = signUpSchema.safeParse({
+			email: formData.get('email'),
+			password: formData.get('password'),
+			confirmPassword: formData.get('confirmPassword')
+		})
+
+		if (!validatedFields.success) {
+			return {
+				error: {
+					...validatedFields.error.flatten().fieldErrors
+				}
+			}
+		}
+
+		const { email, password } = validatedFields.data
+		const user = await authService.createUser(email, password)
+
+		await sessionManager.setSession(user.id, user.email)
+		redirect('/dashboard')
+	} catch (error) {
+		return {
+			error: {
+				_form: ['Failed to create account. Please try again.']
+			}
+		}
+	}
+}

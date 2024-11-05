@@ -30,7 +30,7 @@ export default function Logo({
 	fill = 'var(--white)',
 	bgFill = 'transparent',
 	animated = true,
-	hasLink = true,
+	hasLink = false,
 	linkTo = '/'
 }: LogoProps) {
 	const { width: defaultWidth, height: defaultHeight } = sizeMap[size]
