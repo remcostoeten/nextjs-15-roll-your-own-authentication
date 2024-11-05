@@ -23,9 +23,14 @@ export type FormError = {
 	_form?: string[]
 }
 
-export type AuthState = {
-	error: FieldErrors & FormError
-} | null
+export type AuthState =
+	| {
+			error: FieldErrors & FormError
+	  }
+	| {
+			redirect: string
+	  }
+	| null
 
 export type AuthService = {
 	createUser(email: string, password: string): Promise<User>
