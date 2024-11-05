@@ -19,12 +19,21 @@
 		"f": "prettier --write \"**/*.{ts,tsx,mdx,json}\" --cache"
 	},
 	"dependencies": {
+		"@libsql/client": "^0.14.0",
+		"@paralleldrive/cuid2": "^2.2.2",
+		"bcryptjs": "^2.4.3",
+		"drizzle-kit": "^0.27.1",
+		"drizzle-orm": "^0.36.0",
+		"jsonwebtoken": "^9.0.2",
 		"lucide-react": "^0.454.0",
 		"next": "15.0.2",
 		"react": "19.0.0-rc-02c0e824-20241028",
-		"react-dom": "19.0.0-rc-02c0e824-20241028"
+		"react-dom": "19.0.0-rc-02c0e824-20241028",
+		"zod": "^3.23.8"
 	},
 	"devDependencies": {
+		"@types/bcryptjs": "^2.4.6",
+		"@types/jsonwebtoken": "^9.0.7",
 		"@types/node": "^20",
 		"@types/react": "^18",
 		"@types/react-dom": "^18",

@@ -1,48 +1,49 @@
 'use client'
 
+import { useActionState } from 'react'
+import { signIn } from '../actions/auth'
+import type { AuthState } from '../types'
 import SubmitButton from './submit-button'
 
+const initialState: AuthState = null
+
 export default function SignInForm() {
+	const [state, formAction] = useActionState(signIn, initialState)
+
 	return (
-		<form action="" className="space-y-4">
+		<form action={formAction} className="space-y-4">
 			<div>
-				<label
-					htmlFor="email"
-					className="block text-sm font-medium text-zinc-200"
-				>
-					Email
-				</label>
 				<input
-					id="email"
 					name="email"
 					type="email"
-					autoComplete="email"
+					placeholder="Email"
+					aria-label="Email"
+					className="w-full px-4 py-2 border border-zinc-700 rounded-md bg-zinc-800 text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white"
 					required
-					className="mt-1 block w-full rounded-md bg-zinc-800 border border-zinc-700 
-            px-3 py-2 text-zinc-100 placeholder-zinc-400 focus:border-white 
-            focus:outline-none focus:ring-1 focus:ring-white"
-					placeholder="you@example.com"
 				/>
+				{state?.error?.email && (
+					<div className="text-sm text-red-500">{state.error.email[0]}</div>
+				)}
 			</div>
+
 			<div>
-				<label
-					htmlFor="password"
-					className="block text-sm font-medium text-zinc-200"
-				>
-					Password
-				</label>
 				<input
-					id="password"
 					name="password"
 					type="password"
-					autoComplete="current-password"
+					placeholder="Password"
+					aria-label="Password"
+					className="w-full px-4 py-2 border border-zinc-700 rounded-md bg-zinc-800 text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white"
 					required
-					className="mt-1 block w-full rounded-md bg-zinc-800 border border-zinc-700 
-            px-3 py-2 text-zinc-100 placeholder-zinc-400 focus:border-white 
-            focus:outline-none focus:ring-1 focus:ring-white"
-					placeholder="••••••••"
 				/>
+				{state?.error?.password && (
+					<div className="text-sm text-red-500">{state.error.password[0]}</div>
+				)}
 			</div>
+
+			{state?.error?._form && (
+				<div className="text-sm text-red-500">{state.error._form[0]}</div>
+			)}
+
 			<SubmitButton variant="signin" />
 		</form>
 	)
