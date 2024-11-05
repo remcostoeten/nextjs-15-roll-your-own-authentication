@@ -17,18 +17,34 @@ type CvaOptions = {
 	defaultVariants?: DefaultVariants
 }
 
+type ButtonVariantsConfig = {
+	variant: {
+		default: string
+		destructive: string
+		outline: string
+		secondary: string
+		ghost: string
+		link: string
+	}
+	size: {
+		default: string
+		sm: string
+		lg: string
+		icon: string
+	}
+}
+
+type ButtonVariantType = ButtonVariantsConfig['variant']
+type ButtonSizeType = ButtonVariantsConfig['size']
+
 type VariantProps<T> = {
-	[K in keyof T]?: keyof T[K]
-} & {
+	variant?: keyof ButtonVariantType
+	size?: keyof ButtonSizeType
 	className?: string
 }
 
 function cva(base: string, options: CvaOptions) {
-	return function ({
-		variant,
-		size,
-		className
-	}: VariantProps<typeof options.variants>) {
+	return function ({ variant, size, className }: VariantProps<T>) {
 		const variantClasses = variant
 			? (options.variants?.variant?.[variant] ?? '')
 			: ''
@@ -82,8 +98,8 @@ const buttonVariants = cva(
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 	asChild?: boolean
-	variant?: keyof (typeof buttonVariants.arguments)[1]['variants']['variant']
-	size?: keyof (typeof buttonVariants.arguments)[1]['variants']['size']
+	variant?: keyof ButtonVariantType
+	size?: keyof ButtonSizeType
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -91,11 +107,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 		const Comp = asChild ? Slot : 'button'
 		return (
 			<Comp
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-expect-error
 				className={buttonVariants({
-					variant,
-					size,
+					variant: variant as keyof ButtonVariantType,
+					size: size as keyof ButtonSizeType,
 					className: className || ''
 				})}
 				ref={ref}
