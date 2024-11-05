@@ -1,9 +1,11 @@
+'use server'
+
 import { User, users } from '@/db/schema'
 import { createClient } from '@libsql/client'
-import { hash } from 'bcryptjs'
 import { eq } from 'drizzle-orm'
 import { drizzle } from 'drizzle-orm/libsql'
 import { StorageService } from '../types'
+
 export class DrizzleStorageService implements StorageService {
 	private db
 
@@ -18,14 +20,14 @@ export class DrizzleStorageService implements StorageService {
 	async saveUser(userData: {
 		email: string
 		password: string
+		role?: 'user' | 'admin'
 	}): Promise<User> {
-		const hashedPassword = await hash(userData.password, 10)
-
 		const [user] = await this.db
 			.insert(users)
 			.values({
 				email: userData.email,
-				password: hashedPassword
+				password: userData.password,
+				role: userData.role || 'user'
 			})
 			.returning()
 

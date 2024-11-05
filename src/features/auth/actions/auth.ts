@@ -1,35 +1,12 @@
-// src/features/auth/actions/auth.ts
 'use server'
 
 import { db } from '@/db'
 import { users } from '@/db/schema'
 import { compare, hash } from 'bcryptjs'
 import { eq } from 'drizzle-orm'
-import { redirect } from 'next/navigation'
-import { z } from 'zod'
-import { AuthState } from '../types'
-import { setSession, clearSession, getSession } from '../session'
-
-const signUpSchema = z
-	.object({
-		email: z.string().email('Invalid email'),
-		password: z
-			.string()
-			.min(8, 'Password must be at least 8 characters')
-			.regex(/[A-Z]/, 'Must contain uppercase')
-			.regex(/[0-9]/, 'Must contain number')
-			.regex(/[^A-Za-z0-9]/, 'Must contain special character'),
-		confirmPassword: z.string()
-	})
-	.refine((data) => data.password === data.confirmPassword, {
-		message: "Passwords don't match",
-		path: ['confirmPassword']
-	})
-
-const signInSchema = z.object({
-	email: z.string().email('Invalid email'),
-	password: z.string().min(1, 'Required')
-})
+import { clearSession, getSession, setSession } from '../session'
+import { AuthState, SessionUser } from '../types'
+import { signInSchema, signUpSchema } from '../validations/models'
 
 export async function signUp(
 	prevState: AuthState,
@@ -66,11 +43,26 @@ export async function signUp(
 
 		const hashedPassword = await hash(password, 10)
 
+		// Normalize emails for comparison
+		const normalizedEmail = email.toLowerCase().trim()
+		const normalizedAdminEmail =
+			process.env.ADMIN_EMAIL?.toLowerCase().trim() || ''
+
+		// Debug logs
+		console.log('Signup - Normalized user email:', normalizedEmail)
+		console.log('Signup - Normalized admin email:', normalizedAdminEmail)
+
+		const isAdmin = normalizedEmail === normalizedAdminEmail
+		const role = isAdmin ? 'admin' : 'user'
+
+		console.log('Signup - Assigned role:', role)
+
 		const [user] = await db
 			.insert(users)
 			.values({
-				email,
-				password: hashedPassword
+				email: normalizedEmail,
+				password: hashedPassword,
+				role: role
 			})
 			.returning()
 
@@ -82,8 +74,15 @@ export async function signUp(
 			}
 		}
 
-		await setSession(user.id, user.email)
-		redirect('/dashboard')
+		await setSession(user.id, user.email, user.role)
+
+		if (typeof window !== 'undefined') {
+			window.dispatchEvent(new Event('auth-change'))
+		}
+
+		return {
+			redirect: '/dashboard'
+		}
 	} catch (error) {
 		console.error('SignUp error:', error)
 		return {
@@ -136,8 +135,16 @@ export async function signIn(
 			}
 		}
 
-		await setSession(user.id, user.email)
-		redirect('/dashboard')
+		await setSession(user.id, user.email, user.role)
+
+		// Add this line to dispatch the event
+		if (typeof window !== 'undefined') {
+			window.dispatchEvent(new Event('auth-change'))
+		}
+
+		return {
+			redirect: '/dashboard'
+		}
 	} catch (error) {
 		console.error('SignIn error:', error)
 		return {
@@ -148,15 +155,45 @@ export async function signIn(
 	}
 }
 
-export async function signOut() {
-	await clearSession()
-	redirect('/sign-in')
+export async function signOut(): Promise<AuthState> {
+	try {
+		await clearSession()
+
+		if (typeof window !== 'undefined') {
+			window.dispatchEvent(new Event('auth-change'))
+		}
+
+		return {
+			redirect: '/sign-in'
+		}
+	} catch (error) {
+		console.error('SignOut error:', error)
+		return {
+			error: {
+				_form: ['Failed to sign out']
+			}
+		}
+	}
 }
 
-export async function getAuthState() {
+export async function getCurrentSession(): Promise<{
+	isAuthenticated: boolean
+	user?: SessionUser
+}> {
 	const session = await getSession()
+
+	if (!session) {
+		return {
+			isAuthenticated: false
+		}
+	}
+
 	return {
-		isAuthenticated: !!session,
-		email: session?.email
+		isAuthenticated: true,
+		user: {
+			userId: session.userId,
+			email: session.email,
+			role: session.role ?? 'user'
+		}
 	}
 }

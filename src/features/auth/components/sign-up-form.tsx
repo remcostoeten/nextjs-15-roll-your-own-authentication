@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState } from 'react'
-import { signUp } from '../actions/auth'
+import { signUp } from '../actions'
 import type { AuthState } from '../types'
 import SubmitButton from './submit-button'
 
