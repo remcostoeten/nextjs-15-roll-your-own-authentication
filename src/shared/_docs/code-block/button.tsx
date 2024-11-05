@@ -37,21 +37,20 @@ type ButtonVariantsConfig = {
 type ButtonVariantType = ButtonVariantsConfig['variant']
 type ButtonSizeType = ButtonVariantsConfig['size']
 
-type VariantProps<T> = {
+type VariantProps = {
 	variant?: keyof ButtonVariantType
 	size?: keyof ButtonSizeType
 	className?: string
 }
 
 function cva(base: string, options: CvaOptions) {
-	return function ({ variant, size, className }: VariantProps<T>) {
+	return function ({ variant, size, className }: VariantProps) {
 		const variantClasses = variant
 			? (options.variants?.variant?.[variant] ?? '')
 			: ''
 		const sizeClasses = size ? (options.variants?.size?.[size] ?? '') : ''
 		const defaultVariantClasses = options.defaultVariants?.variant
-			? (options.variants?.variant?.[options.defaultVariants.variant] ??
-				'')
+			? (options.variants?.variant?.[options.defaultVariants.variant] ?? '')
 			: ''
 		const defaultSizeClasses = options.defaultVariants?.size
 			? (options.variants?.size?.[options.defaultVariants.size] ?? '')
@@ -108,8 +107,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 		return (
 			<Comp
 				className={buttonVariants({
-					variant: variant as keyof ButtonVariantType,
-					size: size as keyof ButtonSizeType,
+					variant,
+					size,
 					className: className || ''
 				})}
 				ref={ref}
