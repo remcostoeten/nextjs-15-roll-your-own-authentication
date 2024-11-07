@@ -1,190 +1,207 @@
 'use client'
 
-import { privateNavItems, publicNavItems } from '@/core/config/navigation-items'
-import { signOut } from '@/features/auth/actions/auth'
 import { useAuthState } from '@/features/auth/hooks/use-auth-state'
-import useKeyboardShortcuts from '@/hooks/use-keyboard-shortcut'
+import useKeyboardShortcut from '@/hooks/use-keyboard-shortcut'
+import { useAdmin } from '@/shared/hooks/use-admin'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import Logo from './logo'
 
-export default function Header() {
-	const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
-	const { isAuthenticated } = useAuthState({ isAuthenticated: false })
+const Tooltip = ({ content, children, position = 'bottom' }) => (
+	<div className="group relative inline-flex">
+		{children}
+		<div
+			className="absolute pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[#1D1D1D] text-white text-sm px-2 py-1 rounded-lg whitespace-nowrap z-50"
+			style={{
+				[position === 'bottom' ? 'top' : 'bottom']: '100%',
+				left: '50%',
+				transform: 'translateX(-50%)',
+				marginTop: position === 'bottom' ? '0.5rem' : '',
+				marginBottom: position === 'top' ? '0.5rem' : ''
+			}}
+		>
+			{content}
+			<div
+				className="absolute w-2 h-2 bg-[#1D1D1D] rotate-45"
+				style={{
+					[position === 'bottom' ? 'top' : 'bottom']: '-0.25rem',
+					left: '50%',
+					transform: 'translateX(-50%)'
+				}}
+			/>
+		</div>
+	</div>
+)
 
-	const navItems = isAuthenticated ? privateNavItems : publicNavItems
+type NavigationProps = {
+	isAuthenticated: boolean
+	initialUser?: SessionUser
+}
 
-	const shortcuts = navItems
-		.filter((item) => item.shortcut)
-		.map((item) => ({
-			key: item.shortcut!,
-			href: item.href
-		}))
+export default function Navigation({
+	isAuthenticated,
+	initialUser
+}: NavigationProps) {
+	const { isAuthenticated: authState } = useAuthState({
+		isAuthenticated,
+		initialUser
+	})
+	const { isAdmin } = useAdmin()
+	const router = useRouter()
+	const [mounted, setMounted] = useState(false)
 
-	useKeyboardShortcuts({ shortcuts })
+	const navItems = authState
+		? [
+				{ label: 'Dashboard', href: '/dashboard', shortcut: 'D' },
+				{ label: 'Settings', href: '/settings' },
+				{
+					label: 'Sign out',
+					href: '/signout',
+					buttonStyle: 'secondary'
+				}
+			]
+		: [
+				{ label: 'Features', href: '/features' },
+				{ label: 'Pricing', href: '/pricing' },
+				{ label: 'Sign up', href: '/signup', buttonStyle: 'secondary' },
+				{
+					label: 'Sign in',
+					href: '/signin',
+					buttonStyle: 'primary',
+					shortcut: 'L'
+				}
+			]
 
-	const handleSignOut = async (e: React.MouseEvent<HTMLAnchorElement>) => {
-		if (e.currentTarget.textContent === 'Sign out') {
-			e.preventDefault()
-			await signOut()
-		}
+	useKeyboardShortcut({
+		shortcuts: navItems
+			.filter((item) => item.shortcut)
+			.map((item) => ({
+				key: item.shortcut!,
+				action: () => item.href && router.push(item.href),
+				enabled: mounted
+			}))
+	})
+
+	useEffect(() => {
+		setMounted(true)
+	}, [])
+
+	const getButtonClasses = (buttonStyle?: 'primary' | 'secondary') => {
+		const baseClasses =
+			'px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-1.5'
+		return buttonStyle === 'primary'
+			? `${baseClasses} bg-white hover:bg-white/90 text-black`
+			: buttonStyle === 'secondary'
+				? `${baseClasses} bg-[#1D1D1D] hover:bg-[#2D2D2D] text-white`
+				: baseClasses
+	}
+
+	if (!mounted) {
+		return (
+			<nav className="fixed max-w-[1024px] w-[80vw] mx-auto top-4 left-0 right-0 z-50 border border-white/[0.08] bg-black/30 backdrop-blur-lg rounded-2xl">
+				<div className="mx-auto px-6">
+					<div className="flex h-16 items-center justify-between">
+						<div className="flex items-center gap-4">
+							<Link href="/" className="flex items-center">
+								<Logo fill="#E5E7EB" />
+							</Link>
+
+							<div className="hidden md:flex items-center gap-6">
+								{(isAuthenticated
+									? [
+											{
+												label: 'Dashboard',
+												href: '/dashboard'
+											},
+											{
+												label: 'Settings',
+												href: '/settings'
+											}
+										]
+									: [
+											{
+												label: 'Features',
+												href: '/features'
+											},
+											{
+												label: 'Pricing',
+												href: '/pricing'
+											}
+										]
+								).map((item, index) => (
+									<Link
+										key={index}
+										href={item.href}
+										className="text-sm text-[#ADADAD] hover:text-white transition-colors"
+									>
+										{item.label}
+									</Link>
+								))}
+							</div>
+						</div>
+					</div>
+				</div>
+			</nav>
+		)
 	}
 
 	return (
-		<header
-			className="fixed inset-x-0 top-4 z-[100] mx-auto w-[calc(100vw-32px)] max-w-[1048px] isolate 
-                 overflow-visible rounded-2xl px-3 
-                 bg-black/40 backdrop-blur-xl 
-                 shadow-[0_0_0_1px_rgba(255,255,255,0.1)] 
-                 transition-all duration-200 ease-out select-none min-h-[64px]"
-		>
-			<nav className="w-full h-full" aria-label="Main">
-				<div className="relative h-full">
-					<ul className="flex items-center justify-between h-[64px] list-none m-0 px-2">
-						{/* Logo */}
-						<li className="flex items-center h-full">
-							<Link
-								href="/"
-								className="flex items-center h-full px-2 text-white transition-colors"
-							>
-								<Logo fill="white" />
-							</Link>
-						</li>
+		<nav className="fixed max-w-[1024px] w-[80vw] mx-auto top-4 left-0 right-0 z-50 border border-white/[0.08] bg-black/30 backdrop-blur-lg rounded-2xl">
+			<div className="mx-auto px-6">
+				<div className="flex h-16 items-center justify-between">
+					<div className="flex items-center gap-4">
+						<Link href="/" className="flex items-center">
+							<Logo fill="#E5E7EB" />
+						</Link>
 
-						<div className="flex items-center h-full gap-3">
-							{navItems.map((item, i) => {
-								if (item.dropdown) {
-									return (
-										<li
-											key={i}
-											className="relative h-full flex items-center"
-										>
-											<button
-												onClick={() =>
-													setActiveDropdown(
-														activeDropdown ===
-															item.label
-															? null
-															: item.label
-													)
-												}
-												className="flex items-center h-8 px-3 text-white/90 hover:text-white 
-                                 transition-colors gap-1.5 rounded-lg hover:bg-white/[0.06]"
-											>
-												{item.label}
-												<svg
-													className={`w-4 h-4 transition-transform duration-200 ${
-														activeDropdown ===
-														item.label
-															? 'rotate-180'
-															: ''
-													}`}
-													fill="none"
-													viewBox="0 0 24 24"
-													stroke="currentColor"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M19 9l-7 7-7-7"
-													/>
-												</svg>
-											</button>
-											<div
-												className={`
-                          absolute top-[calc(100%-4px)] left-0 
-                          perspective-[1000px]
-                          ${activeDropdown === item.label ? 'visible' : 'invisible'}
-                        `}
-											>
-												<div
-													className={`
-                          w-48 p-1 rounded-lg
-                          bg-black/95 backdrop-blur-xl
-                          shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_10px_40px_-10px_rgba(0,0,0,0.5)]
-                          origin-[top_center] 
-                          transition-[transform,opacity] duration-200
-                          ${
-								activeDropdown === item.label
-									? 'opacity-100 rotate-x-0 translate-y-0'
-									: 'opacity-0 rotate-x-[-20deg] -translate-y-2'
-							}
-                        `}
-												>
-													{item.dropdown.map(
-														(dropdownItem, j) => (
-															<Link
-																key={j}
-																href={
-																	dropdownItem.href
-																}
-																className="block px-2 py-1.5 text-sm text-white/75 
-                                       rounded-md hover:text-white hover:bg-white/[0.06] 
-                                       transition-colors"
-															>
-																{
-																	dropdownItem.label
-																}
-															</Link>
-														)
-													)}
-												</div>
-											</div>
-										</li>
-									)
-								}
-
-								if (item.button && item.label === 'Sign out') {
-									return (
-										<li key={i}>
-											<button
-												onClick={async (e) => {
-													e.preventDefault()
-													await signOut()
-												}}
-												className={`
-                          inline-flex items-center justify-center whitespace-nowrap select-none
-                          max-w-full flex-shrink-0 font-medium text-[13px] h-8
-                          rounded-lg transition-all duration-150 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]
-                          ${
-								item.buttonStyle === 'secondary'
-									? 'bg-[#28282c] text-white hover:brightness-125 px-3'
-									: 'hover:bg-gray-100 px-3'
-							}
-                        `}
-											>
-												{item.label}
-											</button>
-										</li>
-									)
-								}
-
-								return (
-									<li key={i}>
+						<div className="hidden md:flex items-center gap-6">
+							{navItems.map(
+								(item, index) =>
+									!item.buttonStyle && (
 										<Link
+											key={index}
 											href={item.href}
-											onClick={handleSignOut}
-											className={`
-                          inline-flex items-center justify-center whitespace-nowrap select-none
-                          max-w-full flex-shrink-0 font-medium text-[13px] h-8
-                          rounded-lg transition-all duration-150 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]
-                          ${
-								item.buttonStyle === 'secondary'
-									? 'bg-[#28282c] text-white hover:brightness-125 px-3'
-									: 'hover:bg-gray-100 px-3'
-							}
-                        `}
+											className="text-sm text-[#ADADAD] hover:text-white transition-colors"
 										>
 											{item.label}
 										</Link>
-									</li>
-								)
-							})}
+									)
+							)}
 						</div>
-					</ul>
+					</div>
+
+					<div className="flex items-center gap-2">
+						{navItems.map(
+							(item, index) =>
+								item.buttonStyle && (
+									<Tooltip
+										key={index}
+										content={
+											item.shortcut
+												? `Press ${item.shortcut} to ${item.label.toLowerCase()}`
+												: ''
+										}
+									>
+										<Link
+											href={item.href}
+											className={getButtonClasses(
+												item.buttonStyle
+											)}
+										>
+											{item.label}
+											{item.shortcut && (
+												<kbd className="ml-1.5 text-xs bg-black/10 px-2 py-0.5 rounded-md text-black/40 font-normal">
+													{item.shortcut}
+												</kbd>
+											)}
+										</Link>
+									</Tooltip>
+								)
+						)}
+					</div>
 				</div>
-			</nav>
-		</header>
+			</div>
+		</nav>
 	)
 }

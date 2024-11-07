@@ -1,5 +1,6 @@
 'use client'
 
+import useKeyboardShortcut from '@/hooks/use-keyboard-shortcut'
 import Link from 'next/link'
 
 interface LogoProps {
@@ -33,6 +34,15 @@ export default function Logo({
 	hasLink = false,
 	linkTo = '/'
 }: LogoProps) {
+	useKeyboardShortcut({
+		shortcuts: [
+			{
+				key: 'h',
+				href: '/'
+			}
+		]
+	})
+
 	const { width: defaultWidth, height: defaultHeight } = sizeMap[size]
 	const finalWidth = width || defaultWidth
 	const finalHeight = height || defaultHeight

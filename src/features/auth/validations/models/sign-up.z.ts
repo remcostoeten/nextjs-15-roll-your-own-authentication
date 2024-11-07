@@ -1,24 +1,41 @@
+import { BASE_CONFIG } from '@/core/config/FEATURE_CONFIG'
 import { z } from 'zod'
-
-const testMode = process.env.EASY_VALIDATION === 'true'
 
 const emailValue = z.string().email('Invalid email')
 
-const passwordValue = testMode
-	? z.string().min(3, 'Password must be at least 3 characters')
-	: z
-			.string()
-			.min(8, 'Password must be at least 8 characters')
-			.regex(/[A-Z]/, 'Must contain uppercase')
-			.regex(/[0-9]/, 'Must contain number')
-			.regex(/[^A-Za-z0-9]/, 'Must contain special character')
+const getPasswordSchema = () => {
+	if (!BASE_CONFIG.passwordValidation.enabled) {
+		return z.string().min(1, 'Password is required')
+	}
+
+	let schema = z
+		.string()
+		.min(
+			BASE_CONFIG.passwordValidation.minLength,
+			`Password must be at least ${BASE_CONFIG.passwordValidation.minLength} characters`
+		)
+
+	if (BASE_CONFIG.passwordValidation.requireUppercase) {
+		schema = schema.regex(/[A-Z]/, 'Must contain uppercase')
+	}
+
+	if (BASE_CONFIG.passwordValidation.requireNumber) {
+		schema = schema.regex(/[0-9]/, 'Must contain number')
+	}
+
+	if (BASE_CONFIG.passwordValidation.requireSpecialChar) {
+		schema = schema.regex(/[^A-Za-z0-9]/, 'Must contain special character')
+	}
+
+	return schema
+}
 
 const confirmPasswordValue = z.string()
 
 export const signUpSchema = z
 	.object({
 		email: emailValue,
-		password: passwordValue,
+		password: getPasswordSchema(),
 		confirmPassword: confirmPasswordValue
 	})
 	.refine((data) => data.password === data.confirmPassword, {

@@ -9,8 +9,16 @@ type AuthState = {
 	user?: SessionUser
 }
 
-export function useAuthState(initialState: AuthState) {
-	const [authState, setAuthState] = useState<AuthState>(initialState)
+type AuthStateProps = {
+	isAuthenticated: boolean
+	initialUser?: SessionUser
+}
+
+export function useAuthState({ isAuthenticated, initialUser }: AuthStateProps) {
+	const [authState, setAuthState] = useState<AuthState>({
+		isAuthenticated,
+		user: initialUser
+	})
 
 	useEffect(() => {
 		const updateAuthState = async () => {
@@ -19,12 +27,14 @@ export function useAuthState(initialState: AuthState) {
 		}
 
 		window.addEventListener('auth-change', updateAuthState)
-		updateAuthState()
+		if (!initialUser) {
+			updateAuthState()
+		}
 
 		return () => {
 			window.removeEventListener('auth-change', updateAuthState)
 		}
-	}, [])
+	}, [initialUser])
 
 	return authState
 }
