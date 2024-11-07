@@ -1,9 +1,11 @@
 'use client'
 
+import { useFeatureConfig } from '@/hooks/use-feature-config'
 import { useEffect, useState } from 'react'
 import { useAuthState } from '../hooks/use-auth-state'
 import type { SessionUser } from '../types'
 
+// Types
 type AuthState = {
 	isAuthenticated: boolean
 	user?: SessionUser
@@ -13,46 +15,56 @@ type AuthIndicatorProps = {
 	initialState: AuthState
 }
 
+type RoleConfig = {
+	bgColor: string
+	textColor: string
+	borderColor: string
+	dotColor: string
+	label: string
+}
+
+// Role configuration mapping
+const ROLE_CONFIGS: Record<string, RoleConfig> = {
+	admin: {
+		bgColor: 'bg-violet-500/10',
+		textColor: 'text-violet-400',
+		borderColor: 'border-violet-500/20',
+		dotColor: 'bg-violet-500',
+		label: 'Admin'
+	},
+	user: {
+		bgColor: 'bg-emerald-500/10',
+		textColor: 'text-emerald-400',
+		borderColor: 'border-emerald-500/20',
+		dotColor: 'bg-emerald-500',
+		label: 'User'
+	},
+	guest: {
+		bgColor: 'bg-emerald-500/10',
+		textColor: 'text-emerald-400',
+		borderColor: 'border-emerald-500/20',
+		dotColor: 'bg-emerald-500',
+		label: 'Guest'
+	}
+} as const
+
 export function AuthIndicatorClient({ initialState }: AuthIndicatorProps) {
 	const [mounted, setMounted] = useState(false)
 	const [isExpanded, setIsExpanded] = useState(false)
 	const authState = useAuthState(initialState)
+	const featureConfig = useFeatureConfig()
 
 	useEffect(() => {
 		setMounted(true)
 	}, [])
 
-	const getRoleConfig = (role: string) => {
-		switch (role) {
-			case 'admin':
-				return {
-					bgColor: 'bg-violet-500/10',
-					textColor: 'text-violet-400',
-					borderColor: 'border-violet-500/20',
-					dotColor: 'bg-violet-500',
-					label: 'Admin'
-				}
-			case 'user':
-				return {
-					bgColor: 'bg-emerald-500/10',
-					textColor: 'text-emerald-400',
-					borderColor: 'border-emerald-500/20',
-					dotColor: 'bg-emerald-500',
-					label: 'User'
-				}
-			default:
-				return {
-					bgColor: 'bg-emerald-500/10',
-					textColor: 'text-emerald-400',
-					borderColor: 'border-emerald-500/20',
-					dotColor: 'bg-emerald-500',
-					label: 'Guest'
-				}
-		}
+	// Return null if the session indicator is disabled based on feature config
+	if (!featureConfig.showSessionIndicator.enabled) {
+		return null
 	}
 
 	const role = authState.user?.role ?? 'guest'
-	const roleConfig = getRoleConfig(role)
+	const roleConfig = ROLE_CONFIGS[role] ?? ROLE_CONFIGS.guest
 	const statusDotColor = !authState.isAuthenticated
 		? 'bg-red-500'
 		: roleConfig.dotColor
@@ -61,7 +73,7 @@ export function AuthIndicatorClient({ initialState }: AuthIndicatorProps) {
 		<div
 			className={`
         fixed bottom-4 right-4 z-50
-        transition-transform duration-300 ease-out
+        transition-all duration-300 ease-out
         ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}
       `}
 		>
@@ -110,17 +122,17 @@ export function AuthIndicatorClient({ initialState }: AuthIndicatorProps) {
 
 						{authState.user && (
 							<div className="space-y-2">
-								{/* Custom Role Badge */}
+								{/* Role Badge */}
 								<div
 									className={`
-                  inline-flex items-center
-                  px-2.5 py-0.5
-                  text-xs font-semibold
-                  rounded-full border
-                  ${roleConfig.bgColor}
-                  ${roleConfig.textColor}
-                  ${roleConfig.borderColor}
-                `}
+                    inline-flex items-center
+                    px-2.5 py-0.5
+                    text-xs font-semibold
+                    rounded-full border
+                    ${roleConfig.bgColor}
+                    ${roleConfig.textColor}
+                    ${roleConfig.borderColor}
+                  `}
 								>
 									{roleConfig.label}
 								</div>
@@ -142,4 +154,9 @@ export function AuthIndicatorClient({ initialState }: AuthIndicatorProps) {
 			</div>
 		</div>
 	)
+}
+
+// Optional: Add component for server-side rendering
+export function AuthIndicator(props: AuthIndicatorProps) {
+	return <AuthIndicatorClient {...props} />
 }

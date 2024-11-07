@@ -50,7 +50,8 @@ function cva(base: string, options: CvaOptions) {
 			: ''
 		const sizeClasses = size ? (options.variants?.size?.[size] ?? '') : ''
 		const defaultVariantClasses = options.defaultVariants?.variant
-			? (options.variants?.variant?.[options.defaultVariants.variant] ?? '')
+			? (options.variants?.variant?.[options.defaultVariants.variant] ??
+				'')
 			: ''
 		const defaultSizeClasses = options.defaultVariants?.size
 			? (options.variants?.size?.[options.defaultVariants.size] ?? '')

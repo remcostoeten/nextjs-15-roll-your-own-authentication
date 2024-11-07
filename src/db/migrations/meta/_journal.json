@@ -15,6 +15,20 @@
 			"when": 1730802510694,
 			"tag": "0001_ancient_vargas",
 			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "6",
+			"when": 1731007981366,
+			"tag": "0002_wooden_gravity",
+			"breakpoints": true
+		},
+		{
+			"idx": 3,
+			"version": "6",
+			"when": 1731008158482,
+			"tag": "0003_equal_lady_ursula",
+			"breakpoints": true
 		}
 	]
 }

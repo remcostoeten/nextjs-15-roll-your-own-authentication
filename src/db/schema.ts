@@ -1,3 +1,14 @@
+import {
+	analyticsEvents,
+	analyticsPageViews,
+	analyticsSessions,
+	type AnalyticsEvent,
+	type AnalyticsPageView,
+	type AnalyticsSession,
+	type NewAnalyticsEvent,
+	type NewAnalyticsPageView,
+	type NewAnalyticsSession
+} from '@/features/analytics/db'
 import { createId } from '@paralleldrive/cuid2'
 import { sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
@@ -60,3 +71,16 @@ export const verificationTokens = sqliteTable('verification_tokens', {
 		.notNull()
 		.$defaultFn(() => new Date().toISOString())
 })
+
+// Re-export analytics types and tables
+export {
+	analyticsEvents,
+	analyticsPageViews,
+	analyticsSessions,
+	type AnalyticsEvent,
+	type AnalyticsPageView,
+	type AnalyticsSession,
+	type NewAnalyticsEvent,
+	type NewAnalyticsPageView,
+	type NewAnalyticsSession
+}

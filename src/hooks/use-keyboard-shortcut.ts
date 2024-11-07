@@ -1,35 +1,41 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
-type Shortcut = {
+type ShortcutConfig = {
 	key: string
-	href: string
+	action: () => void
+	enabled?: boolean
 }
 
-export default function useKeyboardShortcuts({
+type KeyboardShortcutProps = {
+	shortcuts: ShortcutConfig[]
+}
+
+export default function useKeyboardShortcut({
 	shortcuts
-}: {
-	shortcuts: Shortcut[]
-}) {
-	const router = useRouter()
-
+}: KeyboardShortcutProps) {
 	useEffect(() => {
-		function handleKeyDown(event: KeyboardEvent) {
-			const shortcut = shortcuts.find(
-				(s) =>
-					event.key.toLowerCase() === s.key.toLowerCase() &&
-					(event.metaKey || event.ctrlKey)
-			)
+		const handleKeyPress = (event: KeyboardEvent) => {
+			const key = event.key.toLowerCase()
 
-			if (shortcut) {
-				event.preventDefault()
-				router.push(shortcut.href)
-			}
+			shortcuts.forEach((shortcut) => {
+				if (
+					shortcut.key.toLowerCase() === key &&
+					shortcut.enabled !== false &&
+					!event.repeat &&
+					!event.ctrlKey &&
+					!event.altKey &&
+					!event.metaKey &&
+					!event.shiftKey
+				) {
+					event.preventDefault()
+					shortcut.action()
+				}
+			})
 		}
 
-		window.addEventListener('keydown', handleKeyDown)
-		return () => window.removeEventListener('keydown', handleKeyDown)
-	}, [shortcuts, router])
+		window.addEventListener('keydown', handleKeyPress)
+		return () => window.removeEventListener('keydown', handleKeyPress)
+	}, [shortcuts])
 }

@@ -1,12 +1,15 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { getSession } from '@/features/auth/session'
 import { SessionUser } from '@/features/auth/types'
+import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 export default function DashboardPage() {
 	const [user, setUser] = useState<SessionUser | null>(null)
-
+	function handleToast() {
+		toast('Hello, world!')
+	}
 	useEffect(() => {
 		async function fetchSession() {
 			const session = await getSession()
@@ -21,6 +24,7 @@ export default function DashboardPage() {
 
 	return (
 		<div>
+			<button onClick={handleToast}>Show toast</button>
 			<h1>Welcome, {user.email}</h1>
 			<pre>
 				<code>{JSON.stringify(user, null, 2)}</code>

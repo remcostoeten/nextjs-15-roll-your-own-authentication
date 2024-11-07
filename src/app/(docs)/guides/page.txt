@@ -1,0 +1,37 @@
+import Link from 'next/link'
+
+export default function GuidesIndex() {
+  return (
+    <div className="p-6 space-y-8">
+      <h1 className="text-3xl font-bold">Guides</h1>
+      
+      <div className="grid gap-6 md:grid-cols-2">
+        <GuideCard 
+          title="Client Guide"
+          description="Learn about client-side authentication, hooks, and best practices"
+          href="/guides/client"
+        />
+        <GuideCard 
+          title="Server Guide"
+          description="Discover server-side authentication, protection, and utilities"
+          href="/guides/server"
+        />
+      </div>
+    </div>
+  )
+}
+
+function GuideCard({ title, description, href }: { 
+  title: string
+  description: string
+  href: string 
+}) {
+  return (
+    <Link href={href}>
+      <div className="p-6 border border-white/10 rounded-lg hover:border-white/20 transition-colors">
+        <h2 className="text-xl font-semibold mb-2">{title}</h2>
+        <p className="text-neutral-400">{description}</p>
+      </div>
+    </Link>
+  )
+} 
