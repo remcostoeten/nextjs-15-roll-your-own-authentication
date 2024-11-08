@@ -1,15 +1,15 @@
 'use client'
 
-import { useFeatureConfig } from '@/hooks/use-feature-config'
+import { getFeatureConfig } from '@/core/config/FEATURE_CONFIG'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 
 const PAGEVIEW_TIMEOUT = 30 * 60 * 1000 // 30 minutes in milliseconds
 
-export function PageViewTracker() {
+export default function PageViewTracker() {
 	const pathname = usePathname()
 	const searchParams = useSearchParams()
-	const config = useFeatureConfig()
+	const config = getFeatureConfig()
 
 	useEffect(() => {
 		const trackPageView = async () => {
@@ -20,8 +20,12 @@ export function PageViewTracker() {
 				if (!config.analytics.enabled) return
 
 				// Skip localhost unless explicitly enabled
-				if (domain === 'localhost' && !config.analytics.trackLocalhost)
+				if (
+					domain === 'localhost' &&
+					!config.analytics.trackLocalhost
+				) {
 					return
+				}
 
 				// Create a unique key for this page view
 				const viewKey = `pageview_${domain}_${pathname}`

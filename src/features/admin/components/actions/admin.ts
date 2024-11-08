@@ -27,3 +27,31 @@ export async function changeUserRole(
 		throw new Error('Failed to change user role')
 	}
 }
+
+export async function getAdminStats() {
+	try {
+		// Implement your admin stats logic here
+		return {
+			totalUsers: 0,
+			activeUsers: 0
+			// ... other stats
+		}
+	} catch (error) {
+		console.error('Failed to get admin stats:', error)
+		throw new Error('Failed to get admin stats')
+	}
+}
+
+export async function getSystemHealth() {
+	try {
+		// Implement your system health check logic here
+		return {
+			status: 'healthy',
+			uptime: process.uptime()
+			// ... other health metrics
+		}
+	} catch (error) {
+		console.error('Failed to get system health:', error)
+		throw new Error('Failed to get system health')
+	}
+}
