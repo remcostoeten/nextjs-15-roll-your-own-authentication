@@ -21,7 +21,7 @@ export default function Page() {
 							Get Started
 						</Link>
 						<Link
-							href="https://github.com/yourusername/your-repo"
+							href="https://github.com/remcostoeten/nextjs-15-roll-your-own-authentication"
 							target="_blank"
 							rel="noopener noreferrer"
 							className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-background px-8 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"

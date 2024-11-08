@@ -1,5 +1,3 @@
-// Remove 'use client' directive from this file
-
 export const BASE_CONFIG = {
 	passwordValidation: {
 		minLength: 6,
@@ -22,11 +20,12 @@ export type FeatureConfig = {
 	}
 }
 
-export function getFeatureConfig(role?: string): FeatureConfig {
+export function getFeatureConfig(): FeatureConfig {
 	return {
 		analytics: {
 			enabled: process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === 'true',
-			trackLocalhost: process.env.NEXT_PUBLIC_ANALYTICS_TRACK_LOCALHOST === 'true'
+			trackLocalhost:
+				process.env.NEXT_PUBLIC_ANALYTICS_TRACK_LOCALHOST === 'true'
 		},
 		showSessionIndicator: {
 			enabled: process.env.NEXT_PUBLIC_SHOW_SESSION_INDICATOR === 'true'

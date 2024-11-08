@@ -2,6 +2,8 @@
 
 import useKeyboardShortcut from '@/hooks/use-keyboard-shortcut'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 interface LogoProps {
 	className?: string
@@ -34,14 +36,61 @@ export default function Logo({
 	hasLink = false,
 	linkTo = '/'
 }: LogoProps) {
-	useKeyboardShortcut({
-		shortcuts: [
-			{
+	const router = useRouter()
+	const [isFocusedOnInput, setIsFocusedOnInput] = useState(false)
+
+	useEffect(() => {
+		const checkFocus = () => {
+			const activeElement = document.activeElement
+			setIsFocusedOnInput(
+				activeElement instanceof HTMLInputElement ||
+					activeElement instanceof HTMLTextAreaElement ||
+					activeElement?.hasAttribute('contenteditable')
+			)
+		}
+
+		// Initial check
+		checkFocus()
+
+		// Add event listeners
+		document.addEventListener('focusin', checkFocus)
+		document.addEventListener('focusout', checkFocus)
+
+		return () => {
+			document.removeEventListener('focusin', checkFocus)
+			document.removeEventListener('focusout', checkFocus)
+		}
+	}, [])
+
+	useKeyboardShortcut([
+		{
+			combo: {
 				key: 'h',
-				href: '/'
-			}
-		]
-	})
+				modifiers: ['meta']
+			},
+			action: () => router.push('/'),
+			enabled: !isFocusedOnInput,
+			preventDefault: true
+		},
+		{
+			combo: {
+				key: 'h',
+				modifiers: ['shift']
+			},
+			action: () => router.push('/'),
+			enabled: !isFocusedOnInput,
+			preventDefault: true
+		},
+		{
+			combo: {
+				key: 'h',
+				modifiers: ['ctrl']
+			},
+			action: () => router.push('/'),
+			enabled: !isFocusedOnInput,
+			preventDefault: true
+		}
+	])
 
 	const { width: defaultWidth, height: defaultHeight } = sizeMap[size]
 	const finalWidth = width || defaultWidth
@@ -125,5 +174,11 @@ export default function Logo({
 		</svg>
 	)
 
-	return hasLink ? <Link href={linkTo}>{LogoSVG}</Link> : LogoSVG
+	return hasLink ? (
+		<Link href={linkTo} title="Home (⌘/Ctrl + H or Shift + H)">
+			{LogoSVG}
+		</Link>
+	) : (
+		LogoSVG
+	)
 }

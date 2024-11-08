@@ -1,24 +1,100 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-	content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
+    darkMode: ['class'],
+    content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
 	theme: {
-		extend: {
-			colors: {
-				border: 'hsl(var(--border))',
-				input: 'hsl(var(--input))',
-				ring: 'hsl(var(--ring))',
-				background: 'hsl(var(--background))',
-				foreground: 'hsl(var(--foreground))',
-				primary: {
-					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
-				},
-				muted: {
-					DEFAULT: 'hsl(var(--muted))',
-					foreground: 'hsl(var(--muted-foreground))'
-				}
-			}
-		}
-	},
-	plugins: []
+    	extend: {
+    		maxWidth: {
+    			'page-size': '54rem'
+    		},
+    		width: {
+    			'page-size': '54rem'
+    		},
+    		colors: {
+    			border: 'hsl(var(--border))',
+    			input: 'hsl(var(--input))',
+    			ring: 'hsl(var(--ring))',
+    			background: 'hsl(var(--background))',
+    			foreground: 'hsl(var(--foreground))',
+    			primary: {
+    				DEFAULT: 'hsl(var(--primary))',
+    				foreground: 'hsl(var(--primary-foreground))'
+    			},
+    			muted: {
+    				DEFAULT: 'hsl(var(--muted))',
+    				foreground: 'hsl(var(--muted-foreground))'
+    			},
+    			vercel: {
+    				blue: '#0070F3',
+    				cyan: '#50E3C2',
+    				purple: '#7928CA',
+    				pink: '#FF0080',
+    				orange: '#F5A623',
+    				teal: '#79FFE1'
+    			},
+    			card: {
+    				DEFAULT: 'hsl(var(--card))',
+    				foreground: 'hsl(var(--card-foreground))'
+    			},
+    			popover: {
+    				DEFAULT: 'hsl(var(--popover))',
+    				foreground: 'hsl(var(--popover-foreground))'
+    			},
+    			secondary: {
+    				DEFAULT: 'hsl(var(--secondary))',
+    				foreground: 'hsl(var(--secondary-foreground))'
+    			},
+    			accent: {
+    				DEFAULT: 'hsl(var(--accent))',
+    				foreground: 'hsl(var(--accent-foreground))'
+    			},
+    			destructive: {
+    				DEFAULT: 'hsl(var(--destructive))',
+    				foreground: 'hsl(var(--destructive-foreground))'
+    			},
+    			chart: {
+    				'1': 'hsl(var(--chart-1))',
+    				'2': 'hsl(var(--chart-2))',
+    				'3': 'hsl(var(--chart-3))',
+    				'4': 'hsl(var(--chart-4))',
+    				'5': 'hsl(var(--chart-5))'
+    			}
+    		},
+    		keyframes: {
+    			'fade-in': {
+    				'0%': {
+    					opacity: '0',
+    					transform: 'translateY(10px)'
+    				},
+    				'100%': {
+    					opacity: '1',
+    					transform: 'translateY(0)'
+    				}
+    			},
+    			pulse: {
+    				'0%, 100%': {
+    					opacity: '.2'
+    				},
+    				'50%': {
+    					opacity: '.15'
+    				}
+    			},
+    			shimmer: {
+    				'100%': {
+    					transform: 'translateX(100%)'
+    				}
+    			}
+    		},
+    		animation: {
+    			'fade-in': 'fade-in 0.2s ease-out',
+    			'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+    		},
+    		borderRadius: {
+    			lg: 'var(--radius)',
+    			md: 'calc(var(--radius) - 2px)',
+    			sm: 'calc(var(--radius) - 4px)'
+    		}
+    	}
+    },
+	plugins: [require("tailwindcss-animate")]
 }

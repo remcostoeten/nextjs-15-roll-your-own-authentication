@@ -20,7 +20,10 @@ export default function PageViewTracker() {
 				if (!config.analytics.enabled) return
 
 				// Skip localhost unless explicitly enabled
-				if (domain === 'localhost' && !config.analytics.trackLocalhost) {
+				if (
+					domain === 'localhost' &&
+					!config.analytics.trackLocalhost
+				) {
 					return
 				}
 
@@ -62,7 +65,12 @@ export default function PageViewTracker() {
 		}
 
 		trackPageView()
-	}, [pathname, searchParams, config.analytics.enabled, config.analytics.trackLocalhost])
+	}, [
+		pathname,
+		searchParams,
+		config.analytics.enabled,
+		config.analytics.trackLocalhost
+	])
 
 	return null
 }

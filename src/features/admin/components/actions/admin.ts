@@ -33,7 +33,7 @@ export async function getAdminStats() {
 		// Implement your admin stats logic here
 		return {
 			totalUsers: 0,
-			activeUsers: 0,
+			activeUsers: 0
 			// ... other stats
 		}
 	} catch (error) {
@@ -47,7 +47,7 @@ export async function getSystemHealth() {
 		// Implement your system health check logic here
 		return {
 			status: 'healthy',
-			uptime: process.uptime(),
+			uptime: process.uptime()
 			// ... other health metrics
 		}
 	} catch (error) {

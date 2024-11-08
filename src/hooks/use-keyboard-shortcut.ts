@@ -15,12 +15,14 @@ type ShortcutConfig = {
 	preventDefault?: boolean
 }
 
-export function useKeyboardShortcut(shortcuts: ShortcutConfig[]) {
-	const activeShortcuts = useRef(shortcuts)
+export default function useKeyboardShortcut(shortcuts: ShortcutConfig[]) {
+	const activeShortcuts = useRef<ShortcutConfig[]>(shortcuts)
 
 	const handleKeyPress = useCallback((event: KeyboardEvent) => {
+		if (!Array.isArray(activeShortcuts.current)) return
+
 		const matchingShortcut = activeShortcuts.current.find((shortcut) => {
-			if (!shortcut.enabled) return false
+			if (shortcut.enabled === false) return false
 
 			const modifiersMatch =
 				shortcut.combo.modifiers?.every(
