@@ -1,4 +1,4 @@
-## Rolling your own authentication    
+## Rolling your own authentication
 
 ### Without any externaal libraires like NextAuth, Lucia or Clerk.
 
@@ -11,34 +11,34 @@ A repository to showcase rolling your own authentication without utilizing exter
 
 ## Features
 
-- Sign in
-- Sign up
-- Sign out
-- 
+-   Sign in
+-   Sign up
+-   Sign out
+-
+
 ## Future features
 
 <small>or rather, missing features</small>
 
-- social oauth integration 
-  - Github
-  - Google
-  - Discord
-  - Whateveryouwish
+-   social oauth integration
 
-- Database implementation
-  *crud actions
-  - Delete account
-  - Change emailadres
-  - Change password
-  - Account page
-  - Roles
-- Forgot password implementation
+    -   Github
+    -   Google
+    -   Discord
+    -   Whateveryouwish
+
+-   Database implementation
+    \*crud actions
+    -   Delete account
+    -   Change emailadres
+    -   Change password
+    -   Account page
+    -   Roles
+-   Forgot password implementation
 
 xxx remco stoeten,
 
-
-- [@remcostoeten on Github](https://github.com/remcostoeten)
-- [@yowremco on X](https://twitter.com/yowremco)
-
+-   [@remcostoeten on Github](https://github.com/remcostoeten)
+-   [@yowremco on X](https://twitter.com/yowremco)
 
 <sub>A ✨ is appreciated for growning my e-penor</sub>

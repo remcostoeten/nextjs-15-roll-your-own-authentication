@@ -1,21 +1,33 @@
 'use client'
 
-export function trackEvent(eventName: string, data?: Record<string, any>) {
-	fetch('/api/analytics/event', {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({
-			eventName,
-			data: {
-				...data,
-				url: window.location.href,
-				timestamp: new Date().toISOString()
-			}
-		})
-	})
+import { useEffect } from 'react'
+
+type AnalyticsEvent = {
+	name: string
+	properties: Record<string, string | number | boolean>
+	timestamp: Date
 }
 
-// Usage examples:
-// trackEvent('button_click', { buttonId: 'signup' })
-// trackEvent('form_submit', { formType: 'contact' })
-// trackEvent('video_play', { videoId: '123', duration: 120 })
+type EventTrackerProps = {
+	onEvent: (event: AnalyticsEvent) => void
+}
+
+export function EventTracker({ onEvent }: EventTrackerProps) {
+	useEffect(() => {
+		const trackEvent = (
+			name: string,
+			properties: Record<string, string | number | boolean>
+		) => {
+			onEvent({
+				name,
+				properties,
+				timestamp: new Date()
+			})
+		}
+
+		// Example usage
+		trackEvent('page_view', { path: window.location.pathname })
+	}, [onEvent])
+
+	return null
+}

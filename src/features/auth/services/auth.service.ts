@@ -44,4 +44,9 @@ export class UserAuthService implements AuthService {
 	async getUserById(id: string): Promise<User | null> {
 		return this.storageService.findUserById(id)
 	}
+
+	async isAdmin(userId: string): Promise<boolean> {
+		const user = await this.storageService.findUserById(userId)
+		return user?.role === 'admin'
+	}
 }

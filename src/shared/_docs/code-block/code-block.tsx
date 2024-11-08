@@ -5,7 +5,6 @@ import {
 	ArrowDown,
 	ArrowUp,
 	Check,
-	CheckCircle2,
 	ChevronDown,
 	Copy,
 	Code as DefaultIcon,
@@ -14,14 +13,15 @@ import {
 	X
 } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { ANIMATION_VARIANTS, COPY_VARIANTS, TOAST_VARIANTS } from './animations'
+
+import { COPY_VARIANTS } from './animations'
 import { Button } from './button'
 import { cn } from './cn'
-import { customTheme } from './custom-theme'
 import * as Icons from './icons'
 
-function getLanguageIcon(language: string) {
+type Language = 'typescript' | 'python' | 'rust' | 'sql' | string
+
+function getLanguageIcon(language: Language) {
 	switch (language.toLowerCase()) {
 		case 'typescript':
 			return <Icons.TypescriptIcon size={16} />
@@ -36,13 +36,6 @@ function getLanguageIcon(language: string) {
 	}
 }
 
-function calculateCodeStats(code: string) {
-	const lines = code.split('\n').length
-	const chars = code.length
-	const words = code.trim().split(/\s+/).length
-	return { lines, chars, words }
-}
-
 type BadgeVariant =
 	| 'default'
 	| 'primary'
@@ -52,7 +45,7 @@ type BadgeVariant =
 	| 'danger'
 	| 'custom'
 
-interface BadgeProps {
+type BadgeProps = {
 	variant?: BadgeVariant
 	customColor?: string
 }
@@ -68,20 +61,17 @@ function getBadgeClasses({
 		return `${baseClasses} border border-${customColor}-500/30 bg-${customColor}-500/10 text-${customColor}-400 hover:border-${customColor}-400 hover:text-${customColor}-300`
 	}
 
-	switch (variant) {
-		case 'primary':
-			return `${baseClasses} border border-blue-500/30 bg-blue-500/10 text-blue-400 hover:border-blue-400 hover:text-blue-300`
-		case 'secondary':
-			return `${baseClasses} border border-purple-500/30 bg-purple-500/10 text-purple-400 hover:border-purple-400 hover:text-purple-300`
-		case 'success':
-			return `${baseClasses} border border-green-500/30 bg-green-500/10 text-green-400 hover:border-green-400 hover:text-green-300`
-		case 'warning':
-			return `${baseClasses} border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 hover:border-yellow-400 hover:text-yellow-300`
-		case 'danger':
-			return `${baseClasses} border border-red-500/30 bg-red-500/10 text-red-400 hover:border-red-400 hover:text-red-300`
-		default:
-			return `${baseClasses} border border-[#333333] bg-[#111111] text-zinc-400 hover:border-[#444444] hover:text-zinc-300`
+	const variantClasses: Record<BadgeVariant, string> = {
+		default: `${baseClasses} border border-[#333333] bg-[#111111] text-zinc-400 hover:border-[#444444] hover:text-zinc-300`,
+		primary: `${baseClasses} border border-blue-500/30 bg-blue-500/10 text-blue-400 hover:border-blue-400 hover:text-blue-300`,
+		secondary: `${baseClasses} border border-purple-500/30 bg-purple-500/10 text-purple-400 hover:border-purple-400 hover:text-purple-300`,
+		success: `${baseClasses} border border-green-500/30 bg-green-500/10 text-green-400 hover:border-green-400 hover:text-green-300`,
+		warning: `${baseClasses} border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 hover:border-yellow-400 hover:text-yellow-300`,
+		danger: `${baseClasses} border border-red-500/30 bg-red-500/10 text-red-400 hover:border-red-400 hover:text-red-300`,
+		custom: baseClasses
 	}
+
+	return variantClasses[variant]
 }
 
 type Badge = {
@@ -91,7 +81,7 @@ type Badge = {
 
 export type CodeBlockProps = {
 	code: string
-	language: string
+	language: Language
 	fileName?: string
 	badges?: Badge[]
 	showLineNumbers?: boolean
@@ -115,10 +105,8 @@ export function CodeBlock({
 	language,
 	fileName,
 	badges = [],
-	showLineNumbers = true,
 	enableLineHighlight = false,
 	showMetaInfo = true,
-	maxHeight = '400px',
 	onCopy,
 	onLineClick,
 	onSearch,
@@ -131,7 +119,6 @@ export function CodeBlock({
 }: CodeBlockProps) {
 	const [isCollapsed, setIsCollapsed] = useState(false)
 	const [isCopied, setIsCopied] = useState(false)
-	const [isHovered, setIsHovered] = useState(false)
 	const [isSearching, setIsSearching] = useState(!!initialSearchQuery)
 	const [searchQuery, setSearchQuery] = useState(initialSearchQuery)
 	const [searchResults, setSearchResults] =
@@ -139,11 +126,11 @@ export function CodeBlock({
 	const [currentResultIndex, setCurrentResultIndex] = useState(
 		initialSearchResults.length > 0 ? 0 : -1
 	)
-	const [highlightedLines, setHighlightedLines] = useState<number[]>(
+	const [activeLines, setActiveLines] = useState<number[]>(
 		initialHighlightedLines
 	)
-	const [stats] = useState(calculateCodeStats(code))
 	const codeRef = useRef<HTMLDivElement>(null)
+	const [isHovered, setIsHovered] = useState(false)
 
 	const scrollToLine = useCallback((lineNumber: number) => {
 		if (!codeRef.current) return
@@ -162,7 +149,7 @@ export function CodeBlock({
 			if (!query) {
 				setSearchResults([])
 				setCurrentResultIndex(-1)
-				setHighlightedLines([])
+				setActiveLines([])
 				onSearch?.('', [])
 				return
 			}
@@ -177,7 +164,7 @@ export function CodeBlock({
 
 			setSearchResults(matches)
 			setCurrentResultIndex(matches.length > 0 ? 0 : -1)
-			setHighlightedLines(matches)
+			setActiveLines(matches)
 			onSearch?.(query, matches)
 
 			if (matches.length > 0) {
@@ -241,7 +228,7 @@ export function CodeBlock({
 			}
 
 			if (e.key === 'Escape') {
-				setHighlightedLines([])
+				setActiveLines([])
 				setIsSearching(false)
 				setSearchQuery('')
 				setSearchResults([])
@@ -262,14 +249,14 @@ export function CodeBlock({
 
 	const handleLineClick = useCallback(
 		(lineNumber: number) => {
-			if (enableLineHighlight) {
-				setHighlightedLines((prev) =>
-					prev.includes(lineNumber)
-						? prev.filter((line) => line !== lineNumber)
-						: [...prev, lineNumber]
-				)
-				onLineClick?.(lineNumber)
-			}
+			if (!enableLineHighlight) return
+
+			setActiveLines((prev) =>
+				prev.includes(lineNumber)
+					? prev.filter((line) => line !== lineNumber)
+					: [...prev, lineNumber]
+			)
+			onLineClick?.(lineNumber)
 		},
 		[enableLineHighlight, onLineClick]
 	)
@@ -303,27 +290,24 @@ export function CodeBlock({
 				</div>
 
 				{searchResults.length > 0 && (
-					<>
-						<div className="h-4 w-[1px] bg-[#333333]" />
-						<div className="flex items-center gap-1">
-							<Button
-								variant="ghost"
-								size="icon"
-								onClick={goToPreviousResult}
-								className="h-6 w-6 text-zinc-500 hover:text-zinc-300"
-							>
-								<ArrowUp size={14} />
-							</Button>
-							<Button
-								variant="ghost"
-								size="icon"
-								onClick={goToNextResult}
-								className="h-6 w-6 text-zinc-500 hover:text-zinc-300"
-							>
-								<ArrowDown size={14} />
-							</Button>
-						</div>
-					</>
+					<div className="flex items-center gap-1">
+						<Button
+							variant="ghost"
+							size="icon"
+							onClick={goToPreviousResult}
+							className="h-6 w-6 text-zinc-500 hover:text-zinc-300"
+						>
+							<ArrowUp size={14} />
+						</Button>
+						<Button
+							variant="ghost"
+							size="icon"
+							onClick={goToNextResult}
+							className="h-6 w-6 text-zinc-500 hover:text-zinc-300"
+						>
+							<ArrowDown size={14} />
+						</Button>
+					</div>
 				)}
 
 				<div className="h-4 w-[1px] bg-[#333333]" />
@@ -334,7 +318,7 @@ export function CodeBlock({
 						setIsSearching(false)
 						setSearchQuery('')
 						setSearchResults([])
-						setHighlightedLines([])
+						setActiveLines([])
 					}}
 					className="h-6 w-6 text-zinc-500 hover:text-zinc-300"
 				>
@@ -344,16 +328,24 @@ export function CodeBlock({
 		)
 	}
 
+	const codeStats = {
+		lines: code.split('\n').length,
+		words: code.trim().split(/\s+/).length
+	}
+
 	return (
 		<div className="relative">
 			<div
-				className="group relative rounded-xl overflow-hidden bg-[#0A0A0A] dark:bg-[#0A0A0A] border border-[#333333] dark:border-[#333333] w-full transition-all duration-200"
+				className={cn(
+					'group relative rounded-xl overflow-hidden bg-[#0A0A0A] border border-[#333333] w-full transition-all duration-200',
+					isCollapsed && 'h-16'
+				)}
 				onMouseEnter={() => setIsHovered(true)}
 				onMouseLeave={() => setIsHovered(false)}
 			>
-				<div className="flex justify-between items-center px-4 py-2.5 bg-[#0A0A0A] dark:bg-[#0A0A0A] border-b border-[#333333]">
+				<div className="flex justify-between items-center px-4 py-2.5 bg-[#0A0A0A] border-b border-[#333333]">
 					<div className="flex items-center gap-3">
-						<span className="text-zinc-500 dark:text-zinc-500 transition-colors duration-200 group-hover:text-zinc-400">
+						<span className="text-zinc-500 transition-colors duration-200 group-hover:text-zinc-400">
 							{getLanguageIcon(language)}
 						</span>
 						{fileName && (
@@ -399,7 +391,8 @@ export function CodeBlock({
 							))}
 							{showMetaInfo && (
 								<span className="px-2 py-0.5 text-xs font-medium text-zinc-500">
-									{stats.lines} lines • {stats.words} words
+									{codeStats.lines} lines • {codeStats.words}{' '}
+									words
 								</span>
 							)}
 						</div>
@@ -464,88 +457,28 @@ export function CodeBlock({
 						</Button>
 					</div>
 				</div>
-
-				<AnimatePresence initial={false}>
-					{!isCollapsed && (
-						<motion.div
-							initial="collapsed"
-							animate="expanded"
-							exit="collapsed"
-							variants={ANIMATION_VARIANTS}
-							className="overflow-hidden"
-						>
-							<div className="relative" ref={codeRef}>
-								{showLineNumbers && (
-									<div className="absolute left-0 top-0 bottom-0 w-[3.5rem] bg-gradient-to-r from-[#0A0A0A] via-[#0A0A0A]/50 to-transparent pointer-events-none z-10" />
-								)}
-
-								<div
-									className="p-4 overflow-y-auto"
-									style={{ maxHeight }}
-								>
-									<SyntaxHighlighter
-										language={language.toLowerCase()}
-										style={customTheme}
-										customStyle={{
-											margin: 0,
-											padding: 0,
-											background: 'transparent',
-											fontSize: '0.875rem'
-										}}
-										showLineNumbers={showLineNumbers}
-										lineNumberStyle={{
-											color: '#666666',
-											minWidth: '2.5em',
-											paddingRight: '1em',
-											textAlign: 'right',
-											userSelect: 'none',
-											opacity: isHovered ? 1 : 0.5,
-											transition: 'opacity 0.2s ease'
-										}}
-										wrapLines={true}
-										wrapLongLines={true}
-										lineProps={(lineNumber) => ({
-											style: {
-												display: 'block',
-												cursor: enableLineHighlight
-													? 'pointer'
-													: 'default',
-												backgroundColor:
-													highlightedLines.includes(
-														lineNumber
-													)
-														? 'rgba(255, 255, 255, 0.1)'
-														: 'transparent'
-											},
-											onClick: () =>
-												handleLineClick(lineNumber)
-										})}
-									>
-										{code}
-									</SyntaxHighlighter>
-								</div>
-							</div>
-						</motion.div>
-					)}
-				</AnimatePresence>
 			</div>
-
-			<AnimatePresence>
-				{isCopied && (
-					<motion.div
-						initial="hidden"
-						animate="visible"
-						exit="hidden"
-						variants={TOAST_VARIANTS}
-						className="absolute top-3 right-3 flex items-center gap-2 px-3 py-2 rounded-lg bg-[#1A1A1A] border border-[#333333] shadow-lg"
-					>
-						<CheckCircle2 className="w-4 h-4 text-emerald-400" />
-						<span className="text-sm font-medium text-zinc-200">
-							Copied to clipboard
-						</span>
-					</motion.div>
+			<div
+				className={cn(
+					'code-content',
+					isHovered && 'border-blue-500/30'
 				)}
-			</AnimatePresence>
+				ref={codeRef}
+			>
+				{code.split('\n').map((line, index) => (
+					<div
+						key={index}
+						onClick={() => handleLineClick(index + 1)}
+						className={cn(
+							'code-line',
+							activeLines.includes(index + 1) && 'bg-blue-500/10'
+						)}
+						data-line-number={index + 1}
+					>
+						{line}
+					</div>
+				))}
+			</div>
 		</div>
 	)
 }

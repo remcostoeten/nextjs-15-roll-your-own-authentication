@@ -1,14 +1,33 @@
 'use client'
 
+import { Skeleton } from '@/components/ui/skeleton'
 import { useAuthState } from '@/features/auth/hooks/use-auth-state'
+import type { SessionUser } from '@/features/auth/types'
 import useKeyboardShortcut from '@/hooks/use-keyboard-shortcut'
-import { useAdmin } from '@/shared/hooks/use-admin'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Logo from './logo'
 
-const Tooltip = ({ content, children, position = 'bottom' }) => (
+type NavigationProps = {
+	isAuthenticated: boolean
+	initialUser?: SessionUser
+}
+
+type NavItem = {
+	label: string
+	href: string
+	shortcut?: string
+	buttonStyle?: 'primary' | 'secondary'
+}
+
+type TooltipProps = {
+	content: string
+	children: React.ReactNode
+	position?: 'top' | 'bottom'
+}
+
+const Tooltip = ({ content, children, position = 'bottom' }: TooltipProps) => (
 	<div className="group relative inline-flex">
 		{children}
 		<div
@@ -34,24 +53,18 @@ const Tooltip = ({ content, children, position = 'bottom' }) => (
 	</div>
 )
 
-type NavigationProps = {
-	isAuthenticated: boolean
-	initialUser?: SessionUser
-}
-
 export default function Navigation({
 	isAuthenticated,
 	initialUser
 }: NavigationProps) {
-	const { isAuthenticated: authState } = useAuthState({
+	const { isAuthenticated: authState, isLoading } = useAuthState({
 		isAuthenticated,
 		initialUser
 	})
-	const { isAdmin } = useAdmin()
 	const router = useRouter()
 	const [mounted, setMounted] = useState(false)
 
-	const navItems = authState
+	const navItems: NavItem[] = authState
 		? [
 				{ label: 'Dashboard', href: '/dashboard', shortcut: 'D' },
 				{ label: 'Settings', href: '/settings' },
@@ -97,48 +110,26 @@ export default function Navigation({
 				: baseClasses
 	}
 
-	if (!mounted) {
+	if (isLoading || !mounted) {
 		return (
 			<nav className="fixed max-w-[1024px] w-[80vw] mx-auto top-4 left-0 right-0 z-50 border border-white/[0.08] bg-black/30 backdrop-blur-lg rounded-2xl">
 				<div className="mx-auto px-6">
 					<div className="flex h-16 items-center justify-between">
 						<div className="flex items-center gap-4">
-							<Link href="/" className="flex items-center">
-								<Logo fill="#E5E7EB" />
-							</Link>
-
+							<Skeleton className="w-8 h-8 rounded-full" />
 							<div className="hidden md:flex items-center gap-6">
-								{(isAuthenticated
-									? [
-											{
-												label: 'Dashboard',
-												href: '/dashboard'
-											},
-											{
-												label: 'Settings',
-												href: '/settings'
-											}
-										]
-									: [
-											{
-												label: 'Features',
-												href: '/features'
-											},
-											{
-												label: 'Pricing',
-												href: '/pricing'
-											}
-										]
-								).map((item, index) => (
-									<Link
-										key={index}
-										href={item.href}
-										className="text-sm text-[#ADADAD] hover:text-white transition-colors"
-									>
-										{item.label}
-									</Link>
+								{[1, 2].map((i) => (
+									<Skeleton key={i} className="w-16 h-4" />
 								))}
 							</div>
+						</div>
+						<div className="flex items-center gap-2">
+							{[1, 2].map((i) => (
+								<Skeleton
+									key={i}
+									className="w-20 h-8 rounded-xl"
+								/>
+							))}
 						</div>
 					</div>
 				</div>

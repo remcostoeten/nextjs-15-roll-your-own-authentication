@@ -114,8 +114,6 @@ interface TooltipProps
 	pointerStyle?: PointerStyle
 	/** Whether to show the pointer indicator */
 	showPointer?: boolean
-	/** Size of the pointer in pixels */
-	pointerSize?: number
 	/** Optional keyboard shortcut to display */
 	shortcutKey?: string
 	/** Custom styling for the keyboard shortcut display */
@@ -289,7 +287,6 @@ const Tooltip = ({
 	variant = 'default',
 	icon,
 	iconSize = 16,
-	showArrow = true,
 	className = '',
 	containerClassName = '',
 	contentClassName = '',
@@ -303,9 +300,8 @@ const Tooltip = ({
 	borderVariant = 'normal',
 	onShow,
 	onHide,
-	pointerStyle = 'arrow',
 	showPointer = true,
-	pointerSize = 8,
+	pointerStyle = 'arrow' as PointerStyle,
 	shortcutKey,
 	kbdStyle = DEFAULT_KBD_STYLES,
 	showKbd = true,
@@ -388,14 +384,6 @@ const Tooltip = ({
 		bottom: 'top-full left-1/2 -translate-x-1/2 mt-2',
 		left: 'right-full top-1/2 -translate-y-1/2 mr-2',
 		right: 'left-full top-1/2 -translate-y-1/2 ml-2'
-	}
-
-	const arrowClasses: Readonly<Record<Position | 'base', string>> = {
-		base: `absolute w-2 h-2 rotate-45 before:content-[''] before:absolute before:w-3 before:h-3 before:rotate-45 before:border before:border-white/10`,
-		top: '-bottom-1 left-1/2 -translate-x-1/2',
-		bottom: '-top-1 left-1/2 -translate-x-1/2',
-		left: '-right-1 top-1/2 -translate-y-1/2',
-		right: '-left-1 top-1/2 -translate-y-1/2'
 	}
 
 	const IconComponent = icon ? ICON_MAP[icon] : null

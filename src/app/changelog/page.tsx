@@ -1,147 +1,54 @@
 'use client'
 
-import { CodeBlock } from '@/shared/_docs/code-block/code-block'
 import { motion } from 'framer-motion'
-import { usePathname } from 'next/navigation'
-import { useState } from 'react'
 
-type NavItem = {
-	name: string
-	href: string
+type ProjectStats = {
+	stars: number
+	forks: number
+	openIssues: number
+	commits: number
+	languages: { name: string; percentage: number }[]
 }
 
-export default function Component() {
-	const [searchQuery, setSearchQuery] = useState('')
-	const pathname = usePathname()
-
-	const navigation = [
-		{ name: 'All Posts', href: '/changelog' },
-		{ name: 'Engineering', href: '/changelog/engineering' },
-		{ name: 'Community', href: '/changelog/community' },
-		{ name: 'Company News', href: '/changelog/news' },
-		{ name: 'Customers', href: '/changelog/customers' },
-		{ name: 'Changelog', href: '/changelog/product' },
-		{ name: 'Press', href: '/changelog/press' }
-	]
-
-	const projectStats = {
-		stars: 1250,
-		forks: 320,
-		contributors: 45,
-		openIssues: 23,
-		closedIssues: 578,
-		pullRequests: 12,
-		commits: 2345,
-		releases: 15,
-		languages: [
-			{ name: 'TypeScript', percentage: 68 },
-			{ name: 'JavaScript', percentage: 20 },
-			{ name: 'CSS', percentage: 10 },
-			{ name: 'HTML', percentage: 2 }
-		]
+type Change = {
+	date: string
+	title: string
+	description: string
+	gitInfo?: {
+		type: string
+		message: string
+		branch: string
+		author: string
+		commitHash: string
+		changedFiles: number
+		additions: number
+		deletions: number
 	}
-
-	const changes = [
-		{
-			date: 'Nov 6, 2023',
-			title: 'Added Lucia Authentication Integration',
-			description:
-				'Implemented secure authentication using Lucia, providing a robust system for user management and session handling.',
-			content: `
-        Key improvements include:
-
-        • Secure session management with Lucia
-        • OAuth integration with multiple providers
-        • Type-safe authentication flows
-        • Improved security measures
-      `,
-			image: '/placeholder.svg?height=400&width=800',
-			gitInfo: {
-				type: 'merge',
-				message: 'Merge pull request #123 from feature/lucia-auth',
-				branch: 'main',
-				author: 'Jane Doe',
-				commitHash: 'a1b2c3d',
-				changedFiles: 15,
-				additions: 523,
-				deletions: 128
-			},
-			codeSnippet: `
-import { auth } from '@/lib/lucia'
-import { OAuthRequestError } from '@lucia-auth/oauth'
-
-export const POST = async (request: Request) => {
-  const formData = await request.formData()
-  const code = formData.get('code')
-  
-  try {
-    const { existingUser, providerUser, createUser } =
-      await auth.validateOAuth2Code('github', code)
-    // ...
-  } catch (e) {
-    if (e instanceof OAuthRequestError) {
-      // invalid code
-      return new Response(null, {
-        status: 400
-      })
-    }
-    return new Response(null, {
-      status: 500
-    })
-  }
+	performance?: {
+		beforeDeployTime: string
+		afterDeployTime: string
+		improvementPercentage: string
+	}
 }
-      `,
-			performance: {
-				beforeAuthTime: '1.2s',
-				afterAuthTime: '0.8s',
-				improvementPercentage: 33
-			}
-		},
-		{
-			date: 'Nov 1, 2023',
-			title: 'PostgreSQL Database Implementation',
-			description:
-				'Integrated Neon PostgreSQL database with Drizzle ORM for improved data management and type safety.',
-			content: `
-        Major updates include:
 
-        • Serverless PostgreSQL setup with Neon
-        • Type-safe queries with Drizzle ORM
-        • Automated database migrations
-        • Improved data relationships
-      `,
-			gitInfo: {
-				type: 'commit',
-				message: 'Implement Neon PostgreSQL and Drizzle ORM',
-				branch: 'feature/db-integration',
-				author: 'John Smith',
-				commitHash: 'e5f6g7h',
-				changedFiles: 8,
-				additions: 342,
-				deletions: 56
-			},
-			codeSnippet: `
-import { drizzle } from 'drizzle-orm/neon-serverless'
-import { neon } from '@neondatabase/serverless'
+// Default values for props
+const defaultProjectStats: ProjectStats = {
+	stars: 0,
+	forks: 0,
+	openIssues: 0,
+	commits: 0,
+	languages: []
+}
 
-const sql = neon(process.env.DATABASE_URL!)
-export const db = drizzle(sql)
+const defaultChanges: Change[] = []
 
-export const users = pgTable('users', {
-  id: serial('id').primaryKey(),
-  name: text('name'),
-  email: text('email').notNull().unique(),
-  createdAt: timestamp('created_at').defaultNow().notNull()
-})
-      `,
-			performance: {
-				beforeQueryTime: '150ms',
-				afterQueryTime: '50ms',
-				improvementPercentage: 67
-			}
-		}
-	]
-
+export default function Changelog({
+	projectStats = defaultProjectStats,
+	changes = defaultChanges
+}: {
+	projectStats?: ProjectStats
+	changes?: Change[]
+}) {
 	return (
 		<div className="flex min-h-screen flex-col">
 			<main className="flex-1">
@@ -196,14 +103,18 @@ export const users = pgTable('users', {
 							<div className="flex items-center space-x-2">
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
-									className="h-5 w-5 text-green-500"
+									className="h-5 w-5 text-red-500"
 									viewBox="0 0 20 20"
 									fill="currentColor"
 								>
-									<path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+									<path
+										fillRule="evenodd"
+										d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+										clipRule="evenodd"
+									/>
 								</svg>
 								<span>
-									{projectStats.contributors} Contributors
+									{projectStats.openIssues} Open Issues
 								</span>
 							</div>
 							<div className="flex items-center space-x-2">
@@ -278,18 +189,6 @@ export const users = pgTable('users', {
 								<h2 className="text-2xl font-bold text-blue-500">
 									{change.title}
 								</h2>
-								{change.image && (
-									<motion.img
-										src={change.image}
-										alt={change.title}
-										className="rounded-lg border border-gray-700 bg-gray-800 transition-colors"
-										width={800}
-										height={400}
-										initial={{ opacity: 0, scale: 0.8 }}
-										animate={{ opacity: 1, scale: 1 }}
-										transition={{ duration: 0.5 }}
-									/>
-								)}
 								<motion.div
 									className="prose prose-invert max-w-none"
 									initial={{ opacity: 0 }}
@@ -297,147 +196,96 @@ export const users = pgTable('users', {
 									transition={{ duration: 0.5, delay: 0.2 }}
 								>
 									<div className="whitespace-pre-line">
-										{change.content}
+										{change.description}
 									</div>
 								</motion.div>
-								<div className="mt-4 flex items-center space-x-2">
-									{change.gitInfo.type === 'merge' && (
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											className="h-5 w-5 text-green-500"
-											viewBox="0 0 20 20"
-											fill="currentColor"
-										>
-											<path
-												fillRule="evenodd"
-												d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
-												clipRule="evenodd"
-											/>
-										</svg>
-									)}
-									{change.gitInfo.type === 'commit' && (
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											className="h-5 w-5 text-blue-500"
-											viewBox="0 0 20 20"
-											fill="currentColor"
-										>
-											<path
-												fillRule="evenodd"
-												d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-												clipRule="evenodd"
-											/>
-										</svg>
-									)}
-									{change.gitInfo.type === 'pull-request' && (
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											className="h-5 w-5 text-purple-500"
-											viewBox="0 0 20 20"
-											fill="currentColor"
-										>
-											<path
-												fillRule="evenodd"
-												d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
-												clipRule="evenodd"
-											/>
-										</svg>
-									)}
-									<span className="text-sm font-medium">
-										{change.gitInfo.message}
-									</span>
-									<span className="rounded-full bg-gray-700 px-2 py-1 text-xs font-medium text-gray-300">
-										{change.gitInfo.branch}
-									</span>
-									<span className="text-sm text-gray-400">
-										by {change.gitInfo.author}
-									</span>
-								</div>
-								<div className="mt-2 text-sm text-gray-400">
-									<span>
-										Commit: {change.gitInfo.commitHash} |{' '}
-									</span>
-									<span>
-										Changed Files:{' '}
-										{change.gitInfo.changedFiles} |{' '}
-									</span>
-									<span className="text-green-500">
-										+{change.gitInfo.additions}
-									</span>
-									<span className="text-red-500">
-										{' '}
-										-{change.gitInfo.deletions}
-									</span>
-								</div>
-								<div className="mt-4">
-									<h3 className="mb-2 text-lg font-semibold">
-										Code Snippet
-									</h3>
-									<CodeBlock
-										code={change.codeSnippet}
-										language="typescript"
-										showLineNumbers
-										enableLineHighlight
-										showMetaInfo
-										fileName={
-											change.gitInfo.type === 'merge'
-												? 'feature/lucia-auth/auth.ts'
-												: 'lib/db.ts'
-										}
-										badges={[
-											{
-												text: change.gitInfo.type,
-												variant:
-													change.gitInfo.type ===
-													'merge'
-														? 'success'
-														: 'primary'
-											},
-											{
-												text: `+${change.gitInfo.additions} -${change.gitInfo.deletions}`,
-												variant: 'default'
-											}
-										]}
-									/>
-								</div>
-								<div className="mt-4">
-									<h3 className="mb-2 text-lg font-semibold">
-										Performance Impact
-									</h3>
-									<div className="flex items-center space-x-4">
-										<div>
-											<span className="text-sm text-gray-400">
-												Before:{' '}
+								{change.gitInfo && (
+									<>
+										<div className="mt-4 flex items-center space-x-2">
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												className="h-5 w-5 text-blue-500"
+												viewBox="0 0 20 20"
+												fill="currentColor"
+											>
+												<path
+													fillRule="evenodd"
+													d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+													clipRule="evenodd"
+												/>
+											</svg>
+											<span className="text-sm font-medium">
+												{change.gitInfo.message}
 											</span>
-											<span>
-												{change.performance
-													.beforeAuthTime ||
-													change.performance
-														.beforeQueryTime}
+											<span className="rounded-full bg-gray-700 px-2 py-1 text-xs font-medium text-gray-300">
+												{change.gitInfo.branch}
+											</span>
+											<span className="text-sm text-gray-400">
+												by {change.gitInfo.author}
 											</span>
 										</div>
-										<div>
-											<span className="text-sm text-gray-400">
-												After:{' '}
+										<div className="mt-2 text-sm text-gray-400">
+											<span>
+												Commit:{' '}
+												{change.gitInfo.commitHash.slice(
+													0,
+													7
+												)}{' '}
+												|{' '}
 											</span>
 											<span>
-												{change.performance
-													.afterAuthTime ||
-													change.performance
-														.afterQueryTime}
+												Changed Files:{' '}
+												{change.gitInfo.changedFiles} |{' '}
+											</span>
+											<span className="text-green-500">
+												+{change.gitInfo.additions}
+											</span>
+											<span className="text-red-500">
+												{' '}
+												-{change.gitInfo.deletions}
 											</span>
 										</div>
-										<div>
-											<span className="text-sm text-green-500">
-												{
-													change.performance
-														.improvementPercentage
-												}
-												% improvement
-											</span>
+									</>
+								)}
+								{change.performance && (
+									<div className="mt-4">
+										<h3 className="mb-2 text-lg font-semibold">
+											Performance Impact
+										</h3>
+										<div className="flex items-center space-x-4">
+											<div>
+												<span className="text-sm text-gray-400">
+													Before:{' '}
+												</span>
+												<span>
+													{
+														change.performance
+															.beforeDeployTime
+													}
+												</span>
+											</div>
+											<div>
+												<span className="text-sm text-gray-400">
+													After:{' '}
+												</span>
+												<span>
+													{
+														change.performance
+															.afterDeployTime
+													}
+												</span>
+											</div>
+											<div>
+												<span className="text-sm text-green-500">
+													{
+														change.performance
+															.improvementPercentage
+													}
+												</span>
+											</div>
 										</div>
 									</div>
-								</div>
+								)}
 							</motion.article>
 						))}
 					</div>

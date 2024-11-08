@@ -3,28 +3,28 @@ import { User as DbUser } from '@/db/schema'
 // Base user type from database schema
 export type User = DbUser
 
-// Service interfaces
+// Service interfaces with simpler typing
 export type StorageService = {
-	saveUser(userData: {
+	saveUser: (_: {
 		email: string
 		password: string
 		role?: 'user' | 'admin'
-	}): Promise<User>
-	findUserByEmail(email: string): Promise<User | null>
-	findUserById(id: string): Promise<User | null>
+	}) => Promise<User>
+	findUserByEmail: (_: string) => Promise<User | null>
+	findUserById: (_: string) => Promise<User | null>
 }
 
 export type AuthService = {
-	createUser(email: string, password: string): Promise<User>
-	validateUser(email: string, password: string): Promise<User | null>
-	getUserById(id: string): Promise<User | null>
+	createUser: (_email: string, _password: string) => Promise<User>
+	validateUser: (_email: string, _password: string) => Promise<User | null>
+	getUserById: (_id: string) => Promise<User | null>
 }
 
 // Session user type
 export type SessionUser = {
 	userId: string
 	email: string
-	role: string
+	role: 'admin' | 'user'
 }
 
 // Form error types
@@ -38,17 +38,29 @@ export type FormError = {
 	_form?: string[]
 }
 
-export type AuthState =
-	| {
-			error: FieldErrors & FormError
-	  }
-	| {
-			redirect: string
-	  }
-	| null
+// Auth state types
+export type AuthState = {
+	isAuthenticated: boolean
+	user?: SessionUser
+	isLoading: boolean
+	error?: FieldErrors & FormError
+}
 
+// Auth context type
 export type AuthContextType = {
 	isAuthenticated: boolean
 	user?: SessionUser
-	loading: boolean
+	isLoading: boolean
+	updateAuthState: (_: Partial<AuthState>) => void
+}
+
+// Auth action result type
+export type AuthResult =
+	| { success: true; user: SessionUser }
+	| { success: false; error: FieldErrors & FormError }
+
+// Auth action types
+export type AuthAction = {
+	type: 'LOGIN' | 'LOGOUT' | 'REGISTER' | 'UPDATE_PROFILE'
+	payload?: Record<string, unknown>
 }

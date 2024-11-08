@@ -4,23 +4,38 @@ import { db } from '@/db'
 import { users } from '@/db/schema'
 import { compare, hash } from 'bcryptjs'
 import { eq } from 'drizzle-orm'
-import { clearSession, getSession, setSession } from '../session'
+import { getSession } from '../session'
 import { AuthState, SessionUser } from '../types'
 import { signInSchema, signUpSchema } from '../validations/models'
+
+type SignUpFormData = {
+	email: string
+	password: string
+	confirmPassword: string
+}
+
+type SignInFormData = {
+	email: string
+	password: string
+}
 
 export async function signUp(
 	prevState: AuthState,
 	formData: FormData
 ): Promise<AuthState> {
 	try {
-		const validatedFields = signUpSchema.safeParse({
-			email: formData.get('email'),
-			password: formData.get('password'),
-			confirmPassword: formData.get('confirmPassword')
-		})
+		const data = {
+			email: formData.get('email') as string,
+			password: formData.get('password') as string,
+			confirmPassword: formData.get('confirmPassword') as string
+		} satisfies SignUpFormData
+
+		const validatedFields = signUpSchema.safeParse(data)
 
 		if (!validatedFields.success) {
 			return {
+				isAuthenticated: false,
+				isLoading: false,
 				error: validatedFields.error.flatten().fieldErrors
 			}
 		}
@@ -35,6 +50,8 @@ export async function signUp(
 
 		if (existingUser) {
 			return {
+				isAuthenticated: false,
+				isLoading: false,
 				error: {
 					email: ['Email already exists']
 				}
@@ -42,50 +59,48 @@ export async function signUp(
 		}
 
 		const hashedPassword = await hash(password, 10)
-
-		// Normalize emails for comparison
 		const normalizedEmail = email.toLowerCase().trim()
 		const normalizedAdminEmail =
 			process.env.ADMIN_EMAIL?.toLowerCase().trim() || ''
-
-		// Debug logs
-		console.log('Signup - Normalized user email:', normalizedEmail)
-		console.log('Signup - Normalized admin email:', normalizedAdminEmail)
-
 		const isAdmin = normalizedEmail === normalizedAdminEmail
-		const role = isAdmin ? 'admin' : 'user'
-
-		console.log('Signup - Assigned role:', role)
+		const userRole = isAdmin ? 'admin' : 'user'
 
 		const [user] = await db
 			.insert(users)
 			.values({
 				email: normalizedEmail,
 				password: hashedPassword,
-				role: role
-			})
+				role: userRole
+			} as typeof users.$inferInsert)
 			.returning()
 
 		if (!user?.id) {
 			return {
+				isAuthenticated: false,
+				isLoading: false,
 				error: {
 					_form: ['Failed to create account']
 				}
 			}
 		}
 
-		await setSession(user.id, user.email, user.role)
-
-		if (typeof window !== 'undefined') {
-			window.dispatchEvent(new Event('auth-change'))
-		}
+		// Assuming you have a separate function to handle session storage
+		await handleSession(user.id, user.email, user.role)
 
 		return {
-			redirect: '/dashboard'
+			isAuthenticated: true,
+			isLoading: false,
+			user: {
+				userId: user.id,
+				email: user.email,
+				role: user.role
+			}
 		}
 	} catch (error) {
 		console.error('SignUp error:', error)
 		return {
+			isAuthenticated: false,
+			isLoading: false,
 			error: {
 				_form: ['Failed to create account']
 			}
@@ -98,13 +113,17 @@ export async function signIn(
 	formData: FormData
 ): Promise<AuthState> {
 	try {
-		const validatedFields = signInSchema.safeParse({
-			email: formData.get('email'),
-			password: formData.get('password')
-		})
+		const data = {
+			email: formData.get('email') as string,
+			password: formData.get('password') as string
+		} satisfies SignInFormData
+
+		const validatedFields = signInSchema.safeParse(data)
 
 		if (!validatedFields.success) {
 			return {
+				isAuthenticated: false,
+				isLoading: false,
 				error: validatedFields.error.flatten().fieldErrors
 			}
 		}
@@ -119,6 +138,8 @@ export async function signIn(
 
 		if (!user) {
 			return {
+				isAuthenticated: false,
+				isLoading: false,
 				error: {
 					email: ['Email not found']
 				}
@@ -129,25 +150,32 @@ export async function signIn(
 
 		if (!passwordMatch) {
 			return {
+				isAuthenticated: false,
+				isLoading: false,
 				error: {
 					_form: ['Invalid credentials']
 				}
 			}
 		}
 
-		await setSession(user.id, user.email, user.role)
-
-		// Add this line to dispatch the event
-		if (typeof window !== 'undefined') {
-			window.dispatchEvent(new Event('auth-change'))
-		}
+		// Assuming you have a separate function to handle session storage
+		await handleSession(user.id, user.email, user.role)
 
 		return {
-			redirect: '/dashboard'
+			isAuthenticated: true,
+			isLoading: false,
+			success: true,
+			user: {
+				userId: user.id,
+				email: user.email,
+				role: user.role
+			}
 		}
 	} catch (error) {
 		console.error('SignIn error:', error)
 		return {
+			isAuthenticated: false,
+			isLoading: false,
 			error: {
 				_form: ['Failed to sign in']
 			}
@@ -159,20 +187,28 @@ export async function signOut(): Promise<AuthState> {
 	try {
 		await clearSession()
 
-		if (typeof window !== 'undefined') {
-			window.dispatchEvent(new Event('auth-change'))
-		}
-
 		return {
-			redirect: '/sign-in'
+			isAuthenticated: false,
+			isLoading: false,
+			success: true
 		}
 	} catch (error) {
 		console.error('SignOut error:', error)
 		return {
+			isAuthenticated: false,
+			isLoading: false,
 			error: {
 				_form: ['Failed to sign out']
 			}
 		}
+	}
+}
+
+// Helper function to handle session management
+async function handleSession(userId: string, email: string, role: string) {
+	await setSession(userId, email, role)
+	if (typeof window !== 'undefined') {
+		window.dispatchEvent(new Event('auth-change'))
 	}
 }
 

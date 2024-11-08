@@ -14,16 +14,22 @@
 		"___________________QUALITY": ":",
 		"lint": "next lint",
 		"typecheck": "tsc --noEmit",
+		"find:unused": "ts-prune",
+		"fix:imports": "prettier --write \"src/**/*.{ts,tsx}\" --plugin prettier-plugin-organize-imports",
+		"fix:all": "npm run fix:imports && tsc --noEmit",
 		"___________________UTILS": ":",
 		"cleani": "rm -rf .next && rm -rf node_modules && pnpm i",
-		"f": "prettier --write \"**/*.{ts,tsx,mdx,json}\" --cache"
+		"f": "prettier --write \"**/*.{ts,tsx,mdx}\"",
+		"format": "prettier --write \"**/*.{ts,tsx,mdx,json,js,jsx}\""
 	},
 	"dependencies": {
 		"@libsql/client": "^0.14.0",
+		"@octokit/rest": "^21.0.2",
 		"@paralleldrive/cuid2": "^2.2.2",
 		"@radix-ui/react-dropdown-menu": "^2.1.2",
 		"@radix-ui/react-slot": "^1.1.0",
 		"@radix-ui/react-toast": "^1.2.2",
+		"@vercel/client": "^13.4.16",
 		"bcryptjs": "^2.4.3",
 		"clsx": "^2.1.1",
 		"drizzle-kit": "^0.27.1",
@@ -51,7 +57,9 @@
 		"eslint-config-next": "15.0.2",
 		"postcss": "^8",
 		"prettier": "^3.3.3",
+		"prettier-plugin-organize-imports": "^4.1.0",
 		"tailwindcss": "^3.4.1",
+		"ts-prune": "^0.10.3",
 		"typescript": "^5"
 	}
 }

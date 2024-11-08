@@ -23,13 +23,23 @@ export type AuditLogEntry = {
 	performedBy: string
 	targetUser?: string
 	timestamp: string
-	metadata?: Record<string, any>
+	metadata?: Record<string, string | number | boolean | null>
 }
 
 export type SystemHealth = {
-	databaseStatus: 'healthy' | 'degraded' | 'down'
-	apiStatus: 'operational' | 'issues' | 'down'
-	lastBackup: string
-	activeConnections: number
-	serverLoad: number
+	status: 'healthy' | 'degraded' | 'down'
+	lastChecked: Date
+	services: Record<
+		string,
+		{
+			status: 'up' | 'down'
+			latency: number
+		}
+	>
+}
+
+export type AdminAction = {
+	type: string
+	payload: unknown
+	timestamp: Date
 }

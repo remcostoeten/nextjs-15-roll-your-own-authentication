@@ -1,19 +1,11 @@
 {
-	"useTabs": true,
 	"tabWidth": 4,
-	"singleQuote": true,
+	"useTabs": true,
 	"semi": false,
 	"trailingComma": "none",
-	"overrides": [
-		{
-			"files": ["*.tsx", "*.ts", "*.scss", "*.css", "*.mdx"],
-			"options": {
-				"useTabs": true,
-				"tabWidth": 4,
-				"singleQuote": true,
-				"semi": false,
-				"trailingComma": "none"
-			}
-		}
-	]
+	"singleQuote": true,
+	"printWidth": 80,
+	"importOrder": ["^@/(.*)$", "^[./]"],
+	"importOrderSeparation": true,
+	"importOrderSortSpecifiers": true
 }

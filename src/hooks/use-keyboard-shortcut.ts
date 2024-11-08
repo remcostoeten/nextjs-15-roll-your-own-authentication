@@ -1,41 +1,54 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
+
+type ModifierKey = 'ctrl' | 'alt' | 'shift' | 'meta'
+type KeyCombo = {
+	key: string
+	modifiers?: ModifierKey[]
+}
 
 type ShortcutConfig = {
-	key: string
+	combo: KeyCombo
 	action: () => void
 	enabled?: boolean
+	preventDefault?: boolean
 }
 
-type KeyboardShortcutProps = {
-	shortcuts: ShortcutConfig[]
-}
+export function useKeyboardShortcut(shortcuts: ShortcutConfig[]) {
+	const activeShortcuts = useRef(shortcuts)
 
-export default function useKeyboardShortcut({
-	shortcuts
-}: KeyboardShortcutProps) {
-	useEffect(() => {
-		const handleKeyPress = (event: KeyboardEvent) => {
-			const key = event.key.toLowerCase()
+	const handleKeyPress = useCallback((event: KeyboardEvent) => {
+		const matchingShortcut = activeShortcuts.current.find((shortcut) => {
+			if (!shortcut.enabled) return false
 
-			shortcuts.forEach((shortcut) => {
-				if (
-					shortcut.key.toLowerCase() === key &&
-					shortcut.enabled !== false &&
-					!event.repeat &&
-					!event.ctrlKey &&
-					!event.altKey &&
-					!event.metaKey &&
-					!event.shiftKey
-				) {
-					event.preventDefault()
-					shortcut.action()
-				}
-			})
+			const modifiersMatch =
+				shortcut.combo.modifiers?.every(
+					(mod) => event[`${mod}Key`] as boolean
+				) ?? true
+
+			return (
+				modifiersMatch &&
+				event.key.toLowerCase() === shortcut.combo.key.toLowerCase()
+			)
+		})
+
+		if (matchingShortcut) {
+			if (matchingShortcut.preventDefault) {
+				event.preventDefault()
+			}
+			matchingShortcut.action()
 		}
+	}, [])
 
+	useEffect(() => {
+		activeShortcuts.current = shortcuts
+	}, [shortcuts])
+
+	useEffect(() => {
 		window.addEventListener('keydown', handleKeyPress)
 		return () => window.removeEventListener('keydown', handleKeyPress)
-	}, [shortcuts])
+	}, [handleKeyPress])
 }
+
+// @author @remcosoteten

@@ -6,6 +6,9 @@ import { PageViewTracker } from '@/features/analytics/components/page-view-track
 import { AuthIndicator } from '@/features/auth/helper/session-indicator.server'
 import { getSession } from '@/features/auth/session'
 import ToastProvider from '@/providers/toast-provider'
+import { cn } from '@/shared/_docs/code-block/cn'
+import LoadingIndicator from '@/shared/components/loading-indicator'
+import { Suspense } from 'react'
 import { Toaster } from 'sonner'
 
 export const metadata = RootMetadata
@@ -20,19 +23,31 @@ export default async function RootLayout({
 	return (
 		<html lang="en">
 			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+				className={cn(
+					geistSans.variable,
+					geistMono.variable,
+					'antialiased'
+				)}
 			>
-				<Navigation
-					isAuthenticated={!!session}
-					initialUser={session || undefined}
-				/>
-				<AuthIndicator />
-				<main className="mt-20 max-w-[1024px] mx-auto px-4">
-					<PageViewTracker />
-					{children}
-				</main>
-				<ToastProvider />
-				<Toaster />
+				<Suspense
+					fallback={
+						<LoadingIndicator loading={true}>
+							{children}
+						</LoadingIndicator>
+					}
+				>
+					<Navigation
+						isAuthenticated={!!session}
+						initialUser={session || undefined}
+					/>
+					<AuthIndicator />
+					<main className="mt-20 max-w-[1024px] mx-auto px-4">
+						<PageViewTracker />
+						{children}
+					</main>
+					<ToastProvider />
+					<Toaster />
+				</Suspense>
 			</body>
 		</html>
 	)
