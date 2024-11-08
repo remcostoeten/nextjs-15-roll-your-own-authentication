@@ -21,13 +21,13 @@ type NavItem = {
 	buttonStyle?: 'primary' | 'secondary'
 }
 
-type TooltipProps = {
+type SimpleTooltipProps = {
 	content: string
 	children: React.ReactNode
 	position?: 'top' | 'bottom'
 }
 
-const Tooltip = ({ content, children, position = 'bottom' }: TooltipProps) => (
+const SimpleTooltip = ({ content, children, position = 'bottom' }: SimpleTooltipProps) => (
 	<div className="group relative inline-flex">
 		{children}
 		<div
@@ -100,6 +100,19 @@ export default function Navigation({
 		setMounted(true)
 	}, [])
 
+	useEffect(() => {
+		const handleKeyPress = (e: KeyboardEvent) => {
+			// Check for Ctrl/Cmd + L
+			if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'l') {
+				e.preventDefault() // Prevent default browser behavior
+				router.push('/sign-in')
+			}
+		}
+
+		window.addEventListener('keydown', handleKeyPress)
+		return () => window.removeEventListener('keydown', handleKeyPress)
+	}, [router])
+
 	const getButtonClasses = (buttonStyle?: 'primary' | 'secondary') => {
 		const baseClasses =
 			'px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-1.5'
@@ -166,7 +179,7 @@ export default function Navigation({
 						{navItems.map(
 							(item, index) =>
 								item.buttonStyle && (
-									<Tooltip
+									<SimpleTooltip
 										key={index}
 										content={
 											item.shortcut
@@ -187,7 +200,7 @@ export default function Navigation({
 												</kbd>
 											)}
 										</Link>
-									</Tooltip>
+									</SimpleTooltip>
 								)
 						)}
 					</div>
