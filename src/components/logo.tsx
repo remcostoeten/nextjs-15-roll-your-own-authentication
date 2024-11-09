@@ -30,7 +30,7 @@ export default function Logo({
 	size = 'md',
 	width,
 	height,
-	fill = 'var(--white)',
+	fill = '#fff',
 	bgFill = 'transparent',
 	animated = true,
 	hasLink = false,
@@ -175,10 +175,16 @@ export default function Logo({
 	)
 
 	return hasLink ? (
-		<Link href={linkTo} title="Home (⌘/Ctrl + H or Shift + H)">
+		<Link
+			href={linkTo}
+			title="Home (⌘/Ctrl + H or Shift + H)"
+			className="transition-colors hover:brightness-0 dark:invert dark:hover:invert-0 dark:hover:brightness-200"
+		>
 			{LogoSVG}
 		</Link>
 	) : (
-		LogoSVG
+		<div className="transition-colors hover:brightness-0 dark:invert dark:hover:invert-0 dark:hover:brightness-200">
+			{LogoSVG}
+		</div>
 	)
 }

@@ -1,11 +1,13 @@
+import AutoFillButton from '@/components/auto-fill-form'
 import Navigation from '@/components/navigation'
 import Notice from '@/components/notice'
+import TaskReminder from '@/components/task-reminder/task-reminder'
 import { geistMono, geistSans } from '@/core/config/fonts'
 import { RootMetadata } from '@/core/config/metadata'
 import '@/core/styles/globals.css'
 import PageViewTracker from '@/features/analytics/components/page-view-tracker'
-import { AuthIndicator } from '@/features/auth/helper/session-indicator.server'
-import { getSession } from '@/features/auth/session'
+import { AuthIndicator } from '@/features/auth/helper/session-indicator'
+import { getUser } from '@/features/auth/utilities/get-user'
 import { ThemeProvider } from '@/providers/theme-provider'
 import ToastProvider from '@/providers/toast-provider'
 import { cn } from '@/shared/_docs/code-block/cn'
@@ -40,7 +42,8 @@ export default async function RootLayout({
 }: {
 	children: React.ReactNode
 }) {
-	const session = await getSession()
+	const user = await getUser()
+	const isAuthenticated = !!user
 
 	return (
 		<html lang="en" suppressHydrationWarning>
@@ -60,6 +63,8 @@ export default async function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
+					<AutoFillButton />
+					<TaskReminder />
 					<Suspense
 						fallback={
 							<LoadingIndicator loading={true}>
@@ -68,16 +73,21 @@ export default async function RootLayout({
 						}
 					>
 						<Navigation
-							isAuthenticated={!!session}
-							initialUser={session || undefined}
+							isAuthenticated={isAuthenticated}
+							initialUser={user}
 						/>
-						<AuthIndicator />
-						<main className="mt-20">
+						<AuthIndicator
+							initialState={{
+								isAuthenticated,
+								user
+							}}
+						/>
+						<main className="mt-32 sm:mt-28">
 							<PageViewTracker />
 							{children}
 						</main>
 						<ToastProvider />
-					<Notice />
+						<Notice />
 						<Toaster />
 					</Suspense>
 				</ThemeProvider>

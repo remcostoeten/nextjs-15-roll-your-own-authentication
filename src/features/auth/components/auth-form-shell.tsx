@@ -1,58 +1,41 @@
-import Logo from '@/components/logo'
-import Tooltip from '@/components/tooltip'
-import Link from 'next/link'
-import React from 'react'
+'use client'
 
-type AuthFormShellProps = {
-	children: React.ReactNode
-	variant: 'signin' | 'signup'
+import { signIn } from '@/features/auth/actions/sign-in.action'
+import { signUp } from '@/features/auth/actions/sign-up.action'
+import { useRouter } from 'next/navigation'
+import { useActionState, useEffect } from 'react'
+import type { AuthState } from '../types'
+
+type AuthFormProps = {
+	type: 'sign-in' | 'sign-up'
 }
 
-export default function AuthFormShell({
-	children,
-	variant
-}: AuthFormShellProps) {
-	return (
-		<div className="w-full max-w-md p-8 bg-zinc-900 rounded-lg shadow-lg">
-			<div className="text-center mb-8">
-				<Tooltip
-					content="@remcostoeten"
-					position="top"
-					id="auth-logo-tooltip"
-				>
-					<Logo fill="#E5E7EB" hasLink={false} />
-				</Tooltip>
+const initialState: AuthState = {
+	isAuthenticated: false,
+	isLoading: false
+}
 
-				<h2 className="mt-6 text-3xl font-bold text-white">
-					{variant === 'signin'
-						? 'Sign in to your account'
-						: 'Create your account'}
-				</h2>
-			</div>
-			{children}
-			<p className="pt-4 text-center text-sm text-zinc-400">
-				{variant === 'signin' ? (
-					<>
-						Don&apos;t have an account?{' '}
-						<Link
-							href="/sign-up"
-							className="font-medium text-white hover:underline"
-						>
-							Sign up here
-						</Link>
-					</>
-				) : (
-					<>
-						Already have an account?{' '}
-						<Link
-							href="/sign-in"
-							className="font-medium text-white hover:underline"
-						>
-							Sign in here
-						</Link>
-					</>
-				)}
-			</p>
-		</div>
+export function AuthForm({ type }: AuthFormProps) {
+	const router = useRouter()
+	const [state, formAction] = useActionState(
+		type === 'sign-in' ? signIn : signUp,
+		initialState
+	)
+
+	useEffect(() => {
+		if (state?.isAuthenticated && state?.redirect) {
+			router.push(state.redirect)
+		}
+	}, [state, router])
+
+	return (
+		<form action={formAction} className="space-y-4">
+			{/* ... rest of your form ... */}
+			{state?.error?._form && (
+				<div className="text-red-500 text-sm">
+					{state.error._form[0]}
+				</div>
+			)}
+		</form>
 	)
 }

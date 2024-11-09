@@ -1,6 +1,6 @@
-import * as React from 'react'
 import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
+import * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
@@ -10,15 +10,15 @@ const buttonVariants = cva(
 		variants: {
 			variant: {
 				default:
-					'bg-primary text-primary-foreground shadow hover:bg-primary/90',
+					'bg-[#e3e4e6] text-[#000000] hover:bg-[#969799] dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800',
 				destructive:
-					'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',
+					'bg-red-500/10 text-red-500 hover:bg-red-500/20 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30',
 				outline:
-					'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',
+					'border border-[#e3e4e6] bg-transparent hover:bg-[#e3e4e6]/10 hover:text-[#000000] dark:border-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-200',
 				secondary:
-					'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80',
-				ghost: 'hover:bg-accent hover:text-accent-foreground',
-				link: 'text-primary underline-offset-4 hover:underline'
+					'bg-[#969799] text-[#000000] hover:bg-[#e3e4e6] dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700',
+				ghost: 'hover:bg-[#e3e4e6]/10 hover:text-[#000000] dark:hover:bg-zinc-800 dark:hover:text-zinc-200',
+				link: 'text-[#000000] underline-offset-4 hover:underline dark:text-zinc-200'
 			},
 			size: {
 				default: 'h-9 px-4 py-2',

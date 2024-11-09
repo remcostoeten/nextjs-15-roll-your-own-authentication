@@ -1,45 +1,62 @@
+/**
+ * @author Remco Stoeten
+ * @description Handles middleware operations for Next.js requests.
+ */
+
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import { getSession } from './features/auth/session'
+import { verifyToken } from './features/auth/services/jwt.service'
 
-// Routes that require authentication
-const PROTECTED_ROUTES = ['/dashboard']
-
-// Routes that should redirect to dashboard if already authenticated
-const AUTH_ROUTES = ['/sign-in', '/sign-up']
+const publicRoutes = ['/sign-in', '/sign-up']
+const protectedRoutes = ['/dashboard']
 
 export async function middleware(request: NextRequest) {
-	const pathname = request.nextUrl.pathname
-	const session = await getSession()
+	const { pathname } = request.nextUrl
+	const sessionCookie = request.cookies.get('session')?.value
 
-	// If trying to access auth routes while logged in
-	if (AUTH_ROUTES.includes(pathname) && session) {
-		return NextResponse.redirect(new URL('/dashboard', request.url))
+	// Skip middleware for non-matching routes
+	if (
+		!publicRoutes.includes(pathname) &&
+		!protectedRoutes.includes(pathname)
+	) {
+		return NextResponse.next()
 	}
 
-	// If trying to access protected routes while logged out
-	if (
-		PROTECTED_ROUTES.some((route) => pathname.startsWith(route)) &&
-		!session
-	) {
-		const url = new URL('/sign-in', request.url)
-		url.searchParams.set('from', pathname)
-		return NextResponse.redirect(url)
+	// Handle public routes
+	if (publicRoutes.includes(pathname)) {
+		if (!sessionCookie) {
+			return NextResponse.next()
+		}
+
+		try {
+			const payload = await verifyToken(sessionCookie)
+			if (payload) {
+				return NextResponse.redirect(new URL('/dashboard', request.url))
+			}
+		} catch {
+			return NextResponse.next()
+		}
+	}
+
+	// Handle protected routes
+	if (protectedRoutes.includes(pathname)) {
+		if (!sessionCookie) {
+			return NextResponse.redirect(new URL('/sign-in', request.url))
+		}
+
+		try {
+			const payload = await verifyToken(sessionCookie)
+			if (!payload) {
+				return NextResponse.redirect(new URL('/sign-in', request.url))
+			}
+		} catch {
+			return NextResponse.redirect(new URL('/sign-in', request.url))
+		}
 	}
 
 	return NextResponse.next()
 }
 
 export const config = {
-	matcher: [
-		/*
-		 * Match all request paths except for the ones starting with:
-		 * - api (API routes)
-		 * - _next/static (static files)
-		 * - _next/image (image optimization files)
-		 * - favicon.ico (favicon file)
-		 * - public folder
-		 */
-		'/((?!api|_next/static|_next/image|favicon.ico|public).*)'
-	]
+	matcher: ['/dashboard/:path*', '/sign-in', '/sign-up']
 }

@@ -1,20 +1,20 @@
 {
-	"version": "7",
-	"dialect": "sqlite",
-	"entries": [
-		{
-			"idx": 0,
-			"version": "6",
-			"when": 1731118779471,
-			"tag": "0000_dark_nightshade",
-			"breakpoints": true
-		},
-		{
-			"idx": 1,
-			"version": "6",
-			"when": 1731118809358,
-			"tag": "0001_ancient_kang",
-			"breakpoints": true
-		}
-	]
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1731167168342,
+      "tag": "0000_shiny_inertia",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1731181647428,
+      "tag": "0001_perfect_logan",
+      "breakpoints": true
+    }
+  ]
 }

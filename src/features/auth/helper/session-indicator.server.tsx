@@ -28,7 +28,7 @@ export async function AuthIndicator() {
 		user.role === 'admin' ? 'bg-purple-500' : 'bg-emerald-500'
 
 	return (
-		<SessionDetails 
+		<SessionDetails
 			user={user}
 			lastSession={lastSession}
 			userSessions={userSessions}

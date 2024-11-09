@@ -203,9 +203,9 @@ export default function Navigation({
 		const baseClasses =
 			'px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-1.5'
 		return buttonStyle === 'primary'
-			? `${baseClasses} bg-white hover:bg-white/90 text-black`
+			? `${baseClasses} bg-[#e3e4e6] hover:bg-[#969799] text-black dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-white`
 			: buttonStyle === 'secondary'
-				? `${baseClasses} bg-[#1D1D1D] hover:bg-[#2D2D2D] text-white`
+				? `${baseClasses} bg-[#969799] hover:bg-[#e3e4e6] text-black dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:text-white`
 				: baseClasses
 	}
 
@@ -247,12 +247,12 @@ export default function Navigation({
 	}
 
 	return (
-		<nav className="fixed max-w-page-size w-[80vw] mx-auto top-4 left-0 right-0 z-50 border border-neutral-800 bg-black/30 backdrop-blur-lg rounded-2xl">
+		<nav className="fixed max-w-page-size w-[80vw] mx-auto top-4 left-0 right-0 z-50 border border-[#969799] dark:border-neutral-800 bg-[#e3e4e6]/30 dark:bg-black/30 backdrop-blur-lg rounded-2xl">
 			<div className="mx-auto px-6">
 				<div className="flex h-16 items-center justify-between">
 					<div className="flex items-center gap-4">
 						<Link href="/" className="flex items-center">
-							<Logo fill="#E5E7EB" />
+							<Logo fill="#444" />
 						</Link>
 
 						<div className="hidden md:flex items-center gap-6">
@@ -299,7 +299,7 @@ export default function Navigation({
 											</Link>
 											{item.dropdown && (
 												<div
-													className={`absolute top-full left-0 mt-2 w-64 bg-[#141414] border border-neutral-800 rounded-2xl overflow-visible shadow-lg transition-all duration-300 ease-[cubic-bezier(0.87,_0,_0.13,_1)] ${
+													className={`absolute top-full left-0 mt-2 w-64 bg-[#e3e4e6] dark:bg-[#141414] border border-[#969799] dark:border-neutral-800 rounded-2xl overflow-visible shadow-lg transition-all duration-300 ease-[cubic-bezier(0.87,_0,_0.13,_1)] ${
 														openDropdown ===
 														item.label
 															? 'opacity-100 translate-y-0'

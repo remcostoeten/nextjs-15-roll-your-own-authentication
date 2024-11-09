@@ -29,7 +29,9 @@ export default function SessionIndicator({
 	const checkSession = async () => {
 		const authState = await getAuthState()
 		setUser(authState.isAuthenticated ? authState.user : undefined)
-		onSessionChange?.(authState.isAuthenticated ? authState.user : undefined)
+		onSessionChange?.(
+			authState.isAuthenticated ? authState.user : undefined
+		)
 	}
 
 	if (!config.showSessionIndicator.enabled || !user) return null

@@ -37,17 +37,13 @@ export type VercelDeployment = {
 	name: string
 	url: string
 	created: number
-	state: string
-}
-
-type VercelDeploymentResponse = {
-	uid: string
-	name: string
-	url: string
-	created: number
-	state: string
+	state: 'ready' | 'error' | 'building' | 'canceled'
 	meta?: {
-		[key: string]: unknown
+		branch?: string
+		commit?: {
+			sha?: string
+			message?: string
+		}
 	}
 }
 
@@ -126,65 +122,36 @@ export async function getGithubCommits(): Promise<GitHubCommit[]> {
 }
 
 export async function getVercelDeployments(): Promise<VercelDeployment[]> {
-	try {
-		if (!process.env.VERCEL_TOKEN || !process.env.VERCEL_PROJECT_ID) {
-			console.error('Missing Vercel credentials:', {
-				hasToken: !!process.env.VERCEL_TOKEN,
-				hasProjectId: !!process.env.VERCEL_PROJECT_ID
-			})
-			return [] // Return empty array instead of throwing
-		}
+	const VERCEL_TOKEN = process.env.VERCEL_TOKEN
+	const PROJECT_ID = process.env.VERCEL_PROJECT_ID
+	const TEAM_ID = process.env.VERCEL_TEAM_ID
 
+	if (!VERCEL_TOKEN || !PROJECT_ID) {
+		throw new Error('Vercel configuration missing')
+	}
+
+	try {
 		const response = await fetch(
-			`https://api.vercel.com/v6/deployments?teamId=${process.env.VERCEL_TEAM_ID}&projectId=${process.env.VERCEL_PROJECT_ID}&limit=10&state=READY`,
+			`https://api.vercel.com/v6/deployments?projectId=${PROJECT_ID}${TEAM_ID ? `&teamId=${TEAM_ID}` : ''}`,
 			{
 				headers: {
-					Authorization: `Bearer ${process.env.VERCEL_TOKEN}`,
+					Authorization: `Bearer ${VERCEL_TOKEN}`,
 					'Content-Type': 'application/json'
-				},
-				next: {
-					revalidate: 60,
-					tags: ['vercel-deployments']
 				}
 			}
 		)
 
 		if (!response.ok) {
-			const errorData = await response.json().catch(() => ({}))
-			console.error('Vercel API Error:', {
-				status: response.status,
-				statusText: response.statusText,
-				error: errorData
-			})
-			return [] // Return empty array on error
+			throw new Error(
+				`Failed to fetch deployments: ${response.statusText}`
+			)
 		}
 
 		const data = await response.json()
-
-		if (!data.deployments) {
-			console.error('Unexpected Vercel API response:', {
-				hasDeployments: false,
-				responseData: data
-			})
-			return []
-		}
-
 		return data.deployments
-			.filter((d: VercelDeploymentResponse) => d.state === 'READY')
-			.map((deployment: VercelDeploymentResponse) => ({
-				uid: deployment.uid || '',
-				name: deployment.name || 'Unnamed Deployment',
-				url: deployment.url || '',
-				created: deployment.created || Date.now(),
-				state: deployment.state?.toLowerCase() || 'unknown'
-			}))
-			.slice(0, 10) // Limit to 10 deployments
 	} catch (error) {
-		console.error('Error fetching Vercel deployments:', {
-			error: error instanceof Error ? error.message : 'Unknown error',
-			stack: error instanceof Error ? error.stack : undefined
-		})
-		return [] // Return empty array on error
+		console.error('Error fetching Vercel deployments:', error)
+		return []
 	}
 }
 
@@ -205,6 +172,11 @@ export type CommitStats = {
 		hour: Record<string, number>
 		dayOfWeek: Record<string, number>
 	}
+	averageCommitsPerDay: number
+	commitTrend: Array<{
+		date: string
+		commits: number
+	}>
 }
 
 export async function getCommitStats(): Promise<CommitStats> {
@@ -219,13 +191,16 @@ export async function getCommitStats(): Promise<CommitStats> {
 		commitFrequency: {
 			hour: {},
 			dayOfWeek: {}
-		}
+		},
+		averageCommitsPerDay: 0,
+		commitTrend: []
 	}
 
 	// Calculate stats from commits
 	const contributors = new Map<string, number>()
 	const files = new Map<string, number>()
 	const languages = new Map<string, number>()
+	const commitsByDate = new Map<string, number>()
 
 	commits.forEach((commit) => {
 		// Contributors
@@ -255,7 +230,20 @@ export async function getCommitStats(): Promise<CommitStats> {
 		// Additions and Deletions
 		stats.totalAdditions += commit.stats.additions
 		stats.totalDeletions += commit.stats.deletions
+
+		// Track commits by date for trend analysis
+		const dateStr = date.toISOString().split('T')[0]
+		commitsByDate.set(dateStr, (commitsByDate.get(dateStr) || 0) + 1)
 	})
+
+	// Calculate average commits per day
+	const uniqueDays = commitsByDate.size
+	stats.averageCommitsPerDay = stats.totalCommits / (uniqueDays || 1)
+
+	// Generate commit trend data
+	stats.commitTrend = Array.from(commitsByDate.entries())
+		.sort(([a], [b]) => a.localeCompare(b))
+		.map(([date, commits]) => ({ date, commits }))
 
 	// Convert Maps to sorted arrays
 	stats.topContributors = Array.from(contributors.entries())
