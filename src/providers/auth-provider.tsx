@@ -1,7 +1,8 @@
 'use client'
 
+import { getAuthState } from '@/features/auth/helper/get-auth-state'
 import type { SessionUser } from '@/features/auth/types'
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 
 type AuthState = {
 	isAuthenticated: boolean
@@ -38,6 +39,20 @@ export function AuthProvider({
 		user: initialUser,
 		isLoading: !initialUser
 	})
+
+	useEffect(() => {
+		const handleAuthChange = async () => {
+			const newState = await getAuthState()
+			setState((current) => ({
+				...current,
+				...newState,
+				isLoading: false
+			}))
+		}
+
+		window.addEventListener('auth-change', handleAuthChange)
+		return () => window.removeEventListener('auth-change', handleAuthChange)
+	}, [])
 
 	const value: AuthContextType = {
 		...state,

@@ -1,33 +1,23 @@
 'use server'
 
-import { ComponentType, ReactNode } from 'react'
-import { isAdmin } from '../utilities/get-admin'
+import { isAdminServer } from '@/features/auth/helper/is-admin.server'
+import { redirect } from 'next/navigation'
+import { ReactNode } from 'react'
 
-const DefaultFallback = () => (
-	<div className="p-4 border border-red-500/20 rounded-lg">
-		<h2 className="text-red-500 font-semibold">Access Denied</h2>
-		<p className="text-neutral-400">
-			You need administrator privileges to view this content
-		</p>
-	</div>
-)
+type ComponentProps = Record<string, unknown>
 
-/**
- * HOC to protect server components with admin access
- * @param Component The component to protect
- * @param props Props to pass to the component
- * @param fallback Optional fallback component for non-admin users
- * @returns Promise<ReactNode>
- */
-export async function withAdminProtection<T extends object>(
-	Component: ComponentType<T>,
+export async function withAdminProtection<T extends ComponentProps>(
+	Component: React.ComponentType<T>,
 	props: T,
-	fallback: ReactNode = <DefaultFallback />
-): Promise<ReactNode> {
-	const adminStatus = await isAdmin()
+	FallbackComponent: ReactNode = null
+) {
+	const isAdmin = await isAdminServer()
 
-	if (!adminStatus) {
-		return fallback
+	if (!isAdmin) {
+		if (FallbackComponent) {
+			return FallbackComponent
+		}
+		redirect('/dashboard')
 	}
 
 	return <Component {...props} />

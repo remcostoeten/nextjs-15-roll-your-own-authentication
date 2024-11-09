@@ -1,14 +1,18 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
 import { CodeBlock } from '@/components/ui/code-block'
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
+import { Button } from '@/shared/components/ui/button'
+import {
+	Dialog,
+	DialogContent,
+	DialogTrigger
+} from '@/shared/components/ui/dialog'
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger
-} from '@/components/ui/popover'
-import { ScrollArea } from '@/components/ui/scroll-area'
+} from '@/shared/components/ui/popover'
+import { ScrollArea } from '@/shared/components/ui/scroll-area'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronRight, File, Folder } from 'lucide-react'
 import * as React from 'react'

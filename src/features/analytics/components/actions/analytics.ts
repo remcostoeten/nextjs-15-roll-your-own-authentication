@@ -2,6 +2,7 @@
 
 import { db } from '@/db'
 import { analyticsPageViews } from '@/features/analytics/db'
+import { sql } from 'drizzle-orm'
 
 type Analytics = {
 	totalViews: number
@@ -15,7 +16,7 @@ export async function getAnalytics(): Promise<Analytics> {
 	const views = await db
 		.select({
 			pathname: analyticsPageViews.pathname,
-			count: sql`count(*)`
+			count: sql<number>`count(*)`
 		})
 		.from(analyticsPageViews)
 		.groupBy(analyticsPageViews.pathname)

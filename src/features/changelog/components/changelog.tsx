@@ -1,34 +1,34 @@
 'use client'
 
-import { Dialog, DialogContent } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
 import type {
-	GitHubCommit,
-	VercelDeployment
+    GitHubCommit,
+    VercelDeployment
 } from '@/features/analytics/components/actions/changelog'
 import {
-	getGithubCommits,
-	getVercelDeployments
+    getGithubCommits,
+    getVercelDeployments
 } from '@/features/analytics/components/actions/changelog'
 import { cn } from '@/shared/_docs/code-block/cn'
+import { DialogTitle } from '@/shared/components/ui'
 import { format, parseISO } from 'date-fns'
 import {
-	AlertCircle,
-	ArrowRight,
-	CheckCircle2,
-	ChevronDown,
-	ChevronRight,
-	Clock,
-	Code2,
-	FileCode2,
-	GitBranch,
-	GitCommit,
-	GitMerge,
-	Radio,
-	Rocket,
-	Search
+    AlertCircle,
+    ArrowRight,
+    CheckCircle2,
+    ChevronDown,
+    ChevronRight,
+    Clock,
+    Code2,
+    FileCode2,
+    GitBranch,
+    GitCommit,
+    GitMerge,
+    Radio,
+    Rocket
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { Dialog, DialogContent } from 'ui'
+import { ChangelogSkeleton } from './changelog-skeleton'
 
 type ChangelogProps = {
 	className?: string
@@ -117,8 +117,8 @@ type DiffViewProps = {
 	deletions: number
 	patch?: string
 	status: string
-	branch: string
-	commitSha: string
+	branch?: string
+	commitSha?: string
 }
 
 function DiffView({
@@ -127,8 +127,8 @@ function DiffView({
 	deletions,
 	patch,
 	status,
-	branch,
-	commitSha
+	branch = 'main',
+	commitSha = ''
 }: DiffViewProps) {
 	return (
 		<div className="space-y-4">
@@ -143,10 +143,12 @@ function DiffView({
 						<GitBranch className="w-3 h-3 text-gray-400" />
 						<span className="text-xs text-gray-400">{branch}</span>
 					</div>
-					{/* Commit SHA */}
-					<span className="text-xs text-gray-500 font-mono">
-						{commitSha.substring(0, 7)}
-					</span>
+					{/* Commit SHA - only show if available */}
+					{commitSha && (
+						<span className="text-xs text-gray-500 font-mono">
+							{commitSha.substring(0, 7)}
+						</span>
+					)}
 					<span className="text-green-400">+{additions}</span>
 					<span className="text-red-400">-{deletions}</span>
 					<span
@@ -213,6 +215,8 @@ export default function Changelog({ className }: ChangelogProps) {
 		deletions: number
 		patch?: string
 		status: string
+		branch?: string
+		commitSha?: string
 	} | null>(null)
 	const [fileFilter, setFileFilter] = useState<FileFilter>({
 		search: '',
@@ -304,89 +308,8 @@ export default function Changelog({ className }: ChangelogProps) {
 
 	if (loading) {
 		return (
-			<div className={cn('max-w-4xl mx-auto px-4 py-8', className)}>
-				{/* Header Skeleton */}
-				<div className="text-center mb-12">
-					<div className="animate-pulse">
-						<div className="h-12 w-64 mx-auto mb-4 bg-white/5 rounded-lg" />
-						<div className="h-5 w-[500px] mx-auto bg-white/5 rounded-lg" />
-					</div>
-				</div>
-
-				{/* Stats Cards Skeleton */}
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-					{[1, 2, 3].map((i) => (
-						<div
-							key={`stat-${i}`}
-							className="p-6 rounded-lg bg-white/[0.03] backdrop-blur-sm border border-white/[0.05] relative overflow-hidden"
-						>
-							<div className="animate-pulse space-y-3">
-								<div className="flex items-center gap-2">
-									<div className="w-5 h-5 bg-white/5 rounded" />
-									<div className="h-4 w-32 bg-white/5 rounded" />
-								</div>
-								<div className="h-8 w-24 bg-white/5 rounded" />
-							</div>
-							{/* Shimmer effect */}
-							<div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/[0.05] to-transparent" />
-						</div>
-					))}
-				</div>
-
-				{/* Navigation Tabs Skeleton */}
-				<div className="flex justify-center mb-8">
-					<div className="flex space-x-1 rounded-lg bg-white/[0.03] backdrop-blur-sm border border-white/[0.05] p-1">
-						<div className="w-36 h-10 bg-white/5 rounded-md animate-pulse" />
-						<div className="w-36 h-10 bg-white/5 rounded-md animate-pulse" />
-					</div>
-				</div>
-
-				{/* Content Skeleton */}
-				<div className="space-y-8">
-					{/* Date Separator Skeleton */}
-					<div className="flex items-center gap-4 mb-4">
-						<div className="h-px flex-1 bg-white/[0.05]" />
-						<div className="h-6 w-48 bg-white/5 rounded animate-pulse" />
-						<div className="h-px flex-1 bg-white/[0.05]" />
-					</div>
-
-					{/* Commit Cards Skeleton */}
-					{[1, 2, 3].map((i) => (
-						<div
-							key={i}
-							className="p-6 rounded-lg bg-white/[0.03] backdrop-blur-sm border border-white/[0.05] relative overflow-hidden"
-						>
-							<div className="animate-pulse space-y-4">
-								{/* Commit Header */}
-								<div className="flex items-center gap-3">
-									<div className="w-10 h-10 bg-white/5 rounded-md" />
-									<div className="h-7 w-3/4 bg-white/5 rounded" />
-								</div>
-
-								{/* Commit Details Grid */}
-								<div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-white/[0.05]">
-									<div className="flex items-center gap-2">
-										<div className="w-5 h-5 bg-white/5 rounded" />
-										<div className="h-5 w-32 bg-white/5 rounded" />
-									</div>
-									<div className="flex items-center gap-2">
-										<div className="w-5 h-5 bg-white/5 rounded" />
-										<div className="h-5 w-28 bg-white/5 rounded" />
-									</div>
-									<div className="flex items-center gap-2">
-										<div className="w-5 h-5 bg-white/5 rounded" />
-										<div className="h-5 w-40 bg-white/5 rounded" />
-									</div>
-									<div className="flex items-center justify-end gap-2">
-										<div className="h-5 w-48 bg-white/5 rounded" />
-									</div>
-								</div>
-							</div>
-							{/* Shimmer effect */}
-							<div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/[0.05] to-transparent" />
-						</div>
-					))}
-				</div>
+			<div className="max-w-page-size mx-auto">
+				<ChangelogSkeleton />
 			</div>
 		)
 	}
@@ -690,194 +613,124 @@ export default function Changelog({ className }: ChangelogProps) {
 																				files
 																			</button>
 																			{isExpanded && (
-																				<div className="flex items-center gap-4">
-																					<div className="relative">
-																						<Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-																						<Input
-																							placeholder="Filter files..."
-																							value={
-																								fileFilter.search
-																							}
-																							onChange={(
-																								e
-																							) =>
-																								setFileFilter(
-																									(
-																										prev
-																									) => ({
-																										...prev,
-																										search: e
-																											.target
-																											.value
-																									})
-																								)
-																							}
-																							className="pl-9 h-8 text-sm bg-black/20"
-																						/>
-																					</div>
-																					<div className="flex items-center gap-2">
-																						{[
-																							'added',
-																							'modified',
-																							'removed',
-																							'renamed'
-																						].map(
-																							(
-																								status
-																							) => (
+																				<div 
+																					className="mt-3 space-y-2 animate-in slide-in-from-top-2 duration-200"
+																					style={{
+																						'--tw-enter-opacity': '0',
+																						'--tw-enter-scale': '0.95',
+																						'--tw-enter-translate-y': '-0.5rem',
+																					}}
+																				>
+																					{filterFiles(
+																						commit.files
+																					).map(
+																						(
+																							file,
+																							index
+																						) => (
+																							<div
+																								key={
+																								index
+																								}
+																								className="pl-6 py-2 text-sm border-l border-gray-700/50"
+																								style={{
+																									animationDelay: `${index * 50}ms`,
+																								}}
+																							>
 																								<button
-																									key={
-																										status
-																									}
 																									onClick={() =>
-																										setFileFilter(
-																											(
-																												prev
-																											) => ({
-																												...prev,
-																												status: prev.status.includes(
-																													status
-																												)
-																													? prev.status.filter(
-																															(
-																																s
-																															) =>
-																																s !==
-																																status
-																														)
-																													: [
-																															...prev.status,
-																															status
-																														]
-																											})
-																										)
+																										setSelectedFile({
+																											...file,
+																											branch,
+																											commitSha: commit.sha
+																										})
 																									}
-																									className={cn(
-																										'px-2 py-1 text-xs rounded-full border transition-colors',
-																										fileFilter.status.includes(
-																											status
-																										)
-																											? 'bg-white/10 text-white border-white/20'
-																											: 'bg-transparent text-gray-400 border-gray-700/50'
-																									)}
+																									className="group w-full flex items-center justify-between hover:bg-white/5 rounded-lg p-2 transition-all duration-200 relative overflow-hidden"
 																								>
-																									{
-																										status
-																									}
+																									{/* Hover effect background */}
+																									<div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/[0.02] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500" />
+
+																									{/* File info */}
+																									<div className="flex items-center gap-2 relative">
+																										<FileCode2 className="w-4 h-4 text-gray-400 group-hover:text-[#7928CA] transition-colors" />
+																										<span className="text-gray-300 font-mono group-hover:text-white transition-colors">
+																											{
+																												file.filename
+																											}
+																										</span>
+																										{/* Click hint */}
+																										<span className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-neutral-400 ml-2">
+																											Click
+																											to
+																											view
+																											diff
+																										</span>
+																									</div>
+
+																									<div className="flex items-center gap-4 relative">
+																										{/* Branch info */}
+																										<div className="flex items-center gap-1 px-2 py-1 rounded-full bg-white/5 border border-white/10">
+																											<GitBranch className="w-3 h-3 text-gray-400" />
+																											<span className="text-xs text-gray-400">
+																												{
+																													branch
+																												}
+																											</span>
+																											{commit
+																												.parents
+																												?.length >
+																												1 && (
+																												<GitMerge
+																													className="w-3 h-3 text-purple-400 ml-1"
+																													title="Merge commit"
+																												/>
+																											)}
+																										</div>
+
+																										{/* File stats */}
+																										<div className="flex items-center gap-4 text-xs">
+																											<span className="text-green-400">
+																												+
+																												{
+																													file.additions
+																												}
+																											</span>
+																											<span className="text-red-400">
+																												−
+																												{
+																													file.deletions
+																												}
+																											</span>
+																											<span
+																												className={cn(
+																													'px-2 py-0.5 rounded-full',
+																													file.status ===
+																														'added' &&
+																														'bg-neutral-500/10 text-neutral-300 border border-neutral-500/20',
+																													file.status ===
+																														'modified' &&
+																														'bg-neutral-600/10 text-neutral-400 border border-neutral-600/20',
+																													file.status ===
+																														'removed' &&
+																														'bg-neutral-700/10 text-neutral-500 border border-neutral-700/20',
+																													file.status ===
+																														'renamed' &&
+																														'bg-neutral-800/10 text-neutral-600 border border-neutral-800/20'
+																												)}
+																											>
+																												{
+																													file.status
+																												}
+																											</span>
+																										</div>
+																									</div>
 																								</button>
-																							)
-																						)}
-																					</div>
+																							</div>
+																						)
+																					)}
 																				</div>
 																			)}
 																		</div>
-
-																		{isExpanded && (
-																			<div className="mt-3 space-y-2">
-																				{filterFiles(
-																					commit.files
-																				).map(
-																					(
-																						file,
-																						index
-																					) => (
-																						<div
-																							key={
-																								index
-																							}
-																							className="pl-6 py-2 text-sm border-l border-gray-700/50"
-																						>
-																							<button
-																								onClick={() =>
-																									setSelectedFile(
-																										file
-																									)
-																								}
-																								className="group w-full flex items-center justify-between hover:bg-white/5 rounded-lg p-2 transition-all duration-200 relative overflow-hidden"
-																							>
-																								{/* Hover effect background */}
-																								<div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/[0.02] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500" />
-
-																								{/* File info */}
-																								<div className="flex items-center gap-2 relative">
-																									<FileCode2 className="w-4 h-4 text-gray-400 group-hover:text-[#7928CA] transition-colors" />
-																									<span className="text-gray-300 font-mono group-hover:text-white transition-colors">
-																										{
-																											file.filename
-																										}
-																									</span>
-																									{/* Click hint */}
-																									<span className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-neutral-400 ml-2">
-																										Click
-																										to
-																										view
-																										diff
-																									</span>
-																								</div>
-
-																								<div className="flex items-center gap-4 relative">
-																									{/* Branch info */}
-																									<div className="flex items-center gap-1 px-2 py-1 rounded-full bg-white/5 border border-white/10">
-																										<GitBranch className="w-3 h-3 text-gray-400" />
-																										<span className="text-xs text-gray-400">
-																											{
-																												branch
-																											}
-																										</span>
-																										{commit
-																											.parents
-																											?.length >
-																											1 && (
-																											<GitMerge
-																												className="w-3 h-3 text-purple-400 ml-1"
-																												title="Merge commit"
-																											/>
-																										)}
-																									</div>
-
-																									{/* File stats */}
-																									<div className="flex items-center gap-4 text-xs">
-																										<span className="text-green-400">
-																											+
-																											{
-																												file.additions
-																											}
-																										</span>
-																										<span className="text-red-400">
-																											−
-																											{
-																												file.deletions
-																											}
-																										</span>
-																										<span
-																											className={cn(
-																												'px-2 py-0.5 rounded-full',
-																												file.status ===
-																													'added' &&
-																													'bg-neutral-500/10 text-neutral-300 border border-neutral-500/20',
-																												file.status ===
-																													'modified' &&
-																													'bg-neutral-600/10 text-neutral-400 border border-neutral-600/20',
-																												file.status ===
-																													'removed' &&
-																													'bg-neutral-700/10 text-neutral-500 border border-neutral-700/20',
-																												file.status ===
-																													'renamed' &&
-																													'bg-neutral-800/10 text-neutral-600 border border-neutral-800/20'
-																											)}
-																										>
-																											{
-																												file.status
-																											}
-																										</span>
-																									</div>
-																								</div>
-																							</button>
-																						</div>
-																					)
-																				)}
-																			</div>
-																		)}
 																	</div>
 																)}
 														</div>
@@ -897,8 +750,11 @@ export default function Changelog({ className }: ChangelogProps) {
 				open={!!selectedFile}
 				onOpenChange={() => setSelectedFile(null)}
 			>
+				<DialogTitle>File Diff</DialogTitle>
 				<DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-					{selectedFile && <DiffView {...selectedFile} />}
+					{selectedFile && (
+						<DiffView {...selectedFile} />
+					)}
 				</DialogContent>
 			</Dialog>
 		</div>

@@ -79,6 +79,12 @@ type Badge = {
 	variant: BadgeVariant
 }
 
+type DiffLine = {
+	content: string
+	type: 'add' | 'remove' | 'context'
+	lineNumber?: number
+}
+
 export type CodeBlockProps = {
 	code: string
 	language: Language
@@ -98,6 +104,8 @@ export type CodeBlockProps = {
 	initialSearchQuery?: string
 	initialSearchResults?: number[]
 	initialHighlightedLines?: number[]
+	isDiff?: boolean
+	diffLines?: DiffLine[]
 }
 
 export function CodeBlock({
@@ -115,7 +123,10 @@ export function CodeBlock({
 	fileNameColor,
 	initialSearchQuery = '',
 	initialSearchResults = [],
-	initialHighlightedLines = []
+	initialHighlightedLines = [],
+	isDiff = false,
+	diffLines = [],
+	showLineNumbers = true
 }: CodeBlockProps) {
 	const [isCollapsed, setIsCollapsed] = useState(false)
 	const [isCopied, setIsCopied] = useState(false)
@@ -333,6 +344,54 @@ export function CodeBlock({
 		words: code.trim().split(/\s+/).length
 	}
 
+	function renderDiffContent() {
+		return code.split('\n').map((line, index) => {
+			let type: 'add' | 'remove' | 'context' = 'context'
+			let lineClass = 'text-gray-300'
+			let bgClass = ''
+			let prefix = ' '
+
+			if (line.startsWith('+')) {
+				type = 'add'
+				lineClass = 'text-green-400'
+				bgClass = 'bg-green-500/10'
+				prefix = '+'
+			} else if (line.startsWith('-')) {
+				type = 'remove'
+				lineClass = 'text-red-400'
+				bgClass = 'bg-red-500/10'
+				prefix = '-'
+			}
+
+			return (
+				<div
+					key={index}
+					className={cn(
+						'flex hover:bg-white/5',
+						bgClass,
+						'transition-colors duration-100'
+					)}
+				>
+					{showLineNumbers && (
+						<div className="w-12 flex-shrink-0 text-gray-500 text-right pr-4 select-none">
+							{type !== 'remove' && <span>{index + 1}</span>}
+						</div>
+					)}
+					<div className={cn('flex-1 overflow-x-auto', lineClass)}>
+						<pre className="font-mono">
+							<code>
+								<span className="select-none w-4 inline-block">
+									{prefix}
+								</span>
+								{line.slice(1)}
+							</code>
+						</pre>
+					</div>
+				</div>
+			)
+		})
+	}
+
 	return (
 		<div className="relative">
 			<div
@@ -465,19 +524,22 @@ export function CodeBlock({
 				)}
 				ref={codeRef}
 			>
-				{code.split('\n').map((line, index) => (
-					<div
-						key={index}
-						onClick={() => handleLineClick(index + 1)}
-						className={cn(
-							'code-line',
-							activeLines.includes(index + 1) && 'bg-blue-500/10'
-						)}
-						data-line-number={index + 1}
-					>
-						{line}
-					</div>
-				))}
+				{isDiff
+					? renderDiffContent()
+					: code.split('\n').map((line, index) => (
+							<div
+								key={index}
+								onClick={() => handleLineClick(index + 1)}
+								className={cn(
+									'code-line',
+									activeLines.includes(index + 1) &&
+										'bg-blue-500/10'
+								)}
+								data-line-number={index + 1}
+							>
+								{line}
+							</div>
+						))}
 			</div>
 		</div>
 	)

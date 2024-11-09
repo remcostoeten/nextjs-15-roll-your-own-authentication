@@ -1,4 +1,5 @@
 import Navigation from '@/components/navigation'
+import Notice from '@/components/notice'
 import { geistMono, geistSans } from '@/core/config/fonts'
 import { RootMetadata } from '@/core/config/metadata'
 import '@/core/styles/globals.css'
@@ -59,6 +60,7 @@ export default async function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
+					<Notice />
 					<Suspense
 						fallback={
 							<LoadingIndicator loading={true}>

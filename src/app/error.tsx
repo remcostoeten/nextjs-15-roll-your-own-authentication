@@ -1,7 +1,7 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
 import { CodeBlock } from '@/shared/_docs/code-block/code-block'
+import { Button } from '@/shared/components/ui/button'
 import { AlertTriangle, RotateCcw } from 'lucide-react'
 import { useEffect } from 'react'
 
@@ -16,7 +16,6 @@ export default function Error({
 		console.error(error)
 	}, [error])
 
-	// Format error stack for code block
 	const errorCode = `// Error: ${error.name}
 ${error.message}
 
@@ -33,15 +32,12 @@ ${Object.entries(error)
 	return (
 		<div className="min-h-screen flex items-center justify-center p-4">
 			<div className="max-w-2xl w-full space-y-8">
-				{/* Error Icon with Glow */}
 				<div className="relative">
 					<div className="absolute inset-0 bg-red-500/20 blur-xl rounded-full" />
 					<div className="relative bg-black/40 backdrop-blur-sm border border-white/10 w-20 h-20 rounded-2xl mx-auto flex items-center justify-center">
 						<AlertTriangle className="w-10 h-10 text-red-500" />
 					</div>
 				</div>
-
-				{/* Error Content */}
 				<div className="space-y-2 text-center">
 					<h2 className="text-2xl font-semibold text-white">
 						Something went wrong!
@@ -56,7 +52,6 @@ ${Object.entries(error)
 					)}
 				</div>
 
-				{/* Action Button */}
 				<div className="flex justify-center pt-4">
 					<Button
 						onClick={reset}
@@ -67,7 +62,6 @@ ${Object.entries(error)
 					</Button>
 				</div>
 
-				{/* Technical Details */}
 				{process.env.NODE_ENV === 'development' && (
 					<div className="mt-8">
 						<details className="group">

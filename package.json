@@ -12,7 +12,6 @@
 		"build": "next build",
 		"start": "next start",
 		"___________________QUALITY": ":",
-		"lint": "next lint",
 		"typecheck": "tsc --noEmit",
 		"find:unused": "ts-prune",
 		"fix:imports": "prettier --write \"src/**/*.{ts,tsx}\" --plugin prettier-plugin-organize-imports",
@@ -20,7 +19,12 @@
 		"___________________UTILS": ":",
 		"cleani": "rm -rf .next && rm -rf node_modules && pnpm i",
 		"f": "prettier --write \"**/*.{ts,tsx,mdx}\"",
-		"format": "prettier --write \"**/*.{ts,tsx,mdx,json,js,jsx}\""
+		"format": "prettier --write \"**/*.{ts,tsx,mdx,json,js,jsx}\"",
+		"________________DATABASE": ":",
+		"gen": "drizzle-kit generate",
+		"push": "drizzle-kit push",
+		"studio": "drizzle-kit studio",
+		"rmdb": "rm -rf src/db/migrations"
 	},
 	"dependencies": {
 		"@libsql/client": "^0.14.0",
@@ -52,7 +56,8 @@
 		"sonner": "^1.7.0",
 		"tailwind-merge": "^2.5.4",
 		"tailwindcss-animate": "^1.0.7",
-		"zod": "^3.23.8"
+		"zod": "^3.23.8",
+		"zustand": "^5.0.1"
 	},
 	"devDependencies": {
 		"@types/bcryptjs": "^2.4.6",

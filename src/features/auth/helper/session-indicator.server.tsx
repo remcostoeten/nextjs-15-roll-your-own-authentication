@@ -1,20 +1,14 @@
 'use server'
 
-import { getFeatureConfig } from '@/core/config/FEATURE_CONFIG'
 import { db } from '@/db'
 import { sessions } from '@/db/schema'
-import { getSession } from '@/features/auth/session'
+import { getUser } from '@/shared/utilities/get-user'
 import { eq } from 'drizzle-orm'
 
 export async function AuthIndicator() {
-	const session = await getSession()
-	const config = getFeatureConfig(session?.role)
+	const user = await getUser()
 
-	if (!config.showSessionIndicator.enabled) {
-		return null
-	}
-
-	if (!session) {
+	if (!user) {
 		return (
 			<div className="fixed bottom-4 right-4 p-4 bg-black/50 backdrop-blur-lg border border-white/10 rounded-xl text-sm text-neutral-400">
 				Not authenticated
@@ -22,19 +16,16 @@ export async function AuthIndicator() {
 		)
 	}
 
-	// Get additional user metadata
-	const userSessions = session
-		? await db
-				.select()
-				.from(sessions)
-				.where(eq(sessions.userId, session.userId))
-				.orderBy(sessions.lastUsed)
-		: []
+	const userSessions = await db
+		.select()
+		.from(sessions)
+		.where(eq(sessions.userId, user.userId))
+		.orderBy(sessions.lastUsed)
 
 	const lastSession = userSessions[0]
 	const statusColor =
-		session.role === 'admin' ? 'bg-purple-500' : 'bg-emerald-500'
-	const roleLabel = session.role === 'admin' ? 'Admin' : 'User'
+		user.role === 'admin' ? 'bg-purple-500' : 'bg-emerald-500'
+	const roleLabel = user.role === 'admin' ? 'Admin' : 'User'
 
 	return (
 		<div className="fixed bottom-4 right-4 group z-50">
@@ -63,23 +54,21 @@ export async function AuthIndicator() {
 					<div className="flex items-center gap-2">
 						<span
 							className={`px-2 py-0.5 rounded text-xs ${
-								session.role === 'admin'
+								user.role === 'admin'
 									? 'bg-purple-500/20 text-purple-300'
 									: 'bg-emerald-500/20 text-emerald-300'
 							}`}
 						>
 							{roleLabel}
 						</span>
-						<span className="text-neutral-400">
-							{session.email}
-						</span>
+						<span className="text-neutral-400">{user.email}</span>
 					</div>
 
 					{/* User ID */}
 					<div className="text-xs">
 						<span className="text-neutral-500">ID: </span>
 						<span className="font-mono text-neutral-400">
-							{session.userId}
+							{user.userId}
 						</span>
 					</div>
 

@@ -1,30 +1,50 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useActionState, useEffect } from 'react'
 import { toast } from 'sonner'
 import { signIn } from '../actions/auth'
 import type { AuthState } from '../types'
 import SubmitButton from './submit-button'
 
-const initialState: AuthState = null
-
 export default function SignInForm() {
-	const [state, formAction] = useActionState(signIn, initialState)
+	const router = useRouter()
+	const [state, formAction] = useActionState<AuthState, FormData>(
+		signIn,
+		null
+	)
 
 	useEffect(() => {
-		// Only show toasts if state exists and has errors
-		if (state && 'error' in state) {
-			if (state.error.email) {
-				toast.error(state.error.email[0])
-			}
-			if (state.error.password) {
-				toast.error(state.error.password[0])
-			}
-			if (state.error._form) {
-				toast.error(state.error._form[0])
+		if (state) {
+			if ('error' in state) {
+				if (state.error.email) {
+					toast.error('Email error', {
+						description: state.error.email[0]
+					})
+				}
+				if (state.error.password) {
+					toast.error('Password error', {
+						description: state.error.password[0]
+					})
+				}
+				if (state.error._form) {
+					toast.error('Sign in failed', {
+						description: state.error._form[0]
+					})
+				}
+			} else if (state.isAuthenticated && state.user) {
+				toast.success('Welcome back!', {
+					description: "You've been successfully signed in"
+				})
+				// Trigger auth change event
+				window.dispatchEvent(new Event('auth-change'))
+				// Redirect to dashboard
+				router.push('/dashboard')
+				// Refresh the page data
+				router.refresh()
 			}
 		}
-	}, [state]) // Only run when state changes
+	}, [state, router])
 
 	return (
 		<form action={formAction} className="space-y-4">
