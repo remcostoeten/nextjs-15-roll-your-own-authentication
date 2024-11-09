@@ -72,7 +72,7 @@ export default function NotificationBar({
 						}}
 						transition={{ duration: 0.2 }}
 						className={cn(
-							'fixed left-0 right-0 bg-black/40 backdrop-blur-sm border-white/10',
+							'fixed left-0 right-0 bg-[#e3e4e6]/30 dark:bg-black/40 backdrop-blur-sm border-[#969799] dark:border-white/10',
 							position === 'bottom'
 								? 'bottom-0 border-t'
 								: 'top-0 border-b'
@@ -86,11 +86,11 @@ export default function NotificationBar({
 											key={index}
 											className="flex items-center space-x-4"
 										>
-											<span className="px-2 py-1 text-xs font-medium rounded-full bg-white/10 border border-white/20">
+											<span className="px-2 py-1 text-xs font-medium rounded-full bg-[#969799]/20 dark:bg-white/10 border border-[#969799]/30 dark:border-white/20">
 												{EMOJI_MAP[notice.badgeEmoji]}{' '}
 												{notice.badgeText}
 											</span>
-											<span className="text-sm text-neutral-300 text-center">
+											<span className="text-sm text-[#000000] dark:text-neutral-300 text-center">
 												{notice.message}
 											</span>
 										</div>
@@ -98,11 +98,11 @@ export default function NotificationBar({
 								</div>
 								<button
 									onClick={handleDismiss}
-									className="p-1 hover:bg-white/10 rounded-full transition-colors"
+									className="p-1 hover:bg-[#969799]/20 dark:hover:bg-white/10 rounded-full transition-colors"
 									aria-label="Dismiss notification"
 								>
 									<svg
-										className="w-4 h-4 text-neutral-400"
+										className="w-4 h-4 text-[#969799] dark:text-neutral-400"
 										fill="none"
 										strokeLinecap="round"
 										strokeLinejoin="round"

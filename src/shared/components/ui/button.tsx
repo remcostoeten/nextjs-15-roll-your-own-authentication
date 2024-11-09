@@ -9,10 +9,14 @@ const buttonVariants = cva(
 	{
 		variants: {
 			variant: {
-				default: 'bg-[#e3e4e6] text-[#000000] hover:bg-[#969799] dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800',
-				destructive: 'bg-red-500/10 text-red-500 hover:bg-red-500/20 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30',
-				outline: 'border border-[#e3e4e6] bg-transparent hover:bg-[#e3e4e6]/10 hover:text-[#000000] dark:border-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-200',
-				secondary: 'bg-[#969799] text-[#000000] hover:bg-[#e3e4e6] dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700',
+				default:
+					'bg-[#e3e4e6] text-[#000000] hover:bg-[#969799] dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800',
+				destructive:
+					'bg-red-500/10 text-red-500 hover:bg-red-500/20 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30',
+				outline:
+					'border border-[#e3e4e6] bg-transparent hover:bg-[#e3e4e6]/10 hover:text-[#000000] dark:border-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-200',
+				secondary:
+					'bg-[#969799] text-[#000000] hover:bg-[#e3e4e6] dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700',
 				ghost: 'hover:bg-[#e3e4e6]/10 hover:text-[#000000] dark:hover:bg-zinc-800 dark:hover:text-zinc-200',
 				link: 'text-[#000000] underline-offset-4 hover:underline dark:text-zinc-200'
 			},

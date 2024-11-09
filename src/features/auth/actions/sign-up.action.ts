@@ -44,7 +44,8 @@ export async function signUp(
 
 		const token = await generateToken({
 			userId: user.id,
-			email: user.email
+			email: user.email,
+			role: user.role
 		})
 
 		const cookieStore = cookies()

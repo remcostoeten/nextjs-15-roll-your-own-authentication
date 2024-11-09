@@ -136,13 +136,15 @@ export async function getVercelDeployments(): Promise<VercelDeployment[]> {
 			{
 				headers: {
 					Authorization: `Bearer ${VERCEL_TOKEN}`,
-					'Content-Type': 'application/json',
+					'Content-Type': 'application/json'
 				}
 			}
 		)
 
 		if (!response.ok) {
-			throw new Error(`Failed to fetch deployments: ${response.statusText}`)
+			throw new Error(
+				`Failed to fetch deployments: ${response.statusText}`
+			)
 		}
 
 		const data = await response.json()

@@ -76,13 +76,13 @@ export default async function RootLayout({
 							isAuthenticated={isAuthenticated}
 							initialUser={user}
 						/>
-						<AuthIndicator 
+						<AuthIndicator
 							initialState={{
 								isAuthenticated,
 								user
 							}}
 						/>
-						<main className="mt-32 sm:mt-20">
+						<main className="mt-32 sm:mt-28">
 							<PageViewTracker />
 							{children}
 						</main>

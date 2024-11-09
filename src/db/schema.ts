@@ -7,6 +7,9 @@ export const users = sqliteTable('users', {
 		.primaryKey(),
 	email: text('email').notNull().unique(),
 	password: text('password').notNull(),
+	role: text('role', { enum: ['admin', 'user'] })
+		.notNull()
+		.default('user'),
 	createdAt: text('created_at')
 		.notNull()
 		.$defaultFn(() => new Date().toISOString()),

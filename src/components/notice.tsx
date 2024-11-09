@@ -23,6 +23,7 @@ export default function Notice() {
 			animated={true}
 			storageKey="feature-notification"
 			position="bottom"
+			className="bg-[#e3e4e6]/30 dark:bg-black/40 border-[#969799] dark:border-white/10"
 		/>
 	)
 }

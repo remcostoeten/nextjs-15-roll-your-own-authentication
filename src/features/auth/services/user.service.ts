@@ -1,8 +1,9 @@
 import { users } from '@/db/schema'
 import { db } from '@/lib/db'
+import { env } from '@/lib/env'
 import { hash } from 'bcryptjs'
 import { eq } from 'drizzle-orm'
-import type { User } from '../types'
+import type { Role, User } from '../types'
 
 export async function createUser(data: {
 	email: string
@@ -10,11 +11,14 @@ export async function createUser(data: {
 }): Promise<User> {
 	const hashedPassword = await hash(data.password, 12)
 
+	const role: Role = data.email === env.ADMIN_EMAIL ? 'admin' : 'user'
+
 	const [user] = await db
 		.insert(users)
 		.values({
-			email: data.email,
-			password: hashedPassword
+			email: data.email.toLowerCase(),
+			password: hashedPassword,
+			role
 		})
 		.returning()
 
@@ -25,7 +29,7 @@ export async function getUserByEmail(email: string): Promise<User | undefined> {
 	const [user] = await db
 		.select()
 		.from(users)
-		.where(eq(users.email, email))
+		.where(eq(users.email, email.toLowerCase()))
 		.limit(1)
 
 	return user

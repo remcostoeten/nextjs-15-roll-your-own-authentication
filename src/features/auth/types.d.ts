@@ -1,9 +1,10 @@
-'use client'
+export type Role = 'admin' | 'user'
 
 export type User = {
 	id: string
 	email: string
 	password: string
+	role: Role
 	createdAt: string
 	updatedAt: string
 }
@@ -11,6 +12,7 @@ export type User = {
 export type SessionUser = {
 	userId: string
 	email: string
+	role: Role
 }
 
 export type AuthState = {

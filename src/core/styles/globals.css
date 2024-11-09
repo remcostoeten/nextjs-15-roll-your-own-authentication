@@ -57,3 +57,13 @@
 		@apply bg-background text-foreground;
 	}
 }
+
+@media (min-width: 768px) {
+	.max-w-page-size {
+		padding: 0 8px;
+	}
+}
+
+.max-w-page-size {
+	padding: 0 1rem;
+}

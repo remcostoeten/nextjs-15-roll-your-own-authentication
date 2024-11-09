@@ -8,6 +8,13 @@
       "when": 1731167168342,
       "tag": "0000_shiny_inertia",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1731181647428,
+      "tag": "0001_perfect_logan",
+      "breakpoints": true
     }
   ]
 }

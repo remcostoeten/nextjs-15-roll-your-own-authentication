@@ -7,14 +7,14 @@ export default function Header() {
 	const { isAuthenticated } = useAuth()
 
 	return (
-		<header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+		<header className="sticky top-0 z-50 w-full border-b border-[#1a1a1a]/20 dark:border-zinc-800 bg-[#e3e4e6]/95 dark:bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-[#e3e4e6]/60 dark:supports-[backdrop-filter]:bg-background/60">
 			<div className="container flex h-14 items-center">
 				<div className="mr-4 flex">
 					{/* Your existing logo/brand */}
 				</div>
 
 				<div className="flex items-center justify-between flex-1">
-					<nav className="flex items-center space-x-6">
+					<nav className="flex items-center space-x-6 text-[#1a1a1a] hover:text-black dark:text-zinc-200 dark:hover:text-white">
 						{/* Your existing navigation items */}
 						{isAuthenticated && <DocsMenu />}
 					</nav>
