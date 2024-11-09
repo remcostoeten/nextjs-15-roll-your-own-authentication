@@ -1,223 +1,270 @@
-/**
- * @author Remco Stoeten
- * @description Provides session management operations for the application.
- */
+// 'use server'
 
-import { db } from '@/db'
-import { sessions, users } from '@/db/schema'
-import { eq } from 'drizzle-orm'
-import { cookies, headers } from 'next/headers'
-import type { SessionUser } from '../types'
-import { JWTService } from './jwt.service'
+// import { db } from '@/db'
+// import { sessions } from '@/db/schema'
+// import { eq } from 'drizzle-orm'
+// import { cookies, headers } from 'next/headers'
+// import type { SessionUser } from '../types'
+// import { createToken, verifyToken } from './jwt.service'
 
-export class SessionService {
-	private jwtService: JWTService
+// /**
+//  * Creates a new session for a user.
+//  * @param userId The user's ID.
+//  * @param email The user's email.
+//  * @param role The user's role.
+//  * @returns The created session.
+//  */
+// export async function createSession(userId: string, email: string, role: 'admin' | 'user') {
+// 	try {
+// 		// Create JWT token
+// 		const token = await createToken({
+// 			userId,
+// 			email,
+// 			role
+// 		})
+// 		const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
 
-	constructor() {
-		this.jwtService = new JWTService()
-	}
+// 		// Get request metadata
+// 		const headersList = await headers()
+// 		const cookieStore = await cookies()
+// 		const userAgent = headersList.get('user-agent')
+// 		const ipAddress = headersList.get('x-forwarded-for') || 'unknown'
 
-	/**
-	 * Creates a new session for a user.
-	 * @param userId The user's ID.
-	 * @param email The user's email.
-	 * @param role The user's role.
-	 * @returns The created session.
-	 */
-	async createSession(userId: string, email: string, role: string) {
-		try {
-			// Create JWT token
-			const token = await this.jwtService.createToken({
-				userId,
-				email,
-				role
-			})
-			const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+// 		// Create session in database
+// 	const [session] = await db
+//       .insert(sessions)
+//       .values({
+//         userId,
+//         expiresAt: expires.toISOString(),
+//         lastUsed: new Date().toISOString(),
+//         userAgent: userAgent || null,
+//         ipAddress: ipAddress || null
+//       })
+//       .returning()
 
-			// Get request metadata
-			const headersList = await headers()
-			const userAgent = headersList.get('user-agent')
-			const ipAddress = headersList.get('x-forwarded-for') || 'unknown'
+//     if (!session) {
+//       console.error('Session creation failed: No session returned from database')
+//       throw new Error('Failed to create session')
+//     }
 
-			// Create session in database
-			const [session] = await db
-				.insert(sessions)
-				.values({
-					userId,
-					userAgent,
-					ipAddress,
-					expiresAt: expires.toISOString(),
-					last_used: new Date().toISOString()
-				})
-				.returning()
+// 		// Set session cookie immediately
+// 		cookieStore.set({
+// 			name: 'session',
+// 			value: token,
+// 			httpOnly: true,
+// 			secure: process.env.NODE_ENV === 'production',
+// 			sameSite: 'lax',
+// 			expires,
+// 			path: '/'
+// 		})
 
-			if (!session) {
-				throw new Error('Failed to create session')
-			}
+// 		return session
+// 	 } catch (error) {
+//     console.error('Create session error:', error)
+//     if (error instanceof Error) {
+//       console.error('Error message:', error.message)
+//       console.error('Error stack:', error.stack)
+//     }
+//     throw new Error('Failed to create session')
+//   }
+// }
 
-			// Set session cookie
-			;(
-				await // Set session cookie
-				cookies()
-			).set('session', token, {
-				httpOnly: true,
-				secure: process.env.NODE_ENV === 'production',
-				sameSite: 'lax',
-				expires,
-				path: '/'
-			})
+// /**
+//  * Validates the current session.
+//  * @returns The session user if valid, otherwise null.
+//  */
 
-			return session
-		} catch (error) {
-			console.error('Create session error:', error)
-			throw new Error('Failed to create session')
-		}
-	}
+export async function validateSession(): Promise<SessionUser | null> {
+	try {
+		const cookieStore = await cookies()
+		const sessionCookie = cookieStore.get('session')
 
-	/**
-	 * Validates the current session.
-	 * @returns The session user if valid, otherwise null.
-	 */
-	async validateSession(): Promise<SessionUser | null> {
-		try {
-			const sessionCookie = (await cookies()).get('session')
-			if (!sessionCookie?.value) return null
-
-			// Verify JWT token
-			const payload = await this.jwtService.verifyToken<{
-				userId: string
-				email: string
-				role: string
-			}>(sessionCookie.value)
-
-			if (!payload) return null
-
-			// Check if user exists
-			const user = await db
-				.select()
-				.from(users)
-				.where(eq(users.id, payload.userId))
-				.get()
-
-			if (!user) {
-				await this.clearSession()
-				return null
-			}
-
-			// Check if session exists and is valid
-			const session = await db
-				.select()
-				.from(sessions)
-				.where(eq(sessions.userId, payload.userId))
-				.get()
-
-			if (!session || new Date(session.expiresAt) < new Date()) {
-				await this.clearSession()
-				return null
-			}
-
-			// Update last used timestamp
-			await db
-				.update(sessions)
-				.set({ last_used: new Date().toISOString() })
-				.where(eq(sessions.id, session.id))
-
-			return {
-				userId: payload.userId,
-				email: payload.email,
-				role: payload.role
-			}
-		} catch (error) {
-			console.error('Validate session error:', error)
+		if (!sessionCookie?.value) {
 			return null
 		}
-	}
 
-	/**
-	 * Clears the current session.
-	 */
-	async clearSession() {
-		try {
-			const sessionCookie = (await cookies()).get('session')
-			if (sessionCookie?.value) {
-				const payload = await this.jwtService.verifyToken<{
-					userId: string
-				}>(sessionCookie.value)
-
-				if (payload?.userId) {
-					// Remove session from database
-					await db
-						.delete(sessions)
-						.where(eq(sessions.userId, payload.userId))
-				}
-			}
-
-			// Clear the cookie
-			;(
-				await // Clear the cookie
-				cookies()
-			).delete('session')
-		} catch (error) {
-			console.error('Clear session error:', error)
-			// Still try to delete the cookie even if DB operation fails
-			;(
-				await // Still try to delete the cookie even if DB operation fails
-				cookies()
-			).delete('session')
+		const payload = await verifyToken<SessionUser>(sessionCookie.value)
+		if (!payload?.userId || !payload?.email || !payload?.role) {
+			return null
 		}
+
+		return payload
+	} catch (error) {
+		console.error('Session validation error:', error)
+		return null
 	}
+}
 
-	/**
-	 * Retrieves all sessions for a given user.
-	 * @param userId The user's ID.
-	 * @returns An array of sessions.
-	 */
-	async getAllUserSessions(userId: string) {
-		try {
-			return await db
-				.select()
-				.from(sessions)
-				.where(eq(sessions.userId, userId))
-		} catch (error) {
-			console.error('Get user sessions error:', error)
-			return []
-		}
+// /**
+//  * Clears the current session.
+//  */
+// export async function clearSession() {
+// 	try {
+// 		const cookieStore = await cookies()
+// 		cookieStore.delete('session')
+// 	} catch (error) {
+// 		console.error('Clear session error:', error)
+// 	}
+// }
+
+// /**
+//  * Retrieves all sessions for a given user.
+//  * @param userId The user's ID.
+//  * @returns An array of sessions.
+//  */
+// export async function getAllUserSessions(userId: string) {
+// 	try {
+// 		return await db
+// 			.select()
+// 			.from(sessions)
+// 			.where(eq(sessions.userId, userId))
+// 	} catch (error) {
+// 		console.error('Get user sessions error:', error)
+// 		return []
+// 	}
+// }
+
+// /**
+//  * Clears all sessions for a given user.
+//  * @param userId The user's ID.
+//  */
+// export async function clearAllUserSessions(userId: string) {
+// 	try {
+// 		await db.delete(sessions).where(eq(sessions.userId, userId))
+
+// 		// Clear current session cookie if it belongs to this user
+// 		const sessionCookie = (await cookies()).get('session')
+// 		if (sessionCookie?.value) {
+// 			const payload = await verifyToken<{
+// 				userId: string
+// 			}>(sessionCookie.value)
+// 			if (payload?.userId === userId) {
+// 				(await cookies()).delete('session')
+// 			}
+// 		}
+// 	} catch (error) {
+// 		console.error('Clear all user sessions error:', error)
+// 		throw new Error('Failed to clear all sessions')
+// 	}
+// }
+
+// /**
+//  * Revokes a specific session.
+//  * @param sessionId The session's ID.
+//  */
+// export async function revokeSession(sessionId: string) {
+// 	try {
+// 		await db.delete(sessions).where(eq(sessions.id, sessionId))
+// 	} catch (error) {
+// 		console.error('Revoke session error:', error)
+// 		throw new Error('Failed to revoke session')
+// 	}
+// }
+// src/features/auth/services/session.service.ts
+import { db } from '@/db'
+import { sessions } from '@/db/schema'
+import { createId } from '@paralleldrive/cuid2'
+import { eq } from 'drizzle-orm'
+import { cookies, headers } from 'next/headers'
+import { SessionUser } from '../types'
+import { generateToken, verifyToken } from './jwt.service'
+
+/**
+ * Clears the session for the current user.
+ */
+export async function clearSession() {
+	try {
+		const cookieStore = await cookies()
+		cookieStore.delete('session')
+	} catch (error) {
+		console.error('Clear session error:', error)
 	}
+}
 
-	/**
-	 * Clears all sessions for a given user.
-	 * @param userId The user's ID.
-	 */
-	async clearAllUserSessions(userId: string) {
-		try {
-			await db.delete(sessions).where(eq(sessions.userId, userId))
-
-			// Clear current session cookie if it belongs to this user
-			const sessionCookie = (await cookies()).get('session')
-			if (sessionCookie?.value) {
-				const payload = await this.jwtService.verifyToken<{
-					userId: string
-				}>(sessionCookie.value)
-				if (payload?.userId === userId) {
-					;(await cookies()).delete('session')
-				}
-			}
-		} catch (error) {
-			console.error('Clear all user sessions error:', error)
-			throw new Error('Failed to clear all sessions')
-		}
+/**
+ * Retrieves all sessions for a given user.
+ * @param userId The user's ID.
+ * @returns An array of sessions.
+ */
+export async function getAllUserSessions(userId: string) {
+	try {
+		return await db
+			.select()
+			.from(sessions)
+			.where(eq(sessions.userId, userId))
+	} catch (error) {
+		console.error('Get user sessions error:', error)
+		return []
 	}
+}
 
-	/**
-	 * Revokes a specific session.
-	 * @param sessionId The session's ID.
-	 */
-	async revokeSession(sessionId: string) {
-		try {
-			await db.delete(sessions).where(eq(sessions.id, sessionId))
-		} catch (error) {
-			console.error('Revoke session error:', error)
-			throw new Error('Failed to revoke session')
+/**
+ * Clears all sessions for a given user.
+ * @param userId The user's ID.
+ */
+export async function clearAllUserSessions(userId: string) {
+	try {
+		await db.delete().from(sessions).where(eq(sessions.userId, userId))
+	} catch (error) {
+		console.error('Clear all user sessions error:', error)
+	}
+}
+
+export async function createToken(user: User): Promise<string> {
+	return await generateToken(user)
+}
+
+export async function createSession(
+	userId: string,
+	email: string,
+	role: 'admin' | 'user'
+) {
+	try {
+		// Create session token
+		const token = await createToken({
+			userId,
+			email,
+			role
+		})
+
+		// Get request metadata
+		const headersList = await headers()
+		const userAgent = headersList.get('user-agent')
+		const ipAddress = headersList.get('x-forwarded-for') || 'unknown'
+
+		// Set session expiry
+		const expiresAt = new Date()
+		expiresAt.setDate(expiresAt.getDate() + 7) // 7 days from now
+
+		// Create session in database
+		const [session] = await db
+			.insert(sessions)
+			.values({
+				id: createId(),
+				userId,
+				expiresAt: expiresAt.toISOString(),
+				userAgent,
+				ipAddress
+			})
+			.returning()
+
+		if (!session?.id) {
+			throw new Error('Failed to create session')
 		}
+
+		// Set session cookie
+		const cookieStore = await cookies()
+		cookieStore.set('session', token, {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === 'production',
+			sameSite: 'lax',
+			expires: expiresAt,
+			path: '/'
+		})
+
+		return session
+	} catch (error) {
+		console.error('Create session error:', error)
+		throw error
 	}
 }

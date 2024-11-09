@@ -13,7 +13,10 @@ export function ChangelogSkeleton({
 	...props
 }: ChangelogSkeletonProps) {
 	return (
-		<div className={cn('space-y-8 ', className)} {...props}>
+		<div
+			className={cn('space-y-8 max-w-page-size mx-auto ', className)}
+			{...props}
+		>
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div className="h-8 w-32 bg-skeleton rounded-lg animate-pulse backdrop-blur-sm border border-[#222]/20" />

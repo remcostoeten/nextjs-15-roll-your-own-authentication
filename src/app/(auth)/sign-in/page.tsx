@@ -1,10 +1,16 @@
-import AuthFormShell from '@/features/auth/components/auth-form-shell'
-import SignInForm from '@/features/auth/components/sign-in-form'
+import { AuthForm } from '@/features/auth/components/auth-form-shell'
+import { validateSession } from '@/features/auth/services/session.service'
+import { redirect } from 'next/navigation'
 
-export default function SignInPage() {
+export default async function SignInPage() {
+	const session = await validateSession()
+	if (session) {
+		redirect('/dashboard')
+	}
+
 	return (
-		<AuthFormShell variant="signin">
-			<SignInForm />
-		</AuthFormShell>
+		<div className="container flex items-center justify-center min-h-screen py-8">
+			<AuthForm type="sign-in" />
+		</div>
 	)
 }

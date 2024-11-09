@@ -1,15 +1,20 @@
-import { authMetadata } from '@/core/config/metadata'
+import { validateSession } from '@/features/auth/services/session.service'
+import { redirect } from 'next/navigation'
 
-export const metadata = authMetadata
+export default async function AuthLayout({
+	children
+}: {
+	children: React.ReactNode
+}) {
+	const session = await validateSession()
 
-export default function AuthLayout({ children }: PageProps) {
+	if (session) {
+		redirect('/dashboard')
+	}
+
 	return (
-		<div className="min-h-screen bg-gradient-to-b from-black to-zinc-900 flex items-center justify-center p-4">
-			<div className="w-full max-w-md mx-auto">
-				<div className="bg-black/40 backdrop-blur-sm rounded-xl border border-zinc-800/50 shadow-2xl">
-					{children}
-				</div>
-			</div>
+		<div className="min-h-screen flex items-center justify-center">
+			{children}
 		</div>
 	)
 }

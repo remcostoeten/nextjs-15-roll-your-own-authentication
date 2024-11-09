@@ -1,15 +1,31 @@
-import { JWTService } from './jwt.service'
 import { MaintenanceService } from './maintenance.service'
-import { PasswordService } from './password.service'
+import {
+	comparePasswords,
+	hashPassword,
+	initiatePasswordReset
+} from './password.service'
 import { RateLimiterService } from './rate-limiter.service'
-import { SecurityService } from './security.service'
-import { SessionService } from './session.service'
+import {
+	checkRateLimit,
+	cleanupRateLimits,
+	generateCSRFToken,
+	getRateLimitIdentifier,
+	getSecurityHeaders,
+	validateCSRFToken
+} from './security.service'
+import * as SessionService from './session.service'
 
 export {
-	JWTService,
+	checkRateLimit,
+	cleanupRateLimits,
+	comparePasswords,
+	generateCSRFToken,
+	getRateLimitIdentifier,
+	getSecurityHeaders,
+	hashPassword,
+	initiatePasswordReset,
 	MaintenanceService,
-	PasswordService,
 	RateLimiterService,
-	SecurityService,
-	SessionService
+	SessionService,
+	validateCSRFToken
 }

@@ -1,12 +1,12 @@
 'use server'
 
-import { getSession } from '@/features/auth/session'
+import { getUser } from './get-user'
 
 /**
- * Server-side utility to check if the current user is an admin
+ * Server function to check if the current user has admin privileges
  * @returns Promise<boolean>
  */
 export async function isAdmin(): Promise<boolean> {
-	const session = await getSession()
-	return session?.role === 'admin'
+	const user = await getUser()
+	return user?.role === 'admin'
 }

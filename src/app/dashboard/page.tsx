@@ -1,34 +1,17 @@
-'use client'
+import { getSession } from '@/features/auth/actions/get-session.action'
+import { redirect } from 'next/navigation'
 
-import { getSession } from '@/features/auth/session'
-import { SessionUser } from '@/features/auth/types'
-import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
+export default async function DashboardPage() {
+	const session = await getSession()
 
-export default function DashboardPage() {
-	const [user, setUser] = useState<SessionUser | null>(null)
-	function handleToast() {
-		toast('Hello, world!')
-	}
-	useEffect(() => {
-		async function fetchSession() {
-			const session = await getSession()
-			setUser(session)
-		}
-		fetchSession()
-	}, [])
-
-	if (!user) {
-		return <div>Loading...</div>
+	if (!session) {
+		redirect('/sign-in')
 	}
 
 	return (
-		<div>
-			<button onClick={handleToast}>Show toast</button>
-			<h1>Welcome, {user.email}</h1>
-			<pre>
-				<code>{JSON.stringify(user, null, 2)}</code>
-			</pre>
+		<div className="p-8">
+			<h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+			<p className="text-zinc-200">Welcome, {session.email}</p>
 		</div>
 	)
 }

@@ -1,131 +1,69 @@
-/**
- * @author Remco Stoeten
- * @description Handles the sign-up process for users.
- *
- * This function attempts to sign up a user based on the provided form data.
- * It checks the rate limit for the IP address, verifies the user credentials,
- * and creates a session if the credentials are valid.
- *
- * @param prevState The current state of the authentication process.
- * @param formData The form data containing the user's email and password.
- * @returns A promise that resolves to the updated authentication state.
- */
+'use server'
 
-import { db } from '@/db'
-import { users } from '@/db/schema'
-import { eq } from 'drizzle-orm'
-import { headers } from 'next/headers'
-import {
-	PasswordService,
-	RateLimiterService,
-	SessionService
-} from '../services'
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
+import { generateToken } from '../services/jwt.service'
+import { createUser } from '../services/user.service'
 import type { AuthState } from '../types'
-import { signUpSchema } from '../validations/models'
+import { signUpSchema } from '../validations/models/sign-up.z'
+
+const initialState: AuthState = {
+	isAuthenticated: false,
+	isLoading: false
+}
 
 export async function signUp(
-	prevState: AuthState,
+	prevState: AuthState = initialState,
 	formData: FormData
 ): Promise<AuthState> {
-	const ip = headers().get('x-forwarded-for') || 'unknown'
-	const formLimiter = RateLimiterService.createFormLimiter()
+	try {
+		const validatedFields = signUpSchema.safeParse({
+			email: formData.get('email'),
+			password: formData.get('password'),
+			confirmPassword: formData.get('confirmPassword')
+		})
 
-	return RateLimiterService.withRateLimit(
-		async () => {
-			try {
-				const data = {
-					email: formData.get('email') as string,
-					password: formData.get('password') as string,
-					confirmPassword: formData.get('confirmPassword') as string
-				}
-
-				const validatedFields = signUpSchema.safeParse(data)
-
-				if (!validatedFields.success) {
-					return {
-						isAuthenticated: false,
-						isLoading: false,
-						error: validatedFields.error.flatten().fieldErrors
-					}
-				}
-
-				const { email, password } = validatedFields.data
-
-				const existingUser = await db
-					.select()
-					.from(users)
-					.where(eq(users.email, email))
-					.get()
-
-				if (existingUser) {
-					return {
-						isAuthenticated: false,
-						isLoading: false,
-						error: {
-							email: ['Email already exists']
-						}
-					}
-				}
-
-				const hashedPassword =
-					await PasswordService.hashPassword(password)
-				const normalizedEmail = email.toLowerCase().trim()
-				const normalizedAdminEmail =
-					process.env.ADMIN_EMAIL?.toLowerCase().trim() || ''
-				const isAdmin = normalizedEmail === normalizedAdminEmail
-				const userRole = isAdmin ? 'admin' : 'user'
-
-				const [user] = await db
-					.insert(users)
-					.values({
-						email: normalizedEmail,
-						password: hashedPassword,
-						role: userRole
-					} as {
-						email: string
-						password: string
-						role: string
-					})
-					.returning()
-
-				if (!user?.id) {
-					return {
-						isAuthenticated: false,
-						isLoading: false,
-						error: {
-							_form: ['Failed to create account']
-						}
-					}
-				}
-
-				const sessionService = new SessionService()
-				await sessionService.createSession(
-					user.id,
-					user.email,
-					user.role
-				)
-
-				return {
-					isAuthenticated: true,
-					isLoading: false,
-					user: {
-						userId: user.id,
-						email: user.email,
-						role: user.role
-					}
-				}
-			} catch (error) {
-				console.error('SignUp error:', error)
-				return {
-					isAuthenticated: false,
-					isLoading: false,
-					error: {
-						_form: ['Failed to create account']
-					}
+		if (!validatedFields.success) {
+			return {
+				...prevState,
+				error: {
+					_form: ['Invalid form data'],
+					...Object.fromEntries(
+						Object.entries(
+							validatedFields.error.flatten().fieldErrors
+						).map(([key, value]) => [key, value ?? []])
+					)
 				}
 			}
-		},
-		`signup:${ip}`,
-		formLimiter
-	)
+		}
+
+		const user = await createUser({
+			email: validatedFields.data.email,
+			password: validatedFields.data.password
+		})
+
+		const token = await generateToken({
+			userId: user.id,
+			email: user.email
+		})
+
+		const cookieStore = await cookies()
+		cookieStore.set('session', token, {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === 'production',
+			sameSite: 'lax',
+			expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+			path: '/'
+		})
+
+		redirect('/dashboard')
+	} catch (error) {
+		console.error('Signup error:', error)
+		return {
+			...prevState,
+			error: {
+				_form: ['Something went wrong during signup.']
+			}
+		}
+	}
 }

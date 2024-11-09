@@ -1,6 +1,6 @@
 'use client'
 
-import { CodeBlock } from '@/shared/_docs/code-block/code-block'
+import CodeBlock from '@/shared/_docs/code-block/code-block'
 import { Button } from '@/shared/components/ui/button'
 import { AlertTriangle, RotateCcw } from 'lucide-react'
 import { useEffect } from 'react'
@@ -55,7 +55,7 @@ ${Object.entries(error)
 				<div className="flex justify-center pt-4">
 					<Button
 						onClick={reset}
-						className="bg-neutral-800 hover:bg-neutral-700"
+						className="bg-neutral-200 transition-all duration-400 hover:bg-neutral-400"
 					>
 						<RotateCcw className="w-4 h-4 mr-2" />
 						Try Again
