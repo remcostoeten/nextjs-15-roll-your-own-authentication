@@ -72,7 +72,7 @@ export function AuthIndicatorClient({ initialState }: AuthIndicatorProps) {
 	return (
 		<div
 			className={`
-        fixed bottom-4 right-4 z-50
+        fixed z-50 bottom-4 right-4
         transition-all duration-300 ease-out
         ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}
       `}

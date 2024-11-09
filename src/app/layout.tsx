@@ -60,7 +60,6 @@ export default async function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					<Notice />
 					<Suspense
 						fallback={
 							<LoadingIndicator loading={true}>
@@ -78,6 +77,7 @@ export default async function RootLayout({
 							{children}
 						</main>
 						<ToastProvider />
+					<Notice />
 						<Toaster />
 					</Suspense>
 				</ThemeProvider>

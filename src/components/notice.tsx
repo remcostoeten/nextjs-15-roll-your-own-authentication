@@ -6,6 +6,8 @@ import NotificationBar from './notification-bar/notification-bar'
 export default function Notice() {
 	const [isDismissed] = useDismissedState('feature-notification')
 
+	if (isDismissed) return null
+
 	const notices = [
 		{
 			badgeText: 'WIP',
@@ -16,15 +18,11 @@ export default function Notice() {
 	]
 
 	return (
-		<>
-			{!isDismissed && (
-				<NotificationBar
-					notices={notices}
-					animated={true}
-					storageKey="feature-notification"
-					position="bottom"
-				/>
-			)}
-		</>
+		<NotificationBar
+			notices={notices}
+			animated={true}
+			storageKey="feature-notification"
+			position="bottom"
+		/>
 	)
 }

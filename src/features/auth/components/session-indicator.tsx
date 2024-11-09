@@ -2,7 +2,7 @@
 
 import { getFeatureConfig } from '@/core/config/FEATURE_CONFIG'
 import { useEffect, useState } from 'react'
-import { getCurrentSession } from '../actions/auth'
+import { getAuthState } from '../helper/get-auth-state'
 import { SessionUser } from '../types'
 
 type SessionIndicatorProps = {
@@ -13,13 +13,7 @@ export default function SessionIndicator({
 	onSessionChange
 }: SessionIndicatorProps) {
 	const [user, setUser] = useState<SessionUser>()
-	const config = getFeatureConfig(user?.role)
-
-	const checkSession = async () => {
-		const { isAuthenticated, user } = await getCurrentSession()
-		setUser(isAuthenticated ? user : undefined)
-		onSessionChange?.(isAuthenticated ? user : undefined)
-	}
+	const config = getFeatureConfig()
 
 	useEffect(() => {
 		checkSession()
@@ -31,6 +25,12 @@ export default function SessionIndicator({
 		window.addEventListener('auth-change', handleAuthChange)
 		return () => window.removeEventListener('auth-change', handleAuthChange)
 	}, [])
+
+	const checkSession = async () => {
+		const authState = await getAuthState()
+		setUser(authState.isAuthenticated ? authState.user : undefined)
+		onSessionChange?.(authState.isAuthenticated ? authState.user : undefined)
+	}
 
 	if (!config.showSessionIndicator.enabled || !user) return null
 

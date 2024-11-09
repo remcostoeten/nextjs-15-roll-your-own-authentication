@@ -1,8 +1,7 @@
 'use client'
 
-import { CodeBlock } from '@/shared/_docs/code-block/code-block'
+import CodeBlock from '@/shared/_docs/code-block/code-block'
 import { Dialog, DialogContent } from 'ui'
-
 type DiffModalProps = {
 	isOpen: boolean
 	onClose: () => void
