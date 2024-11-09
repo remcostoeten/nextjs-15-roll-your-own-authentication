@@ -15,7 +15,7 @@ const initialState: AuthState = {
 export async function signUp(
 	prevState: AuthState = initialState,
 	formData: FormData
-): Promise<AuthState> {
+): Promise<never> {
 	try {
 		const validatedFields = signUpSchema.safeParse({
 			email: formData.get('email'),
@@ -34,7 +34,7 @@ export async function signUp(
 						).map(([key, value]) => [key, value ?? []])
 					)
 				}
-			}
+			} as never
 		}
 
 		const user = await createUser({
@@ -47,7 +47,7 @@ export async function signUp(
 			email: user.email
 		})
 
-		const cookieStore = await cookies()
+		const cookieStore = cookies()
 		cookieStore.set('session', token, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
@@ -58,12 +58,16 @@ export async function signUp(
 
 		redirect('/dashboard')
 	} catch (error) {
+		if ((error as any)?.digest?.includes('NEXT_REDIRECT')) {
+			throw error
+		}
+
 		console.error('Signup error:', error)
 		return {
 			...prevState,
 			error: {
 				_form: ['Something went wrong during signup.']
 			}
-		}
+		} as never
 	}
 }
