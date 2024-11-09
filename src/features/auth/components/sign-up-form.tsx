@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useActionState, useEffect } from 'react'
 import { toast } from 'sonner'
-import { signUp } from '../actions/auth'
+import { signUp } from '../actions/sign-out.action'
 import type { AuthState } from '../types'
 import SubmitButton from './submit-button'
 

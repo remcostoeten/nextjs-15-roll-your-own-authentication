@@ -1,9 +1,9 @@
 'use client'
 
+import { useDismissedState } from '@/hooks/use-local-storage'
+import { cn } from '@/lib/utils'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
-import { useDismissedState } from '../../hooks/use-local-storage'
-import { cn } from '../../lib/utils'
 
 export const EMOJI_MAP = {
 	rocket: '🚀',

@@ -18,7 +18,7 @@ export function useDismissedState(key: string): [boolean, () => void] {
 		if (stored !== isDismissed) {
 			setIsDismissed(stored)
 		}
-	}, [key])
+	}, [isDismissed, key])
 
 	return [isDismissed, setDismissed]
 }

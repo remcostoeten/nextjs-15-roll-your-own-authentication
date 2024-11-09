@@ -1,4 +1,4 @@
-export * from './auth'
+export * from './sign-out.action'
 
 // // import { UserAuthService } from '../services/auth.service'
 // // import { DrizzleStorageService } from '../services/drizzle.service'
