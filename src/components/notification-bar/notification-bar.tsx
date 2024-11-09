@@ -66,7 +66,10 @@ export default function NotificationBar({
 							y: position === 'bottom' ? 20 : -20
 						}}
 						animate={{ opacity: 1, y: 0 }}
-						exit={{ opacity: 0, y: position === 'bottom' ? 20 : -20 }}
+						exit={{
+							opacity: 0,
+							y: position === 'bottom' ? 20 : -20
+						}}
 						transition={{ duration: 0.2 }}
 						className={cn(
 							'fixed left-0 right-0 bg-black/40 backdrop-blur-sm border-white/10',

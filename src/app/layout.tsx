@@ -77,7 +77,7 @@ export default async function RootLayout({
 							{children}
 						</main>
 						<ToastProvider />
-					<Notice />
+						<Notice />
 						<Toaster />
 					</Suspense>
 				</ThemeProvider>

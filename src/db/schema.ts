@@ -44,35 +44,6 @@ export const sessions = sqliteTable('sessions', {
 	expiresAt: text('expires_at').notNull()
 })
 
-export const passwordResetTokens = sqliteTable('password_reset_tokens', {
-	id: text('id')
-		.$defaultFn(() => createId())
-		.primaryKey(),
-	userId: text('user_id')
-		.notNull()
-		.references(() => users.id, { onDelete: 'cascade' }),
-	token: text('token').notNull(),
-	expiresAt: text('expires_at').notNull(),
-	createdAt: text('created_at')
-		.notNull()
-		.$defaultFn(() => new Date().toISOString())
-})
-
-export const verificationTokens = sqliteTable('verification_tokens', {
-	id: text('id')
-		.$defaultFn(() => createId())
-		.primaryKey(),
-	userId: text('user_id')
-		.notNull()
-		.references(() => users.id, { onDelete: 'cascade' }),
-	token: text('token').notNull(),
-	expiresAt: text('expires_at').notNull(),
-	createdAt: text('created_at')
-		.notNull()
-		.$defaultFn(() => new Date().toISOString())
-})
-
-// Re-export analytics types and tables
 export {
 	analyticsEvents,
 	analyticsPageViews,
