@@ -1,6 +1,6 @@
 'use client'
 
-import Changelog from '@/components/changelog'
+import Changelog from "@/components/changelog"
 
 export default function ChangelogPage() {
 	return (

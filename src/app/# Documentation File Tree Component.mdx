@@ -1,0 +1,179 @@
+# Documentation File Tree Component
+
+A strictly-typed, file tree visualization component for documentation purposes with code preview support and comparison capabilities.
+
+## Type Definitions
+
+### Core Types
+
+| Type             | Definition                                                            | Description                 |
+| ---------------- | --------------------------------------------------------------------- | --------------------------- |
+| `TreeNodeType`   | `'file' \| 'folder'`                                                  | Discriminator for node type |
+| `FileExtension`  | `'ts' \| 'tsx' \| 'js' \| 'jsx' \| 'json' \| 'md' \| 'css' \| 'scss'` | Supported file extensions   |
+| `PreviewContent` | `{ code: string; language: string; title?: string; }`                 | Code preview configuration  |
+| `GitHubLink`     | `{ url: string; branch?: string; }`                                   | GitHub reference link       |
+
+### Node Interfaces
+
+| Interface    | Properties                                                                                       | Description                   |
+| ------------ | ------------------------------------------------------------------------------------------------ | ----------------------------- |
+| `BaseNode`   | `type: TreeNodeType`<br>`name: string`<br>`highlighted?: boolean`<br>`githubLink?: GitHubLink`   | Base properties for all nodes |
+| `FileNode`   | extends `BaseNode`<br>`type: 'file'`<br>`extension: FileExtension`<br>`preview?: PreviewContent` | File node configuration       |
+| `FolderNode` | extends `BaseNode`<br>`type: 'folder'`<br>`children: TreeNode[]`<br>`defaultOpen?: boolean`      | Folder node configuration     |
+| `TreeNode`   | `FileNode \| FolderNode`                                                                         | Union type for all nodes      |
+
+## Components
+
+### FileTree
+
+Primary component for rendering a single file tree structure.
+
+```tsx
+interface FileTreeProps {
+```
+
+-   Tree structure data
+    \*/
+    data: TreeNode[];
+
+```
+ * Close all folders by default if set to false
+ * @default true
+ */
+defaultOpen?: boolean;
+
+```
+
+-   Custom class name for the root element
+    \*/
+    className?: string;
+
+```
+ * Callback when a file with preview is clicked
+ */
+onPreviewClick?: (file: FileNode) => void;
+
+```
+
+-   Custom renderer for preview modal/popover
+    \*/
+    PreviewComponent?: React.ComponentType<PreviewProps>;
+
+```
+ * Style variant
+ * @default "default"
+ */
+variant?: "default" | "minimal";
+}
+```
+
+### CompareTree
+
+Component for side-by-side tree comparison.
+
+interface CompareTreeProps {
+/\*\*
+
+-   Original tree structure
+    \*/
+    original: TreeNode[];
+
+/\*\*
+
+-   Modified tree structure
+    \*/
+    modified: TreeNode[];
+
+/\*\*
+
+-   Labels for comparison sides
+    \*/
+    labels?: {
+    original?: string;
+    modified?: string;
+    };
+
+/\*\*
+
+-   Close all folders by default if set to false
+-   @default true
+    \*/
+    defaultOpen?: boolean;
+
+/\*\*
+
+-   Custom class name for the container
+    \*/
+    className?: string;
+
+/\*\*
+
+-   Layout direction
+-   @default "horizontal"
+    \*/
+    layout?: "horizontal" | "vertical";
+
+/\*\*
+
+-   Auto-highlight differences between trees
+-   @default true
+    \*/
+    highlightDifferences?: boolean;
+    }```
+
+## Example Usage
+
+```tsxd
+import { FileTree, CompareTree } from '@/components/docs/file-tree'
+// Single tree example
+const basicTree: TreeNode[] = [
+{
+type: 'folder',
+name: 'src',
+children: [
+{
+type: 'file',
+name: 'auth',
+extension: 'tsx',
+preview: {
+code: 'export const auth = () => { ... }',
+language: 'typescript'
+}
+}
+]
+}
+]
+// Compare trees example
+const originalTree: TreeNode[] = [/* ... /]
+const modifiedTree: TreeNode[] = [/ ... */]
+export default function DocumentationPage() {
+return (
+<div className="space-y-8">
+<FileTree
+     data={basicTree}
+     variant="default"
+   />
+
+   <CompareTree
+    original={originalTree}
+    modified={modifiedTree}
+    labels={{
+      original: "Basic Auth",
+      modified: "Advanced Auth"
+    }}
+  />
+</div>
+
+)
+}
+$$$
+Implementation Notes
+
+All folder nodes are open by default unless defaultOpen={false}
+Files with preview content show a subtle indicator
+Preview opens in a floating dialog using @radix-ui/dialog
+Uses Lucide icons for file types and UI elements
+Follows shadcn/ui design patterns and color scheme
+Built with Tailwind CSS for styling
+Framer Motion for expand/collapse animations
+```
