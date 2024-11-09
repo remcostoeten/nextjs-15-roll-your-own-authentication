@@ -288,7 +288,7 @@ export default function Changelog({ className }: ChangelogProps) {
 			setStats({
 				totalCommits: commits.length,
 				frequency,
-				languages: {} // We'll populate this when we add language stats
+				languages: {} 
 			})
 		}
 	}, [commits])

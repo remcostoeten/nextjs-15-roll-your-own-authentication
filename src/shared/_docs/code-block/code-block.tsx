@@ -2,15 +2,15 @@
 
 import { AnimatePresence, motion } from 'framer-motion'
 import {
-	ArrowDown,
-	ArrowUp,
-	Check,
-	ChevronDown,
-	Copy,
-	Code as DefaultIcon,
-	File,
-	Search,
-	X
+    ArrowDown,
+    ArrowUp,
+    Check,
+    ChevronDown,
+    Copy,
+    Code as DefaultIcon,
+    File,
+    Search,
+    X
 } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
