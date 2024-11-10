@@ -3,16 +3,6 @@
  * 
  */
 
-/**
- * @description A configuration (flag) file which allows with a simple boolean flag to toggle functionallities on or off sidewide.
- * 
- */
-
-/**
- * @description A configuration (flag) file which allows with a simple boolean flag to toggle functionallities on or off sidewide.
- * 
- */
-
 export type DiffViewProps = {
 	filename: string
 	additions: number

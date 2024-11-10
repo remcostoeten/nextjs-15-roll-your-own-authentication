@@ -22,5 +22,9 @@ export default async function DashboardLayout({
 		redirect('/sign-in')
 	}
 
-	return <Suspense fallback={<Loading />}>{children}</Suspense>
+	return (
+		<Suspense fallback={<Loading />}>
+			<main className='mx-auto max-w-page-size'>{children}</main>
+		</Suspense>
+	)
 }

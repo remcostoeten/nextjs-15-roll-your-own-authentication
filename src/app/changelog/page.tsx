@@ -6,16 +6,14 @@ export const metadata: Metadata = {
 	description: 'Stay up to date with our latest features and improvements',
 	openGraph: {
 		title: 'Changelog',
-		description:
-			'Stay up to date with our latest features and improvements',
-		type: 'website'
+		description: 'Stay up to date with our latest features and improvements',
+		type: 'website',
+		url: '/changelog',
 	}
 }
 
 export default function ChangelogPage() {
 	return (
-		<div className="max-w-page-size mx-auto py-8">
-			<Changelog />
-		</div>
+		<Changelog />
 	)
 }

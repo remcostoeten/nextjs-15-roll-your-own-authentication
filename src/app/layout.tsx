@@ -8,6 +8,7 @@ import '@/core/styles/globals.css'
 import PageViewTracker from '@/features/analytics/components/page-view-tracker'
 import { AuthIndicator } from '@/features/auth/helper/session-indicator'
 import { getUser } from '@/features/auth/utilities/get-user'
+import { AuthProvider } from '@/providers/auth-provider'
 import { ThemeProvider } from '@/providers/theme-provider'
 import ToastProvider from '@/providers/toast-provider'
 import { cn } from '@/shared/_docs/code-block/cn'
@@ -24,9 +25,7 @@ function ThemeScript() {
 				__html: `
 					(function() {
 						try {
-							const storageValue = localStorage.getItem('theme')
-							const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-							document.documentElement.classList.add(storageValue ?? systemTheme)
+							document.documentElement.classList.add('dark')
 						} catch (e) {
 							console.error(e)
 						}
@@ -46,7 +45,7 @@ export default async function RootLayout({
 	const isAuthenticated = !!user
 
 	return (
-		<html lang="en" suppressHydrationWarning>
+		<html lang="en" className="dark" suppressHydrationWarning>
 			<head>
 				<ThemeScript />
 			</head>
@@ -54,43 +53,43 @@ export default async function RootLayout({
 				className={cn(
 					geistSans.variable,
 					geistMono.variable,
-					'antialiased'
+					'antialiased bg-background'
 				)}
 			>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="dark"
-					enableSystem
-					disableTransitionOnChange
-				>
-					<AutoFillButton />
-					<TaskReminder />
-					<Suspense
-						fallback={
-							<LoadingIndicator loading={true}>
-								{children}
-							</LoadingIndicator>
-						}
+				<AuthProvider>
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="dark"
+						forcedTheme="dark"
+						enableSystem={false}
+						disableTransitionOnChange
 					>
-						<Navigation
-							isAuthenticated={isAuthenticated}
-							initialUser={user}
-						/>
-						<AuthIndicator
-							initialState={{
-								isAuthenticated,
-								user
-							}}
-						/>
-						<main className="mt-32 sm:mt-28">
-							<PageViewTracker />
-							{children}
-						</main>
-						<ToastProvider />
-						<Notice />
-						<Toaster />
-					</Suspense>
-				</ThemeProvider>
+						<AutoFillButton />
+						<TaskReminder />
+						<Suspense
+							fallback={
+								<LoadingIndicator loading={true}>
+									{children}
+								</LoadingIndicator>
+							}
+						>
+							<Navigation />
+							<AuthIndicator
+								initialState={{
+									isAuthenticated,
+									user
+								}}
+							/>
+							<main className="mt-32 sm:mt-28">
+								<PageViewTracker />
+								{children}
+							</main>
+							<ToastProvider />
+							<Notice />
+							<Toaster />
+						</Suspense>
+					</ThemeProvider>
+				</AuthProvider>
 			</body>
 		</html>
 	)

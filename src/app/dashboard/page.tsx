@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 
 export default async function DashboardPage() {
 	const session = await getSession()
-	const allCookies = cookies().getAll()
+	const allCookies = (await cookies()).getAll()
 
 	if (!session) {
 		redirect('/sign-in')

@@ -17,14 +17,18 @@ const buttonVariants = cva(
 					'border border-[#e3e4e6] bg-transparent hover:bg-[#e3e4e6]/10 hover:text-[#000000] dark:border-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-200',
 				secondary:
 					'bg-[#969799] text-[#000000] hover:bg-[#e3e4e6] dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700',
-				ghost: 'hover:bg-[#e3e4e6]/10 hover:text-[#000000] dark:hover:bg-zinc-800 dark:hover:text-zinc-200',
-				link: 'text-[#000000] underline-offset-4 hover:underline dark:text-zinc-200'
+				ghost: 'bg-[#2b2b2b] text-neutral-200 hover:bg-[#e3e4e6] hover:text-black dark:bg-zinc-900 dark:text-white dark:hover:bg-zinc-800 dark:hover:text-[#e3e4e6]',
+
+				icon: 'bg-[#2b2b2b] text-neutral-200 hover:bg-[#e3e4e6] hover:text-black dark:bg-zinc-900 dark:text-white dark:hover:bg-zinc-800 dark:hover:text-[#e3e4e6]',
+				link: 'text-[#000000] underline-offset-4 hover:underline dark:text-zinc-200',
+				theme: 'bg-[#E8E8ED] hover:bg-[#DCDCE1] dark:bg-[#313136] dark:hover:bg-[#414146] [&_svg]:h-[18px] [&_svg]:w-[18px] text-[#6E6E76] dark:text-[#A1A1AA]'
 			},
 			size: {
 				default: 'h-9 px-4 py-2',
 				sm: 'h-8 rounded-md px-3 text-xs',
 				lg: 'h-10 rounded-md px-8',
-				icon: 'h-9 w-9'
+				icon: 'h-9 w-9',
+				theme: 'h-9 w-9 rounded-xl'
 			}
 		},
 		defaultVariants: {
