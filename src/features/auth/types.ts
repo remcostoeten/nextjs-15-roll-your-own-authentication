@@ -41,9 +41,20 @@ export type FormError = {
 // Auth state types
 export type AuthState = {
 	isAuthenticated: boolean
-	user?: SessionUser
-	isLoading: boolean
-	error?: FieldErrors & FormError
+	isLoading?: boolean
+	error?: Record<string, string[]>
+	success?: boolean
+	user?: {
+		id: string
+		email: string
+		name?: string
+		role?: string
+	} | null
+}
+
+export type AuthStateHookProps = {
+	isAuthenticated?: boolean
+	initialUser?: AuthState['user']
 }
 
 // Auth context type

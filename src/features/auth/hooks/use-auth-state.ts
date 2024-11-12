@@ -1,68 +1,48 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { getAuthState } from '../helper/get-auth-state'
-import type { SessionUser } from '../types'
+import { AuthState, AuthStateHookProps } from '../types'
 
-type AuthState = {
-	isAuthenticated: boolean
-	user?: SessionUser
-	isLoading: boolean
-	error?: string
+const defaultState: AuthState = {
+	isAuthenticated: false,
+	isLoading: false,
+	user: null
 }
 
-type AuthStateProps = {
-	isAuthenticated: boolean
-	initialUser?: SessionUser
-}
-
-export function useAuthState({
-	isAuthenticated,
-	initialUser
-}: AuthStateProps): AuthState {
+export function useAuthState(props?: AuthStateHookProps): AuthState {
 	const [authState, setAuthState] = useState<AuthState>({
-		isAuthenticated,
-		user: initialUser,
-		isLoading: !initialUser
+		...defaultState,
+		isAuthenticated: props?.isAuthenticated ?? false,
+		user: props?.initialUser ?? null
 	})
 
-	useEffect(() => {
-		let mounted = true
-
-		const updateAuthState = async () => {
-			try {
-				const newState = await getAuthState()
-				if (mounted) {
-					setAuthState({
-						...newState,
-						isLoading: false
-					})
-				}
-			} catch (error) {
-				if (mounted) {
-					setAuthState((state) => ({
-						...state,
-						isLoading: false,
-						error:
-							error instanceof Error
-								? error.message
-								: 'Failed to update auth state'
-					}))
-				}
-				console.error('Failed to update auth state:', error)
+	const updateAuthState = async () => {
+		try {
+			const response = await fetch('/api/auth/state')
+			if (!response.ok) {
+				throw new Error('Failed to fetch auth state')
 			}
+			const data = await response.json()
+			setAuthState(prev => ({
+				...prev,
+				...data,
+				isLoading: false
+			}))
+		} catch (error) {
+			setAuthState(prev => ({
+				...prev,
+				isAuthenticated: false,
+				user: null,
+				isLoading: false,
+				error: error instanceof Error ? error.message : 'An error occurred'
+			}))
+			console.error('Failed to update auth state:', error)
 		}
+	}
 
-		window.addEventListener('auth-change', updateAuthState)
-		if (!initialUser) {
-			updateAuthState()
-		}
-
-		return () => {
-			mounted = false
-			window.removeEventListener('auth-change', updateAuthState)
-		}
-	}, [initialUser])
+	useEffect(() => {
+		updateAuthState()
+	}, [])
 
 	return authState
 }
