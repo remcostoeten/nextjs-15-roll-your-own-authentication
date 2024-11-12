@@ -3,14 +3,6 @@ import { getSession } from '@/features/auth/actions/get-session.action'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 
-function Loading() {
-	return (
-		<div className="flex h-screen items-center justify-center">
-			<LoadingSpinner />
-		</div>
-	)
-}
-
 export default async function DashboardLayout({
 	children
 }: {
@@ -22,5 +14,9 @@ export default async function DashboardLayout({
 		redirect('/sign-in')
 	}
 
-	return <Suspense fallback={<Loading />}>{children}</Suspense>
+	return (
+		<Suspense fallback={<LoadingSpinner />}>
+			<div className="container mx-auto max-w-page-size">{children}</div>
+		</Suspense>
+	)
 }

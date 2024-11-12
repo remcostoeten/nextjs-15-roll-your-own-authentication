@@ -1,19 +1,19 @@
 import AutoFillButton from '@/components/auto-fill-form'
-import Navigation from '@/components/navigation'
+import Header from '@/components/navigation/navigation'
 import Notice from '@/components/notice'
-import TaskReminder from '@/components/task-reminder/task-reminder'
+import TostiKaas from '@/components/Toaster'
 import { geistMono, geistSans } from '@/core/config/fonts'
 import { RootMetadata } from '@/core/config/metadata'
 import '@/core/styles/globals.css'
 import PageViewTracker from '@/features/analytics/components/page-view-tracker'
-import { AuthIndicator } from '@/features/auth/helper/session-indicator'
+import AuthIndicator from '@/features/auth/helper/session-indicator'
 import { getUser } from '@/features/auth/utilities/get-user'
+import { AuthProvider } from '@/providers/auth-provider'
 import { ThemeProvider } from '@/providers/theme-provider'
 import ToastProvider from '@/providers/toast-provider'
 import { cn } from '@/shared/_docs/code-block/cn'
 import LoadingIndicator from '@/shared/components/loading-indicator'
 import { Suspense } from 'react'
-import { Toaster } from 'sonner'
 
 export const metadata = RootMetadata
 
@@ -24,9 +24,7 @@ function ThemeScript() {
 				__html: `
 					(function() {
 						try {
-							const storageValue = localStorage.getItem('theme')
-							const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-							document.documentElement.classList.add(storageValue ?? systemTheme)
+							document.documentElement.classList.add('dark')
 						} catch (e) {
 							console.error(e)
 						}
@@ -43,10 +41,9 @@ export default async function RootLayout({
 	children: React.ReactNode
 }) {
 	const user = await getUser()
-	const isAuthenticated = !!user
 
 	return (
-		<html lang="en" suppressHydrationWarning>
+		<html lang="en" className="dark" suppressHydrationWarning>
 			<head>
 				<ThemeScript />
 			</head>
@@ -56,15 +53,19 @@ export default async function RootLayout({
 					geistMono.variable,
 					'antialiased'
 				)}
+				style={{
+					background:
+						'linear-gradient(135deg, #060606 0%, #090909 100%)'
+				}}
 			>
 				<ThemeProvider
 					attribute="class"
 					defaultTheme="dark"
-					enableSystem
+					forcedTheme="dark"
+					enableSystem={false}
 					disableTransitionOnChange
 				>
 					<AutoFillButton />
-					<TaskReminder />
 					<Suspense
 						fallback={
 							<LoadingIndicator loading={true}>
@@ -72,23 +73,22 @@ export default async function RootLayout({
 							</LoadingIndicator>
 						}
 					>
-						<Navigation
-							isAuthenticated={isAuthenticated}
-							initialUser={user}
-						/>
-						<AuthIndicator
-							initialState={{
-								isAuthenticated,
-								user
-							}}
-						/>
-						<main className="mt-32 sm:mt-28">
-							<PageViewTracker />
-							{children}
-						</main>
-						<ToastProvider />
-						<Notice />
-						<Toaster />
+						<Header />
+						<AuthProvider initialUser={user}>
+							<AuthIndicator
+								initialState={{
+									isAuthenticated: !!user,
+									user: user
+								}}
+							/>
+							<main className="mt-32 sm:mt-28">
+								<PageViewTracker />
+								{children}
+							</main>
+							<ToastProvider />
+							<Notice />
+							<TostiKaas />
+						</AuthProvider>
 					</Suspense>
 				</ThemeProvider>
 			</body>

@@ -1,75 +1,84 @@
 'use client'
 
-import { getAuthState } from '@/features/auth/helper/get-auth-state'
-import type { SessionUser } from '@/features/auth/types'
+import { SessionUser } from '@/features/auth/types'
+import { useRouter } from 'next/navigation'
 import { createContext, useContext, useEffect, useState } from 'react'
-
-type AuthState = {
-	isAuthenticated: boolean
-	user?: SessionUser
-	isLoading: boolean
-}
 
 type AuthContextType = {
 	isAuthenticated: boolean
-	user?: SessionUser
-	isLoading: boolean
-	updateAuthState: (updates: Partial<AuthState>) => void
+	user: SessionUser | null
+	signIn: (credentials: any) => Promise<void>
+	signOut: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType>({
 	isAuthenticated: false,
-	isLoading: true,
-	updateAuthState: () => undefined
+	user: null,
+	signIn: async () => {},
+	signOut: async () => {}
 })
-
-type AuthProviderProps = {
-	children: React.ReactNode
-	initialUser?: SessionUser
-	initialAuthenticated: boolean
-}
 
 export function AuthProvider({
 	children,
-	initialUser,
-	initialAuthenticated
-}: AuthProviderProps) {
-	const [state, setState] = useState<AuthState>({
-		isAuthenticated: initialAuthenticated,
-		user: initialUser,
-		isLoading: !initialUser
-	})
+	initialUser
+}: {
+	children: React.ReactNode
+	initialUser: SessionUser | null
+}) {
+	const [user, setUser] = useState<SessionUser | null>(initialUser)
+	const router = useRouter()
 
 	useEffect(() => {
-		const handleAuthChange = async () => {
-			const newState = await getAuthState()
-			setState((current) => ({
-				...current,
-				...newState,
-				isLoading: false
-			}))
+		if (initialUser) {
+			setUser(initialUser)
 		}
+	}, [initialUser])
 
-		window.addEventListener('auth-change', handleAuthChange)
-		return () => window.removeEventListener('auth-change', handleAuthChange)
-	}, [])
+	async function signIn(credentials: any) {
+		try {
+			const response = await fetch('/api/auth/sign-in', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(credentials)
+			})
 
-	const value: AuthContextType = {
-		...state,
-		updateAuthState: (updates) =>
-			setState((current) => ({
-				...current,
-				...updates
-			}))
+			if (!response.ok) {
+				throw new Error('Sign in failed')
+			}
+
+			const data = await response.json()
+			setUser(data.user)
+			router.push('/dashboard')
+		} catch (error) {
+			console.error('Sign in error:', error)
+			throw error
+		}
 	}
 
-	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+	async function signOut() {
+		try {
+			await fetch('/api/auth/sign-out', { method: 'POST' })
+			setUser(null)
+			router.push('/sign-in')
+		} catch (error) {
+			console.error('Sign out error:', error)
+		}
+	}
+
+	return (
+		<AuthContext.Provider
+			value={{
+				isAuthenticated: !!user,
+				user,
+				signIn,
+				signOut
+			}}
+		>
+			{children}
+		</AuthContext.Provider>
+	)
 }
 
-export function useAuth(): AuthContextType {
-	const context = useContext(AuthContext)
-	if (!context) {
-		throw new Error('useAuth must be used within an AuthProvider')
-	}
-	return context
+export function useAuth() {
+	return useContext(AuthContext)
 }

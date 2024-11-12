@@ -36,7 +36,8 @@
 		"**/*.ts",
 		"**/*.tsx",
 		".next/types/**/*.ts",
-		"src/features/analytics/db/index.ts"
-, "src/features/auth/components/sign-in-form.mdx"	],
+		"src/features/analytics/db/index.ts",
+		"src/features/auth/components/sign-in-form.mdx"
+	],
 	"exclude": ["node_modules"]
 }

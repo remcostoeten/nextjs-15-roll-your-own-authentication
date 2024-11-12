@@ -1,3 +1,8 @@
+/**
+ * @author Remco Stoeten
+ * @description A React component for FEATURE_CONFIG functionality.
+ */
+
 export const BASE_CONFIG = {
 	passwordValidation: {
 		minLength: 6,
@@ -35,3 +40,16 @@ export function getFeatureConfig(): FeatureConfig {
 		}
 	}
 }
+
+/**
+ * @example
+ * import { BASE_CONFIG, getFeatureConfig, Example } from './BASE_CONFIG'
+ *
+ * // Basic usage
+ * export const Example = () => (
+ *   <BASE_CONFIG
+ *   >
+ *     Example content
+ *   </BASE_CONFIG>
+ * )
+ */

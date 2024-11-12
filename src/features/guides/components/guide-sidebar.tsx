@@ -1,92 +1,96 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, Menu } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from 'ui'
-import type { GuideSection } from '../types/guide'
+import {
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger,
+	Sheet,
+	SheetContent,
+	SheetTrigger
+} from 'ui'
 
-type GuideSidebarProps = {
-	sections: GuideSection[]
+type DocSection = {
+	id: string
+	label: string
+	icon?: React.ComponentType<{ className?: string }>
+	subsections?: DocSection[]
+}
+
+type DocSidebarProps = {
+	sections: DocSection[]
 	className?: string
 	collapsible?: boolean
 	defaultOpenSections?: string[]
+	onSectionChange?: (sectionId: string) => void
 }
 
-export default function GuideSidebar({
+export default function DocSidebar({
 	sections,
 	className,
 	collapsible = true,
-	defaultOpenSections = []
-}: GuideSidebarProps) {
+	defaultOpenSections = [],
+	onSectionChange
+}: DocSidebarProps) {
 	const [activeSection, setActiveSection] = useState<string>(sections[0]?.id)
 	const [openSections, setOpenSections] = useState<Set<string>>(
 		new Set(defaultOpenSections)
 	)
+	const [lastActivated, setLastActivated] = useState<{
+		id: string
+		time: number
+	}>()
+	const DEBOUNCE_TIME = 2000 // 2 seconds between activations
 
 	useEffect(() => {
-		// Track all visible sections
-		const visibleSections = new Map<string, number>()
-
 		const observer = new IntersectionObserver(
 			(entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
-						visibleSections.set(
-							entry.target.id,
-							entry.intersectionRatio
-						)
-					} else {
-						visibleSections.delete(entry.target.id)
+				const now = Date.now()
+				let newActiveSection: string | null = null
+
+				// Sort entries by their position from top to bottom
+				const sortedEntries = entries
+					.filter((entry) => entry.isIntersecting)
+					.sort((a, b) => {
+						const rectA = a.boundingClientRect
+						const rectB = b.boundingClientRect
+						return rectA.top - rectB.top
+					})
+
+				// Take the first visible section
+				if (sortedEntries.length > 0) {
+					const entry = sortedEntries[0]
+					const shouldActivate =
+						!lastActivated ||
+						lastActivated.id !== entry.target.id ||
+						now - lastActivated.time > DEBOUNCE_TIME
+
+					if (shouldActivate) {
+						newActiveSection = entry.target.id
+						setLastActivated({ id: entry.target.id, time: now })
 					}
-				})
+				}
 
-				// Find the section that is most visible in the viewport
-				let maxRatio = 0
-				let mostVisibleSection = ''
+				// If no section is visible and we're at the top, activate first section
+				if (!newActiveSection && window.scrollY < 100) {
+					newActiveSection = sections[0]?.id
+				}
 
-				visibleSections.forEach((ratio, sectionId) => {
-					// Prioritize sections closer to the top of the viewport
-					const element = document.getElementById(sectionId)
-					const position = element?.getBoundingClientRect().top || 0
-					const adjustedRatio =
-						ratio * (1 + 1 / (Math.abs(position) + 1))
-
-					if (adjustedRatio > maxRatio) {
-						maxRatio = adjustedRatio
-						mostVisibleSection = sectionId
-					}
-				})
-
-				if (mostVisibleSection) {
-					setActiveSection(mostVisibleSection)
-
-					// Auto-expand parent sections
-					if (collapsible) {
-						const newOpenSections = new Set(openSections)
-						sections.forEach((section) => {
-							if (
-								section.subsections?.some(
-									(sub) => sub.id === mostVisibleSection
-								)
-							) {
-								newOpenSections.add(section.id)
-							}
-						})
-						setOpenSections(newOpenSections)
-					}
+				if (newActiveSection) {
+					setActiveSection(newActiveSection)
+					onSectionChange?.(newActiveSection)
 				}
 			},
 			{
-				// Adjust the root margin to start detecting slightly before the section enters the viewport
-				rootMargin: '-10% 0px -85% 0px',
-				// Use multiple thresholds for more granular visibility detection
-				threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+				rootMargin: '-10% 0px -10% 0px',
+				threshold: [0, 0.1]
 			}
 		)
 
-		// Helper function to recursively get all section IDs
-		const getAllSectionIds = (sections: GuideSection[]): string[] => {
+		// Helper function to get all section IDs
+		const getAllSectionIds = (sections: DocSection[]): string[] => {
 			return sections.reduce((acc: string[], section) => {
 				acc.push(section.id)
 				if (section.subsections?.length) {
@@ -96,7 +100,7 @@ export default function GuideSidebar({
 			}, [])
 		}
 
-		// Observe all sections and subsections
+		// Observe all sections
 		const allSectionIds = getAllSectionIds(sections)
 		allSectionIds.forEach((id) => {
 			const element = document.getElementById(id)
@@ -105,34 +109,60 @@ export default function GuideSidebar({
 			}
 		})
 
-		return () => {
-			observer.disconnect()
-			visibleSections.clear()
-		}
-	}, [sections, collapsible, openSections])
+		return () => observer.disconnect()
+	}, [sections, lastActivated, onSectionChange])
 
 	const scrollToSection = (sectionId: string) => {
 		const element = document.getElementById(sectionId)
 		if (element) {
 			element.scrollIntoView({ behavior: 'smooth' })
 			setActiveSection(sectionId)
+
+			// Open parent sections if needed
+			const newOpenSections = new Set(openSections)
+			sections.forEach((section) => {
+				if (
+					section.id === sectionId ||
+					section.subsections?.some((sub) => sub.id === sectionId)
+				) {
+					newOpenSections.add(section.id)
+				}
+			})
+			setOpenSections(newOpenSections)
+			onSectionChange?.(sectionId)
 		}
 	}
 
 	const toggleSection = (sectionId: string) => {
-		const newOpenSections = new Set(openSections)
-		if (newOpenSections.has(sectionId)) {
-			newOpenSections.delete(sectionId)
-		} else {
-			newOpenSections.add(sectionId)
-		}
-		setOpenSections(newOpenSections)
+		setOpenSections((prev) => {
+			const newSet = new Set(prev)
+			if (newSet.has(sectionId)) {
+				newSet.delete(sectionId)
+			} else {
+				newSet.add(sectionId)
+			}
+			return newSet
+		})
 	}
 
-	const renderSection = (section: GuideSection, depth = 0) => {
+	const renderSection = (section: DocSection, depth = 0) => {
 		const hasSubsections = section.subsections?.length > 0
 		const isOpen = openSections.has(section.id)
 		const isActive = activeSection === section.id
+
+		const activeStyles = isActive
+			? {
+					background: 'bg-neutral-800/75',
+					border: 'border-l-2 border-purple-500',
+					text: 'text-white font-medium',
+					shadow: 'shadow-[0_0_15px_rgba(168,85,247,0.15)]'
+				}
+			: {
+					background: '',
+					border: 'border-l-2 border-transparent',
+					text: 'text-neutral-400',
+					shadow: ''
+				}
 
 		if (hasSubsections && collapsible) {
 			return (
@@ -144,16 +174,18 @@ export default function GuideSidebar({
 					<CollapsibleTrigger className="w-full">
 						<div
 							className={cn(
-								'flex items-center gap-2 px-4 py-2 text-sm rounded-md transition-colors',
+								'flex items-center gap-2 px-4 py-3 text-sm rounded-md',
 								'hover:bg-neutral-800/50',
-								isActive
-									? 'bg-neutral-800/75 text-white font-medium'
-									: 'text-neutral-400'
+								'transition-all duration-300 ease-in-out my-0.5',
+								activeStyles.background,
+								activeStyles.border,
+								activeStyles.text,
+								activeStyles.shadow
 							)}
 						>
 							<ChevronRight
 								className={cn(
-									'h-4 w-4 transition-transform',
+									'h-4 w-4 transition-transform duration-300',
 									isOpen && 'transform rotate-90'
 								)}
 							/>
@@ -164,7 +196,7 @@ export default function GuideSidebar({
 						</div>
 					</CollapsibleTrigger>
 					<CollapsibleContent>
-						<div className="ml-4 border-l border-neutral-800">
+						<div className="ml-4 border-l border-neutral-800 my-1">
 							{section.subsections.map((subsection) =>
 								renderSection(subsection, depth + 1)
 							)}
@@ -179,11 +211,13 @@ export default function GuideSidebar({
 				key={section.id}
 				onClick={() => scrollToSection(section.id)}
 				className={cn(
-					'w-full flex items-center gap-2 text-left px-4 py-2 text-sm rounded-md transition-colors',
+					'w-full flex items-center gap-2 text-left px-4 py-3 text-sm rounded-md',
 					'hover:bg-neutral-800/50',
-					isActive
-						? 'bg-neutral-800/75 text-white font-medium'
-						: 'text-neutral-400',
+					'transition-all duration-300 ease-in-out my-0.5',
+					activeStyles.background,
+					activeStyles.border,
+					activeStyles.text,
+					activeStyles.shadow,
 					depth > 0 && 'text-sm'
 				)}
 			>
@@ -193,10 +227,10 @@ export default function GuideSidebar({
 		)
 	}
 
-	return (
+	const SidebarContent = () => (
 		<nav
 			className={cn(
-				'sticky top-20 max-h-[calc(100vh-5rem)] overflow-y-auto',
+				'max-h-[calc(100vh-5rem)] overflow-y-auto',
 				'scrollbar-thin scrollbar-thumb-neutral-800 scrollbar-track-transparent',
 				className
 			)}
@@ -207,5 +241,30 @@ export default function GuideSidebar({
 				))}
 			</ul>
 		</nav>
+	)
+
+	return (
+		<>
+			{/* Desktop Sidebar */}
+			<div className="hidden lg:block sticky top-20">
+				<SidebarContent />
+			</div>
+
+			{/* Mobile Sheet */}
+			<div className="lg:hidden fixed bottom-4 right-4 z-50">
+				<Sheet>
+					<SheetTrigger asChild>
+						<button className="p-3 rounded-full bg-purple-500 text-white shadow-lg hover:bg-purple-600 transition-colors">
+							<Menu className="h-6 w-6" />
+						</button>
+					</SheetTrigger>
+					<SheetContent side="left" className="w-80 p-0">
+						<div className="h-full bg-neutral-900/95 backdrop-blur-sm">
+							<SidebarContent />
+						</div>
+					</SheetContent>
+				</Sheet>
+			</div>
+		</>
 	)
 }
