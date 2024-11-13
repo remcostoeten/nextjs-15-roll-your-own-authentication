@@ -1,0 +1,183 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	:root {
+		--background: 0 0% 100%;
+		--foreground: 240 10% 3.9%;
+		--card: 0 0% 100%;
+		--card-foreground: 240 10% 3.9%;
+		--popover: 0 0% 100%;
+		--popover-foreground: 240 10% 3.9%;
+		--primary: 240 5.9% 10%;
+		--primary-foreground: 0 0% 98%;
+		--secondary: 240 4.8% 95.9%;
+		--secondary-foreground: 240 5.9% 10%;
+		--muted: 240 4.8% 95.9%;
+		--muted-foreground: 240 3.8% 46.1%;
+		--accent: 240 4.8% 95.9%;
+		--accent-foreground: 240 5.9% 10%;
+		--destructive: 0 84.2% 60.2%;
+		--destructive-foreground: 0 0% 98%;
+		--border: 240 5.9% 90%;
+		--input: 240 5.9% 90%;
+		--ring: 240 5.9% 10%;
+		--radius: 0.5rem;
+		--app-font-size: 16px;
+		--app-spacing: 1;
+	}
+
+	.dark {
+		--background: 240 10% 3.9%;
+		--foreground: 0 0% 98%;
+		--card: 240 10% 3.9%;
+		--card-foreground: 0 0% 98%;
+		--popover: 240 10% 3.9%;
+		--popover-foreground: 0 0% 98%;
+		--primary: 0 0% 98%;
+		--primary-foreground: 240 5.9% 10%;
+		--secondary: 240 3.7% 15.9%;
+		--secondary-foreground: 0 0% 98%;
+		--muted: 240 3.7% 15.9%;
+		--muted-foreground: 240 5% 64.9%;
+		--accent: 240 4.8% 15.9%;
+		--accent-foreground: 0 0% 98%;
+		--destructive: 0 62.8% 30.6%;
+		--destructive-foreground: 0 0% 98%;
+		--border: 240 3.7% 15.9%;
+		--input: 240 3.7% 15.9%;
+		--ring: 240 4.9% 83.9%;
+	}
+
+	.dark-blue {
+		--background: 240 10% 3.9%;
+		--foreground: 0 0% 98%;
+		--card: 24 9.8% 10%;
+		--card-foreground: 0 0% 95%;
+		--popover: 0 0% 9%;
+		--popover-foreground: 0 0% 95%;
+		--primary: 217.2 91.2% 59.8%;
+		--primary-foreground: 222.2 47.4% 11.2%;
+		--secondary: 217.2 32.6% 17.5%;
+		--secondary-foreground: 210 40% 98%;
+		--muted: 217.2 32.6% 17.5%;
+		--muted-foreground: 215 20.2% 65.1%;
+		--accent: 217.2 32.6% 17.5%;
+		--accent-foreground: 210 40% 98%;
+		--destructive: 0 62.8% 30.6%;
+		--destructive-foreground: 210 40% 98%;
+		--border: 217.2 32.6% 17.5%;
+		--input: 217.2 32.6% 17.5%;
+		--ring: 224.3 76.3% 48%;
+	}
+
+	.monokai {
+		--background: 240 3% 15%;
+		--foreground: 60 30% 96%;
+		--card: 240 3% 15%;
+		--card-foreground: 60 30% 96%;
+		--popover: 240 3% 15%;
+		--popover-foreground: 60 30% 96%;
+		--primary: 80 60% 50%;
+		--primary-foreground: 0 0% 100%;
+		--secondary: 240 3% 25%;
+		--secondary-foreground: 60 30% 96%;
+		--muted: 240 3% 20%;
+		--muted-foreground: 240 5% 64%;
+		--accent: 240 3% 25%;
+		--accent-foreground: 60 30% 96%;
+		--destructive: 0 60% 50%;
+		--destructive-foreground: 60 30% 96%;
+		--border: 240 3% 25%;
+		--input: 240 3% 25%;
+		--ring: 80 60% 50%;
+	}
+
+	.dracula {
+		--background: 231 15% 18%;
+		--foreground: 60 30% 96%;
+		--card: 231 15% 18%;
+		--card-foreground: 60 30% 96%;
+		--popover: 231 15% 18%;
+		--popover-foreground: 60 30% 96%;
+		--primary: 326 100% 74%;
+		--primary-foreground: 0 0% 100%;
+		--secondary: 231 15% 28%;
+		--secondary-foreground: 60 30% 96%;
+		--muted: 231 15% 23%;
+		--muted-foreground: 231 15% 74%;
+		--accent: 231 15% 28%;
+		--accent-foreground: 60 30% 96%;
+		--destructive: 0 100% 67%;
+		--destructive-foreground: 60 30% 96%;
+		--border: 231 15% 28%;
+		--input: 231 15% 28%;
+		--ring: 326 100% 74%;
+	}
+
+	.forest {
+		--background: 120 15% 14%;
+		--foreground: 120 30% 96%;
+		--card: 120 15% 14%;
+		--card-foreground: 120 30% 96%;
+		--popover: 120 15% 14%;
+		--popover-foreground: 120 30% 96%;
+		--primary: 120 40% 50%;
+		--primary-foreground: 0 0% 100%;
+		--secondary: 120 15% 24%;
+		--secondary-foreground: 120 30% 96%;
+		--muted: 120 15% 19%;
+		--muted-foreground: 120 15% 74%;
+		--accent: 120 15% 24%;
+		--accent-foreground: 120 30% 96%;
+		--destructive: 0 60% 50%;
+		--destructive-foreground: 120 30% 96%;
+		--border: 120 15% 24%;
+		--input: 120 15% 24%;
+		--ring: 120 40% 50%;
+	}
+
+	.dracula {
+		color-scheme: dark;
+	}
+
+	.monokai {
+		color-scheme: dark;
+	}
+
+	.forest {
+		color-scheme: dark;
+	}
+}
+
+@layer base {
+	* {
+		@apply border-border;
+	}
+	body {
+		@apply bg-background text-foreground;
+	}
+	html {
+		font-size: var(--app-font-size);
+	}
+}
+
+.app-spacing {
+	gap: calc(1rem * var(--app-spacing));
+	padding: calc(1rem * var(--app-spacing));
+	margin: calc(1rem * var(--app-spacing));
+}
+
+/* Additional utility classes */
+.gap-dynamic {
+	gap: calc(1rem * var(--app-spacing));
+}
+
+.p-dynamic {
+	padding: calc(1rem * var(--app-spacing));
+}
+
+.m-dynamic {
+	margin: calc(1rem * var(--app-spacing));
+}
