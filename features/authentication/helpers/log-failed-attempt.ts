@@ -45,7 +45,7 @@ export async function logFailedAttempt({
 			message: 'Login attempt failed',
 			error: error || 'Invalid credentials',
 			metadata: {
-				attemptedAt: new Date().toISOString()
+				attemptedAt: new Date().toString()
 			}
 		}
 

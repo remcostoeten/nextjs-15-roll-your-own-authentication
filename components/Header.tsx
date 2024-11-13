@@ -1,10 +1,10 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { ModeToggle } from '@/src/components/theme/mode-toggle'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useCallback } from 'react'
+import { ThemeSwitcher } from './theme-switcher'
 import UserMenu from './user-menu'
 
 type NavItem = {
@@ -70,8 +70,8 @@ export default function Header({ user }: HeaderProps) {
 						))}
 					</nav>
 				</div>
-				<div className="flex flex-1 items-center justify-end space-x-2">
-					<ModeToggle />
+				<div className="flex flex-1 items-center justify-end space-x-6">
+					<ThemeSwitcher />
 					{renderAuthButtons()}
 				</div>
 			</div>

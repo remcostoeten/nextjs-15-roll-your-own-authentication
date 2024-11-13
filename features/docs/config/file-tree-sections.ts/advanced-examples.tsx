@@ -113,7 +113,7 @@ export function MediaManager() {
       delete newMetadata[source]
       newMetadata[target] = {
         ...fileMetadata,
-        lastModified: new Date().toISOString()
+        lastModified: new Date().toString()
       }
       return newMetadata
     })

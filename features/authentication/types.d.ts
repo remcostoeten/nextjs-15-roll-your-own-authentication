@@ -65,3 +65,49 @@ export interface SessionInfo {
 	deviceInfo: DeviceInfo
 	lastLocation: LocationInfo
 }
+
+export type UserSession = {
+	id: string
+	deviceInfo: {
+		browser: string | null
+		os: string | null
+		isMobile: boolean
+	}
+	lastActive: Date
+	lastLocation?: {
+		city?: string
+		country?: string
+	}
+	token: string
+}
+
+export type UserData = {
+	id: number
+	email: string
+	role: string
+	emailVerified: boolean
+	lastLoginAttempt: Date | null
+	createdAt: Date
+	passwordChangedAt: Date | null
+	currentSessionToken: string | null
+	lastLocation: {
+		city?: string
+		country?: string
+	} | null
+	lastDevice: {
+		browser: string | null
+		os: string | null
+		isMobile: boolean
+	} | null
+	sessions: UserSession[]
+	recentActivity: {
+		type: string
+		timestamp: Date
+		details: {
+			message?: string
+			error?: string
+			metadata?: Record<string, unknown>
+		} | null
+		status: string
+	}[]
+}

@@ -3,8 +3,8 @@ import { RootMetadata as metadata } from '@/config/metadata'
 import { ThemeProvider } from 'next-themes'
 import Header from '../components/Header'
 import Notice from '../components/notification-bar/notice'
-import AuthPulser from '../features/authentication/helpers/auth-pulser'
 import AutoFillButton from '../features/authentication/helpers/auto-fill-form'
+import SessionIndicator from '../features/authentication/helpers/session-indicator'
 import './globals.css'
 import { getUserData } from './server/queries'
 
@@ -31,7 +31,7 @@ export default async function RootLayout({
 					<AutoFillButton />
 					<Notice />
 					{children}
-					<AuthPulser />
+					<SessionIndicator />
 				</ThemeProvider>
 			</body>
 		</html>

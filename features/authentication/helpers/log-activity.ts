@@ -49,7 +49,7 @@ export async function logActivity({
 }: ActivityLogProps): Promise<void> {
 	try {
 		const deviceInfo = await getDeviceInfo()
-		const timestamp = new Date().toISOString()
+		const timestamp = new Date().toString()
 
 		const activityData = {
 			userId,

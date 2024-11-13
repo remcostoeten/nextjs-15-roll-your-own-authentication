@@ -1,7 +1,15 @@
 'use client'
 
-import { User } from 'next-auth'
-import { Card, CardContent, CardHeader, CardTitle } from 'ui'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+
+type User = {
+	id: number
+	email: string
+	role: string
+	emailVerified: boolean
+	lastLoginAttempt: Date | null
+	createdAt: Date
+}
 
 type DashboardStatsProps = {
 	user: User

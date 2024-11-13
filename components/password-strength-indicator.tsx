@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@/lib/utils'
+import { cn } from 'helpers'
 import { useEffect, useState } from 'react'
 
 type PasswordStrength = {

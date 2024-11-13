@@ -11,7 +11,7 @@ import { featureConfig } from '@/config/features.config'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Toaster, toast } from 'react-hot-toast'
-import { ZodError } from 'zod'
+import { z } from 'zod'
 
 export default function RegisterPage() {
 	const router = useRouter()
@@ -22,14 +22,16 @@ export default function RegisterPage() {
 
 	const validateField = (name: string, value: string) => {
 		try {
-			if (name === 'password') {
-				registerSchema.shape.password.parse(value)
-			} else if (name === 'email') {
-				registerSchema.shape.email.parse(value)
+			const fieldSchema = {
+				email: z.string().email('Invalid email address'),
+				password: registerSchema._def.schema.shape.password,
+				confirmPassword: z.string().min(1, 'Password confirmation is required')
 			}
+
+			fieldSchema[name as keyof typeof fieldSchema].parse(value)
 			setValidationErrors(prev => ({ ...prev, [name]: '' }))
 		} catch (error) {
-			if (error instanceof ZodError) {
+			if (error instanceof z.ZodError) {
 				setValidationErrors(prev => ({
 					...prev,
 					[name]: error.errors[0].message
