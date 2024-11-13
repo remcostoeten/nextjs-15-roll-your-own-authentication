@@ -75,7 +75,7 @@ export default function NotificationBar({
 						transition={{ duration: 0.2 }}
 						className={cn(
 							className,
-							'fixed left-0 py-6 flex items-center backdrop-blur-xs right-0 dark:bg-black/50 backdrop-blur-sm border-[#969799] dark:border-white/10',
+							'fixed left-0 py-1 flex items-center backdrop-blur-xs right-0 dark:bg-black/50 backdrop-blur-sm border-[#969799] dark:border-white/10',
 							position === 'bottom'
 								? 'bottom-0 border-t'
 								: 'top-0 border-b'

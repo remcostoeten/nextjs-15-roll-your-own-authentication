@@ -6,14 +6,17 @@ import Notice from '../components/notification-bar/notice'
 import AuthPulser from '../features/authentication/helpers/auth-pulser'
 import AutoFillButton from '../features/authentication/helpers/auto-fill-form'
 import './globals.css'
+import { getUserData } from './server/queries'
 
 export { metadata }
 
-export default function RootLayout({
+export default async function RootLayout({
 	children
 }: Readonly<{
 	children: React.ReactNode
 }>) {
+	const user = await getUserData()
+
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body
@@ -24,7 +27,7 @@ export default function RootLayout({
 					enableSystem={false}
 					themes={['dark']}
 				>
-					<Header />
+					<Header user={user} />
 					<AutoFillButton />
 					<Notice />
 					{children}

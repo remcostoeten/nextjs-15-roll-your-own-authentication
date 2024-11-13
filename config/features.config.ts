@@ -8,6 +8,15 @@ export interface FeatureConfig {
 		cookieName: string
 		sessionDuration: number
 		maxLoginAttempts: number
+		passwordValidation: {
+			enabled: FeatureFlag
+			minLength: number
+			requireNumbers: boolean
+			requireSpecialChars: boolean
+			requireUppercase: boolean
+			requireLowercase: boolean
+			minimumStrength: number
+		}
 	}
 	profiles: {
 		enabled: FeatureFlag
@@ -37,7 +46,16 @@ const defaultConfig: FeatureConfig = {
 		enabled: true,
 		cookieName: 'auth_token',
 		sessionDuration: HOURS.ONE,
-		maxLoginAttempts: 5
+		maxLoginAttempts: 5,
+		passwordValidation: {
+			enabled: true,
+			minLength: 8,
+			requireNumbers: true,
+			requireSpecialChars: true,
+			requireUppercase: true,
+			requireLowercase: true,
+			minimumStrength: 2
+		}
 	},
 	profiles: {
 		enabled: true,
@@ -90,7 +108,16 @@ export const featureConfig: FeatureConfig = {
 		maxLoginAttempts: parseEnvNumber(
 			process.env.AUTH_MAX_LOGIN_ATTEMPTS,
 			defaultConfig.auth.maxLoginAttempts
-		)
+		),
+		passwordValidation: {
+			enabled: parseEnvBoolean(process.env.FEATURE_PASSWORD_VALIDATION, true),
+			minLength: parseEnvNumber(process.env.PASSWORD_MIN_LENGTH, defaultConfig.auth.passwordValidation.minLength),
+			requireNumbers: parseEnvBoolean(process.env.PASSWORD_REQUIRE_NUMBERS, defaultConfig.auth.passwordValidation.requireNumbers),
+			requireSpecialChars: parseEnvBoolean(process.env.PASSWORD_REQUIRE_SPECIAL, defaultConfig.auth.passwordValidation.requireSpecialChars),
+			requireUppercase: parseEnvBoolean(process.env.PASSWORD_REQUIRE_UPPERCASE, defaultConfig.auth.passwordValidation.requireUppercase),
+			requireLowercase: parseEnvBoolean(process.env.PASSWORD_REQUIRE_LOWERCASE, defaultConfig.auth.passwordValidation.requireLowercase),
+			minimumStrength: parseEnvNumber(process.env.PASSWORD_MIN_STRENGTH, defaultConfig.auth.passwordValidation.minimumStrength)
+		}
 	},
 	profiles: {
 		enabled: !parseEnvBoolean(process.env.FEATURE_PROFILES_ENABLED, false),

@@ -1,18 +1,52 @@
 'use client'
 
+import { registerSchema } from '@/app/server/models'
 import { register } from '@/app/server/mutations'
+import PasswordStrengthIndicator from '@/components/password-strength-indicator'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { featureConfig } from '@/config/features.config'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Toaster, toast } from 'react-hot-toast'
+import { ZodError } from 'zod'
 
 export default function RegisterPage() {
 	const router = useRouter()
 	const [isLoading, setIsLoading] = useState(false)
 	const [error, setError] = useState<string>()
+	const [password, setPassword] = useState('')
+	const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
+
+	const validateField = (name: string, value: string) => {
+		try {
+			if (name === 'password') {
+				registerSchema.shape.password.parse(value)
+			} else if (name === 'email') {
+				registerSchema.shape.email.parse(value)
+			}
+			setValidationErrors(prev => ({ ...prev, [name]: '' }))
+		} catch (error) {
+			if (error instanceof ZodError) {
+				setValidationErrors(prev => ({
+					...prev,
+					[name]: error.errors[0].message
+				}))
+			}
+		}
+	}
+
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target
+		if (name === 'password') {
+			setPassword(value)
+		}
+		if (featureConfig.auth.passwordValidation.enabled) {
+			validateField(name, value)
+		}
+	}
 
 	async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault()
@@ -75,7 +109,12 @@ export default function RegisterPage() {
 								placeholder="name@example.com"
 								required
 								disabled={isLoading}
+								onChange={handleInputChange}
+								className={validationErrors.email ? 'border-red-500' : ''}
 							/>
+							{validationErrors.email && (
+								<p className="text-xs text-red-500">{validationErrors.email}</p>
+							)}
 						</div>
 
 						<div className="space-y-2">
@@ -86,7 +125,19 @@ export default function RegisterPage() {
 								type="password"
 								required
 								disabled={isLoading}
+								value={password}
+								onChange={handleInputChange}
+								className={validationErrors.password ? 'border-red-500' : ''}
 							/>
+							{validationErrors.password && (
+								<p className="text-xs text-red-500">{validationErrors.password}</p>
+							)}
+							{featureConfig.auth.passwordValidation.enabled && (
+								<PasswordStrengthIndicator 
+									password={password} 
+									className="mt-2" 
+								/>
+							)}
 						</div>
 
 						<div className="space-y-2">

@@ -1,8 +1,11 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { ModeToggle } from '@/src/components/theme/mode-toggle'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useCallback } from 'react'
+import UserMenu from './user-menu'
 
 type NavItem = {
 	title: string
@@ -16,8 +19,33 @@ const navItems: NavItem[] = [
 	{ title: 'Docs', href: '/docs' }
 ]
 
-export default function Header() {
+type HeaderProps = {
+	user?: {
+		email: string
+		role?: string
+		avatarUrl?: string | null
+	} | null
+}
+
+export default function Header({ user }: HeaderProps) {
 	const pathname = usePathname()
+
+	const renderAuthButtons = useCallback(() => {
+		if (user) {
+			return <UserMenu user={user} />
+		}
+
+		return (
+			<nav className="flex items-center space-x-2">
+				<Button variant="ghost" asChild>
+					<Link href="/login">Sign in</Link>
+				</Button>
+				<Button asChild>
+					<Link href="/register">Sign up</Link>
+				</Button>
+			</nav>
+		)
+	}, [user])
 
 	return (
 		<header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -43,14 +71,8 @@ export default function Header() {
 					</nav>
 				</div>
 				<div className="flex flex-1 items-center justify-end space-x-2">
-					<nav className="flex items-center space-x-2">
-						<Button variant="ghost" asChild>
-							<Link href="/login">Sign in</Link>
-						</Button>
-						<Button asChild>
-							<Link href="/register">Sign up</Link>
-						</Button>
-					</nav>
+					<ModeToggle />
+					{renderAuthButtons()}
 				</div>
 			</div>
 		</header>
