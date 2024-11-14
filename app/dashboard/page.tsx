@@ -1,4 +1,9 @@
-import { getUserData } from '@/app/server/queries'
+import {
+	getRecentActivity,
+	getSessionCount,
+	getUserData
+} from '@/app/server/queries'
+import DashboardStats from '@/components/dashboard/dashboard-stats'
 import { CollapsibleSection } from '@/components/ui/collapsible-section'
 import { formatDate } from 'helpers'
 import {
@@ -23,6 +28,17 @@ export default async function DashboardPage() {
 		redirect('/login?callbackUrl=/dashboard')
 	}
 
+	const [sessionCount, recentActivity] = await Promise.all([
+		getSessionCount(user.id),
+		getRecentActivity(user.id)
+	])
+
+	const formattedActivity = recentActivity.map((activity) => ({
+		type: activity.type,
+		timestamp: activity.createdAt,
+		details: activity.details?.message || activity.status
+	}))
+
 	return (
 		<div className="min-h-screen bg-gradient-to-b from-background to-background/80">
 			<header className="sticky top-0 z-40 backdrop-blur-xl border-b bg-background/60">
@@ -37,7 +53,11 @@ export default async function DashboardPage() {
 			</header>
 
 			<main className="container py-8 space-y-8">
-				{/* Quick Stats */}
+				<DashboardStats
+					user={user}
+					sessionCount={sessionCount}
+					recentActivity={formattedActivity}
+				/>
 				<div className="grid grid-cols-1 md:grid-cols-4 gap-4">
 					<div className="group hover:shadow-lg transition-all duration-200 rounded-xl border bg-card p-6 backdrop-blur-sm">
 						<div className="flex items-center gap-4">

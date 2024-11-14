@@ -1,6 +1,7 @@
 import {
 	boolean,
 	integer,
+	json,
 	pgTable,
 	serial,
 	text,
@@ -20,5 +21,17 @@ export const users = pgTable('users', {
 	passwordResetToken: text('password_reset_token'),
 	passwordResetExpires: timestamp('password_reset_expires'),
 	createdAt: timestamp('created_at').defaultNow(),
-	updatedAt: timestamp('updated_at').defaultNow()
+	updatedAt: timestamp('updated_at').defaultNow(),
+	securityScore: integer('security_score').default(0),
+	loginStreak: integer('login_streak').default(0),
+	totalLogins: integer('total_logins').default(0),
+	failedLoginAttempts: integer('failed_login_attempts').default(0),
+	lastLocation: json('last_location').$type<{
+		city?: string
+		country?: string
+	}>(),
+	lastDevice: json('last_device').$type<{
+		browser?: string
+		os?: string
+	}>()
 })
