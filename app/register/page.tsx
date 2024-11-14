@@ -18,21 +18,25 @@ export default function RegisterPage() {
 	const [isLoading, setIsLoading] = useState(false)
 	const [error, setError] = useState<string>()
 	const [password, setPassword] = useState('')
-	const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
+	const [validationErrors, setValidationErrors] = useState<
+		Record<string, string>
+	>({})
 
 	const validateField = (name: string, value: string) => {
 		try {
 			const fieldSchema = {
 				email: z.string().email('Invalid email address'),
 				password: registerSchema._def.schema.shape.password,
-				confirmPassword: z.string().min(1, 'Password confirmation is required')
+				confirmPassword: z
+					.string()
+					.min(1, 'Password confirmation is required')
 			}
 
 			fieldSchema[name as keyof typeof fieldSchema].parse(value)
-			setValidationErrors(prev => ({ ...prev, [name]: '' }))
+			setValidationErrors((prev) => ({ ...prev, [name]: '' }))
 		} catch (error) {
 			if (error instanceof z.ZodError) {
-				setValidationErrors(prev => ({
+				setValidationErrors((prev) => ({
 					...prev,
 					[name]: error.errors[0].message
 				}))
@@ -112,10 +116,16 @@ export default function RegisterPage() {
 								required
 								disabled={isLoading}
 								onChange={handleInputChange}
-								className={validationErrors.email ? 'border-red-500' : ''}
+								className={
+									validationErrors.email
+										? 'border-red-500'
+										: ''
+								}
 							/>
 							{validationErrors.email && (
-								<p className="text-xs text-red-500">{validationErrors.email}</p>
+								<p className="text-xs text-red-500">
+									{validationErrors.email}
+								</p>
 							)}
 						</div>
 
@@ -129,15 +139,21 @@ export default function RegisterPage() {
 								disabled={isLoading}
 								value={password}
 								onChange={handleInputChange}
-								className={validationErrors.password ? 'border-red-500' : ''}
+								className={
+									validationErrors.password
+										? 'border-red-500'
+										: ''
+								}
 							/>
 							{validationErrors.password && (
-								<p className="text-xs text-red-500">{validationErrors.password}</p>
+								<p className="text-xs text-red-500">
+									{validationErrors.password}
+								</p>
 							)}
 							{featureConfig.auth.passwordValidation.enabled && (
-								<PasswordStrengthIndicator 
-									password={password} 
-									className="mt-2" 
+								<PasswordStrengthIndicator
+									password={password}
+									className="mt-2"
 								/>
 							)}
 						</div>

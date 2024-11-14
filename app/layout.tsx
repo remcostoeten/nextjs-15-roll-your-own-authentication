@@ -1,6 +1,7 @@
 import { geistMono, geistSans } from '@/config/fonts'
 import { RootMetadata as metadata } from '@/config/metadata'
 import { ThemeProvider } from 'next-themes'
+import { Toaster } from 'react-hot-toast'
 import Header from '../components/Header'
 import Notice from '../components/notification-bar/notice'
 import AutoFillButton from '../features/authentication/helpers/auto-fill-form'
@@ -29,7 +30,7 @@ export default async function RootLayout({
 				>
 					<Header user={user} />
 					<AutoFillButton />
-					<Notice />
+					<Toaster position="top-center" /> <Notice />
 					{children}
 					<SessionIndicator />
 				</ThemeProvider>

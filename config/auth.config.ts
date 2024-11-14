@@ -1,4 +1,5 @@
 import { MINUTES } from '@/constants'
+import { env } from '@/env/server'
 import {
 	ActivityLogType,
 	ActivityStatus
@@ -10,7 +11,7 @@ export const authConfig = {
 
 	JWT: {
 		ALGORITHM: 'HS256',
-		SECRET: process.env.JWT_SECRET || 'your-fallback-secret',
+		SECRET: env.JWT_SECRET,
 		EXPIRATION: '24h',
 		REFRESH_THRESHOLD: MINUTES.THIRTY
 	},

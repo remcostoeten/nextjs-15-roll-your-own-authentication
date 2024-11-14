@@ -60,7 +60,10 @@ export async function register(
 
 		return { success: true, userId: result.id }
 	} catch (error) {
+		console.log(error)
+
 		if (error instanceof z.ZodError) {
+			console.log('d')
 			return { success: false, error: error.errors[0].message }
 		}
 		console.error('Registration error:', error)

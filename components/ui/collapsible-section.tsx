@@ -19,10 +19,8 @@ export function CollapsibleSection({
 	title,
 	children,
 	icon,
-	defaultOpen = true,
 	className
 }: CollapsibleSectionProps) {
-	// For hydration safety
 	const [mounted, setMounted] = useState(false)
 	const { isSectionClosed, toggleSection } = useUIStore()
 

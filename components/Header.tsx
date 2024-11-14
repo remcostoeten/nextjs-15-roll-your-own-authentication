@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import Logo from '@/shared/components/theme/logo'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useCallback } from 'react'
@@ -50,10 +51,8 @@ export default function Header({ user }: HeaderProps) {
 	return (
 		<header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
 			<div className="container flex h-14 items-center">
-				<div className="mr-4 flex">
-					<Link href="/" className="mr-6 flex items-center space-x-2">
-						<span className="font-bold">Auth System</span>
-					</Link>
+				<div className="mr-4 gap-8 flex">
+					<Logo size="sm" hasLink={true} />
 					<nav className="flex items-center space-x-6 text-sm font-medium">
 						{navItems.map((item) => (
 							<Link

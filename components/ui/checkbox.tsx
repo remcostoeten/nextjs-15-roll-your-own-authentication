@@ -1,13 +1,13 @@
-import { cn } from 'helpers';
-import type { HTMLProps } from 'react';
+import { cn } from 'helpers'
+import type { HTMLProps } from 'react'
 
 const checkbox = ({
 	label,
 	...props
 }: {
-	label: string;
+	label: string
 } & HTMLProps<HTMLInputElement>) => {
-	const lowerCaseLabel = label.toLowerCase();
+	const lowerCaseLabel = label.toLowerCase()
 	return (
 		<label
 			className="flex w-fit cursor-pointer items-center rounded-lg border border-transparent px-3 py-2 transition-all hover:bg-blue-500/10 focus:bg-blue-500/30 active:border-blue-500/30 active:bg-blue-500/30"
@@ -16,7 +16,7 @@ const checkbox = ({
 			<span className="inline-flex items-center">
 				<span className="relative flex cursor-pointer items-center">
 					<input
-						className={cn("peer size-5 opacity-0", props.className)}
+						className={cn('peer size-5 opacity-0', props.className)}
 						id={lowerCaseLabel}
 						type="checkbox"
 						{...props}
@@ -28,7 +28,7 @@ const checkbox = ({
 				</span>
 			</span>
 		</label>
-	);
-};
+	)
+}
 
-export default checkbox;
+export default checkbox

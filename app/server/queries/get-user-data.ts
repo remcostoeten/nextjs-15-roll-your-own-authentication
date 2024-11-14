@@ -1,111 +1,158 @@
 'use server'
 
-import { JWT_SECRET } from '@/app/server/utilities'
-import { activityLogs, sessions, users } from '@/features/authentication'
-import { UserData, UserSession } from '@/features/authentication/types'
+import { users } from '@/features/authentication'
+import {
+	DeviceInfo,
+	SecurityEvent,
+	UserLocation,
+	UserProfile
+} from '@/features/authentication/types'
 import { db } from 'db'
-import { desc, eq } from 'drizzle-orm'
-import { jwtVerify } from 'jose'
+import { eq } from 'drizzle-orm'
 import { cookies } from 'next/headers'
+import { verifyJWT } from '../utilities'
 
-export async function getUserData(): Promise<UserData | null> {
-	const token = (await cookies()).get('auth_token')?.value
-	if (!token) return null
-
+export async function getUserData(): Promise<UserProfile | null> {
 	try {
-		const verified = await jwtVerify(token, JWT_SECRET, {
-			clockTolerance: 300
-		})
+		const cookieStore = await cookies()
+		const token = cookieStore.get('auth_token')?.value
 
-		const userId = verified.payload.userId as number
+		if (!token) return null
 
-		// Get user data
-		const [userData] = await db
-			.select({
-				id: users.id,
-				email: users.email,
-				role: users.role,
-				emailVerified: users.emailVerified,
-				lastLoginAttempt: users.lastLoginAttempt,
-				createdAt: users.createdAt,
-				passwordChangedAt: users.passwordChangedAt,
-				currentSessionToken: sessions.token,
-				lastLocation: sessions.lastLocation,
-				lastDevice: sessions.deviceInfo
-			})
+		const payload = (await verifyJWT(token)) as { userId: number }
+		if (!payload) return null
+
+		// Get base user data from DB
+		const [dbUser] = await db
+			.select()
 			.from(users)
-			.leftJoin(sessions, eq(users.id, sessions.userId))
-			.where(eq(users.id, userId))
-			.limit(1)
+			.where(eq(users.id, payload.userId))
 
-		if (!userData) {
-			;(await cookies()).delete('auth_token')
-			return null
+		if (!dbUser) return null
+
+		// Simulate additional user data that would normally come from various tables
+		const mockLocation: UserLocation = {
+			city: 'Amsterdam',
+			country: 'Netherlands',
+			region: 'North Holland',
+			latitude: 52.3676,
+			longitude: 4.9041,
+			lastUpdated: new Date()
 		}
 
-		// Get all active sessions with proper type transformation
-		const activeSessions = await db
-			.select({
-				id: sessions.id,
-				token: sessions.token,
-				deviceInfo: sessions.deviceInfo,
-				lastActive: sessions.lastActive,
-				lastLocation: sessions.lastLocation
-			})
-			.from(sessions)
-			.where(eq(sessions.userId, userId))
+		const mockDevice: DeviceInfo = {
+			browser: 'Chrome',
+			os: 'Windows 11',
+			device: 'Desktop',
+			isMobile: false,
+			lastUsed: new Date()
+		}
 
-		// Transform sessions to match UserSession type
-		const transformedSessions: UserSession[] = activeSessions.map(session => ({
-			id: String(session.id),
-			deviceInfo: {
-				browser: session.deviceInfo?.browser || null,
-				os: session.deviceInfo?.os || null,
-				isMobile: Boolean(session.deviceInfo?.isMobile)
+		const recentActivity: SecurityEvent[] = [
+			{
+				type: 'login',
+				timestamp: new Date(),
+				details: {
+					message: 'Successful login from Amsterdam, Netherlands',
+					location: mockLocation,
+					device: mockDevice,
+					success: true
+				},
+				ipAddress: '192.168.1.1'
 			},
-			lastActive: session.lastActive || new Date(),
-			lastLocation: session.lastLocation ? {
-				city: session.lastLocation.city,
-				country: session.lastLocation.country
-			} : undefined,
-			token: session.token || ''
-		}))
+			{
+				type: 'two_factor_enabled',
+				timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000),
+				details: {
+					message: 'Two-factor authentication enabled',
+					success: true
+				}
+			},
+			{
+				type: 'password_change',
+				timestamp: new Date(Date.now() - 48 * 60 * 60 * 1000),
+				details: {
+					message: 'Password successfully changed',
+					location: mockLocation,
+					success: true
+				}
+			},
+			{
+				type: 'failed_login',
+				timestamp: new Date(Date.now() - 72 * 60 * 60 * 1000),
+				details: {
+					message: 'Failed login attempt from unknown device',
+					location: {
+						city: 'Unknown',
+						country: 'Russia',
+						lastUpdated: new Date(Date.now() - 72 * 60 * 60 * 1000)
+					},
+					success: false
+				},
+				ipAddress: '10.0.0.1'
+			}
+		]
 
-		// Fetch recent activities
-		const recentActivity = await db
-			.select({
-				type: activityLogs.type,
-					timestamp: activityLogs.createdAt,
-					details: activityLogs.details,
-					status: activityLogs.status
-			})
-			.from(activityLogs)
-			.where(eq(activityLogs.userId, userId))
-			.orderBy(desc(activityLogs.createdAt))
-			.limit(5)
+		const devices: DeviceInfo[] = [
+			mockDevice,
+			{
+				browser: 'Safari',
+				os: 'iOS 17',
+				device: 'iPhone 15 Pro',
+				isMobile: true,
+				lastUsed: new Date(Date.now() - 24 * 60 * 60 * 1000)
+			},
+			{
+				browser: 'Firefox',
+				os: 'macOS Sonoma',
+				device: 'MacBook Pro',
+				isMobile: false,
+				lastUsed: new Date(Date.now() - 48 * 60 * 60 * 1000)
+			}
+		]
 
-		return {
-			...userData,
-			emailVerified: Boolean(userData.emailVerified),
-			createdAt: userData.createdAt || new Date(),
-			passwordChangedAt: userData.passwordChangedAt || null,
-			lastLoginAttempt: userData.lastLoginAttempt || null,
-			lastDevice: userData.lastDevice ? {
-				browser: userData.lastDevice.browser || null,
-				os: userData.lastDevice.os || null,
-				isMobile: Boolean(userData.lastDevice.isMobile)
-			} : null,
-			sessions: transformedSessions,
-			recentActivity: recentActivity.map(activity => ({
-				type: activity.type,
-				timestamp: activity.timestamp,
-				details: activity.details || null,
-				status: activity.status as 'success' | 'error' | 'pending'
-				}))
+		const trustedLocations: UserLocation[] = [
+			mockLocation,
+			{
+				city: 'Utrecht',
+				country: 'Netherlands',
+				region: 'Utrecht',
+				latitude: 52.0907,
+				longitude: 5.1214,
+				lastUpdated: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+			}
+		]
+
+		// Combine real and mock data
+		const enrichedUser: UserProfile = {
+			id: dbUser.id,
+			email: dbUser.email,
+			name: dbUser.name || undefined,
+			role: dbUser.role as 'user' | 'admin',
+			createdAt: dbUser.createdAt,
+			emailVerified: dbUser.emailVerified,
+			twoFactorEnabled: dbUser.twoFactorEnabled,
+			lastLoginAttempt: new Date(),
+			lastLocation: mockLocation,
+			lastDevice: mockDevice,
+			recentActivity,
+			securityScore: 85,
+			loginStreak: 7,
+			totalLogins: 42,
+			failedLoginAttempts: 1,
+			devices,
+			trustedLocations,
+			preferences: {
+				emailNotifications: true,
+				loginAlerts: true,
+				timezone: 'Europe/Amsterdam',
+				language: 'en'
+			}
 		}
+
+		return enrichedUser
 	} catch (error) {
-		console.error('Token verification error:', error)
-		;(await cookies()).delete('auth_token')
+		console.error('Error fetching user data:', error)
 		return null
 	}
 }

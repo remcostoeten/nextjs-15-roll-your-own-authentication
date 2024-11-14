@@ -65,11 +65,9 @@ export async function register(
 
 		return { success: true, userId: result.id }
 	} catch (error) {
-		console.error('Registration error:', error)
 		if (error instanceof z.ZodError) {
 			return { success: false, error: error.errors[0].message }
 		}
-		// Check for unique constraint violation
 		if (
 			error instanceof Error &&
 			error.message.includes('unique constraint')

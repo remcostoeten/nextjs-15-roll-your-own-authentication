@@ -44,70 +44,65 @@ export type ActivityStatus = 'success' | 'error' | 'pending'
 
 export type UserRole = 'user' | 'admin'
 
-export interface DeviceInfo {
-	browser: string | null
-	os: string | null
+export type UserLocation = {
+	city: string
+	country: string
+	region?: string
+	latitude?: number
+	longitude?: number
+	lastUpdated: Date
+}
+
+export type DeviceInfo = {
+	browser: string
+	os: string
+	device: string
 	isMobile: boolean
+	lastUsed: Date
 }
 
-export interface LocationInfo {
-	ip: string
-	country?: string
-	city?: string
-}
-
-export interface SessionInfo {
-	userId: number
-	token: string
-	expiresAt: Date
-	ipAddress: string
-	userAgent: string | null
-	deviceInfo: DeviceInfo
-	lastLocation: LocationInfo
-}
-
-export type UserSession = {
-	id: string
-	deviceInfo: {
-		browser: string | null
-		os: string | null
-		isMobile: boolean
+export type SecurityEvent = {
+	type:
+		| 'login'
+		| 'logout'
+		| 'password_change'
+		| 'email_change'
+		| 'two_factor_enabled'
+		| 'two_factor_disabled'
+		| 'account_created'
+		| 'failed_login'
+	timestamp: Date
+	details: {
+		message: string
+		location?: UserLocation
+		device?: DeviceInfo
+		success: boolean
 	}
-	lastActive: Date
-	lastLocation?: {
-		city?: string
-		country?: string
-	}
-	token: string
+	ipAddress?: string
 }
 
-export type UserData = {
+export type UserProfile = {
 	id: number
 	email: string
-	role: string
-	emailVerified: boolean
-	lastLoginAttempt: Date | null
+	name?: string
+	role: 'user' | 'admin'
 	createdAt: Date
-	passwordChangedAt: Date | null
-	currentSessionToken: string | null
-	lastLocation: {
-		city?: string
-		country?: string
-	} | null
-	lastDevice: {
-		browser: string | null
-		os: string | null
-		isMobile: boolean
-	} | null
-	sessions: UserSession[]
-	recentActivity: {
-		type: string
-		timestamp: Date
-		details: {
-			message?: string
-			error?: string
-			metadata?: Record<string, unknown>
-		} | null
-		status: string
-	}[]
+	emailVerified: boolean
+	twoFactorEnabled: boolean
+	lastLoginAttempt: Date
+	lastLocation: UserLocation
+	lastDevice: DeviceInfo
+	recentActivity: SecurityEvent[]
+	securityScore: number
+	loginStreak: number
+	totalLogins: number
+	failedLoginAttempts: number
+	devices: DeviceInfo[]
+	trustedLocations: UserLocation[]
+	preferences: {
+		emailNotifications: boolean
+		loginAlerts: boolean
+		timezone: string
+		language: string
+	}
 }
