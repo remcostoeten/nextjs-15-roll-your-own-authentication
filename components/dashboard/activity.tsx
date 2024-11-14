@@ -1,13 +1,20 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ActivityItem } from '@/features/dashboard/types'
 import { formatDistanceToNow } from 'date-fns'
 import { cn } from 'helpers'
 import { Activity } from 'lucide-react'
 
 type ActivityFeedProps = {
-	activities: ActivityItem[]
+	activities: Array<{
+		type: string
+		status: string
+		details: {
+			message?: string
+			error?: string
+		} | null
+		createdAt: Date
+	}>
 }
 
 export function ActivityFeed({ activities }: ActivityFeedProps) {
@@ -16,7 +23,7 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
 			<CardHeader>
 				<CardTitle className="flex items-center gap-2">
 					<Activity className="h-5 w-5" />
-					Recent Activity
+						Recent Activity
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
@@ -35,14 +42,9 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
 										{activity.details.message}
 									</p>
 								)}
-								{activity.details?.error && (
-									<p className="text-sm text-red-500">
-										{activity.details.error}
-									</p>
-								)}
 								<p className="text-xs text-muted-foreground">
 									{formatDistanceToNow(
-										new Date(activity.timestamp),
+										new Date(activity.createdAt),
 										{ addSuffix: true }
 									)}
 								</p>
@@ -60,11 +62,6 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
 							</div>
 						</div>
 					))}
-					{activities.length === 0 && (
-						<div className="text-center text-sm text-muted-foreground">
-							No recent activity
-						</div>
-					)}
 				</div>
 			</CardContent>
 		</Card>

@@ -16,17 +16,17 @@ import { LogOut, Settings, User } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-type UserMenuProps = {
+type Props = {
 	user: {
-		email: string
-		role?: string
-		avatarUrl?: string | null
+		email: string | null
+		role: 'user' | 'admin'
+		avatarUrl: string | null
 	}
 }
 
-export default function UserMenu({ user }: UserMenuProps) {
+export default function UserMenu({ user }: Props) {
 	const router = useRouter()
-	const initials = user.email.slice(0, 2).toUpperCase()
+	const initials = user.email?.slice(0, 2).toUpperCase() || ''
 
 	const handleSignOut = async () => {
 		try {
@@ -50,7 +50,7 @@ export default function UserMenu({ user }: UserMenuProps) {
 					<Avatar className="h-8 w-8">
 						<AvatarImage
 							src={user.avatarUrl || ''}
-							alt={user.email}
+							alt={user.email || ''}
 						/>
 						<AvatarFallback>{initials}</AvatarFallback>
 					</Avatar>

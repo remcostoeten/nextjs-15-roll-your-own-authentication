@@ -1,16 +1,28 @@
 'use server'
 
-import { users } from '@/features/authentication'
+import { activityLogs, users } from '@/features/authentication'
 import {
+	ActivityStatus,
 	DeviceInfo,
 	SecurityEvent,
+	SecurityEventType,
 	UserLocation,
 	UserProfile
 } from '@/features/authentication/types'
+import { calculateSecurityScore } from '@/features/dashboard/security'
 import { db } from 'db'
-import { eq } from 'drizzle-orm'
+import { desc, eq } from 'drizzle-orm'
 import { cookies } from 'next/headers'
 import { verifyJWT } from '../utilities'
+function getUserAgent(userAgent: string): DeviceInfo {
+	return {
+		browser: userAgent.split(' ')[0] || 'Unknown',
+		os: userAgent.split(' ')[1] || 'Unknown',
+		device: userAgent.split(' ')[2] || 'Desktop',
+		lastUsed: new Date(),
+		isMobile: userAgent.toLowerCase().includes('mobile')
+	}
+}
 
 export async function getUserData(): Promise<UserProfile | null> {
 	try {
@@ -30,129 +42,129 @@ export async function getUserData(): Promise<UserProfile | null> {
 
 		if (!dbUser) return null
 
-		// Simulate additional user data that would normally come from various tables
-		const mockLocation: UserLocation = {
-			city: 'Amsterdam',
-			country: 'Netherlands',
-			region: 'North Holland',
-			latitude: 52.3676,
-			longitude: 4.9041,
-			lastUpdated: new Date()
-		}
+		const recentActivity = await db
+			.select()
+			.from(activityLogs)
+			.where(eq(activityLogs.userId, dbUser.id))
+			.orderBy(desc(activityLogs.createdAt))
+			.limit(5)
 
-		const mockDevice: DeviceInfo = {
-			browser: 'Chrome',
-			os: 'Windows 11',
-			device: 'Desktop',
-			isMobile: false,
-			lastUsed: new Date()
-		}
+		const formattedActivity: SecurityEvent[] = recentActivity.map(log => ({
+			type: log.type as SecurityEventType,
+			timestamp: log.createdAt,
+			details: {
+				message: log.details?.message || log.status,
+				location: log.location ? log.location as UserLocation : null,
+				device: log.userAgent ? getUserAgent(log.userAgent) : null,
+				success: log.status === 'success'
+			},
+			status: log.status as ActivityStatus,
+			ipAddress: log.ipAddress || null
+		}))
 
-		const recentActivity: SecurityEvent[] = [
-			{
-				type: 'login',
-				timestamp: new Date(),
-				details: {
-					message: 'Successful login from Amsterdam, Netherlands',
-					location: mockLocation,
-					device: mockDevice,
-					success: true
-				},
-				ipAddress: '192.168.1.1'
-			},
-			{
-				type: 'two_factor_enabled',
-				timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000),
-				details: {
-					message: 'Two-factor authentication enabled',
-					success: true
-				}
-			},
-			{
-				type: 'password_change',
-				timestamp: new Date(Date.now() - 48 * 60 * 60 * 1000),
-				details: {
-					message: 'Password successfully changed',
-					location: mockLocation,
-					success: true
-				}
-			},
-			{
-				type: 'failed_login',
-				timestamp: new Date(Date.now() - 72 * 60 * 60 * 1000),
-				details: {
-					message: 'Failed login attempt from unknown device',
-					location: {
-						city: 'Unknown',
-						country: 'Russia',
-						lastUpdated: new Date(Date.now() - 72 * 60 * 60 * 1000)
-					},
-					success: false
-				},
-				ipAddress: '10.0.0.1'
+		const lastLocation: UserLocation = recentActivity[0]?.location 
+			? {
+				city: recentActivity[0].location.city ?? 'Unknown',
+				country: recentActivity[0].location.country ?? 'Unknown',
+				lastUpdated: recentActivity[0].createdAt,
+				region: recentActivity[0].location.region,
+				latitude: recentActivity[0].location.latitude,
+				longitude: recentActivity[0].location.longitude
 			}
-		]
-
-		const devices: DeviceInfo[] = [
-			mockDevice,
-			{
-				browser: 'Safari',
-				os: 'iOS 17',
-				device: 'iPhone 15 Pro',
-				isMobile: true,
-				lastUsed: new Date(Date.now() - 24 * 60 * 60 * 1000)
-			},
-			{
-				browser: 'Firefox',
-				os: 'macOS Sonoma',
-				device: 'MacBook Pro',
-				isMobile: false,
-				lastUsed: new Date(Date.now() - 48 * 60 * 60 * 1000)
+			: {
+				city: 'Unknown',
+				country: 'Unknown',
+				lastUpdated: new Date()
 			}
-		]
 
-		const trustedLocations: UserLocation[] = [
-			mockLocation,
-			{
-				city: 'Utrecht',
-				country: 'Netherlands',
-				region: 'Utrecht',
-				latitude: 52.0907,
-				longitude: 5.1214,
-				lastUpdated: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-			}
-		]
+		const lastDevice: DeviceInfo | null = recentActivity[0]?.userAgent 
+			? getUserAgent(recentActivity[0].userAgent)
+			: null
 
-		// Combine real and mock data
+		// Get all unique devices from activity logs
+		const devices: DeviceInfo[] = Array.from(
+			new Set(
+				recentActivity
+					.filter(log => log.userAgent)
+					.map(log => getUserAgent(log.userAgent!))
+			)
+		)
+
+		// Get all unique trusted locations
+		const trustedLocations: UserLocation[] = Array.from(
+			new Set(
+				recentActivity
+					.filter(log => log.location)
+					.map(log => log.location as UserLocation)
+			)
+		)
+
+		// Calculate login statistics
+		const loginStats = recentActivity.reduce(
+			(acc, log) => ({
+				totalLogins: acc.totalLogins + (log.type === 'login' && log.status === 'success' ? 1 : 0),
+				failedLoginAttempts: acc.failedLoginAttempts + (log.type === 'login' && log.status === 'error' ? 1 : 0),
+				loginStreak: calculateLoginStreak(recentActivity)
+			}),
+			{ totalLogins: 0, failedLoginAttempts: 0, loginStreak: 0 }
+		)
+
+		// Combine all data into UserProfile type
 		const enrichedUser: UserProfile = {
 			id: dbUser.id,
 			email: dbUser.email,
-			name: dbUser.name || undefined,
+			name: dbUser.name || null,
 			role: dbUser.role as 'user' | 'admin',
 			createdAt: dbUser.createdAt,
-			emailVerified: dbUser.emailVerified,
-			twoFactorEnabled: dbUser.twoFactorEnabled,
-			lastLoginAttempt: new Date(),
-			lastLocation: mockLocation,
-			lastDevice: mockDevice,
-			recentActivity,
-			securityScore: 85,
-			loginStreak: 7,
-			totalLogins: 42,
-			failedLoginAttempts: 1,
+			emailVerified: dbUser.emailVerified ?? false,
+			lastLoginAttempt: dbUser.lastLoginAttempt || null,
+			lastLocation,
+			lastDevice,
+			recentActivity: formattedActivity,
+			securityScore: 0,
+			loginStreak: loginStats.loginStreak,
+			totalLogins: loginStats.totalLogins,
+			failedLoginAttempts: loginStats.failedLoginAttempts,
 			devices,
 			trustedLocations,
-			preferences: {
-				emailNotifications: true,
-				loginAlerts: true,
-				timezone: 'Europe/Amsterdam',
-				language: 'en'
-			}
+			bio: null,
+			phoneNumber: null,
+			location: null,
+			website: null,
+			avatarUrl: null
 		}
+
+		// Calculate security score after all data is assembled
+		const userDataForScoring = {
+			...enrichedUser,
+			emailVerified: Boolean(enrichedUser.emailVerified),
+			lastLoginAttempt: enrichedUser.lastLoginAttempt || undefined
+		}
+		enrichedUser.securityScore = calculateSecurityScore(userDataForScoring)
 
 		return enrichedUser
 	} catch (error) {
-		console.error('Error fetching user data:', error)
+		console.error('Error getting user data:', error)
 		return null
 	}
+}
+
+function calculateLoginStreak(activities: typeof activityLogs.$inferSelect[]): number {
+	let streak = 0
+	const today = new Date()
+	const oneDayMs = 24 * 60 * 60 * 1000
+
+	for (let i = 0; i < activities.length; i++) {
+		const activity = activities[i]
+		if (activity.type !== 'login' || activity.status !== 'success') continue
+
+		const daysDiff = Math.floor((today.getTime() - activity.createdAt.getTime()) / oneDayMs)
+		if (daysDiff <= streak + 1) {
+			streak = daysDiff
+		} else {
+			break
+		}
+	}
+
+	return streak
 }

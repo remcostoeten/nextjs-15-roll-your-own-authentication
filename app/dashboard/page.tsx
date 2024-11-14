@@ -44,7 +44,7 @@ export default async function DashboardPage() {
 			<header className="sticky top-0 z-40 backdrop-blur-xl border-b bg-background/60">
 				<div className="container py-4">
 					<h1 className="text-4xl font-bold tracking-tight">
-						Welcome back, {user.email.split('@')[0]}!
+						Welcome back, {user.email?.split('@')[0]}!
 					</h1>
 					<p className="text-muted-foreground mt-1">
 						Here's what's happening with your account
@@ -266,45 +266,22 @@ export default async function DashboardPage() {
 						title="Recent Activity"
 						icon={<Activity className="h-6 w-6" />}
 					>
-						<div className="space-y-4">
-							{user.recentActivity?.length > 0 ? (
-								user.recentActivity.map(
-									(activity: any, index: number) => (
-										<div
-											key={index}
-											className="group flex items-start gap-4 p-4 bg-background/50 rounded-xl border backdrop-blur-sm hover:shadow-md transition-all"
-										>
-											<div className="p-2 bg-background rounded-lg border">
-												<Activity className="h-4 w-4 text-muted-foreground" />
-											</div>
-											<div>
-												<p className="font-medium">
-													{activity.type}
-												</p>
-												<p className="text-sm text-muted-foreground">
-													{formatDate(
-														activity.timestamp,
-														'relative'
-													)}
-												</p>
-												<p className="text-sm text-muted-foreground">
-													{typeof activity.details ===
-													'object'
-														? activity.details
-																.message
-														: activity.details}
-												</p>
-											</div>
-										</div>
-									)
-								)
-							) : (
-								<div className="text-center py-8 text-muted-foreground">
-									<Activity className="h-12 w-12 mx-auto mb-4 opacity-20" />
-									<p>No recent activity to display</p>
-								</div>
-							)}
-						</div>
+					<div className="space-y-4">
+    {(user.recentActivity && user.recentActivity.length > 0) ? (
+        user.recentActivity.map((activity: any, index: number) => (
+            <div
+                key={index}
+                className="group flex items-start gap-4 p-4 bg-background/50 rounded-xl border backdrop-blur-sm hover:shadow-md transition-all"
+            >
+                <div className="p-2 bg-background rounded-lg border">
+                    <Activity className="h-4 w-4" />
+                </div>
+            </div>
+        ))
+    ) : (
+        <p>No recent activity</p>
+    )}
+</div>
 					</CollapsibleSection>
 				</div>
 			</main>

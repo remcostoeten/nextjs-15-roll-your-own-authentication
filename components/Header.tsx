@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { UserProfile } from '@/features/authentication/types'
 import Logo from '@/shared/components/theme/logo'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -13,27 +14,31 @@ type NavItem = {
 	href: string
 }
 
+// New type for UserMenu props
+type UserMenuProps = {
+	email: string | null
+	role: 'user' | 'admin'
+	avatarUrl: string | null
+}
+
 const navItems: NavItem[] = [
 	{ title: 'Home', href: '/' },
 	{ title: 'Dashboard', href: '/dashboard' },
 	{ title: 'Profile', href: '/profile' },
 	{ title: 'Docs', href: '/docs' }
-]
+] as const
 
-type HeaderProps = {
-	user?: {
-		email: string
-		role?: string
-		avatarUrl?: string | null
-	} | null
-}
-
-export default function Header({ user }: HeaderProps) {
+export default function Header({ user }: { user: UserProfile | null }) {
 	const pathname = usePathname()
 
 	const renderAuthButtons = useCallback(() => {
-		if (user) {
-			return <UserMenu user={user} />
+		if (user?.email) {
+			const userMenuProps: UserMenuProps = {
+				email: user.email,
+				role: user.role,
+				avatarUrl: user.avatarUrl ?? null
+			}
+			return <UserMenu user={userMenuProps} />
 		}
 
 		return (

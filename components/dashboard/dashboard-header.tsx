@@ -9,13 +9,13 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger
 } from '@/components/ui'
-import { UserData } from '@/features/authentication/types'
+import { UserProfile } from '@/features/authentication/types'
 import { cn } from 'helpers'
 import { Bell, Menu, Plus, Search } from 'lucide-react'
 import { useCallback, useState } from 'react'
 
 type DashboardHeaderProps = {
-	user: UserData
+	user: UserProfile
 	onMenuClick?: () => void
 }
 
