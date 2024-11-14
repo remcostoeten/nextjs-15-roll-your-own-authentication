@@ -7,7 +7,7 @@
 'use server'
 
 import { login as loginService } from '@/features/authentication/services/auth/login'
-import { LoginResponse } from '@/features/authentication/types.d'
+import { LoginResponse } from '@/features/authentication/types'
 import {
 	checkRateLimit,
 	incrementLoginAttempts,
@@ -18,18 +18,19 @@ export async function login(
 	email: string,
 	password: string
 ): Promise<LoginResponse> {
-	// Check rate limit before attempting login
-	const rateLimit = await checkRateLimit(email)
-
-	if (rateLimit.blocked) {
-		return {
-			success: false,
-			error: `Too many login attempts. Please try again after ${rateLimit.blockedUntil?.toLocaleString()}`,
-			remainingAttempts: 0
-		}
-	}
-
 	try {
+		// Check rate limiting
+		const rateLimit = await checkRateLimit(email)
+
+		if (rateLimit.blocked) {
+			return {
+				success: false,
+				message: `Too many login attempts`,
+				error: `Please try again after ${rateLimit.blockedUntil?.toLocaleString()}`,
+				remainingAttempts: 0
+			}
+		}
+
 		const result = await loginService(email, password)
 
 		if (result.success) {
@@ -49,17 +50,12 @@ export async function login(
 				remainingAttempts: updatedLimit.remainingAttempts
 			}
 		}
-	} catch {
-		// Increment attempts on error
-		await incrementLoginAttempts(email)
-
-		// Get updated rate limit info
-		const updatedLimit = await checkRateLimit(email)
-
+	} catch (error) {
+		console.error('Login error:', error)
 		return {
 			success: false,
-			error: `Login failed. ${updatedLimit.remainingAttempts} attempts remaining.`,
-			remainingAttempts: updatedLimit.remainingAttempts
+			error: 'An unexpected error occurred',
+			message: 'Login failed'
 		}
 	}
 }

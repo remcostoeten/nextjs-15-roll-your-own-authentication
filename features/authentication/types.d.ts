@@ -1,52 +1,45 @@
-export type LoginResponse = {
+// Base response type for all auth operations
+type BaseResponse = {
 	success: boolean
 	error?: string
-	remainingAttempts?: number
 }
 
-export type RegisterResponse = {
-	success: boolean
-	error?: string
+// Auth operation responses
+type LoginResponse = BaseResponse & {
+	remainingAttempts?: number
+	user?: UserProfile | null
+	message?: string
+	maxLoginAttempts?: number
+}
+
+type RegisterResponse = BaseResponse & {
 	userId?: number
 }
 
-export type LogoutResponse = {
-	success: boolean
-	error?: string
+type LogoutResponse = BaseResponse
+
+type ActivityLogType = 'login' | 'logout' | 'register' | SecurityEventType
+type ActivityLogDetails = {
+	message: string
+	metadata?: Record<string, unknown>
+}
+type ActivityStatus = 'success' | 'error' | 'warning' | 'info'
+type UserRole = 'user' | 'admin'
+
+// Location and device tracking
+type GeoCoordinates = {
+	latitude?: number
+	longitude?: number
 }
 
-export type ResetPasswordResponse = {
-	success: boolean
-	error?: string
-}
-
-export type VerifyEmailResponse = {
-	success: boolean
-	error?: string
-}
-
-export type UpdateProfileResponse = {
-	success: boolean
-	error?: string
-	profile?: any 
-}
-
-export type ActivityStatus = 'success' | 'error' | 'pending'
-
-export type ActivityLogType = 'login' | 'logout' | 'password_change' | 'email_change' | 'two_factor_enabled' | 'two_factor_disabled' | 'account_created' | 'failed_login'
-
-export type UserRole = 'user' | 'admin'
-
-export type UserLocation = {
+type UserLocation = GeoCoordinates & {
 	city: string
 	country: string
 	region?: string
-	latitude?: number
-	longitude?: number
 	lastUpdated: Date
 }
 
-export type DeviceInfo = {
+type DeviceInfo = {
 	browser: string
 	os: string
 	device: string
@@ -54,52 +47,77 @@ export type DeviceInfo = {
 	lastUsed: Date
 }
 
-export type SecurityEventType = 
-    | 'login'
-    | 'logout'
-    | 'password_change'
-    | 'email_change'
-    | 'two_factor_enabled'
-    | 'two_factor_disabled'
-    | 'account_created'
-    | 'failed_login'
+// Security and activity monitoring
+type SecurityEventType =
+	| 'failed_login'
+	| 'password_reset'
+	| 'account_locked'
+	| 'invalid_token'
 
-export type SecurityEvent = {
-    type: SecurityEventType
-    timestamp: Date
-    details: {
-        message: string
-        location: UserLocation | null
-        device: DeviceInfo | null
-        success: boolean
-    }
-    status: ActivityStatus
-    ipAddress: string | null
+type SecurityEvent = {
+	type: SecurityEventType
+	timestamp: Date
+	details: {
+		message: string
+		location: UserLocation | null
+		device: DeviceInfo | null
+		success: boolean
+	}
+	status: ActivityStatus
+	ipAddress: string | null
 }
 
-export type UserProfile = {
-    id: number
-    email: string | null
-    name: string | null
-    role: 'user' | 'admin'
-    createdAt: Date | null
-    bio?: string | null
-    phoneNumber?: string | null
-    location?: string | null
-    website?: string | null
-    avatarUrl?: string | null
+type UserBasicInfo = {
+	id: number
+	email: string | null
+	name: string | null
+	role: UserRole
+	createdAt: Date | null
+}
 
-    emailVerified: boolean
-    securityScore: number
-    lastLoginAttempt: Date | null
+type UserOptionalInfo = {
+	bio?: string | null
+	phoneNumber?: string | null
+	location?: string | null
+	website?: string | null
+	avatarUrl?: string | null
+}
 
-    lastLocation: UserLocation | null
-    lastDevice: DeviceInfo | null
-    recentActivity: SecurityEvent[]
-    loginStreak: number
-    totalLogins: number
-    failedLoginAttempts: number
+type UserSecurityInfo = {
+	emailVerified: boolean
+	securityScore: number
+	lastLoginAttempt: Date | null
+	loginStreak: number
+	totalLogins: number
+	failedLoginAttempts: number
+}
 
-    devices: DeviceInfo[]
-    trustedLocations: UserLocation[]
+type UserProfile = UserBasicInfo &
+	UserOptionalInfo &
+	UserSecurityInfo & {
+		lastLocation: UserLocation | null
+		lastDevice: DeviceInfo | null
+		recentActivity: SecurityEvent[]
+		devices: DeviceInfo[]
+		trustedLocations: UserLocation[]
+	}
+
+// Minimal user info for UI components
+type UserMenuInfo = Pick<UserProfile, 'email' | 'role' | 'avatarUrl'>
+
+export type {
+	ActivityLogDetails,
+	ActivityLogType,
+	ActivityStatus,
+	BaseResponse,
+	DeviceInfo,
+	LoginResponse,
+	LogoutResponse,
+	RegisterResponse,
+	SecurityEvent,
+	SecurityEventType,
+	UserLocation,
+	UserMenuInfo,
+	UserProfile,
+	UserRole
 }

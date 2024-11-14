@@ -266,22 +266,25 @@ export default async function DashboardPage() {
 						title="Recent Activity"
 						icon={<Activity className="h-6 w-6" />}
 					>
-					<div className="space-y-4">
-    {(user.recentActivity && user.recentActivity.length > 0) ? (
-        user.recentActivity.map((activity: any, index: number) => (
-            <div
-                key={index}
-                className="group flex items-start gap-4 p-4 bg-background/50 rounded-xl border backdrop-blur-sm hover:shadow-md transition-all"
-            >
-                <div className="p-2 bg-background rounded-lg border">
-                    <Activity className="h-4 w-4" />
-                </div>
-            </div>
-        ))
-    ) : (
-        <p>No recent activity</p>
-    )}
-</div>
+						<div className="space-y-4">
+							{user.recentActivity &&
+							user.recentActivity.length > 0 ? (
+								user.recentActivity.map(
+									(activity: any, index: number) => (
+										<div
+											key={index}
+											className="group flex items-start gap-4 p-4 bg-background/50 rounded-xl border backdrop-blur-sm hover:shadow-md transition-all"
+										>
+											<div className="p-2 bg-background rounded-lg border">
+												<Activity className="h-4 w-4" />
+											</div>
+										</div>
+									)
+								)
+							) : (
+								<p>No recent activity</p>
+							)}
+						</div>
 					</CollapsibleSection>
 				</div>
 			</main>

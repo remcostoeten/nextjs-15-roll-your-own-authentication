@@ -49,35 +49,39 @@ export async function getUserData(): Promise<UserProfile | null> {
 			.orderBy(desc(activityLogs.createdAt))
 			.limit(5)
 
-		const formattedActivity: SecurityEvent[] = recentActivity.map(log => ({
-			type: log.type as SecurityEventType,
-			timestamp: log.createdAt,
-			details: {
-				message: log.details?.message || log.status,
-				location: log.location ? log.location as UserLocation : null,
-				device: log.userAgent ? getUserAgent(log.userAgent) : null,
-				success: log.status === 'success'
-			},
-			status: log.status as ActivityStatus,
-			ipAddress: log.ipAddress || null
-		}))
+		const formattedActivity: SecurityEvent[] = recentActivity.map(
+			(log) => ({
+				type: log.type as SecurityEventType,
+				timestamp: log.createdAt,
+				details: {
+					message: log.details?.message || log.status,
+					location: log.location
+						? (log.location as UserLocation)
+						: null,
+					device: log.userAgent ? getUserAgent(log.userAgent) : null,
+					success: log.status === 'success'
+				},
+				status: log.status as ActivityStatus,
+				ipAddress: log.ipAddress || null
+			})
+		)
 
-		const lastLocation: UserLocation = recentActivity[0]?.location 
+		const lastLocation: UserLocation = recentActivity[0]?.location
 			? {
-				city: recentActivity[0].location.city ?? 'Unknown',
-				country: recentActivity[0].location.country ?? 'Unknown',
-				lastUpdated: recentActivity[0].createdAt,
-				region: recentActivity[0].location.region,
-				latitude: recentActivity[0].location.latitude,
-				longitude: recentActivity[0].location.longitude
-			}
+					city: recentActivity[0].location.city ?? 'Unknown',
+					country: recentActivity[0].location.country ?? 'Unknown',
+					lastUpdated: recentActivity[0].createdAt,
+					region: recentActivity[0].location.region,
+					latitude: recentActivity[0].location.latitude,
+					longitude: recentActivity[0].location.longitude
+				}
 			: {
-				city: 'Unknown',
-				country: 'Unknown',
-				lastUpdated: new Date()
-			}
+					city: 'Unknown',
+					country: 'Unknown',
+					lastUpdated: new Date()
+				}
 
-		const lastDevice: DeviceInfo | null = recentActivity[0]?.userAgent 
+		const lastDevice: DeviceInfo | null = recentActivity[0]?.userAgent
 			? getUserAgent(recentActivity[0].userAgent)
 			: null
 
@@ -85,8 +89,8 @@ export async function getUserData(): Promise<UserProfile | null> {
 		const devices: DeviceInfo[] = Array.from(
 			new Set(
 				recentActivity
-					.filter(log => log.userAgent)
-					.map(log => getUserAgent(log.userAgent!))
+					.filter((log) => log.userAgent)
+					.map((log) => getUserAgent(log.userAgent!))
 			)
 		)
 
@@ -94,16 +98,20 @@ export async function getUserData(): Promise<UserProfile | null> {
 		const trustedLocations: UserLocation[] = Array.from(
 			new Set(
 				recentActivity
-					.filter(log => log.location)
-					.map(log => log.location as UserLocation)
+					.filter((log) => log.location)
+					.map((log) => log.location as UserLocation)
 			)
 		)
 
 		// Calculate login statistics
 		const loginStats = recentActivity.reduce(
 			(acc, log) => ({
-				totalLogins: acc.totalLogins + (log.type === 'login' && log.status === 'success' ? 1 : 0),
-				failedLoginAttempts: acc.failedLoginAttempts + (log.type === 'login' && log.status === 'error' ? 1 : 0),
+				totalLogins:
+					acc.totalLogins +
+					(log.type === 'login' && log.status === 'success' ? 1 : 0),
+				failedLoginAttempts:
+					acc.failedLoginAttempts +
+					(log.type === 'login' && log.status === 'error' ? 1 : 0),
 				loginStreak: calculateLoginStreak(recentActivity)
 			}),
 			{ totalLogins: 0, failedLoginAttempts: 0, loginStreak: 0 }
@@ -149,7 +157,9 @@ export async function getUserData(): Promise<UserProfile | null> {
 	}
 }
 
-function calculateLoginStreak(activities: typeof activityLogs.$inferSelect[]): number {
+function calculateLoginStreak(
+	activities: (typeof activityLogs.$inferSelect)[]
+): number {
 	let streak = 0
 	const today = new Date()
 	const oneDayMs = 24 * 60 * 60 * 1000
@@ -158,7 +168,9 @@ function calculateLoginStreak(activities: typeof activityLogs.$inferSelect[]): n
 		const activity = activities[i]
 		if (activity.type !== 'login' || activity.status !== 'success') continue
 
-		const daysDiff = Math.floor((today.getTime() - activity.createdAt.getTime()) / oneDayMs)
+		const daysDiff = Math.floor(
+			(today.getTime() - activity.createdAt.getTime()) / oneDayMs
+		)
 		if (daysDiff <= streak + 1) {
 			streak = daysDiff
 		} else {

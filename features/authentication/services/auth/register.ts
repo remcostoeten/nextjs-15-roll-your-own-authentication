@@ -3,6 +3,7 @@
 
 import { registerSchema } from '@/app/server/models'
 import { profiles, users } from '@/app/server/schema'
+import { authConfig } from '@/config'
 import { RegisterResponse } from '@/features/authentication/types'
 import bcrypt from 'bcrypt'
 import { db } from 'db'
@@ -48,10 +49,9 @@ export async function register(
 
 			await Promise.all([
 				createUserProfile(user.id, tx),
-				logRegistration(user.id, tx, {
-					userAgent,
-					ipAddress: ip,
-					email: validatedData.email
+				logRegistration(user.id, {
+					message: authConfig.MESSAGES.ACCOUNT_CREATED,
+					timestamp: new Date().toString()
 				})
 			])
 

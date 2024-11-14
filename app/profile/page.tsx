@@ -7,7 +7,7 @@ import { redirect } from 'next/navigation'
 
 export default async function ProfilePage() {
 	const user = await getUserData()
-	
+
 	if (!user) {
 		redirect('/login?callbackUrl=/profile')
 	}
@@ -30,7 +30,9 @@ export default async function ProfilePage() {
 						<div className="flex items-center gap-4">
 							<Mail className="h-5 w-5 text-muted-foreground" />
 							<div>
-								<p className="text-sm text-muted-foreground">Email</p>
+								<p className="text-sm text-muted-foreground">
+									Email
+								</p>
 								<p className="font-medium">{user.email}</p>
 							</div>
 						</div>
@@ -38,8 +40,12 @@ export default async function ProfilePage() {
 							<div className="flex items-center gap-4">
 								<Phone className="h-5 w-5 text-muted-foreground" />
 								<div>
-									<p className="text-sm text-muted-foreground">Phone</p>
-									<p className="font-medium">{user.phoneNumber}</p>
+									<p className="text-sm text-muted-foreground">
+										Phone
+									</p>
+									<p className="font-medium">
+										{user.phoneNumber}
+									</p>
 								</div>
 							</div>
 						)}
@@ -47,8 +53,12 @@ export default async function ProfilePage() {
 							<div className="flex items-center gap-4">
 								<MapPin className="h-5 w-5 text-muted-foreground" />
 								<div>
-									<p className="text-sm text-muted-foreground">Location</p>
-									<p className="font-medium">{user.location}</p>
+									<p className="text-sm text-muted-foreground">
+										Location
+									</p>
+									<p className="font-medium">
+										{user.location}
+									</p>
 								</div>
 							</div>
 						)}
@@ -56,8 +66,12 @@ export default async function ProfilePage() {
 							<div className="flex items-center gap-4">
 								<Globe className="h-5 w-5 text-muted-foreground" />
 								<div>
-									<p className="text-sm text-muted-foreground">Website</p>
-									<p className="font-medium">{user.website}</p>
+									<p className="text-sm text-muted-foreground">
+										Website
+									</p>
+									<p className="font-medium">
+										{user.website}
+									</p>
 								</div>
 							</div>
 						)}

@@ -52,7 +52,7 @@ export const authConfig = {
 		LOGIN_SUCCESS: 'Successful login',
 		LOGIN_FAILED: 'Login failed',
 		LOGOUT_SUCCESS: 'Successfully logged out',
-
+		ACCOUNT_CREATED: 'Account successfully created',
 		// Registration
 		REGISTRATION_SUCCESS: 'Account successfully created',
 		REGISTRATION_FAILED: 'Registration failed',

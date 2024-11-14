@@ -2,7 +2,7 @@
 
 import { activityLogs } from '@/app/server/schema'
 import { authConfig } from '@/config'
-import { ActivityType } from '@/features/authentication/activity-logs/schema'
+import type { ActivityType } from '@/features/authentication/activity-logs/schema'
 import { db } from 'db'
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js'
 import { headers } from 'next/headers'
@@ -17,11 +17,20 @@ type ActivityLogProps = {
 	error?: string
 	metadata?: Record<string, unknown>
 	tx?: PostgresJsDatabase
+	timestamp?: string | Date
 }
 
 type DeviceInfo = {
 	userAgent: string
 	ipAddress: string
+}
+
+type LogRegistrationParams = {
+	status: 'success' | 'failure'
+	ipAddress: string
+	email: string
+	message: string
+	timestamp?: string
 }
 
 /**
@@ -35,9 +44,6 @@ async function getDeviceInfo(): Promise<DeviceInfo> {
 	}
 }
 
-/**
- * Generic function to log any user activity
- */
 export async function logActivity({
 	userId,
 	type,
@@ -76,8 +82,7 @@ export async function logActivity({
 	}
 }
 
-// Convenience functions for common activity types
-export const logLoginSuccess = (userId: number, metadata = {}) =>
+export async function logLoginSuccess(userId: number, metadata = {}) {
 	logActivity({
 		userId,
 		type: 'login',
@@ -85,46 +90,50 @@ export const logLoginSuccess = (userId: number, metadata = {}) =>
 		message: authConfig.MESSAGES.LOGIN_SUCCESS,
 		metadata
 	})
+}
 
-export const logLoginFailure = (userId: number, error: string, metadata = {}) =>
+export async function logLoginFailure(
+	userId: number,
+	error: string,
+	metadata = {}
+) {
 	logActivity({
 		userId,
 		type: 'login_failed',
 		status: 'error',
-		message: 'Login attempt failed',
+		message: authConfig.MESSAGES.LOGIN_FAILED,
 		error,
 		metadata
 	})
+}
 
-export const logRegistration = (
-	userId: number,
-	tx: PostgresJsDatabase,
-	metadata = {}
-) =>
+export async function logRegistration(userId: number, metadata = {}) {
 	logActivity({
 		userId,
-		type: 'account_created',
-		message: 'Account successfully created',
-		tx,
+		type: 'register',
+		message: authConfig.MESSAGES.REGISTRATION_SUCCESS,
 		metadata
 	})
+}
 
-export const logLogout = (userId: number, metadata = {}) =>
+export async function logLogout(userId: number, metadata = {}) {
 	logActivity({
 		userId,
 		type: 'logout',
 		message: 'User logged out successfully',
 		metadata
 	})
+}
 
-export const logProfileUpdate = (
+export async function logProfileUpdate(
 	userId: number,
 	message: string,
 	metadata = {}
-) =>
+) {
 	logActivity({
 		userId,
 		type: 'profile_updated',
 		message,
 		metadata
 	})
+}

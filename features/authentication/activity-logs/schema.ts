@@ -12,6 +12,7 @@ export type ActivityType =
 	| 'login'
 	| 'login_failed'
 	| 'logout'
+	| 'register'
 	| 'password_reset'
 	| 'password_changed'
 	| 'profile_updated'
