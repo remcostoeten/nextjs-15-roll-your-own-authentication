@@ -3,10 +3,12 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/components/ui/use-toast';
-import { useLogin } from '@/features/authentication/mutations';
+import { login } from '@/features/authentication/actions';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 
 type LoginCredentials = {
   email: string;
@@ -15,22 +17,24 @@ type LoginCredentials = {
 
 export default function LoginPage() {
   const { register, handleSubmit } = useForm<LoginCredentials>();
-  const { login, isLoading, error } = useLogin();
-  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const onSubmit = handleSubmit(async (data: LoginCredentials) => {
     try {
-      await login(data);
-      toast({
-        title: "Success!",
-        description: "You have been logged in.",
-      });
+      setIsLoading(true);
+      const result = await login(data);
+      
+      if (result.success) {
+        toast.success('Successfully logged in!');
+        router.push('/dashboard');
+      } else {
+        toast.error(result.error || 'Login failed');
+      }
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to login. Please try again.",
-      });
+      toast.error('Failed to login. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   });
 
@@ -58,9 +62,6 @@ export default function LoginPage() {
                 required
               />
             </div>
-            {error && (
-              <div className="text-red-500 text-sm">{error}</div>
-            )}
             <Button
               type="submit"
               className="w-full"

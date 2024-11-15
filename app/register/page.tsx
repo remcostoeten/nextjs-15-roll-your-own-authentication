@@ -3,9 +3,12 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { useRegister } from '@/features/authentication/mutations';
+import { register } from '@/features/authentication/actions';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 
 type RegisterFormData = {
   email: string;
@@ -13,11 +16,32 @@ type RegisterFormData = {
 }
 
 export default function RegisterPage() {
-  const { register, handleSubmit } = useForm<RegisterFormData>();
-  const { register: registerUser, isLoading, error } = useRegister();
+  const { register: registerField, handleSubmit } = useForm<RegisterFormData>();
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const router = useRouter();
 
-  const onSubmit = handleSubmit((data: RegisterFormData) => {
-    registerUser(data);
+  const onSubmit = handleSubmit(async (data: RegisterFormData) => {
+    try {
+      setIsLoading(true);
+      setErrorMessage(null);
+      const result = await register(data);
+      
+      if (result.success) {
+        toast.success('Account created successfully!');
+        router.push('/login');
+      } else {
+        const errorMsg = result.error || 'Registration failed. Please try again.';
+        setErrorMessage(errorMsg);
+        toast.error(errorMsg);
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to register. Please try again.';
+      setErrorMessage(message);
+      toast.error(message);
+    } finally {
+      setIsLoading(false);
+    }
   });
 
   return (
@@ -30,7 +54,7 @@ export default function RegisterPage() {
           <form onSubmit={onSubmit} className="space-y-4">
             <div className="space-y-2">
               <Input
-                {...register('email')}
+                {...registerField('email')}
                 type="email"
                 placeholder="Email"
                 required
@@ -38,14 +62,14 @@ export default function RegisterPage() {
             </div>
             <div className="space-y-2">
               <Input
-                {...register('password')}
+                {...registerField('password')}
                 type="password"
                 placeholder="Password"
                 required
               />
             </div>
-            {error && (
-              <div className="text-red-500 text-sm">{error}</div>
+            {errorMessage && (
+              <div className="text-red-500 text-sm">{errorMessage}</div>
             )}
             <Button
               type="submit"
