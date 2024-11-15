@@ -1,6 +1,5 @@
 import { db } from '@/db';
-import { users } from '@/db/schema';
-import { sessions } from '@/db/schema/sessions';
+import { sessions, users } from '@/db/schema';
 import { createToken } from '@/lib/auth';
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';

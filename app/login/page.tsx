@@ -1,83 +1,72 @@
-'use client';
+'use client'
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { login } from '@/features/authentication/actions';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
+import AuthFormWrapper from '@/features/authentication/components/auth-form-wrapper'
+import { login } from '@/features/authentication/mutations/login'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 
 type LoginCredentials = {
-  email: string;
-  password: string;
-};
+  email: string
+  password: string
+}
 
 export default function LoginPage() {
-  const { register, handleSubmit } = useForm<LoginCredentials>();
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const { register, handleSubmit } = useForm<LoginCredentials>()
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const router = useRouter()
 
   const onSubmit = handleSubmit(async (data: LoginCredentials) => {
-    try {
-      setIsLoading(true);
-      const result = await login(data);
-      
-      if (result.success) {
-        toast.success('Successfully logged in!');
-        router.push('/dashboard');
-      } else {
-        toast.error(result.error || 'Login failed');
-      }
-    } catch (error) {
-      toast.error('Failed to login. Please try again.');
-    } finally {
-      setIsLoading(false);
+    setErrorMessage(null)
+    const result = await login(data)
+    
+    if (result.success) {
+      toast.success('Successfully logged in!')
+      router.push('/dashboard')
+    } else {
+      const errorMsg = result.error || 'Login failed. Please try again.'
+      setErrorMessage(errorMsg)
+      toast.error(errorMsg)
     }
-  });
+  })
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <Card className="w-[400px]">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">Login</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={onSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Input
-                {...register('email')}
-                type="email"
-                placeholder="Email"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Input
-                {...register('password')}
-                type="password"
-                placeholder="Password"
-                required
-              />
-            </div>
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Loading...' : 'Login'}
-            </Button>
-          </form>
-           <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{' '}
-            <Link href="/register" className="text-blue-600 hover:underline">
-              Register
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
+    <AuthFormWrapper
+      title="Login"
+      onSubmit={onSubmit}
+      submitText="Login"
+      alternativeText="Don't have an account?"
+      alternativeLink="/register"
+      alternativeLinkText="Register"
+      errorMessage={errorMessage}
+    >
+      <div className="mb-4">
+        <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
+          Email
+        </label>
+        <input
+          {...register('email')}
+          type="email"
+          id="email"
+          placeholder="Email"
+          required
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        />
+      </div>
+      <div className="mb-6">
+        <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2">
+          Password
+        </label>
+        <input
+          {...register('password')}
+          type="password"
+          id="password"
+          placeholder="Password"
+          required
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+        />
+      </div>
+    </AuthFormWrapper>
+  )
 }
