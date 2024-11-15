@@ -28,8 +28,8 @@ export default function RegisterPage() {
       const result = await register(data);
       
       if (result.success) {
-        toast.success('Account created successfully!');
-        router.push('/login');
+        toast.success('Account created and logged in successfully!');
+        router.push('/dashboard');
       } else {
         const errorMsg = result.error || 'Registration failed. Please try again.';
         setErrorMessage(errorMsg);

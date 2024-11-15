@@ -6,7 +6,6 @@ import { createToken } from '@/lib/auth';
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
 
 export type AuthCredentials = {
   email: string;
@@ -46,7 +45,8 @@ export async function loginUser(credentials: AuthCredentials) {
       maxAge: 86400 // 24 hours
     });
 
-    redirect('/dashboard');
+    // Return the user data instead of redirecting
+    return { user };
   } catch (error) {
     if (error instanceof Error) {
       throw error;
@@ -109,19 +109,15 @@ export async function registerUser(credentials: AuthCredentials) {
 }
 
 export async function logoutUser() {
-  try {
-    const token = cookies().get('token');
-    
-    if (token) {
-      // Delete the session from the database
-      await db
-        .delete(sessions)
-        .where(eq(sessions.token, token.value));
-    }
-    
-    cookies().delete('token');
-    redirect('/login');
-  } catch (error) {
-    throw new Error('Logout failed. Please try again.');
+  const token = cookies().get('token');
+  
+  if (token) {
+    // Delete the session from the database
+    await db
+      .delete(sessions)
+      .where(eq(sessions.token, token.value));
   }
+  
+  cookies().delete('token');
+  return { success: true };
 } 

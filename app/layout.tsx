@@ -1,6 +1,6 @@
 import Header from '@/components/layout/header';
 import { Toaster } from '@/components/ui/toast';
-import { getCurrentUser } from '@/features/authentication/actions';
+import { getCurrentUser } from '@/features/authentication/queries/getCurrentUser';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
