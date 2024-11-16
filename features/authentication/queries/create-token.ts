@@ -1,6 +1,6 @@
-import { jwtVerify, SignJWT } from 'jose';
+import { SignJWT } from 'jose';
 
-const JWT_SECRET = new TextEncoder().encode(
+export const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || 'your-super-secret-key-change-this-in-production'
 );
 
@@ -12,11 +12,4 @@ export async function createToken(payload: any) {
     .sign(JWT_SECRET);
 }
 
-export async function verifyToken(token: string) {
-  try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
-    return payload;
-  } catch (error) {
-    return null;
-  }
-}
+

@@ -1,7 +1,6 @@
-import { verifyToken } from '@/lib/auth';
+import { verifyToken } from '@/features/authentication/queries/verify-token';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-
 // Add paths that should be public
 const publicPaths = ['/login', '/register', '/'];
 

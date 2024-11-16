@@ -25,7 +25,7 @@ export type ToastVariant = "default" | "success" | "error" | "warning" | "info" 
 /**
  * Defines the possible animation types for toast notifications
  */
-export type ToastAnimation = "slide" | "fade" | "zoom" | "bounce"
+export type ToastAnimation = "slide" | "fade" | "zoom" | "bounce" | "custom"
 
 /**
  * Action configuration for interactive toast notifications

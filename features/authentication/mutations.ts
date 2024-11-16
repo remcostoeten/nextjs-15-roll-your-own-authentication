@@ -1,11 +1,11 @@
 'use server';
 
-import { createToken } from '@/lib/auth';
 import { db } from '@/server/db';
 import { profiles, sessions, users } from '@/server/db/schema';
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
+import { createToken } from './queries/create-token';
 
 export type AuthCredentials = {
   email: string;

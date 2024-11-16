@@ -1,10 +1,10 @@
 'use server';
 
-import { verifyToken } from '@/lib/auth';
 import { db } from '@/server/db';
 import { users } from '@/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
+import { verifyToken } from './queries/verify-token';
 
 export type AuthenticatedUser = {
   id: string;

@@ -5,9 +5,12 @@ import { useAuth } from "@/features/authentication/context/auth-context";
 import { logout } from "@/features/authentication/mutations/logout";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from 'react';
 import { Button } from "../ui/button";
+import { ModeToggle } from "../ui/theme-toggle";
 
 export default function Header() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const router = useRouter();
   const toast = useToast();
   const { user, refetchUser } = useAuth();
@@ -27,6 +30,18 @@ export default function Header() {
     }
   };
 
+  const toggleDarkMode = () => {
+    setIsDarkMode((prev) => !prev);
+  };
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+
   return (
     <header className="border-b">
       <div className="container flex h-16 items-center justify-between">
@@ -34,7 +49,8 @@ export default function Header() {
           Your App
         </Link>
 
-        <nav className="flex gap-4">
+        <nav className="flex gap-4 items-center">
+          <ModeToggle />  
           {user ? (
             <div className="flex items-center gap-4">
               <span className="text-sm text-muted-foreground">
@@ -54,6 +70,9 @@ export default function Header() {
               </Button>
             </>
           )}
+          <Button asChild>
+            <Link href="/toast-showcase">Toast Showcase</Link>
+          </Button>
         </nav>
       </div>
     </header>

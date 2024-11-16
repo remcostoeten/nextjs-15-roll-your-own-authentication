@@ -1,11 +1,11 @@
 'use server';
 
-import { createToken } from '@/lib/auth';
 import { db } from '@/server/db';
 import { sessions, users } from '@/server/db/schema';
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
+import { createToken } from '../queries/create-token';
 import { ActionResponse, AuthCredentials } from '../types';
 
 export async function login(credentials: AuthCredentials): Promise<ActionResponse> {

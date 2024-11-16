@@ -11,7 +11,7 @@ export default function RootLayout({
 }: PageProps) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn('min-h-screen bg-background antialiased', inter.className)}>
+      <body className={cn('min-h-screen bg-gradient-to-br from-neutral-900 via-black to-neutral-900 antialiased', inter.className)}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
