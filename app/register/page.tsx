@@ -5,7 +5,7 @@ import AuthFormWrapper from '@/features/authentication/components/auth-form-wrap
 import { useAuth } from '@/features/authentication/context/auth-context'
 import { register } from '@/features/authentication/mutations/register'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 type RegisterFormData = {
@@ -14,68 +14,65 @@ type RegisterFormData = {
 }
 
 export default function RegisterPage() {
-  const { user } = useAuth()
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
+  const { refetchUser } = useAuth()
   const toast = useToast()
   const { register: registerField, handleSubmit } = useForm<RegisterFormData>()
-  const [isLoading, setIsLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (user) {
-      router.push('/dashboard')
-    }
-  }, [user, router])
-
-  // If user is authenticated, don't render the register form
-  if (user) {
-    return null
-  }
-
-  const onSubmit = handleSubmit(async (data: RegisterFormData) => {
+  const onSubmit = async (data: RegisterFormData) => {
     try {
       setIsLoading(true)
-      setErrorMessage(null)
+      setError(null)
+      
       const result = await register(data)
       
       if (result.success) {
-        toast.success('Account created successfully!')
+        await refetchUser()
+        toast.success('Registration successful')
         router.push('/dashboard')
       } else {
-        setErrorMessage(result.error || 'Registration failed')
+        setError(result.error || 'Registration failed')
         toast.error(result.error || 'Registration failed')
       }
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Registration failed'
-      setErrorMessage(message)
-      toast.error(message)
+      setError('Registration failed')
+      toast.error('Registration failed')
     } finally {
       setIsLoading(false)
     }
-  })
+  }
 
   return (
     <AuthFormWrapper
       title="Register"
-      onSubmit={onSubmit}
-      submitText="Create Account"
+      onSubmit={handleSubmit(onSubmit)}
+      isLoading={isLoading}
+      submitText="Register"
       alternativeText="Already have an account?"
       alternativeLink="/login"
-      alternativeLinkText="Sign in"
-      errorMessage={errorMessage}
+      alternativeLinkText="Login"
+      errorMessage={error}
     >
-      <input
-        {...registerField('email', { required: true })}
-        type="email"
-        placeholder="Email"
-        className="input"
-      />
-      <input
-        {...registerField('password', { required: true })}
-        type="password"
-        placeholder="Password"
-        className="input"
-      />
+      <div className="space-y-4">
+        <div>
+          <input
+            {...registerField('email', { required: true })}
+            type="email"
+            placeholder="Email"
+            className="w-full p-2 border rounded"
+          />
+        </div>
+        <div>
+          <input
+            {...registerField('password', { required: true })}
+            type="password"
+            placeholder="Password"
+            className="w-full p-2 border rounded"
+          />
+        </div>
+      </div>
     </AuthFormWrapper>
   )
 }
