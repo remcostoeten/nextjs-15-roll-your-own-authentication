@@ -1,16 +1,21 @@
 'use server';
 
-import { logoutUser } from '@/features/authentication/mutations';
-import { ActionResponse } from '../types';
+import { db } from '@/server/db';
+import { sessions } from '@/server/db/schema';
+import { eq } from 'drizzle-orm';
+import { cookies } from 'next/headers';
 
-export async function logout(): Promise<ActionResponse> {
+export async function logout(userId: string): Promise<{ success: boolean; error?: string }> {
   try {
-    await logoutUser();
+    // Clear the session from the database
+    await db.delete(sessions).where(eq(sessions.userId, userId));
+
+    // Clear the cookie
+    cookies().delete('token');
+
     return { success: true };
   } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Logout failed'
-    };
+    console.error('Logout error:', error);
+    return { success: false, error: 'Logout failed. Please try again.' };
   }
 } 

@@ -14,7 +14,7 @@ export default function Header() {
 
   const handleLogout = async () => {
     try {
-      const result = await logout();
+      const result = await logout(user.id);
       if (result.success) {
         await refetchUser();
         toast.success('Logged out successfully');
