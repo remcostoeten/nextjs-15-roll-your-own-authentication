@@ -1,8 +1,8 @@
 'use server';
 
-import { db } from '@/db';
-import { users } from '@/db/schema';
 import { verifyToken } from '@/lib/auth';
+import { db } from '@/server/db';
+import { users } from '@/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
 
@@ -13,7 +13,7 @@ export type AuthenticatedUser = {
 };
 
 export async function getAuthenticatedUser(): Promise<AuthenticatedUser | null> {
-  const token = cookies().get('token');
+  const token = (await cookies()).get('token');
   
   if (!token) {
     return null;

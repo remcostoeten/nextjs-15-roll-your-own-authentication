@@ -1,5 +1,5 @@
-import { db } from '@/db';
-import { profiles, users } from '@/db/schema';
+import { db } from '@/server/db';
+import { profiles, users } from '@/server/db/schema';
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';

@@ -3,12 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "db:push": "drizzle-kit push:pg",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "db:switch": "bash scripts/switch-db.sh",
+    "db:list": "docker ps | grep postgres",
+    "db:backup": "docker exec -t $(docker ps -q -f name=postgres) pg_dumpall -c -U postgres > dump_$(date +%Y-%m-%d_%H_%M_%S).sql",
+    "db:restore": "cat"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -41,8 +45,8 @@
     "@radix-ui/react-toggle-group": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.2",
     "@types/node": "20.6.2",
-    "@types/react": "18.2.22",
-    "@types/react-dom": "18.2.7",
+    "@types/react": "npm:types-react@19.0.0-rc.1",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
     "autoprefixer": "10.4.15",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
@@ -53,18 +57,19 @@
     "drizzle-orm": "^0.36.2",
     "embla-carousel-react": "^8.3.0",
     "eslint": "8.49.0",
-    "eslint-config-next": "13.5.1",
+    "eslint-config-next": "15.0.3",
+    "framer-motion": "^11.11.17",
     "input-otp": "^1.2.4",
     "jose": "^5.2.3",
     "lucide-react": "^0.446.0",
-    "next": "14.1.3",
+    "next": "15.0.3",
     "next-themes": "^0.3.0",
     "pg": "^8.11.3",
     "postcss": "8.4.30",
     "postgres": "^3.4.3",
-    "react": "18.2.0",
+    "react": "19.0.0-rc.1",
     "react-day-picker": "^8.10.1",
-    "react-dom": "18.2.0",
+    "react-dom": "19.0.0-rc.1",
     "react-hook-form": "^7.53.0",
     "react-resizable-panels": "^2.1.3",
     "recharts": "^2.12.7",
@@ -74,11 +79,17 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.2.2",
     "vaul": "^0.9.9",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "zustand": "^5.0.1"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/pg": "^8.11.4",
     "drizzle-kit": "^0.28.1"
-  }
+  },
+  "overrides": {
+    "@types/react": "npm:types-react@19.0.0-rc.1",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
+  },
+  "packageManager": "pnpm@9.13.2+sha512.88c9c3864450350e65a33587ab801acf946d7c814ed1134da4a924f6df5a2120fd36b46aab68f7cd1d413149112d53c7db3a4136624cfd00ff1846a0c6cef48a"
 }

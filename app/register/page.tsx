@@ -1,11 +1,12 @@
 'use client'
 
-import { register } from '@/features/authentication/actions'
+import { useToast } from '@/components/primitives/toast'
 import AuthFormWrapper from '@/features/authentication/components/auth-form-wrapper'
+import { useAuth } from '@/features/authentication/context/auth-context'
+import { register } from '@/features/authentication/mutations/register'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'react-hot-toast'
 
 type RegisterFormData = {
   email: string
@@ -13,10 +14,23 @@ type RegisterFormData = {
 }
 
 export default function RegisterPage() {
+  const { user } = useAuth()
+  const router = useRouter()
+  const toast = useToast()
   const { register: registerField, handleSubmit } = useForm<RegisterFormData>()
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const router = useRouter()
+
+  useEffect(() => {
+    if (user) {
+      router.push('/dashboard')
+    }
+  }, [user, router])
+
+  // If user is authenticated, don't render the register form
+  if (user) {
+    return null
+  }
 
   const onSubmit = handleSubmit(async (data: RegisterFormData) => {
     try {
@@ -44,7 +58,6 @@ export default function RegisterPage() {
     <AuthFormWrapper
       title="Register"
       onSubmit={onSubmit}
-      isLoading={isLoading}
       submitText="Create Account"
       alternativeText="Already have an account?"
       alternativeLink="/login"

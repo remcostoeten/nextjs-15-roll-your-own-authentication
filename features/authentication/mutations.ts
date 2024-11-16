@@ -1,8 +1,8 @@
 'use server';
 
-import { db } from '@/db';
-import { profiles, sessions, users } from '@/db/schema';
 import { createToken } from '@/lib/auth';
+import { db } from '@/server/db';
+import { profiles, sessions, users } from '@/server/db/schema';
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
@@ -38,7 +38,7 @@ export async function loginUser(credentials: AuthCredentials) {
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
     });
 
-    cookies().set('token', token, {
+    (await cookies()).set('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',

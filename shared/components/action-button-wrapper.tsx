@@ -1,18 +1,18 @@
 'use client'
 
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { experimental_useFormStatus } from 'react-dom';
+import { Button } from "@/components/ui/button"
+import { Loader2 } from 'lucide-react'
+import { useFormStatus } from "react-dom"
 
 type AuthButtonProps = {
-  text: string;
-  type: 'login' | 'register' | 'logout';
-  isLoading?: boolean;
+  text: string
+  type: 'login' | 'register' | 'logout'
+  isLoading?: boolean
 }
 
 export default function AuthButton({ text, isLoading }: AuthButtonProps) {
-  const { pending } = experimental_useFormStatus();
-  const showLoader = isLoading || pending;
+  const { pending } = useFormStatus()
+  const showLoader = isLoading || pending
 
   return (
     <Button
@@ -23,5 +23,5 @@ export default function AuthButton({ text, isLoading }: AuthButtonProps) {
       {showLoader && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
       {text}
     </Button>
-  );
+  )
 }

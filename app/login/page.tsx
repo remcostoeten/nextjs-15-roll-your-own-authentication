@@ -1,11 +1,12 @@
 'use client'
 
+import { useToast } from '@/components/primitives/toast'
 import AuthFormWrapper from '@/features/authentication/components/auth-form-wrapper'
+import { useAuth } from '@/features/authentication/context/auth-context'
 import { login } from '@/features/authentication/mutations/login'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import toast from 'react-hot-toast'
 
 type LoginCredentials = {
   email: string
@@ -14,20 +15,41 @@ type LoginCredentials = {
 
 export default function LoginPage() {
   const { register, handleSubmit } = useForm<LoginCredentials>()
+  const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const router = useRouter()
+  const toast = useToast()
+  const { user } = useAuth()
 
-  const onSubmit = handleSubmit(async (data: LoginCredentials) => {
-    setErrorMessage(null)
-    const result = await login(data)
-    
-    if (result.success) {
-      toast.success('Successfully logged in!')
+  useEffect(() => {
+    if (user) {
       router.push('/dashboard')
-    } else {
-      const errorMsg = result.error || 'Login failed. Please try again.'
-      setErrorMessage(errorMsg)
-      toast.error(errorMsg)
+    }
+  }, [user, router])
+
+  if (user) {
+    return null
+  }
+
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      setIsLoading(true)
+      setErrorMessage(null)
+      const result = await login(data)
+      
+      if (result.success) {
+        toast.success('Logged in successfully!')
+        router.push('/dashboard')
+      } else {
+        setErrorMessage(result.error || 'Login failed')
+        toast.error(result.error || 'Login failed')
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Login failed'
+      setErrorMessage(message)
+      toast.error(message)
+    } finally {
+      setIsLoading(false)
     }
   })
 
