@@ -1,6 +1,7 @@
 "use client"
 
-import { ToastProps, Toaster, useToast } from '@/components/primitives/toast'
+import { CodeBlock } from '@/components/primitives/code-block/code-block'
+import { ToastProps, useToast } from '@/components/primitives/toast'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -11,6 +12,11 @@ import { useEffect, useState } from 'react'
 import { HexColorPicker } from "react-colorful"
 
 type ToastAnimation = 'slide' | 'fade' | 'zoom' | 'bounce' | 'custom';
+
+type CountdownState = {
+  isRunning: boolean;
+  timeLeft: number;
+};
 
 const PREDEFINED_ANIMATIONS = {
   slide: { initial: { opacity: 0, y: 50 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: 50 } },
@@ -47,6 +53,10 @@ export default function AdvancedToastPlayground() {
     y2: 1,
   })
   const [showColorPicker, setShowColorPicker] = useState<string | null>(null)
+  const [countdown, setCountdown] = useState<CountdownState>({
+    isRunning: false,
+    timeLeft: intervalDuration
+  });
 
   const showToast = () => {
     const animationConfig = toastConfig.animation === 'custom' 
@@ -73,19 +83,40 @@ export default function AdvancedToastPlayground() {
 
   const toggleInterval = () => {
     if (intervalId) {
-      clearInterval(intervalId)
-      setIntervalId(null)
+      clearInterval(intervalId);
+      setIntervalId(null);
+      setCountdown({ isRunning: false, timeLeft: intervalDuration });
     } else {
-      const id = setInterval(showToast, intervalDuration * 1000)
-      setIntervalId(id)
+      showToast();
+      const id = setInterval(showToast, intervalDuration * 1000);
+      setIntervalId(id);
+      setCountdown({ isRunning: true, timeLeft: intervalDuration });
     }
-  }
+  };
 
   useEffect(() => {
-    return () => {
-      if (intervalId) clearInterval(intervalId)
+    let countdownTimer: NodeJS.Timeout;
+
+    if (countdown.isRunning && countdown.timeLeft > 0) {
+      countdownTimer = setInterval(() => {
+        setCountdown(prev => ({
+          ...prev,
+          timeLeft: prev.timeLeft > 0 ? prev.timeLeft - 1 : intervalDuration
+        }));
+      }, 1000);
     }
-  }, [intervalId])
+
+    return () => {
+      if (countdownTimer) clearInterval(countdownTimer);
+    };
+  }, [countdown.isRunning, intervalDuration]);
+
+  useEffect(() => {
+    setCountdown(prev => ({
+      ...prev,
+      timeLeft: intervalDuration
+    }));
+  }, [intervalDuration]);
 
   const updateConfig = (key: keyof ToastProps, value: any) => {
     setToastConfig(prev => ({ ...prev, [key]: value }))
@@ -406,7 +437,14 @@ export default function AdvancedToastPlayground() {
             step={1}
             className="w-64"
           />
-          <span>{intervalDuration} seconds</span>
+          <div className="flex items-center space-x-2">
+            <span>{intervalDuration} seconds interval</span>
+            {countdown.isRunning && (
+              <span className="px-2 py-1 bg-secondary rounded-md text-sm">
+                Next toast in: {countdown.timeLeft}s
+              </span>
+            )}
+          </div>
         </div>
       </div>
       
@@ -419,7 +457,6 @@ export default function AdvancedToastPlayground() {
         />
       </div>
       
-      <Toaster />
     </div>
   )
 }

@@ -12,6 +12,7 @@ type AuthFormWrapperProps = {
   alternativeLink: string;
   alternativeLinkText: string;
   errorMessage?: string | null;
+  formState?: 'success' | 'error' | null;
 }
 
 export default function AuthFormWrapper({
@@ -23,7 +24,8 @@ export default function AuthFormWrapper({
   alternativeText,
   alternativeLink,
   alternativeLinkText,
-  errorMessage
+  errorMessage,
+  formState
 }: AuthFormWrapperProps) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -37,16 +39,21 @@ export default function AuthFormWrapper({
             )}
             <AuthButton
               text={submitText}
-              type={title.toLowerCase() as 'login' | 'register' | 'logout'}
+              type="submit"
               isLoading={isLoading}
+              variant="auth"
+              className="w-full"
+              formState={formState}
             />
           </form>
-          <div className="mt-4 text-center text-sm">
-            {alternativeText}{' '}
-            <Link href={alternativeLink} className="text-blue-600 hover:underline">
-              {alternativeLinkText}
-            </Link>
-          </div>
+          {alternativeText && (
+            <div className="mt-4 text-center text-sm">
+              {alternativeText}{' '}
+              <Link href={alternativeLink} className="text-primary hover:underline">
+                {alternativeLinkText}
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>

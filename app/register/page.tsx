@@ -26,6 +26,8 @@ export default function RegisterPage() {
       setIsLoading(true)
       setError(null)
       
+      await new Promise(resolve => setTimeout(resolve, 4000))
+      
       const result = await register(data)
       
       if (result.success) {
@@ -49,7 +51,7 @@ export default function RegisterPage() {
       title="Register"
       onSubmit={handleSubmit(onSubmit)}
       isLoading={isLoading}
-      submitText="Register"
+      submitText="Create account"
       alternativeText="Already have an account?"
       alternativeLink="/login"
       alternativeLinkText="Login"

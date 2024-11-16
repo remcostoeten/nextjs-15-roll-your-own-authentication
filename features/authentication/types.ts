@@ -1,4 +1,5 @@
 export type AuthenticatedUser = {
+  avatarUrl: string | null | undefined;
   id: string;
   email: string;
   role: string;
@@ -18,3 +19,9 @@ export type ActionResponse<T = any> = {
 export type AuthResponse = ActionResponse<{
   user: AuthenticatedUser;
 }>;
+
+export type UserProfile = {
+  email: string;
+  role: 'user' | 'admin';
+  avatarUrl?: string; // Optional property
+};

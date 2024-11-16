@@ -11,7 +11,9 @@ export async function logout(userId: string): Promise<{ success: boolean; error?
     await db.delete(sessions).where(eq(sessions.userId, userId));
 
     // Clear the cookie
-    cookies().delete('token');
+    (await
+      // Clear the cookie
+      cookies()).delete('token');
 
     return { success: true };
   } catch (error) {

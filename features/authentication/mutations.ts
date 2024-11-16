@@ -1,4 +1,4 @@
-'use server';
+'use client';
 
 import { db } from '@/server/db';
 import { profiles, sessions, users } from '@/server/db/schema';

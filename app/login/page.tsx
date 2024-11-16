@@ -4,6 +4,8 @@ import { useToast } from '@/components/primitives/toast'
 import AuthFormWrapper from '@/features/authentication/components/auth-form-wrapper'
 import { useAuth } from '@/features/authentication/context/auth-context'
 import { login } from '@/features/authentication/mutations/login'
+import AuthButton from '@/shared/components/action-button-wrapper'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -48,12 +50,12 @@ export default function LoginPage() {
     <AuthFormWrapper
       title="Login"
       onSubmit={handleSubmit(onSubmit)}
+      errorMessage={error}
       isLoading={isLoading}
-      submitText="Login"
+      submitText="Sign in"
       alternativeText="Don't have an account?"
       alternativeLink="/register"
       alternativeLinkText="Register"
-      errorMessage={error}
     >
       <div className="space-y-4">
         <div>
@@ -72,6 +74,17 @@ export default function LoginPage() {
             className="w-full p-2 border rounded"
           />
         </div>
+        <AuthButton 
+          text="Sign in" 
+          type="login"
+          isLoading={isLoading}
+        />
+      </div>
+      <div className="mt-4 text-center text-sm">
+        <span>Don't have an account? </span>
+        <Link href="/register" className="text-primary hover:underline">
+          Register
+        </Link>
       </div>
     </AuthFormWrapper>
   )

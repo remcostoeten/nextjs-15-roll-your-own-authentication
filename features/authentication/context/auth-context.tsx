@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { getCurrentUser } from '../queries/getCurrentUser';
+import { getUser } from '../queries/get-user';
 import type { AuthenticatedUser } from '../types';
 
 type AuthContextType = {
@@ -20,7 +20,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUser = async () => {
     try {
-      const userData = await getCurrentUser();
+      const userData = await getUser();
       setUser(userData);
     } catch (error) {
       setUser(null);

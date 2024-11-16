@@ -10,6 +10,7 @@ export type AuthenticatedUser = {
   id: string;
   email: string;
   role: string;
+  avatarUrl?: string; // No uploads yet
 };
 
 export async function getAuthenticatedUser(): Promise<AuthenticatedUser | null> {
