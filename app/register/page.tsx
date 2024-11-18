@@ -25,11 +25,11 @@ export default function RegisterPage() {
     try {
       setIsLoading(true)
       setError(null)
-      
+
       await new Promise(resolve => setTimeout(resolve, 4000))
-      
+
       const result = await register(data)
-      
+
       if (result.success) {
         await refetchUser()
         toast.success('Registration successful')

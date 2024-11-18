@@ -21,7 +21,7 @@ export type AuthResponse = ActionResponse<{
 }>;
 
 export type UserProfile = {
-  email: string;
+  email: string | null;
   role: 'user' | 'admin';
-  avatarUrl?: string; // Optional property
+  avatarUrl?: string | null;
 };
