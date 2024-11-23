@@ -1,7 +1,7 @@
+import Header from '@/components/theme/header/header'
 import { mono } from '@/config/fonts'
 import { metadata, viewport } from '@/config/metadata/root-metadata'
 import { NextSSRPlugin } from '@uploadthing/react/next-ssr-plugin'
-import Link from 'next/link'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { extractRouterConfig } from 'uploadthing/server'
@@ -25,33 +25,7 @@ export default async function RootLayout({
 				<NextSSRPlugin
 					routerConfig={extractRouterConfig(uploadRouter)}
 				/>
-				<nav className="border-b border-border">
-					<div className="container mx-auto flex justify-between items-center h-14">
-						<Link href="/" className="text-xl font-bold">
-							Auth Dashboard
-						</Link>
-						<div>
-							{user ? (
-								<>
-									<Link href="/dashboard" className="mr-4">
-										Dashboard
-									</Link>
-									<Link href="/profile" className="mr-4">
-										Profile
-									</Link>
-									<Link href="/logout">Logout</Link>
-								</>
-							) : (
-								<>
-									<Link href="/login" className="mr-4">
-										Login
-									</Link>
-									<Link href="/register">Register</Link>
-								</>
-							)}
-						</div>
-					</div>
-				</nav>
+				<Header />
 				<main className="container mx-auto mt-8">{children}</main>
 				{featureFlags.sessionStatus && <SessionStatus user={user} />}
 				<ToastContainer />

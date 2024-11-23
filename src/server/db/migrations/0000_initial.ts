@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm'
 
-export async function up(db: any) {
+export async function dup(db: any) {
 	await sql`
         CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,

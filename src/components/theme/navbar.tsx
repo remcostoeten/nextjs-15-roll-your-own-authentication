@@ -20,7 +20,6 @@ export default function Navbar({ user }: { user: any }) {
 	const router = useRouter()
 
 	const handleLogout = async () => {
-		// Add logout logic here
 		router.push('/login')
 	}
 
