@@ -82,7 +82,9 @@ export default function RegisterPage() {
 								type="password"
 								placeholder="Confirm Password"
 								value={confirmPassword}
-								onChange={(e) => setConfirmPassword(e.target.value)}
+								onChange={(e) =>
+									setConfirmPassword(e.target.value)
+								}
 								required
 								className="bg-background"
 							/>
@@ -96,7 +98,10 @@ export default function RegisterPage() {
 						</Button>
 						<div className="text-center text-sm text-muted-foreground">
 							Already have an account?{' '}
-							<Link href="/login" className="text-primary hover:underline">
+							<Link
+								href="/login"
+								className="text-primary hover:underline"
+							>
 								Login
 							</Link>
 						</div>
