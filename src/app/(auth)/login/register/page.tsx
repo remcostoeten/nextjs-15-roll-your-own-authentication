@@ -1,20 +1,20 @@
 'use client'
 
+import PasswordStrengthGauge from '@/components/password-strength-gauge'
+import {
+	Button,
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+	Input
+} from '@/shared/ui'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import PasswordStrengthGauge from '../../../../components/password-strength-gauge'
-import { Button } from '../../../../components/ui/button'
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle
-} from '../../../../components/ui/card'
-import { Input } from '../../../../components/ui/input'
 import { showToast } from '../../../../lib/toast'
 import { registerMutation } from '../../../../mutations/register'
 

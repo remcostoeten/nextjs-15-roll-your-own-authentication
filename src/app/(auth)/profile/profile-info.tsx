@@ -1,7 +1,7 @@
 'use client'
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
+import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar'
+import { Badge } from '@/shared/ui/badge'
 import { formatDistance } from 'date-fns'
 import type { ProfileUser } from './profile'
 

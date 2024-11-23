@@ -24,6 +24,7 @@
 			"entity": ["src/server/db/generics/entity.ts"],
 			"helpers": ["src/shared/helpers/index.ts"],
 			"schema": ["src/server/db/schema.ts"],
+			"ui": ["src/shared/ui/index.ts"],
 			"db": ["src/server/db/index.ts"]
 		},
 		"typeRoots": ["./node_modules/@types", "src/types"],

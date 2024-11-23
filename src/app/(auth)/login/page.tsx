@@ -5,15 +5,15 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { Button } from '../../../components/ui/button'
 import {
+	Button,
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
-	CardTitle
-} from '../../../components/ui/card'
-import { Input } from '../../../components/ui/input'
+	CardTitle,
+	Input
+} from 'ui'
 import { showToast } from '../../../lib/toast'
 import { loginMutation } from '../../../mutations/login'
 

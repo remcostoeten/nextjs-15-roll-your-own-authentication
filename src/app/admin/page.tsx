@@ -1,8 +1,8 @@
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { db } from '@/server/db'
 import { users } from '@/server/db/schema'
 import { getUser } from '@/services/auth/get-user'
+import { Badge } from '@/shared/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card'
 import {
 	AlertTriangleIcon,
 	MailCheckIcon,

@@ -2,16 +2,18 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { Button } from '../ui/button'
 import {
+	Avatar,
+	AvatarFallback,
+	AvatarImage,
+	Button,
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger
-} from '../ui/dropdown-menu'
+} from 'ui'
 import Logo from './logo'
 
 export default function Navbar({ user }: { user: any }) {

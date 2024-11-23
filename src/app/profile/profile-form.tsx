@@ -1,12 +1,12 @@
 'use client'
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Separator } from '@/components/ui/separator'
 import UploadButton from '@/components/upload-button'
 import { showToast } from '@/lib/toast'
 import { updateProfile } from '@/mutations/profile'
+import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar'
+import { Button } from '@/shared/ui/button'
+import { Input } from '@/shared/ui/input'
+import { Separator } from '@/shared/ui/separator'
 import { useState } from 'react'
 
 type ProfileFormProps = {
