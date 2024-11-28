@@ -1,237 +1,197 @@
 'use client'
 
-import { CodeBlock } from "@/components/primitives/code-block/code-block"
-import { useToast } from "@/components/primitives/toast"
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { Slider } from "@/components/ui/slider"
-import { Switch } from "@/components/ui/switch"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useThemeStore } from "@/core/stores/theme-store"
-import { cn } from "@/lib/utils"
-import { Code2, Minimize2, Palette } from "lucide-react"
-import { useState } from "react"
-import { useTheme } from "../theme-context"
-import { THEME_PRESETS } from "./gradient-presets"
-import ThemePreview from "./theme-preview"
+import { useToast } from '@/shared/primitives/toast'
+import { Button } from '@/shared/ui/button'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog'
+import { Input } from '@/shared/ui/input'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs'
+import { Check, Settings, Undo } from 'lucide-react'
+import { useState } from 'react'
+import { HexColorPicker } from 'react-colorful'
+import { useThemeStore } from './use-theme-store'
 
-type ThemePreset = keyof typeof THEME_PRESETS
+type ColorKey = 'accent' | 'from' | 'to'
 
-type Props = {
-  onThemeChange?: (theme: ThemePreset) => void
+interface Theme {
+  id: string
+  gradient: {
+    from: string
+    to: string
+  }
+  accent: string
 }
 
-export default function ThemeSwitcher({ onThemeChange }: Props) {
+const themes: Theme[] = [
+  { id: 'green', gradient: { from: '#10412F', to: 'black' }, accent: '#30917A' },
+  { id: 'blue', gradient: { from: '#1a4b6e', to: '#051b2c' }, accent: '#2986cc' },
+  { id: 'purple', gradient: { from: '#4a1b70', to: '#1a0829' }, accent: '#8e44ad' },
+  { id: 'orange', gradient: { from: '#782c1f', to: '#2c0f0a' }, accent: '#e74c3c' },
+  { id: 'teal', gradient: { from: '#1b4b2c', to: '#0a1f0f' }, accent: '#27ae60' }
+]
+
+export default function ThemeSwitcher() {
   const [open, setOpen] = useState(false)
-  const [minimized, setMinimized] = useState(false)
-  const [selectedFile, setSelectedFile] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState('presets')
+  const [activeColorPicker, setActiveColorPicker] = useState<ColorKey | null>(null)
+  const { activeTheme, setTheme, updateThemeColors, resetTheme } = useThemeStore()
   const { toast } = useToast()
-  const { currentTheme, setTheme } = useTheme()
-  const setStoreTheme = useThemeStore(state => state.setTheme)
 
-  function handleThemeChange(themeKey: ThemePreset) {
-    setTheme(themeKey)
-    setStoreTheme(themeKey)
-    onThemeChange?.(themeKey)
-    toast({
-      title: "Theme updated",
-      description: `Switched to ${THEME_PRESETS[themeKey].name} theme`,
+  function handleColorChange(color: string) {
+    if (!activeColorPicker) return
+
+    updateThemeColors(activeTheme.id, {
+      [activeColorPicker]: color
     })
-    console.log(`Theme changed to: ${themeKey}`)
   }
 
-  function handleFileClick(themeKey: ThemePreset) {
-    const theme = THEME_PRESETS[themeKey]
-    const code = `export const ${themeKey}Theme = {
-  name: '${theme.name}',
-  gradient: '${theme.gradient}',
-  colors: {
-    background: '${theme.colors.background}',
-    primary: '${theme.colors.primary}',
-    secondary: '${theme.colors.secondary}',
-    accent1: '${theme.colors.accent1}',
-    accent2: '${theme.colors.accent2}'
-  }
-}`
-    setSelectedFile(code)
+  function handleReset() {
+    resetTheme(activeTheme.id)
+    toast({
+      description: "Theme colors have been reset to default values",
+    })
   }
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <Palette className="h-5 w-5" />
-        </Button>
-      </SheetTrigger>
-
-      <SheetContent
-        side="right"
-        className={cn(
-          "w-[400px] sm:w-[540px]",
-          "bg-background/40 dark:bg-background/40",
-          "backdrop-blur-xl backdrop-filter",
-          "border-l border-white/20",
-          "shadow-[0_2px_8px_rgba(0,0,0,0.3)]",
-          "transition-all duration-200",
-          minimized && "w-[80px] sm:w-[80px] p-0"
-        )}
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        className="p-2 rounded-lg transition-colors duration-200 text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white"
       >
-        {minimized ? (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-4 top-4"
-            onClick={() => setMinimized(false)}
-          >
-            <Minimize2 className="h-4 w-4" />
-          </Button>
-        ) : (
-          <>
-            <SheetHeader>
-              <SheetTitle className="text-2xl font-semibold text-white">Theme Studio</SheetTitle>
-              <p className="text-sm text-white/60">
-                Customize your experience with our theme presets and animation controls
-              </p>
-            </SheetHeader>
+        <Settings size={18} />
+      </button>
 
-            <div className="absolute right-4 top-4 flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setMinimized(true)}
-              >
-                <Minimize2 className="h-4 w-4" />
-              </Button>
-            </div>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Theme Settings</DialogTitle>
+          </DialogHeader>
 
-            <Tabs defaultValue="themes" className="mt-8">
-              <TabsList className="grid w-full grid-cols-3 mb-6 bg-white/5">
-                <TabsTrigger value="themes">Themes</TabsTrigger>
-                <TabsTrigger value="animations">Animations</TabsTrigger>
-                <TabsTrigger value="settings">Settings</TabsTrigger>
-              </TabsList>
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="presets">Presets</TabsTrigger>
+              <TabsTrigger value="customize">Customize</TabsTrigger>
+            </TabsList>
 
-              <TabsContent value="themes">
-                <div className="grid grid-cols-2 gap-4">
-                  {Object.entries(THEME_PRESETS).map(([key, preset]) => (
-                    <div key={key} className="relative group">
-                      <ThemePreview
-                        preset={preset}
-                        isSelected={currentTheme === key}
-                        onClick={() => handleThemeChange(key as ThemePreset)}
-                      />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleFileClick(key as ThemePreset)
-                        }}
-                      >
-                        <Code2 className="h-4 w-4" />
-                      </Button>
+            <TabsContent value="presets" className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                {themes.map(theme => (
+                  <div
+                    key={theme.id}
+                    onClick={() => setTheme(theme.id)}
+                    className="relative cursor-pointer group"
+                  >
+                    <div
+                      className="h-24 rounded-lg group-hover:ring-2 ring-black/5 dark:ring-white/5"
+                      style={{
+                        backgroundImage: `linear-gradient(to bottom, ${theme.gradient.from}, ${theme.gradient.to})`
+                      }}
+                    />
+                    <div className="mt-2 flex items-center justify-between">
+                      <span className="text-sm font-medium capitalize">{theme.id}</span>
+                      {activeTheme.id === theme.id && (
+                        <Check size={16} className="text-green-500" />
+                      )}
                     </div>
-                  ))}
-                </div>
-              </TabsContent>
-
-              <TabsContent value="animations" className="space-y-4">
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium text-white">Animation Duration</label>
-                    <Slider
-                      defaultValue={[1]}
-                      max={2}
-                      step={0.1}
-                      className="mt-2"
-                      onValueChange={(value) => {
-                        useThemeStore.setState((state) => ({
-                          animation: { ...state.animation, duration: value[0] }
-                        }))
-                      }}
-                    />
                   </div>
-                  <div>
-                    <label className="text-sm font-medium text-white">Animation Intensity</label>
-                    <Slider
-                      defaultValue={[1]}
-                      max={2}
-                      step={0.1}
-                      className="mt-2"
-                      onValueChange={(value) => {
-                        useThemeStore.setState((state) => ({
-                          animation: { ...state.animation, intensity: value[0] }
-                        }))
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-white">Animation Easing</label>
-                    <Select
-                      onValueChange={(value) => {
-                        useThemeStore.setState((state) => ({
-                          animation: { ...state.animation, ease: value }
-                        }))
-                      }}
-                    >
-                      <SelectTrigger className="mt-2">
-                        <SelectValue placeholder="Select easing" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="linear">Linear</SelectItem>
-                        <SelectItem value="easeInOut">Ease In Out</SelectItem>
-                        <SelectItem value="easeIn">Ease In</SelectItem>
-                        <SelectItem value="easeOut">Ease Out</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="settings" className="space-y-4">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <label className="text-sm font-medium text-white">Enable Animations</label>
-                    <Switch
-                      onCheckedChange={(checked) => {
-                        // Add your animation toggle logic here
-                      }}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <label className="text-sm font-medium text-white">Reduce Motion</label>
-                    <Switch
-                      onCheckedChange={(checked) => {
-                        // Add your reduce motion logic here
-                      }}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <label className="text-sm font-medium text-white">High Contrast</label>
-                    <Switch
-                      onCheckedChange={(checked) => {
-                        // Add your high contrast logic here
-                      }}
-                    />
-                  </div>
-                </div>
-              </TabsContent>
-            </Tabs>
-
-            {selectedFile && (
-              <div className="mt-6 p-4 rounded-lg bg-background/60 backdrop-blur-sm">
-                <CodeBlock
-                  code={selectedFile}
-                  language="typescript"
-                  showLineNumbers
-                />
+                ))}
               </div>
-            )}
-          </>
-        )}
-      </SheetContent>
-    </Sheet>
+            </TabsContent>
+
+            <TabsContent value="customize" className="space-y-4">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Accent Color</span>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={activeTheme.accent}
+                      onChange={(e) => handleColorChange(e.target.value)}
+                      className="w-24"
+                    />
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => setActiveColorPicker('accent')}
+                    >
+                      <div
+                        className="w-4 h-4 rounded-full"
+                        style={{ backgroundColor: activeTheme.accent }}
+                      />
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Gradient Start</span>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={activeTheme.gradient.from}
+                      onChange={(e) => handleColorChange(e.target.value)}
+                      className="w-24"
+                    />
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => setActiveColorPicker('from')}
+                    >
+                      <div
+                        className="w-4 h-4 rounded-full"
+                        style={{ backgroundColor: activeTheme.gradient.from }}
+                      />
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Gradient End</span>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={activeTheme.gradient.to}
+                      onChange={(e) => handleColorChange(e.target.value)}
+                      className="w-24"
+                    />
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => setActiveColorPicker('to')}
+                    >
+                      <div
+                        className="w-4 h-4 rounded-full"
+                        style={{ backgroundColor: activeTheme.gradient.to }}
+                      />
+                    </Button>
+                  </div>
+                </div>
+
+                {activeColorPicker && (
+                  <div className="absolute mt-2 z-50">
+                    <HexColorPicker
+                      color={
+                        activeColorPicker === 'accent'
+                          ? activeTheme.accent
+                          : activeColorPicker === 'from'
+                            ? activeTheme.gradient.from
+                            : activeTheme.gradient.to
+                      }
+                      onChange={handleColorChange}
+                    />
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+          </Tabs>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={handleReset}
+              className="gap-2"
+            >
+              <Undo size={16} />
+              Reset Colors
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   )
-} 
+}

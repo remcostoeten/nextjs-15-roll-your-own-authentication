@@ -1,0 +1,11 @@
+:root {
+  --accent-color: #30917A;
+  --blur1-color: #043936;
+  --blur2-color: #30917A;
+}
+
+[data-gradient="bg0"] { --gradient-id: bg0; }
+[data-gradient="bg1"] { --gradient-id: bg1; }
+[data-gradient="bg2"] { --gradient-id: bg2; }
+[data-gradient="bg3"] { --gradient-id: bg3; }
+[data-gradient="bg4"] { --gradient-id: bg4; }

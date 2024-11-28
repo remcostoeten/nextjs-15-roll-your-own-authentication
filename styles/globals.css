@@ -1,0 +1,28 @@
+:root {
+    --accent-color: #7C9082;
+    --accent-foreground: #7C9082;
+    --accent-muted: #7C908266;
+    --accent-hover: #7C9082CC;
+    --ring-color: #7C908233;
+}
+
+/* Update component styles to use variables */
+.btn-primary {
+    background-color: var(--accent-color);
+}
+
+.text-accent {
+    color: var(--accent-foreground);
+}
+
+.border-accent {
+    border-color: var(--accent-muted);
+}
+
+.hover\:bg-accent:hover {
+    background-color: var(--accent-hover);
+}
+
+.focus\:ring-accent:focus {
+    --tw-ring-color: var(--ring-color);
+}

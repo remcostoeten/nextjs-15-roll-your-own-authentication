@@ -1,7 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Remove or comment out the output: 'export' line
-  // output: 'export',
+	reactStrictMode: true,
+	images: {
+		domains: ['localhost', 'uploadthing.com', 'utfs.io']
+	},
+	async redirects() {
+		return []
+	},
+	async rewrites() {
+		return []
+	}
 }
 
 module.exports = nextConfig

@@ -1,4 +1,4 @@
-
+`
 type ThemePreset = {
   name: string;
   colors: {
@@ -41,3 +41,4 @@ const ThemePreview = ({ preset, isSelected, onClick }: ThemePreviewProps) => {
 };
 
 export default ThemePreview;
+`

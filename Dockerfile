@@ -1,21 +1,27 @@
-FROM node:20-alpine
+# Use an official Node runtime as a parent image
+FROM node:18-alpine
 
+# Set the working directory in the container
 WORKDIR /app
 
-# Install pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
-
-# Copy package files
-COPY package.json pnpm-lock.yaml ./
+COPY package*.json ./
 
 # Install dependencies
-RUN pnpm install
+RUN npm install
 
-# Copy the rest of the application
+# Copy source code
 COPY . .
 
-# Expose the port
+# Build the application
+RUN npm run build
+
+# Expose port
 EXPOSE 3000
 
-# Start the application in development mode
-CMD ["pnpm", "dev", "--turbo"] 
+# Start the application
+CMD ["npm", "start"]
+
+# Add these lines before npm install if needed
+RUN chown -R node:node /app
+USER node
+

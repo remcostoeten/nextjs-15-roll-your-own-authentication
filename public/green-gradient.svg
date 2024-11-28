@@ -1,0 +1,22 @@
+<svg viewBox="0 0 788 1000" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="788" y2="1000">
+      <stop offset="0" stop-color="#10412F"/>
+      <stop offset="1"/>
+    </linearGradient>
+    <clipPath id="clip">
+      <rect width="788" height="1000" rx="32"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#clip)">
+    <rect width="788" height="1000" rx="32" fill="url(#bg)"/>
+    <path filter="url(#blur1)" d="M608.777 923.631c-222.885 148.739-718.459-192.901-891.505 0-230.813 257.299 702.845 388.939 1026.484 225.099C1111.62 962.487 1253.6-.964 915.024 223.776c-236.818 157.195-69.89 542.131-306.247 699.855" fill="#043936"/>
+    <path filter="url(#blur2)" d="M492.648 797.844c-182.021 85.287-511.451-223.518-661.44-99.903-200.058 164.88 477.915 367.099 736.381 281.903C861.377 883 1074.59 184.656 798.228 313.326c-193.305 89.998-112.558 394.076-305.58 484.518" fill="#30917A"/>
+  </g>
+  <filter id="blur1" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+    <feGaussianBlur stdDeviation="107"/>
+  </filter>
+  <filter id="blur2" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+    <feGaussianBlur stdDeviation="150"/>
+  </filter>
+</svg>
