@@ -10,7 +10,8 @@ import {
 	Shield,
 	Users
 } from 'lucide-react'
-import { MenuItem } from './header'
+import type { MenuItem } from './header.d'
+
 export const defaultMenuItems: MenuItem[] = [
 	{
 		label: 'Home',

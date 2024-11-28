@@ -1,8 +1,7 @@
 'use client'
 
+import { useMountedTheme } from '@/hooks/use-mounted-theme'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
 
 interface LogoProps {
 	className?: string
@@ -29,18 +28,22 @@ export default function Logo({
 	size = 'md',
 	width,
 	height,
-	fill = '#fff',
 	bgFill = 'transparent',
 	animated = true,
 	hasLink = false,
 	linkTo = '/'
 }: LogoProps) {
-	const router = useRouter()
-	const [isFocusedOnInput, setIsFocusedOnInput] = useState(false)
+	const { theme, mounted } = useMountedTheme()
+
+	if (!mounted) {
+		return null // or a skeleton/loading state
+	}
 
 	const { width: defaultWidth, height: defaultHeight } = sizeMap[size]
 	const finalWidth = width || defaultWidth
 	const finalHeight = height || defaultHeight
+
+	const fill = theme === 'dark' ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)'
 
 	const containerStyle = {
 		transform: 'scale(1)',
@@ -53,16 +56,17 @@ export default function Logo({
 
 	const pathStyle = animated
 		? {
-				opacity: 1,
-				transform: 'scale(1)',
-				transition: 'transform 0.3s ease, opacity 0.3s ease'
-			}
+			opacity: 1,
+			transform: 'scale(1)',
+			transition: 'all 0.3s ease'
+		}
 		: {}
 
 	const pathHoverStyle = animated
 		? ({
-				transform: 'scale(1.1)'
-			} as const)
+			transform: 'scale(1.1)',
+			fill: theme === 'dark' ? '#fff' : '#000'
+		} as const)
 		: {}
 
 	const LogoSVG = (
@@ -77,8 +81,7 @@ export default function Logo({
 			style={containerStyle}
 			onMouseEnter={(e) => {
 				if (e.currentTarget) {
-					e.currentTarget.style.transform =
-						containerHoverStyle.transform
+					e.currentTarget.style.transform = containerHoverStyle.transform
 				}
 			}}
 			onMouseLeave={(e) => {
@@ -105,13 +108,14 @@ export default function Logo({
 						}}
 						onMouseEnter={(e) => {
 							if (animated && e.currentTarget) {
-								e.currentTarget.style.transform =
-									pathHoverStyle.transform as string
+								e.currentTarget.style.transform = pathHoverStyle.transform
+								e.currentTarget.style.fill = pathHoverStyle.fill
 							}
 						}}
 						onMouseLeave={(e) => {
 							if (animated && e.currentTarget) {
 								e.currentTarget.style.transform = 'scale(1)'
+								e.currentTarget.style.fill = fill
 							}
 						}}
 					/>
@@ -124,12 +128,12 @@ export default function Logo({
 		<Link
 			href={linkTo}
 			title="Home (⌘/Ctrl + H or Shift + H)"
-			className="transition-colors hover:brightness-0 dark:invert dark:hover:invert-0 dark:hover:brightness-200"
+			className="transition-colors"
 		>
 			{LogoSVG}
 		</Link>
 	) : (
-		<div className="transition-colors hover:brightness-0 dark:invert dark:hover:invert-0 dark:hover:brightness-200">
+		<div className="transition-colors">
 			{LogoSVG}
 		</div>
 	)

@@ -39,10 +39,10 @@ export default function HomePage() {
 					</p>
 				</CardContent>
 				<CardFooter className="flex justify-center space-x-4">
-					<Button asChild>
+					<Button>
 						<Link href="/register">Register</Link>
 					</Button>
-					<Button asChild variant="outline">
+					<Button variant="outline">
 						<Link href="/login">Login</Link>
 					</Button>
 				</CardFooter>

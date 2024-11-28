@@ -4,24 +4,24 @@ FROM node:18-alpine
 # Set the working directory in the container
 WORKDIR /app
 
-# Install pnpm
-RUN npm install -g pnpm
-
-# Copy package.json and pnpm-lock.yaml
-COPY package.json pnpm-lock.yaml ./
+COPY package*.json ./
 
 # Install dependencies
-RUN pnpm install --frozen-lockfile
+RUN npm install
 
-# Copy the rest of your app's source code
+# Copy source code
 COPY . .
 
-# Build your Next.js app
-RUN pnpm build
+# Build the application
+RUN npm run build
 
-# Expose the port the app runs on
+# Expose port
 EXPOSE 3000
 
-# Start the app
-CMD ["pnpm", "start"]
+# Start the application
+CMD ["npm", "start"]
+
+# Add these lines before npm install if needed
+RUN chown -R node:node /app
+USER node
 

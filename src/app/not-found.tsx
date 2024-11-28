@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 type Props = {}
 
-export default function NotFound({}: Props) {
+export default function NotFound({ }: Props) {
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted">
 			<div className="text-center space-y-8 px-6">
@@ -39,7 +39,7 @@ export default function NotFound({}: Props) {
 				>
 					<Link
 						href="/"
-						className="inline-flex items-center justify-center px-5 py-2 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary/90 transition-colors"
+						className="inline-flex items-center justify-center px-5 py-2 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary/90 transition-colors text-neutral-950"
 					>
 						<Home className="w-4 h-4 mr-2" />
 						Home
