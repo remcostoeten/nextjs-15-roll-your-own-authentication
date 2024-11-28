@@ -1,36 +1,52 @@
 import Link from 'next/link'
+import {
+	Button,
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle
+} from 'ui'
 
-export default function Page() {
+export default function HomePage() {
 	return (
-		<div className="flex min-h-screen flex-col bg-background">
-			<main className="flex-1">
-				<section className="container flex flex-col items-center justify-center gap-4 py-24 text-center md:py-32">
-					<h1 className="text-3xl font-bold leading-tight tracking-tighter md:text-5xl lg:text-6xl lg:leading-[1.1]">
-						Build your own authentication
-					</h1>
-					<p className="max-w-[750px] text-lg text-muted-foreground sm:text-xl">
-						A minimal, open-source authentication example showcasing
-						how to implement secure user authentication in Next.js
-						without external providers.
+		<div className="container mx-auto px-4 py-8">
+			<Card className="max-w-2xl mx-auto">
+				<CardHeader>
+					<CardTitle className="text-3xl font-bold text-center">
+						Welcome to Auth Dashboard
+					</CardTitle>
+					<CardDescription className="text-center text-lg mt-2">
+						Your secure authentication and user management solution
+					</CardDescription>
+				</CardHeader>
+				<CardContent className="text-center">
+					<p className="mb-4">
+						Auth Dashboard provides a robust authentication system
+						with features like:
 					</p>
-					<div className="flex gap-4">
-						<Link
-							href="/sign-up"
-							className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-						>
-							Get Started
-						</Link>
-						<Link
-							href="https://github.com/remcostoeten/nextjs-15-roll-your-own-authentication"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-background px-8 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
-						>
-							GitHub
-						</Link>
-					</div>
-				</section>
-			</main>
+					<ul className="list-disc list-inside text-left max-w-md mx-auto mb-6">
+						<li>Secure user registration and login</li>
+						<li>Email verification</li>
+						<li>Password strength validation</li>
+						<li>Role-based access control</li>
+						<li>User analytics and login history</li>
+					</ul>
+					<p>
+						Get started by creating an account or logging in if you
+						already have one.
+					</p>
+				</CardContent>
+				<CardFooter className="flex justify-center space-x-4">
+					<Button>
+						<Link href="/register">Register</Link>
+					</Button>
+					<Button variant="outline">
+						<Link href="/login">Login</Link>
+					</Button>
+				</CardFooter>
+			</Card>
 		</div>
 	)
 }

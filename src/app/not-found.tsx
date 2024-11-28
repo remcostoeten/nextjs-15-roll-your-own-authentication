@@ -1,53 +1,57 @@
-import { Button } from '@/shared/components/ui/button'
-import { FileQuestion, Home } from 'lucide-react'
+'use client'
+
+import { motion } from 'framer-motion'
+import { ArrowLeft, Home } from 'lucide-react'
 import Link from 'next/link'
 
-export default function NotFound() {
+type Props = {}
+
+export default function NotFound({ }: Props) {
 	return (
-		<div className="min-h-screen flex items-center justify-center p-4">
-			<div className="max-w-md w-full space-y-8 text-center">
-				{/* 404 Gradient Text */}
-				<h1 className="text-[150px] font-bol dtext-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-neutral-400">
-					404
-				</h1>
-
-				{/* Icon */}
-				<div className="relative">
-					<div className="absolute inset-0 bg-vercel-orange/20 blur-xl rounded-full" />
-					<div className="relative bg-black/40 backdrop-blur-sm border border-white/10 w-20 h-20 rounded-2xl mx-auto flex items-center justify-center">
-						<FileQuestion className="w-10 h-10 text-orange-400" />
+		<div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted">
+			<div className="text-center space-y-8 px-6">
+				<motion.div
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.5 }}
+					className="flex flex-col items-center"
+				>
+					<h1 className="text-9xl font-bold text-primary">404</h1>
+					<div className="mt-4 text-xl text-muted-foreground">
+						Page not found
 					</div>
-				</div>
+				</motion.div>
 
-				{/* Text Content */}
-				<div className="space-y-2">
-					<h2 className="text-2xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-neutral-400">
-						Page Not Found
-					</h2>
-					<p className="text-gray-400">
-						The page you&apos;re looking for doesn&apos;t exist or
-						has been moved.
-					</p>
-				</div>
+				<motion.div
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					transition={{ delay: 0.2, duration: 0.5 }}
+					className="text-muted-foreground max-w-lg mx-auto"
+				>
+					The page you're looking for doesn't exist or has been moved.
+				</motion.div>
 
-				<div className="flex items-center justify-center gap-4 pt-4">
-					<Button
-						variant="outline"
-						className="bg-black/40 backdrop-blur-sm border-white/10"
-						asChild
+				<motion.div
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ delay: 0.4, duration: 0.5 }}
+					className="flex gap-4 justify-center"
+				>
+					<Link
+						href="/"
+						className="inline-flex items-center justify-center px-5 py-2 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary/90 transition-colors text-neutral-950"
 					>
-						<Link href="/">
-							<Home className="w-4 h-4 mr-2" />
-							Go Home
-						</Link>
-					</Button>
-					<Button
-						className="bg-vercel-orange hover:bg-vercel-orange/90"
-						asChild
+						<Home className="w-4 h-4 mr-2" />
+						Home
+					</Link>
+					<button
+						onClick={() => window.history.back()}
+						className="inline-flex items-center justify-center px-5 py-2 border border-primary text-base font-medium rounded-md text-primary hover:bg-primary/10 transition-colors"
 					>
-						<Link href="/changelog">View Changelog</Link>
-					</Button>
-				</div>
+						<ArrowLeft className="w-4 h-4 mr-2" />
+						Go Back
+					</button>
+				</motion.div>
 			</div>
 		</div>
 	)

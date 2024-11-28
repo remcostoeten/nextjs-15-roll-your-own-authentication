@@ -1,95 +1,69 @@
 'use client'
 
-import CodeBlock from '@/shared/_docs/code-block/code-block'
-import { Button } from '@/shared/components/ui/button'
-import { AlertTriangle, RotateCcw } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { AlertTriangle, RefreshCcw } from 'lucide-react'
 import { useEffect } from 'react'
 
-export default function Error({
-	error,
-	reset
-}: {
+type ErrorProps = {
 	error: Error & { digest?: string }
 	reset: () => void
-}) {
+}
+
+export default function Error({ error, reset }: ErrorProps) {
 	useEffect(() => {
 		console.error(error)
 	}, [error])
 
-	const errorCode = `// Error: ${error.name}
-${error.message}
-
-// Stack Trace:
-${error.stack}
-
-// Error Details:
-${error.digest ? `Error ID: ${error.digest}` : 'No error ID available'}
-${Object.entries(error)
-	.filter(([key]) => !['name', 'message', 'stack', 'digest'].includes(key))
-	.map(([key, value]) => `${key}: ${JSON.stringify(value, null, 2)}`)
-	.join('\n')}`
-
 	return (
-		<div className="min-h-screen flex items-center justify-center p-4">
-			<div className="max-w-2xl w-full space-y-8">
-				<div className="relative">
-					<div className="absolute inset-0 bg-red-500/20 blur-xl rounded-full" />
-					<div className="relative bg-black/40 backdrop-blur-sm border border-white/10 w-20 h-20 rounded-2xl mx-auto flex items-center justify-center">
-						<AlertTriangle className="w-10 h-10 text-red-500" />
+		<div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted">
+			<div className="text-center space-y-8 px-6">
+				<motion.div
+					initial={{ opacity: 0, scale: 0.8 }}
+					animate={{ opacity: 1, scale: 1 }}
+					transition={{ duration: 0.5 }}
+					className="flex justify-center"
+				>
+					<div className="rounded-full bg-destructive/10 p-4">
+						<AlertTriangle className="h-12 w-12 text-destructive" />
 					</div>
-				</div>
-				<div className="space-y-2 text-center">
-					<h2 className="text-2xl font-semibold text-white">
+				</motion.div>
+
+				<motion.div
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ delay: 0.2, duration: 0.5 }}
+				>
+					<h2 className="text-2xl font-bold text-foreground">
 						Something went wrong!
 					</h2>
-					<p className="text-gray-400">
+					<div className="mt-2 text-muted-foreground">
 						{error.message || 'An unexpected error occurred'}
-					</p>
-					{error.digest && (
-						<p className="text-sm text-gray-500 font-mono">
-							Error ID: {error.digest}
-						</p>
-					)}
-				</div>
-
-				<div className="flex justify-center pt-4">
-					<Button
-						onClick={reset}
-						className="bg-neutral-200 transition-all duration-400 hover:bg-neutral-400"
-					>
-						<RotateCcw className="w-4 h-4 mr-2" />
-						Try Again
-					</Button>
-				</div>
-
-				{process.env.NODE_ENV === 'development' && (
-					<div className="mt-8">
-						<details className="group">
-							<summary className="cursor-pointer text-sm text-gray-400 hover:text-white mb-4">
-								Technical Details
-							</summary>
-							<CodeBlock
-								code={errorCode}
-								language="typescript"
-								fileName="error-stack.ts"
-								showLineNumbers
-								enableLineHighlight
-								showMetaInfo
-								badges={[
-									{ text: 'Error', variant: 'danger' },
-									{ text: error.name, variant: 'warning' },
-									{
-										text: 'Development',
-										variant: 'secondary'
-									}
-								]}
-								maxHeight="400px"
-								onCopy={() => {
-									navigator.clipboard.writeText(errorCode)
-								}}
-							/>
-						</details>
 					</div>
+				</motion.div>
+
+				<motion.div
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					transition={{ delay: 0.4, duration: 0.5 }}
+				>
+					<button
+						onClick={reset}
+						className="inline-flex items-center justify-center px-5 py-2 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary/90 transition-colors"
+					>
+						<RefreshCcw className="w-4 h-4 mr-2" />
+						Try again
+					</button>
+				</motion.div>
+
+				{error.digest && (
+					<motion.p
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						transition={{ delay: 0.6, duration: 0.5 }}
+						className="text-sm text-muted-foreground"
+					>
+						Error ID: {error.digest}
+					</motion.p>
 				)}
 			</div>
 		</div>

@@ -1,12 +1,11 @@
-import type { Config } from 'drizzle-kit'
+import { defineConfig } from 'drizzle-kit'
+import { env } from './src/server/env'
 
-export default {
-	out: './src/db/migrations',
-	schema: './src/db/schema.ts',
-	dialect: 'turso',
+export default defineConfig({
+	schema: './src/server/db/schema.ts',
+	out: './src/server/db/migrations',
+	dialect: 'postgresql',
 	dbCredentials: {
-		url: process.env.TURSO_DATABASE_URL!,
-		authToken: process.env.TURSO_AUTH_TOKEN!
-	},
-	verbose: true
-} satisfies Config
+		url: env.DATABASE_URL
+	}
+})
