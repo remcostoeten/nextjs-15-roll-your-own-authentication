@@ -14,7 +14,6 @@ import ThemeSwitcher from '../color-switchter/color-switcher'
 import Logo from '../logo'
 import type { DropdownItem, HeaderProps, MenuItem } from './header.d'
 
-// Update the MenuBadge component to handle light/dark themes
 const MenuBadge = ({ type }: { type: 'new' | 'soon' | 'beta' }) => {
     const { theme } = useMountedTheme()
 
@@ -330,7 +329,7 @@ const MobileMenu = ({
                                 ) : (
                                     <Link
                                         href="/login"
-                                        className="w-full px-4 py-2 text-sm font-medium text-white bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center"
+                                        className="w-full px-4 py-2 text-sm font-medium text-white bg-white/10 hover:bg-white/0 rounded-full flex items-center justify-center"
                                         onClick={onClose}
                                     >
                                         Sign in
@@ -352,6 +351,11 @@ export default function Header({ className }: HeaderProps) {
     const [isSearchOpen, setIsSearchOpen] = useState(false)
     const { theme, setTheme, mounted } = useMountedTheme()
     const { user, signOut } = useAuthHeader()
+    const pathname = window.location.pathname
+    const isAuthPage = ['/login', '/register', '/forgot-password'].includes(pathname)
+    if (isAuthPage) {
+        return null
+    }
 
     useEffect(() => {
         // Set initial scroll state

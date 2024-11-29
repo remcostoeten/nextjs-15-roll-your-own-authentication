@@ -55,14 +55,13 @@ export async function registerMutation(
 			.returning()
 
 		// Only send verification email if feature is enabled
-		if (featureFlags.emailVerification) {
-			await sendVerificationEmail(newUser.id, email)
-			return {
-				success: true,
-				message:
-					'Registration successful. Please check your email to verify your account.'
-			}
-		}
+		// if (featureFlags.emailVerification) {
+		// 	return {
+		// 		success: true,
+		// 		message:
+		// 			'Registration successful. Please check your email to verify your account.'
+		// 	}
+		// }
 
 		return {
 			success: true,

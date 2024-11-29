@@ -108,8 +108,8 @@ export default function Logo({
 						}}
 						onMouseEnter={(e) => {
 							if (animated && e.currentTarget) {
-								e.currentTarget.style.transform = pathHoverStyle.transform
-								e.currentTarget.style.fill = pathHoverStyle.fill
+								e.currentTarget.style.transform = pathHoverStyle.transform as string
+								e.currentTarget.style.fill = pathHoverStyle.fill as string
 							}
 						}}
 						onMouseLeave={(e) => {

@@ -2,7 +2,6 @@ import Header from '@/components/theme/header/header'
 import { mono } from '@/config/fonts'
 import { metadata, viewport } from '@/config/metadata/root-metadata'
 import { NextSSRPlugin } from '@uploadthing/react/next-ssr-plugin'
-import AnimatedBackground from 'components/theme/background/animated-background'
 import { ThemeProvider } from 'next-themes'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -20,19 +19,19 @@ export default async function RootLayout({
 	children: React.ReactNode
 }) {
 	const user = await getUser()
+
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<head />
 			<body
-				className={`min-h-screen h-[200vh] pt-16 ${mono.variable} font-sans antialiased`}
+				className={`min-h-screen  ${mono.variable} font-sans antialiased`}
 				suppressHydrationWarning
 			>
 
-				<AnimatedBackground />				<ThemeProvider
+				<ThemeProvider
 					attribute="class"
-					defaultTheme="system"
-					enableSystem
-					disableTransitionOnChange
+					defaultTheme="dark"
+
 				>
 					<script
 						dangerouslySetInnerHTML={{

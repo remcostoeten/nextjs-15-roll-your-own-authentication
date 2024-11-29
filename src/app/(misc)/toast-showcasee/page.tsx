@@ -1,27 +1,68 @@
 "use client"
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from ""
-import { CodeBlock } from '@/components/primitives/code-block/code-block'
-import { ToastProps, useToast } from '@/components/primitives/toast'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
+import { CodeBlock } from '@/shared/primitives/code-block/code-block'
+import { useToast } from '@/shared/primitives/toast'
+import {
+  Button,
+  Input,
+  Switch,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger
+} from '@/shared/ui'
 import { useState } from 'react'
 import { HexColorPicker } from "react-colorful"
 
 type ToastAnimation = 'slide' | 'fade' | 'zoom' | 'bounce' | 'custom'
+type ToastPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'top-center' | 'bottom-center'
+type ToastVariant = 'default' | 'success' | 'error' | 'warning' | 'info'
 
-type Props = {}
+type ToastConfig = {
+  animation?: ToastAnimation;
+  style?: {
+    borderRadius?: string;
+    backgroundColor?: string;
+    color?: string;
+    borderColor?: string;
+    height?: string;
+    border?: string;
+  };
+  message?: string;
+  variant?: ToastVariant;
+  position?: ToastPosition;
+  duration?: number;
+  showProgress?: boolean;
+  showSpinner?: boolean;
+  isPending?: boolean;
+  promise?: Promise<any> | null;
+  title?: string;
+  description?: string;
+}
 
-export default function AdvancedToastPlayground({ }: Props) {
-  const toast = useToast()
-  const [toastConfig, setToastConfig] = useState<Partial<ToastProps & { animation: ToastAnimation }>>({
-    title: 'Toast Title',
+interface CustomStyles {
+  borderRadius: string;
+  backgroundColor: string;
+  color: string;
+  borderColor: string;
+  height: string;
+}
+
+type ToastProps = {
+  message: string;
+  variant?: ToastVariant | undefined;
+  duration?: number;
+  style?: React.CSSProperties;
+  id?: string;
+}
+
+export default function AdvancedToastPlayground() {
+  const { toast } = useToast()
+  const [toastConfig, setToastConfig] = useState<ToastConfig>({
     message: 'This is a toast message',
-    description: 'Additional description text',
     variant: 'default',
     position: 'bottom-right',
+    promise: null,
     duration: 5000,
     animation: 'slide',
     showProgress: true,
@@ -29,7 +70,7 @@ export default function AdvancedToastPlayground({ }: Props) {
     isPending: false
   })
 
-  const [customStyles, setCustomStyles] = useState({
+  const [customStyles, setCustomStyles] = useState<CustomStyles>({
     borderRadius: '0.5rem',
     backgroundColor: '#18181B',
     color: '#FFFFFF',
@@ -40,45 +81,49 @@ export default function AdvancedToastPlayground({ }: Props) {
   const [showColorPicker, setShowColorPicker] = useState<string | null>(null)
 
   const showToast = () => {
-    toast[toastConfig.variant as keyof typeof toast](toastConfig.message, {
-      ...toastConfig,
-      style: {
-        ...customStyles,
-        border: `1px solid ${customStyles.borderColor}`,
-      }
-    } as any)
+    if (!toastConfig.variant) return;
+
+    toast({
+      message: toastConfig.message,
+      duration: toastConfig.duration,
+    })
   }
 
   const showPromiseToast = () => {
-    const fakePromise = new Promise((resolve, reject) => {
+    const fakePromise = new Promise<string>((resolve, reject) => {
       setTimeout(() => {
         Math.random() > 0.5 ? resolve('Success!') : reject('Error occurred!')
       }, 2000)
     })
 
-    toast.promise(
-      fakePromise,
-      {
-        loading: 'Loading...',
-        success: (data) => `Promise resolved: ${data}`,
-        error: (err) => `Promise rejected: ${err}`
-      },
-      {
-        ...toastConfig,
-        style: {
-          ...customStyles,
-          border: `1px solid ${customStyles.borderColor}`,
-        }
-      }
-    )
+    const loadingToastId = toast({
+      message: 'Loading...',
+      duration: Infinity,
+    })
+
+    fakePromise
+      .then((data) => {
+        toast({
+          id: loadingToastId,
+          message: `Success: ${data}`,
+          duration: toastConfig.duration,
+        })
+      })
+      .catch((err) => {
+        toast({
+          id: loadingToastId,
+          message: `Error: ${err}`,
+          duration: toastConfig.duration,
+        })
+      })
   }
 
-  const updateConfig = (key: keyof ToastProps, value: any) => {
-    setToastConfig(prev => ({ ...prev, [key]: value }))
+  const updateConfig = (key: keyof ToastConfig, value: any) => {
+    setToastConfig((prev: ToastConfig) => ({ ...prev, [key]: value }))
   }
 
-  const updateCustomStyle = (key: keyof typeof customStyles, value: string) => {
-    setCustomStyles(prev => ({ ...prev, [key]: value }))
+  const updateCustomStyle = (key: keyof CustomStyles, value: string) => {
+    setCustomStyles((prev: CustomStyles) => ({ ...prev, [key]: value }))
   }
 
   return (
@@ -103,64 +148,58 @@ export default function AdvancedToastPlayground({ }: Props) {
         <TabsContent value="basic" className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label>Message</label>
+              <label className="text-sm font-medium">Title</label>
               <Input
-                value={toastConfig.message}
-                onChange={(e) => updateConfig('message', e.target.value)}
-                placeholder="Toast message"
+                value={toastConfig.title}
+                onChange={(e) => updateConfig('title', e.target.value)}
+                placeholder="Toast title"
               />
             </div>
 
             <div className="space-y-2">
-              <label>Description</label>
+              <label className="text-sm font-medium">Description</label>
               <Input
                 value={toastConfig.description}
                 onChange={(e) => updateConfig('description', e.target.value)}
-                placeholder="Additional description"
+                placeholder="Toast description"
               />
             </div>
 
-            <div className="space-y-2">
-              <label>Variant</label>
-              <Select
-                value={toastConfig.variant}
-                onValueChange={(value) => updateConfig('variant', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="default">Default</SelectItem>
-                  <SelectItem value="success">Success</SelectItem>
-                  <SelectItem value="error">Error</SelectItem>
-                  <SelectItem value="warning">Warning</SelectItem>
-                  <SelectItem value="info">Info</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Variant</label>
+                <select
+                  className="w-full rounded-md border border-input bg-background px-3 py-2"
+                  value={toastConfig.variant}
+                  onChange={(e) => updateConfig('variant', e.target.value as ToastVariant)}
+                >
+                  <option value="default">Default</option>
+                  <option value="success">Success</option>
+                  <option value="error">Error</option>
+                  <option value="warning">Warning</option>
+                  <option value="info">Info</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Position</label>
+                <select
+                  className="w-full rounded-md border border-input bg-background px-3 py-2"
+                  value={toastConfig.position}
+                  onChange={(e) => updateConfig('position', e.target.value as ToastPosition)}
+                >
+                  <option value="top-right">Top Right</option>
+                  <option value="top-left">Top Left</option>
+                  <option value="bottom-right">Bottom Right</option>
+                  <option value="bottom-left">Bottom Left</option>
+                  <option value="top-center">Top Center</option>
+                  <option value="bottom-center">Bottom Center</option>
+                </select>
+              </div>
             </div>
 
             <div className="space-y-2">
-              <label>Position</label>
-              <Select
-                value={toastConfig.position}
-                onValueChange={(value) => updateConfig('position', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="top-right">Top Right</SelectItem>
-                  <SelectItem value="top-left">Top Left</SelectItem>
-                  <SelectItem value="bottom-right">Bottom Right</SelectItem>
-                  <SelectItem value="bottom-left">Bottom Left</SelectItem>
-                  <SelectItem value="top-center">Top Center</SelectItem>
-                  <SelectItem value="bottom-center">Bottom Center</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <label>Duration (ms)</label>
+              <label className="text-sm font-medium">Duration (ms)</label>
               <Input
                 type="number"
                 value={toastConfig.duration}
@@ -176,7 +215,7 @@ export default function AdvancedToastPlayground({ }: Props) {
                   checked={toastConfig.showProgress}
                   onCheckedChange={(checked) => updateConfig('showProgress', checked)}
                 />
-                <label>Show Progress</label>
+                <label className="text-sm font-medium">Show Progress</label>
               </div>
 
               <div className="flex items-center space-x-2">
@@ -184,7 +223,7 @@ export default function AdvancedToastPlayground({ }: Props) {
                   checked={toastConfig.showSpinner}
                   onCheckedChange={(checked) => updateConfig('showSpinner', checked)}
                 />
-                <label>Show Spinner</label>
+                <label className="text-sm font-medium">Show Spinner</label>
               </div>
             </div>
           </div>
@@ -192,35 +231,32 @@ export default function AdvancedToastPlayground({ }: Props) {
 
         <TabsContent value="styling" className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            {Object.entries(customStyles).map(([key, value]) => (
+            {Object.entries(customStyles).map(([key, value]: [string, string]) => (
               <div key={key} className="space-y-2">
-                <label className="capitalize">
-                  {key.replace(/([A-Z])/g, ' $1').trim()}
-                </label>
-                <div className="flex gap-2">
-                  <Input
-                    value={value}
-                    onChange={(e) => updateCustomStyle(key as keyof typeof customStyles, e.target.value)}
-                  />
-                  {(key.includes('Color')) && (
-                    <Button
-                      variant="outline"
-                      onClick={() => setShowColorPicker(showColorPicker === key ? null : key)}
-                    >
-                      <div
-                        className="w-4 h-4 rounded-full"
-                        style={{ backgroundColor: value }}
-                      />
-                    </Button>
-                  )}
-                </div>
-                {showColorPicker === key && (
-                  <div className="absolute mt-2 z-50">
-                    <HexColorPicker
-                      color={value}
-                      onChange={(color) => updateCustomStyle(key as keyof typeof customStyles, color)}
+                <Input
+                  value={value}
+                  onChange={(e) => updateCustomStyle(key as keyof CustomStyles, e.target.value)}
+                />
+                {key.includes('Color') && (
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setShowColorPicker(showColorPicker === key ? null : key)}
+                    className="relative"
+                  >
+                    <div
+                      className="w-4 h-4 rounded-full"
+                      style={{ backgroundColor: value as string }}
                     />
-                  </div>
+                    {showColorPicker === key && (
+                      <div className="absolute mt-2 top-full right-0 z-50">
+                        <HexColorPicker
+                          color={value}
+                          onChange={(color) => updateCustomStyle(key as keyof CustomStyles, color)}
+                        />
+                      </div>
+                    )}
+                  </Button>
                 )}
               </div>
             ))}

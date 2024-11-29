@@ -5,11 +5,9 @@ import { registerSchema } from '@/lib/validations/auth'
 import { db } from '@/server/db'
 import { users } from '@/server/db/schema'
 import { hash } from 'bcrypt'
-import { sendVerificationEmail } from '../services/email-service'
 
 export async function register(email: string, password: string, name?: string) {
 	try {
-		// Validate input
 		const validationResult = registerSchema.safeParse({
 			email,
 			password,
@@ -51,14 +49,14 @@ export async function register(email: string, password: string, name?: string) {
 			.returning()
 
 		// Only send verification email if feature is enabled
-		if (featureFlags.emailVerification) {
-			await sendVerificationEmail(newUser.id, email)
-			return {
-				success: true,
-				message:
-					'Registration successful. Please check your email to verify your account.'
-			}
-		}
+		// if (featureFlags.emailVerification) {
+		// 	await sendVerificationEmail(newUser.id, email)
+		// 	return {
+		// 		success: true,
+		// 		message:
+		// 			'Registration successful. Please check your email to verify your account.'
+		// 	}
+		// }
 
 		return {
 			success: true,

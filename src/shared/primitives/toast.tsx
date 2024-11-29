@@ -277,7 +277,7 @@ export const useToast = (): ToastAPI => {
       if (typeof message === "string") {
         return add({ message });
       }
-      return add(message);
+      return add(message as Omit<ToastProps, "id">);
     },
 
     success: (message, options = {}) =>

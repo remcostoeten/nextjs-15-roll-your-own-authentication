@@ -1,14 +1,9 @@
 "use client"
 
-import { CodeBlock } from "@/components/ui/code-block"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Slider } from "@/components/ui/slider"
-import { Switch } from "@/components/ui/switch"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { cn } from "@/lib/utils"
+import { CodeBlock } from '@/shared/primitives/code-block/code-block'
+import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Input, Slider, Switch, Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui'
+import { cn } from 'helpers'
 import { useCallback, useEffect, useState } from "react"
-import { Button } from "../../components/ui/button"
 
 type BackgroundConfig = {
   columns: number

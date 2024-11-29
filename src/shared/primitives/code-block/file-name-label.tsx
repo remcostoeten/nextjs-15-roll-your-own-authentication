@@ -1,4 +1,4 @@
-import { cn } from 'cn'
+import { cn } from 'helpers'
 import { File } from 'lucide-react'
 
 interface FileNameLabelProps {

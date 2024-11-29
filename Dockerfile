@@ -1,27 +1,33 @@
 # Use an official Node runtime as a parent image
 FROM node:18-alpine
 
-# Set the working directory in the container
+# Install pnpm globally first
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+# Set the working directory
 WORKDIR /app
 
-COPY package*.json ./
+# Copy package files with root
+COPY package*.json pnpm-lock.yaml* ./
+
+# Set correct permissions
+RUN mkdir -p node_modules && \
+    chown -R node:node /app
+
+# Switch to non-root user
+USER node
 
 # Install dependencies
-RUN npm install
+RUN pnpm install
 
-# Copy source code
-COPY . .
+# Copy the rest of the code
+COPY --chown=node:node . .
 
 # Build the application
-RUN npm run build
+RUN pnpm run build
 
 # Expose port
 EXPOSE 3000
 
 # Start the application
-CMD ["npm", "start"]
-
-# Add these lines before npm install if needed
-RUN chown -R node:node /app
-USER node
-
+CMD ["pnpm", "start"]
