@@ -4,15 +4,17 @@ import { siteConfig } from '@/config/site'
 import useAuthHeader from '@/hooks/use-auth-header'
 import { useMountedTheme } from '@/hooks/use-mounted-theme'
 import { Flex } from '@/shared/atoms'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useSpring } from 'framer-motion'
 import { cn } from 'helpers'
 import { ChevronDown, Github, Menu, Moon, Search, Sun, X } from 'lucide-react'
 import Link from 'next/link'
+import { usePathname } from "next/navigation"
 import { useEffect, useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from 'ui'
 import ThemeSwitcher from '../color-switchter/color-switcher'
 import Logo from '../logo'
-import type { DropdownItem, HeaderProps, MenuItem } from './header.d'
+import type { DropdownItem, HeaderProps } from './header.d'
+import { MENU_ITEMS } from './menu-items'
 
 const MenuBadge = ({ type }: { type: 'new' | 'soon' | 'beta' }) => {
     const { theme } = useMountedTheme()
@@ -52,7 +54,6 @@ const MenuBadge = ({ type }: { type: 'new' | 'soon' | 'beta' }) => {
     )
 }
 
-// Search Modal Component
 const SearchModal = ({
     isOpen,
     onClose
@@ -165,53 +166,6 @@ const DropdownMenu = ({
         </AnimatePresence>
     )
 }
-
-// Update the menu items to include new badge types
-const MENU_ITEMS: MenuItem[] = [
-    {
-        label: 'Docs',
-        href: '#',
-        dropdownItems: [
-            {
-                label: 'Getting Started',
-                href: '/docs/getting-started',
-                description: 'Quick start guide and installation'
-            },
-            {
-                label: 'Components',
-                href: '/docs/components',
-                description: 'UI components and usage examples'
-            },
-            {
-                label: 'Authentication',
-                href: '/docs/auth',
-                description: 'User authentication and authorization',
-                isBeta: true
-            },
-            {
-                label: 'API Reference',
-                href: '/docs/api',
-                description: 'Complete API documentation'
-            },
-            {
-                label: 'Deployment',
-                href: '/docs/deployment',
-                description: 'Deploy your application',
-                isSoon: true
-            }
-        ]
-    },
-    {
-        label: 'Changelog',
-        href: '/changelog',
-        isNew: true
-    },
-    {
-        label: 'Roadmap',
-        href: '/roadmap',
-        isSoon: true
-    }
-]
 
 const MobileMenu = ({
     isOpen,
@@ -329,7 +283,7 @@ const MobileMenu = ({
                                 ) : (
                                     <Link
                                         href="/login"
-                                        className="w-full px-4 py-2 text-sm font-medium text-white bg-white/10 hover:bg-white/0 rounded-full flex items-center justify-center"
+                                        className="w-full px-4 py-2 text-sm font-medium text-white bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center"
                                         onClick={onClose}
                                     >
                                         Sign in
@@ -351,16 +305,24 @@ export default function Header({ className }: HeaderProps) {
     const [isSearchOpen, setIsSearchOpen] = useState(false)
     const { theme, setTheme, mounted } = useMountedTheme()
     const { user, signOut } = useAuthHeader()
-    const pathname = window.location.pathname
+    const pathname = usePathname()
     const isAuthPage = ['/login', '/register', '/forgot-password'].includes(pathname)
     if (isAuthPage) {
         return null
     }
 
-    useEffect(() => {
-        // Set initial scroll state
-        setScrolled(window.scrollY > 20)
+    const springConfig = {
+        stiffness: 300,
+        damping: 30,
+        mass: 1,
+        duration: 0.3
+    }
 
+    const width = useSpring(scrolled ? 100 : 95, springConfig)
+    const borderRadius = useSpring(scrolled ? 0 : 24, springConfig)
+    const opacity = useSpring(scrolled ? 0.65 : 0.1, springConfig)
+
+    useEffect(() => {
         const handleScroll = () => {
             const isScrolled = window.scrollY > 20
             setScrolled(isScrolled)
@@ -382,61 +344,48 @@ export default function Header({ className }: HeaderProps) {
     }, [openDropdown])
 
     if (!mounted) {
-        return null // or a skeleton/loading state
+        return null
     }
 
     return (
         <>
-            <div
-                className={cn(
-                    'fixed top-0 z-50 left-1/2 -translate-x-1/2',
-                    className
-                )}
-            >
+            <div className={cn('fixed top-0 z-50 left-1/2 -translate-x-1/2', className)}>
                 <motion.div
-                    initial={false}
-                    className={cn(
-                        'transition-[width] duration-700',
-                        'ease-[cubic-bezier(0.34,1.56,0.64,1)]',
-                        scrolled
-                            ? 'w-[100vw]'
-                            : 'w-[calc(100vw-2rem)] max-w-7xl'
-                    )}
+                    style={{
+                        width: `${width.get()}vw`,
+                        maxWidth: scrolled ? '100vw' : '1280px',
+                        margin: '0 auto'
+                    }}
+                    animate={{
+                        width: scrolled ? '100vw' : '95vw',
+                        maxWidth: scrolled ? '100vw' : '1280px'
+                    }}
+                    transition={springConfig}
                 >
                     <motion.nav
-                        initial={false}
                         style={{
                             width: '100%',
-                            transformOrigin: 'center top'
+                            borderRadius: borderRadius.get(),
+                            backgroundColor: theme === 'dark'
+                                ? `rgba(18, 18, 18, ${opacity.get()})`
+                                : `rgba(255, 255, 255, ${opacity.get()})`,
+                            backdropFilter: `blur(${opacity.get() * 12}px)`,
+                            boxShadow: opacity.get() > 0.1 ? '0 4px 20px rgba(0, 0, 0, 0.06)' : 'none'
                         }}
                         animate={{
-                            borderRadius: scrolled ? '0' : '1.5rem',
-                            backgroundColor: scrolled
-                                ? theme === 'dark'
-                                    ? 'rgba(18, 18, 18, 0.65)'
-                                    : 'rgba(255, 255, 255, 0.65)'
-                                : theme === 'dark'
-                                    ? 'rgba(18, 18, 18, 0.1)'
-                                    : 'rgba(255, 255, 255, 0.1)',
-                            backdropFilter: scrolled ? 'blur(8px)' : 'blur(4px)',
-                            boxShadow: scrolled
-                                ? '0 4px 20px rgba(0, 0, 0, 0.06)'
-                                : 'none'
+                            borderRadius: scrolled ? 0 : 24,
+                            backgroundColor: theme === 'dark'
+                                ? `rgba(18, 18, 18, ${scrolled ? 0.65 : 0.1})`
+                                : `rgba(255, 255, 255, ${scrolled ? 0.65 : 0.1})`,
+                            backdropFilter: `blur(${scrolled ? 8 : 0}px)`
                         }}
-                        transition={{
-                            duration: 0.7,
-                            ease: [0.34, 1.56, 0.64, 1]
-                        }}
+                        transition={springConfig}
                         className={cn(
                             'flex items-center justify-between',
                             'px-6 h-[60px]',
                             'border',
-                            theme === 'dark'
-                                ? 'border-white/10'
-                                : 'border-black/10',
-                            scrolled
-                                ? 'shadow-lg shadow-black/5 border-t-0'
-                                : 'mt-4'
+                            theme === 'dark' ? 'border-white/10' : 'border-black/10',
+                            scrolled ? 'shadow-lg shadow-black/5 border-t-0' : 'mt-4'
                         )}
                     >
                         <Logo
@@ -473,6 +422,8 @@ export default function Header({ className }: HeaderProps) {
                                                     ? "text-white/60 hover:text-white"
                                                     : "text-black/60 hover:text-black"
                                             )}
+                                            aria-expanded={openDropdown === item.label}
+                                            aria-haspopup="true"
                                         >
                                             {item.icon ? item.icon : item.label}
                                             {item.isNew && <MenuBadge type="new" />}
@@ -531,6 +482,7 @@ export default function Header({ className }: HeaderProps) {
                                         : "text-black/60 hover:text-black"
                                 )}
                                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                                aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
                             >
                                 {theme === 'dark' ? (
                                     <Moon size={18} />
@@ -549,6 +501,7 @@ export default function Header({ className }: HeaderProps) {
                                 )}
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                aria-label="View source on GitHub"
                             >
                                 <Flex gap='2'>
                                     <Github size={18} />
@@ -564,6 +517,7 @@ export default function Header({ className }: HeaderProps) {
                                         : "text-black/60 hover:text-black"
                                 )}
                                 onClick={() => setIsSearchOpen(true)}
+                                aria-label="Open search"
                             >
                                 <Search size={18} />
                             </button>
@@ -616,6 +570,7 @@ export default function Header({ className }: HeaderProps) {
                                         : "text-black/60 hover:text-black"
                                 )}
                                 onClick={() => setIsMobileMenuOpen(true)}
+                                aria-label="Open mobile menu"
                             >
                                 <Menu size={24} />
                             </button>
@@ -624,7 +579,6 @@ export default function Header({ className }: HeaderProps) {
                 </motion.div>
             </div>
 
-            {/* Mobile Menu */}
             <MobileMenu
                 isOpen={isMobileMenuOpen}
                 onClose={() => setIsMobileMenuOpen(false)}
@@ -632,7 +586,6 @@ export default function Header({ className }: HeaderProps) {
                 onSignOut={signOut}
             />
 
-            {/* Search Modal */}
             <SearchModal
                 isOpen={isSearchOpen}
                 onClose={() => setIsSearchOpen(false)}
@@ -640,3 +593,4 @@ export default function Header({ className }: HeaderProps) {
         </>
     )
 }
+

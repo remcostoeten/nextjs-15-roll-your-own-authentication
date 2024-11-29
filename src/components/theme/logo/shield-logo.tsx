@@ -1,17 +1,17 @@
 "use client"
 
+import { useAnimationVariant } from "@/hooks/use-animation-variant"
+import { useMountedTheme } from "@/hooks/use-mounted-theme"
 import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { cn } from "@/lib/utils"
+} from "@/shared/ui/tooltip"
 import { motion } from "framer-motion"
+import { cn } from "helpers"
 import Link from "next/link"
-import { useAnimationVariant } from "../hooks/use-animation-variant"
-import { useMountedTheme } from "../hooks/use-mounted-theme"
-import { type ShieldLogoProps, sizeMap } from "../types/shield"
+import { sizeMap, type ShieldLogoProps } from "./types"
 
 export function ShieldLogo({
     className,
@@ -34,22 +34,18 @@ export function ShieldLogo({
     const { theme, mounted } = useMountedTheme()
     const variants = useAnimationVariant(animated ? animationVariant : "none")
 
-    // Handle unmounted state
     if (!mounted) {
         return null
     }
 
-    // Calculate dimensions
     const { width: defaultWidth, height: defaultHeight } = sizeMap[size]
     const finalWidth = width || defaultWidth
     const finalHeight = height || defaultHeight
 
-    // Determine colors based on theme
     const defaultFill = theme === "dark" ? "#ffffff" : "#000000"
     const defaultOutline = theme === "dark" ? "#ffffff" : "#000000"
     const defaultSegmentFill = theme === "dark" ? "rgba(255, 255, 255, 0.7)" : "rgba(0, 0, 0, 0.7)"
 
-    // SVG Component
     const LogoSVG = (
         <motion.svg
             xmlns="http://www.w3.org/2000/svg"

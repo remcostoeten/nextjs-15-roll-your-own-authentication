@@ -8,18 +8,13 @@ import { useState } from "react"
 import { CodeBlock } from "./code-block"
 import { ShieldLogo } from "./shield-logo"
 
-interface VariantCardProps {
-    variant: AnimationVariant
-    customColors?: {
-        fill?: string
-        fillOutline?: string
-        fillTop?: string
-        fillLeft?: string
-        fillRight?: string
-    }
+type VariantCardProps = {
+    variant: string
+    customColors: Record<string, string>
     variantCode: string
-    description?: string
+    description: string
     className?: string
+    animationMode?: string
 }
 
 export function VariantCard({
@@ -27,12 +22,71 @@ export function VariantCard({
     customColors,
     variantCode,
     description,
-    className
+    className,
+    animationMode = "default"
 }: VariantCardProps) {
     const [key, setKey] = useState(0)
 
     const handleReplay = () => {
         setKey(k => k + 1)
+    }
+
+    const getAnimationVariants = () => {
+        switch (animationMode) {
+            case "stagger":
+                return {
+                    hidden: { y: 20, opacity: 0 },
+                    visible: {
+                        y: 0,
+                        opacity: 1,
+                        transition: { duration: 0.5, ease: "backOut", staggerChildren: 0.2 }
+                    }
+                }
+            case "rotate":
+                return {
+                    hidden: { rotate: -180, opacity: 0 },
+                    visible: {
+                        rotate: 0,
+                        opacity: 1,
+                        transition: { type: "spring", damping: 10 }
+                    }
+                }
+            case "wave":
+                return {
+                    hidden: { y: 50, opacity: 0 },
+                    visible: {
+                        y: [0, -20, 0],
+                        opacity: 1,
+                        transition: {
+                            y: {
+                                repeat: Infinity,
+                                repeatType: "reverse",
+                                duration: 2,
+                                ease: "easeInOut"
+                            }
+                        }
+                    }
+                }
+            case "glassmorphic":
+                return {
+                    hidden: { opacity: 0, backdropFilter: "blur(0px)" },
+                    visible: {
+                        opacity: 1,
+                        backdropFilter: "blur(10px)",
+                        transition: {
+                            duration: 1,
+                            ease: "easeInOut",
+                            repeat: Infinity,
+                            repeatType: "reverse"
+                        }
+                    }
+                }
+            default:
+                return {
+                    hidden: { opacity: 0 },
+                    visible: { opacity: 1, transition: { duration: 0.5 } }
+                }
+        }
     }
 
     return (
