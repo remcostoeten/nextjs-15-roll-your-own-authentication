@@ -1,4 +1,4 @@
-import Header from '@/components/theme/header/header'
+import { Header } from '@/components/theme/header/header'
 import { mono } from '@/config/fonts'
 import { metadata, viewport } from '@/config/metadata/root-metadata'
 import { NextSSRPlugin } from '@uploadthing/react/next-ssr-plugin'
@@ -27,12 +27,7 @@ export default async function RootLayout({
 				className={`min-h-screen  ${mono.variable} font-sans antialiased`}
 				suppressHydrationWarning
 			>
-
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="dark"
-
-				>
+				<ThemeProvider attribute="class" defaultTheme="dark">
 					<script
 						dangerouslySetInnerHTML={{
 							__html: `
@@ -51,7 +46,9 @@ export default async function RootLayout({
 					/>
 					<Header />
 					<main className="mt-8">{children}</main>
-					{featureFlags.sessionStatus && <SessionStatus user={user} />}
+					{featureFlags.sessionStatus && (
+						<SessionStatus user={user} />
+					)}
 					<ToastContainer />
 				</ThemeProvider>
 			</body>

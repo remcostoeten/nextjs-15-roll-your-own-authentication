@@ -1,12 +1,13 @@
 'use client'
 
 import { registerMutation } from '@/mutations/register'
-import { useToast } from '@/shared/primitives/toast'
+import { useToastStore } from '@/shared/primitives/toast'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import * as React from 'react'
 import { EyeIcon, GithubIcon, GoogleIcon } from './icons'
 import InputField from './input-fields'
+import { RegisterButton } from './register-button'
 import type { FormData } from './types'
 
 const formVariants = {
@@ -32,41 +33,46 @@ const itemVariants = {
 export function RegisterForm() {
 	const [formData, setFormData] = React.useState<FormData>({
 		firstName: '',
-		lastName: '',
-
 		email: '',
 		password: ''
 	})
 	const [isLoading, setIsLoading] = React.useState(false)
 	const router = useRouter()
-	const { toast, promise } = useToast()
+	const { add: addToast } = useToastStore()
 
 	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault()
+		setIsLoading(true)
+
+		const toastId = addToast('Creating your account...', {
+			isPending: true,
+			showSpinner: true
+		})
 
 		try {
-			await promise(
-				registerMutation(
-					formData.email,
-					formData.password,
-					formData.firstName
-				),
+			await registerMutation(
+				formData.email,
+				formData.password,
+				formData.firstName
+			)
+
+			addToast('Account created successfully! Please log in.', {
+				variant: 'success',
+				duration: 5000
+			})
+
+			router.push('/login?registered=true')
+		} catch (error) {
+			console.error('Registration error:', error)
+			addToast(
+				`Registration failed: ${error instanceof Error ? error.message : 'Please try again'}`,
 				{
-					loading: 'Creating your account...',
-					success: () => {
-						router.push('/login?registered=true')
-						return 'Account created successfully! Please log in.'
-					},
-					error: (err) => `Registration failed: ${err instanceof Error ? err.message : 'Please try again'}`
-				},
-				{
-					duration: 5000,
-					position: 'bottom-center'
+					variant: 'error',
+					duration: 5000
 				}
 			)
-		} catch (error) {
-			// Error is handled by the promise toast
-			console.error('Registration error:', error)
+		} finally {
+			setIsLoading(false)
 		}
 	}
 
@@ -92,45 +98,40 @@ export function RegisterForm() {
 						type="button"
 					>
 						<GithubIcon />
-						<span className="text-[0.9375rem]">Github</span>
+						<span className="text-[0.9375rem]">GitHub</span>
 					</button>
 				</div>
 			</motion.div>
 
-			<motion.div variants={itemVariants} className="flex items-center gap-4">
-				<div className="h-px flex-1 bg-[#222]" />
-				<span className="text-sm text-gray-500">Or</span>
-				<div className="h-px flex-1 bg-[#222]" />
+			<motion.div variants={itemVariants}>
+				<InputField
+					label="Name"
+					type="text"
+					placeholder="Enter your name"
+					value={formData.firstName}
+					onChange={(value) =>
+						setFormData((prev) => ({ ...prev, firstName: value }))
+					}
+					index={1}
+					required
+				/>
+			</motion.div>
+
+			<motion.div variants={itemVariants}>
+				<InputField
+					label="Email"
+					type="email"
+					placeholder="Enter your email"
+					value={formData.email}
+					onChange={(value) =>
+						setFormData((prev) => ({ ...prev, email: value }))
+					}
+					index={2}
+					required
+				/>
 			</motion.div>
 
 			<motion.div variants={itemVariants} className="space-y-4">
-				<div className="grid grid-cols-2 gap-3">
-					<InputField
-						label="First Name"
-						placeholder="eg. John"
-						value={formData.firstName || ''}
-						onChange={(value) => setFormData(prev => ({ ...prev, firstName: value }))}
-						index={2}
-					/>
-					<InputField
-						label="Last Name"
-						placeholder="eg. Franc"
-						value={formData.lastName || ''}
-						onChange={(value) => setFormData(prev => ({ ...prev, lastName: value }))}
-						index={3}
-					/>
-				</div>
-
-				<InputField
-					label="Email"
-					placeholder="eg. johnfrans@gmail.com"
-					type="email"
-					value={formData.email}
-					onChange={(value) => setFormData(prev => ({ ...prev, email: value }))}
-					index={4}
-					required
-				/>
-
 				<InputField
 					label="Password"
 					placeholder="Enter your password"
@@ -138,30 +139,15 @@ export function RegisterForm() {
 					icon={<EyeIcon />}
 					helperText="Must be at least 8 characters."
 					value={formData.password}
-					onChange={(value) => setFormData(prev => ({ ...prev, password: value }))}
-					index={5}
+					onChange={(value) =>
+						setFormData((prev) => ({ ...prev, password: value }))
+					}
+					index={3}
 					required
 				/>
 			</motion.div>
 
-			<motion.button
-				variants={itemVariants}
-				type="submit"
-				disabled={isLoading}
-				className="w-full py-3 text-[0.9375rem] font-semibold text-black bg-white rounded-xl hover:bg-gray-100 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 disabled:opacity-70 disabled:scale-100 focus:outline-none"
-				whileHover={{ scale: 1.02 }}
-				whileTap={{ scale: 0.98 }}
-			>
-				{isLoading ? (
-					<motion.div
-						className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin mx-auto"
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-					/>
-				) : (
-					'Sign Up'
-				)}
-			</motion.button>
+			<RegisterButton isLoading={isLoading} />
 
 			<motion.p
 				variants={itemVariants}

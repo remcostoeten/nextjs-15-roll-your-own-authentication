@@ -1,100 +1,80 @@
 'use client'
 
-import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import {
-	Button,
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-	Input
-} from 'ui'
-import { showToast } from '../../../lib/toast'
-import { loginMutation } from '../../../mutations/login'
+import { LoginForm } from '@/components/auth'
+import { motion } from 'framer-motion'
+import Image from 'next/image'
+
+const formVariants = {
+	hidden: { opacity: 0, x: 20 },
+	visible: {
+		opacity: 1,
+		x: 0,
+		transition: {
+			duration: 0.5,
+			ease: 'easeOut',
+			staggerChildren: 0.1
+		}
+	}
+}
+
+const itemVariants = {
+	hidden: { opacity: 0, y: 10 },
+	visible: {
+		opacity: 1,
+		y: 0,
+		transition: { duration: 0.3 }
+	}
+}
 
 export default function LoginPage() {
-	const [email, setEmail] = useState('')
-	const [password, setPassword] = useState('')
-	const [isLoading, setIsLoading] = useState(false)
-	const router = useRouter()
-	const searchParams = useSearchParams()
-
-	useEffect(() => {
-		if (searchParams.get('registered') === 'true') {
-			showToast.success('Registration successful! Please log in.')
-		}
-	}, [searchParams])
-
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault()
-		setIsLoading(true)
-
-		const result = await loginMutation(email, password)
-
-		if (result.success) {
-			showToast.success('Login successful!')
-			router.push('/dashboard')
-		} else {
-			showToast.error(result.error || 'Login failed')
-		}
-
-		setIsLoading(false)
-	}
-
 	return (
-		<div className="flex justify-center items-center min-h-screen">
-			<Card className="w-[350px]">
-				<CardHeader>
-					<CardTitle>Login</CardTitle>
-					<CardDescription>
-						Enter your credentials to access your account
-					</CardDescription>
-				</CardHeader>
-				<CardContent>
-					<form onSubmit={handleSubmit} className="space-y-4">
-						<div className="space-y-2">
-							<Input
-								type="email"
-								placeholder="Email"
-								value={email}
-								onChange={(e) => setEmail(e.target.value)}
-								required
-							/>
-						</div>
-						<div className="space-y-2">
-							<Input
-								type="password"
-								placeholder="Password"
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-								required
-							/>
-						</div>
-						<Button
-							type="submit"
-							className="w-full"
-							disabled={isLoading}
-						>
-							{isLoading ? 'Logging in...' : 'Login'}
-						</Button>
-						<div className="text-center text-sm text-muted-foreground">
-							Don't have an account?{' '}
-							<Link
-								href="/register"
-								className="text-primary hover:underline"
-							>
-								Register
-							</Link>
-						</div>
-					</form>
-				</CardContent>
-			</Card>
-			<ToastContainer />
+		<div className="flex min-h-screen">
+			{/* Left side - Image */}
+			<div className="hidden lg:flex lg:w-1/2 relative">
+				<Image
+					src="/images/auth-bg.jpg"
+					alt="Authentication background"
+					fill
+					className="object-cover"
+					priority
+				/>
+				<div className="absolute inset-0 bg-black/50" />
+				<div className="absolute inset-0 flex items-center justify-center p-8">
+					<div className="max-w-md text-center">
+						<h1 className="text-3xl font-bold text-white mb-4">
+							Welcome Back!
+						</h1>
+						<p className="text-lg text-gray-200">
+							Sign in to continue your journey with us.
+						</p>
+					</div>
+				</div>
+			</div>
+
+			{/* Right side - Form */}
+			<motion.div
+				className="w-full lg:w-1/2 flex items-center justify-center p-8 overflow-y-auto"
+				variants={formVariants}
+				initial="hidden"
+				animate="visible"
+			>
+				<div className="w-full max-w-md space-y-6">
+					<motion.div
+						className="text-center space-y-1.5"
+						variants={itemVariants}
+					>
+						<h2 className="text-2xl font-semibold text-white">
+							Sign In Account
+						</h2>
+						<p className="text-[0.9375rem] text-gray-400">
+							Enter your credentials to access your account.
+						</p>
+					</motion.div>
+					<motion.div variants={itemVariants}>
+						<LoginForm />
+					</motion.div>
+				</div>
+			</motion.div>
 		</div>
 	)
 }

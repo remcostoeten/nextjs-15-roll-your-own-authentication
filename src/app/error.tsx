@@ -11,7 +11,10 @@ type ErrorProps = {
 
 export default function Error({ error, reset }: ErrorProps) {
 	useEffect(() => {
-		console.error(error)
+		// Log to console safely
+		if (error instanceof Error) {
+			console.error('Error:', error.message)
+		}
 	}, [error])
 
 	return (

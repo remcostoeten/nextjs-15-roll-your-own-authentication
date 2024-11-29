@@ -41,7 +41,9 @@ function InputField({
 						type="button"
 						onClick={() => setShowPassword(!showPassword)}
 						className="absolute right-5 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-all duration-200 hover:scale-110 active:scale-95"
-						aria-label={showPassword ? 'Hide password' : 'Show password'}
+						aria-label={
+							showPassword ? 'Hide password' : 'Show password'
+						}
 					>
 						{icon}
 					</button>

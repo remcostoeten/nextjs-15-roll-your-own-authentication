@@ -1,6 +1,10 @@
 export type FormData = {
-	firstName?: string
-	lastName?: string
+	firstName: string
+	email: string
+	password: string
+}
+
+export type LoginFormData = {
 	email: string
 	password: string
 }
@@ -28,4 +32,15 @@ export type AuthResult = {
 	success: boolean
 	error?: string
 	message?: string
+}
+
+export type RegisterResponse = {
+	success: boolean
+	error?: string
+	user?: {
+		id: number
+		email: string
+		name: string
+		avatar: string
+	}
 }

@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 type Props = {}
 
-export default function NotFound({ }: Props) {
+export default function NotFound({}: Props) {
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted">
 			<div className="text-center space-y-8 px-6">

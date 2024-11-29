@@ -1,6 +1,5 @@
 'use client'
 
-import { Toaster } from '@/shared/primitives/toast'
 import { usePathname } from 'next/navigation'
 
 /**
@@ -9,21 +8,18 @@ import { usePathname } from 'next/navigation'
  * @author Your Name
  */
 export default function AuthLayout({
-    children,
+	children
 }: {
-    children: React.ReactNode
+	children: React.ReactNode
 }) {
-    const pathname = usePathname()
-    const isAuthPage = ['/login', '/register', '/forgot-password'].includes(pathname)
+	const pathname = usePathname()
+	const isAuthPage = ['/login', '/register', '/forgot-password'].includes(
+		pathname
+	)
 
-    if (!isAuthPage) {
-        return null
-    }
+	if (!isAuthPage) {
+		return null
+	}
 
-    return (
-        <main className="min-h-screen -mt-8">
-            {children}
-            <Toaster />
-        </main>
-    )
-} 
+	return <main className="min-h-screen -mt-8">{children}</main>
+}

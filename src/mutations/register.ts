@@ -40,6 +40,10 @@ export async function registerMutation(
 		const hashedPassword = await hash(password, 10)
 		const role = email === process.env.ADMIN_EMAIL ? 'admin' : 'user'
 
+		// Generate random avatar using DiceBear
+		const seed = Math.random().toString(36).substring(7)
+		const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`
+
 		// User is automatically verified if email verification is disabled
 		const emailVerified = !featureFlags.emailVerification
 
@@ -48,7 +52,8 @@ export async function registerMutation(
 			.values({
 				email,
 				password: hashedPassword,
-				name,
+				name: name || email.split('@')[0],
+				avatar: avatarUrl,
 				role,
 				emailVerified
 			})

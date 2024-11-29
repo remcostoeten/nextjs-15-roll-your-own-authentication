@@ -12,14 +12,18 @@ import { useState } from 'react'
 import { z } from 'zod'
 import type { ProfileUser } from './profile'
 
-const passwordSchema = z.object({
-	currentPassword: z.string().min(1, 'Current password is required'),
-	newPassword: z.string().min(8, 'Password must be at least 8 characters'),
-	confirmPassword: z.string()
-}).refine((data) => data.newPassword === data.confirmPassword, {
-	message: "Passwords don't match",
-	path: ["confirmPassword"]
-})
+const passwordSchema = z
+	.object({
+		currentPassword: z.string().min(1, 'Current password is required'),
+		newPassword: z
+			.string()
+			.min(8, 'Password must be at least 8 characters'),
+		confirmPassword: z.string()
+	})
+	.refine((data) => data.newPassword === data.confirmPassword, {
+		message: "Passwords don't match",
+		path: ['confirmPassword']
+	})
 
 type PasswordData = z.infer<typeof passwordSchema>
 
@@ -40,7 +44,9 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
 		email: initialData?.name || '',
 		createdAt: initialData?.createdAt || new Date()
 	})
-	const [passwordData, setPasswordData] = useState<PasswordData>(INITIAL_PASSWORD_STATE)
+	const [passwordData, setPasswordData] = useState<PasswordData>(
+		INITIAL_PASSWORD_STATE
+	)
 
 	async function handleProfileSubmit(e: React.FormEvent) {
 		e.preventDefault()
@@ -93,7 +99,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
 
 	function handlePasswordInputChange(field: keyof PasswordData) {
 		return (e: React.ChangeEvent<HTMLInputElement>) => {
-			setPasswordData(prev => ({
+			setPasswordData((prev) => ({
 				...prev,
 				[field]: e.target.value
 			}))
@@ -115,14 +121,18 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
 				<div className="space-y-2">
 					<label className="text-sm font-medium">Member Since</label>
 					<Input
-						value={new Date(formData.createdAt).toLocaleDateString()}
+						value={new Date(
+							formData.createdAt
+						).toLocaleDateString()}
 						disabled
 						className="bg-muted/50"
 					/>
 				</div>
 
 				<div className="space-y-2">
-					<label className="text-sm font-medium">Profile Picture</label>
+					<label className="text-sm font-medium">
+						Profile Picture
+					</label>
 					<div className="flex items-center space-x-4">
 						<Avatar className="h-24 w-24">
 							<AvatarImage
@@ -137,7 +147,9 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
 						<UploadButton
 							endpoint="profileImage"
 							onClientUploadComplete={() => {
-								showToast.success('Avatar updated successfully!')
+								showToast.success(
+									'Avatar updated successfully!'
+								)
 							}}
 							onUploadError={(error: Error) => {
 								showToast.error(error.message)
@@ -167,7 +179,9 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
 							<Input
 								type="password"
 								value={passwordData.currentPassword}
-								onChange={handlePasswordInputChange('currentPassword')}
+								onChange={handlePasswordInputChange(
+									'currentPassword'
+								)}
 								required
 							/>
 						</div>
@@ -179,7 +193,9 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
 							<Input
 								type="password"
 								value={passwordData.newPassword}
-								onChange={handlePasswordInputChange('newPassword')}
+								onChange={handlePasswordInputChange(
+									'newPassword'
+								)}
 								required
 							/>
 						</div>
@@ -191,7 +207,9 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
 							<Input
 								type="password"
 								value={passwordData.confirmPassword}
-								onChange={handlePasswordInputChange('confirmPassword')}
+								onChange={handlePasswordInputChange(
+									'confirmPassword'
+								)}
 								required
 							/>
 						</div>

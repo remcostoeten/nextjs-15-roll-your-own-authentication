@@ -43,7 +43,8 @@ export default function Logo({
 	const finalWidth = width || defaultWidth
 	const finalHeight = height || defaultHeight
 
-	const fill = theme === 'dark' ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)'
+	const fill =
+		theme === 'dark' ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)'
 
 	const containerStyle = {
 		transform: 'scale(1)',
@@ -56,17 +57,17 @@ export default function Logo({
 
 	const pathStyle = animated
 		? {
-			opacity: 1,
-			transform: 'scale(1)',
-			transition: 'all 0.3s ease'
-		}
+				opacity: 1,
+				transform: 'scale(1)',
+				transition: 'all 0.3s ease'
+			}
 		: {}
 
 	const pathHoverStyle = animated
 		? ({
-			transform: 'scale(1.1)',
-			fill: theme === 'dark' ? '#fff' : '#000'
-		} as const)
+				transform: 'scale(1.1)',
+				fill: theme === 'dark' ? '#fff' : '#000'
+			} as const)
 		: {}
 
 	const LogoSVG = (
@@ -81,7 +82,8 @@ export default function Logo({
 			style={containerStyle}
 			onMouseEnter={(e) => {
 				if (e.currentTarget) {
-					e.currentTarget.style.transform = containerHoverStyle.transform
+					e.currentTarget.style.transform =
+						containerHoverStyle.transform
 				}
 			}}
 			onMouseLeave={(e) => {
@@ -108,8 +110,10 @@ export default function Logo({
 						}}
 						onMouseEnter={(e) => {
 							if (animated && e.currentTarget) {
-								e.currentTarget.style.transform = pathHoverStyle.transform as string
-								e.currentTarget.style.fill = pathHoverStyle.fill as string
+								e.currentTarget.style.transform =
+									pathHoverStyle.transform as string
+								e.currentTarget.style.fill =
+									pathHoverStyle.fill as string
 							}
 						}}
 						onMouseLeave={(e) => {
@@ -133,8 +137,6 @@ export default function Logo({
 			{LogoSVG}
 		</Link>
 	) : (
-		<div className="transition-colors">
-			{LogoSVG}
-		</div>
+		<div className="transition-colors">{LogoSVG}</div>
 	)
 }
