@@ -2,69 +2,47 @@
 
 import UploadButton from '@/components/upload-button'
 import { showToast } from '@/lib/toast'
+import { changePasswordMutation } from '@/mutations/auth'
 import { updateProfile } from '@/mutations/profile'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 import { Separator } from '@/shared/ui/separator'
 import { useState } from 'react'
+import { z } from 'zod'
 import type { ProfileUser } from './profile'
 
-export default function ProfileForm({
-	initialData
-}: {
+const passwordSchema = z.object({
+	currentPassword: z.string().min(1, 'Current password is required'),
+	newPassword: z.string().min(8, 'Password must be at least 8 characters'),
+	confirmPassword: z.string()
+}).refine((data) => data.newPassword === data.confirmPassword, {
+	message: "Passwords don't match",
+	path: ["confirmPassword"]
+})
+
+type PasswordData = z.infer<typeof passwordSchema>
+
+const INITIAL_PASSWORD_STATE: PasswordData = {
+	currentPassword: '',
+	newPassword: '',
+	confirmPassword: ''
+}
+
+type ProfileFormProps = {
 	initialData: ProfileUser
-}) {
+}
+
+export default function ProfileForm({ initialData }: ProfileFormProps) {
 	const [isEditing, setIsEditing] = useState(false)
 	const [isChangingPassword, setIsChangingPassword] = useState(false)
 	const [formData, setFormData] = useState({
 		email: initialData?.name || '',
 		createdAt: initialData?.createdAt || new Date()
 	})
-	const [passwordData, setPasswordData] = useState({
-		currentPassword: '',
-		newPassword: '',
-		confirmPassword: ''
-	})
+	const [passwordData, setPasswordData] = useState<PasswordData>(INITIAL_PASSWORD_STATE)
 
-	async function handlePasswordChange(e: React.FormEvent) {
-		e.preventDefault()
-		if (passwordData.newPassword !== passwordData.confirmPassword) {
-			showToast.error('New passwords do not match')
-			return
-		}
-
-		try {
-			const form = new FormData()
-			form.append('userId', String(initialData.id))
-			form.append('currentPassword', passwordData.currentPassword)
-			form.append('newPassword', passwordData.newPassword)
-			// TODO: refactor this to use the new change password mutation
-
-			const response = await fetch('/api/auth/change-password', {
-				method: 'POST',
-				body: form
-			})
-
-			const result = await response.json()
-
-			if (result.error) {
-				showToast.error(result.error)
-			} else {
-				showToast.success('Password updated successfully')
-				setIsChangingPassword(false)
-				setPasswordData({
-					currentPassword: '',
-					newPassword: '',
-					confirmPassword: ''
-				})
-			}
-		} catch (error) {
-			showToast.error('Failed to update password')
-		}
-	}
-
-	async function handleSubmit(e: React.FormEvent) {
+	async function handleProfileSubmit(e: React.FormEvent) {
 		e.preventDefault()
 		try {
 			const form = new FormData()
@@ -74,18 +52,57 @@ export default function ProfileForm({
 
 			if (result.error) {
 				showToast.error(result.error)
-			} else {
-				showToast.success(result.message || 'Profile updated')
-				setIsEditing(false)
+				return
 			}
+
+			showToast.success(result.message || 'Profile updated')
+			setIsEditing(false)
 		} catch (error) {
 			showToast.error('Failed to update profile')
 		}
 	}
 
+	async function handlePasswordSubmit(e: React.FormEvent) {
+		e.preventDefault()
+
+		try {
+			const validatedData = passwordSchema.parse(passwordData)
+
+			const form = new FormData()
+			form.append('currentPassword', validatedData.currentPassword)
+			form.append('newPassword', validatedData.newPassword)
+
+			const result = await changePasswordMutation(form)
+
+			if (result.error) {
+				showToast.error(result.error)
+				return
+			}
+
+			showToast.success('Password updated successfully')
+			setIsChangingPassword(false)
+			setPasswordData(INITIAL_PASSWORD_STATE)
+		} catch (error) {
+			if (error instanceof z.ZodError) {
+				showToast.error(error.errors[0].message)
+				return
+			}
+			showToast.error('Failed to update password')
+		}
+	}
+
+	function handlePasswordInputChange(field: keyof PasswordData) {
+		return (e: React.ChangeEvent<HTMLInputElement>) => {
+			setPasswordData(prev => ({
+				...prev,
+				[field]: e.target.value
+			}))
+		}
+	}
+
 	return (
 		<div className="space-y-8">
-			<form onSubmit={handleSubmit} className="space-y-4">
+			<form onSubmit={handleProfileSubmit} className="space-y-4">
 				<div className="space-y-2">
 					<label className="text-sm font-medium">Email</label>
 					<Input
@@ -98,18 +115,14 @@ export default function ProfileForm({
 				<div className="space-y-2">
 					<label className="text-sm font-medium">Member Since</label>
 					<Input
-						value={new Date(
-							formData.createdAt
-						).toLocaleDateString()}
+						value={new Date(formData.createdAt).toLocaleDateString()}
 						disabled
 						className="bg-muted/50"
 					/>
 				</div>
 
 				<div className="space-y-2">
-					<label className="text-sm font-medium">
-						Profile Picture
-					</label>
+					<label className="text-sm font-medium">Profile Picture</label>
 					<div className="flex items-center space-x-4">
 						<Avatar className="h-24 w-24">
 							<AvatarImage
@@ -124,9 +137,7 @@ export default function ProfileForm({
 						<UploadButton
 							endpoint="profileImage"
 							onClientUploadComplete={() => {
-								showToast.success(
-									'Avatar updated successfully!'
-								)
+								showToast.success('Avatar updated successfully!')
 							}}
 							onUploadError={(error: Error) => {
 								showToast.error(error.message)
@@ -148,7 +159,7 @@ export default function ProfileForm({
 						Change Password
 					</Button>
 				) : (
-					<form onSubmit={handlePasswordChange} className="space-y-4">
+					<form onSubmit={handlePasswordSubmit} className="space-y-4">
 						<div className="space-y-2">
 							<label className="text-sm font-medium">
 								Current Password
@@ -156,12 +167,7 @@ export default function ProfileForm({
 							<Input
 								type="password"
 								value={passwordData.currentPassword}
-								onChange={(e) =>
-									setPasswordData({
-										...passwordData,
-										currentPassword: e.target.value
-									})
-								}
+								onChange={handlePasswordInputChange('currentPassword')}
 								required
 							/>
 						</div>
@@ -173,12 +179,7 @@ export default function ProfileForm({
 							<Input
 								type="password"
 								value={passwordData.newPassword}
-								onChange={(e) =>
-									setPasswordData({
-										...passwordData,
-										newPassword: e.target.value
-									})
-								}
+								onChange={handlePasswordInputChange('newPassword')}
 								required
 							/>
 						</div>
@@ -190,12 +191,7 @@ export default function ProfileForm({
 							<Input
 								type="password"
 								value={passwordData.confirmPassword}
-								onChange={(e) =>
-									setPasswordData({
-										...passwordData,
-										confirmPassword: e.target.value
-									})
-								}
+								onChange={handlePasswordInputChange('confirmPassword')}
 								required
 							/>
 						</div>
@@ -206,11 +202,7 @@ export default function ProfileForm({
 								variant="outline"
 								onClick={() => {
 									setIsChangingPassword(false)
-									setPasswordData({
-										currentPassword: '',
-										newPassword: '',
-										confirmPassword: ''
-									})
+									setPasswordData(INITIAL_PASSWORD_STATE)
 								}}
 							>
 								Cancel

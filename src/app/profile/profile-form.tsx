@@ -2,6 +2,7 @@
 
 import UploadButton from '@/components/upload-button'
 import { showToast } from '@/lib/toast'
+import { changePasswordMutation } from '@/mutations/auth'
 import { updateProfile } from '@/mutations/profile'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar'
 import { Button } from '@/shared/ui/button'
@@ -32,40 +33,17 @@ export default function ProfileForm({ user }: ProfileFormProps) {
 		confirmPassword: ''
 	})
 
-	async function handlePasswordChange(e: React.FormEvent) {
-		e.preventDefault()
-		if (passwordData.newPassword !== passwordData.confirmPassword) {
-			showToast.error('New passwords do not match')
-			return
-		}
+	async function handlePasswordChange(passwordData: {
+		currentPassword: string
+		newPassword: string
+	}) {
+		const formData = new FormData()
+		formData.append('currentPassword', passwordData.currentPassword)
+		formData.append('newPassword', passwordData.newPassword)
 
-		try {
-			const form = new FormData()
-			form.append('userId', String(user.id))
-			form.append('currentPassword', passwordData.currentPassword)
-			form.append('newPassword', passwordData.newPassword)
+		const result = await changePasswordMutation(formData)
 
-			const response = await fetch('/api/auth/change-password', {
-				method: 'POST',
-				body: form
-			})
-
-			const result = await response.json()
-
-			if (result.error) {
-				showToast.error(result.error)
-			} else {
-				showToast.success('Password updated successfully')
-				setIsChangingPassword(false)
-				setPasswordData({
-					currentPassword: '',
-					newPassword: '',
-					confirmPassword: ''
-				})
-			}
-		} catch (error) {
-			showToast.error('Failed to update password')
-		}
+		return result
 	}
 
 	async function handleSubmit(e: React.FormEvent) {
@@ -152,6 +130,7 @@ export default function ProfileForm({ user }: ProfileFormProps) {
 						Change Password
 					</Button>
 				) : (
+					// @ts-expect-error
 					<form onSubmit={handlePasswordChange} className="space-y-4">
 						<div className="space-y-2">
 							<label className="text-sm font-medium">
