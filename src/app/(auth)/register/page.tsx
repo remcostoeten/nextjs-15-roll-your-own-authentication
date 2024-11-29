@@ -1,25 +1,38 @@
+'use client'
+
 import { RegisterForm } from '@/components/auth/auth-form'
-import { Metadata } from 'next'
+import { motion } from 'framer-motion'
 import Image from 'next/image'
 
-export const metadata: Metadata = {
-    title: 'Create Account | Your App Name',
-    description: 'Sign up to get started with your account'
+const formVariants = {
+    hidden: { opacity: 0, x: 20 },
+    visible: {
+        opacity: 1,
+        x: 0,
+        transition: {
+            duration: 0.5,
+            ease: "easeOut",
+            staggerChildren: 0.1
+        }
+    }
 }
 
-/**
- * Register page component with 50/50 split layout
- * @returns Register page with form and gradient background
- * @author Your Name
- */
+const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.3 }
+    }
+}
+
 export default function RegisterPage() {
     return (
-        <div className="flex h-screen max-h-[100vh] w-full  overflow-hidden">
-            {/* Left side - Gradient */}
+        <div className="flex h-screen max-h-[100vh] w-full overflow-hidden">
             <div className="relative hidden w-1/2 lg:block">
                 <div className="absolute inset-6 rounded-[32px] overflow-hidden bg-[#10412F]">
                     <Image
-                        src="/green-gradient.svg"
+                        src="/gradients/green-gradient.svg"
                         alt="Decorative gradient"
                         fill
                         priority
@@ -57,19 +70,29 @@ export default function RegisterPage() {
             </div>
 
             {/* Right side - Form */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 overflow-y-auto">
+            <motion.div
+                className="w-full lg:w-1/2 flex items-center justify-center p-8 overflow-y-auto"
+                variants={formVariants}
+                initial="hidden"
+                animate="visible"
+            >
                 <div className="w-full max-w-md space-y-6">
-                    <div className="text-center space-y-1.5">
+                    <motion.div
+                        className="text-center space-y-1.5"
+                        variants={itemVariants}
+                    >
                         <h2 className="text-2xl font-semibold text-white">
                             Sign Up Account
                         </h2>
                         <p className="text-[0.9375rem] text-gray-400">
                             Enter your personal data to create your account.
                         </p>
-                    </div>
-                    <RegisterForm />
+                    </motion.div>
+                    <motion.div variants={itemVariants}>
+                        <RegisterForm />
+                    </motion.div>
                 </div>
-            </div>
+            </motion.div>
         </div>
     )
 }

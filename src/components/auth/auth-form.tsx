@@ -9,6 +9,26 @@ import { EyeIcon, GithubIcon, GoogleIcon } from './icons'
 import InputField from './input-fields'
 import type { FormData } from './types'
 
+const formVariants = {
+	hidden: { opacity: 0 },
+	visible: {
+		opacity: 1,
+		transition: {
+			staggerChildren: 0.1,
+			delayChildren: 0.2
+		}
+	}
+}
+
+const itemVariants = {
+	hidden: { opacity: 0, y: 10 },
+	visible: {
+		opacity: 1,
+		y: 0,
+		transition: { duration: 0.3 }
+	}
+}
+
 export function RegisterForm() {
 	const [formData, setFormData] = React.useState<FormData>({
 		firstName: '',
@@ -51,31 +71,39 @@ export function RegisterForm() {
 	}
 
 	return (
-		<form onSubmit={handleSubmit} className="space-y-6">
-			<div className="flex gap-3 w-full">
-				<button
-					className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1A1A1A] rounded-xl border border-white/20 transition-colors focus:outline-none"
-					type="button"
-				>
-					<GoogleIcon />
-					<span className="text-[0.9375rem]">Google</span>
-				</button>
-				<button
-					className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1A1A1A] rounded-xl border border-white/20 transition-colors focus:outline-none"
-					type="button"
-				>
-					<GithubIcon />
-					<span className="text-[0.9375rem]">Github</span>
-				</button>
-			</div>
+		<motion.form
+			onSubmit={handleSubmit}
+			className="space-y-6"
+			variants={formVariants}
+			initial="hidden"
+			animate="visible"
+		>
+			<motion.div variants={itemVariants}>
+				<div className="flex gap-3 w-full">
+					<button
+						className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1A1A1A] rounded-xl border border-white/20 transition-colors focus:outline-none"
+						type="button"
+					>
+						<GoogleIcon />
+						<span className="text-[0.9375rem]">Google</span>
+					</button>
+					<button
+						className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1A1A1A] rounded-xl border border-white/20 transition-colors focus:outline-none"
+						type="button"
+					>
+						<GithubIcon />
+						<span className="text-[0.9375rem]">Github</span>
+					</button>
+				</div>
+			</motion.div>
 
-			<div className="flex items-center gap-4">
+			<motion.div variants={itemVariants} className="flex items-center gap-4">
 				<div className="h-px flex-1 bg-[#222]" />
 				<span className="text-sm text-gray-500">Or</span>
 				<div className="h-px flex-1 bg-[#222]" />
-			</div>
+			</motion.div>
 
-			<div className="space-y-4">
+			<motion.div variants={itemVariants} className="space-y-4">
 				<div className="grid grid-cols-2 gap-3">
 					<InputField
 						label="First Name"
@@ -114,12 +142,15 @@ export function RegisterForm() {
 					index={5}
 					required
 				/>
-			</div>
+			</motion.div>
 
-			<button
+			<motion.button
+				variants={itemVariants}
 				type="submit"
 				disabled={isLoading}
 				className="w-full py-3 text-[0.9375rem] font-semibold text-black bg-white rounded-xl hover:bg-gray-100 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 disabled:opacity-70 disabled:scale-100 focus:outline-none"
+				whileHover={{ scale: 1.02 }}
+				whileTap={{ scale: 0.98 }}
 			>
 				{isLoading ? (
 					<motion.div
@@ -130,9 +161,12 @@ export function RegisterForm() {
 				) : (
 					'Sign Up'
 				)}
-			</button>
+			</motion.button>
 
-			<p className="text-center text-[0.9375rem] text-gray-400">
+			<motion.p
+				variants={itemVariants}
+				className="text-center text-[0.9375rem] text-gray-400"
+			>
 				Already have an account?{' '}
 				<a
 					href="/login"
@@ -140,7 +174,7 @@ export function RegisterForm() {
 				>
 					Log in
 				</a>
-			</p>
-		</form>
+			</motion.p>
+		</motion.form>
 	)
 }
