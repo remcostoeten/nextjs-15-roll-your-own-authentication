@@ -49,7 +49,9 @@ export default async function RootLayout({
 						routerConfig={extractRouterConfig(uploadRouter)}
 					/>
 					<Header />
-					<main className="container mx-auto mt-8">{children}</main>
+					<main className="container mx-auto mt-8">
+						{children}
+					</main>
 					{featureFlags.sessionStatus && <SessionStatus user={user} />}
 					<ToastContainer />
 				</ThemeProvider>

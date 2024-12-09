@@ -3,7 +3,7 @@
 import { useMountedTheme } from '@/hooks/use-mounted-theme'
 import Link from 'next/link'
 
-interface LogoProps {
+type LogoProps = {
 	className?: string
 	size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 	width?: number
@@ -21,7 +21,7 @@ const sizeMap = {
 	md: { width: 64, height: 64 },
 	lg: { width: 96, height: 96 },
 	xl: { width: 128, height: 128 }
-}
+} as const
 
 export default function Logo({
 	className = '',
@@ -36,7 +36,7 @@ export default function Logo({
 	const { theme, mounted } = useMountedTheme()
 
 	if (!mounted) {
-		return null // or a skeleton/loading state
+		return null
 	}
 
 	const { width: defaultWidth, height: defaultHeight } = sizeMap[size]
@@ -48,11 +48,11 @@ export default function Logo({
 	const containerStyle = {
 		transform: 'scale(1)',
 		transition: 'transform 0.3s ease'
-	}
+	} as const
 
 	const containerHoverStyle = {
 		transform: 'scale(1.02)'
-	}
+	} as const
 
 	const pathStyle = animated
 		? {
@@ -62,12 +62,24 @@ export default function Logo({
 		}
 		: {}
 
-	const pathHoverStyle = animated
-		? ({
-			transform: 'scale(1.1)',
-			fill: theme === 'dark' ? '#fff' : '#000'
-		} as const)
-		: {}
+	const pathHoverStyle = {
+		transform: 'scale(1.1)',
+		fill: theme === 'dark' ? '#fff' : '#000'
+	} as const
+
+	const handlePathHover = (e: React.MouseEvent<SVGPathElement>) => {
+		if (animated && e.currentTarget) {
+			e.currentTarget.style.transform = pathHoverStyle.transform
+			e.currentTarget.style.fill = pathHoverStyle.fill
+		}
+	}
+
+	const handlePathLeave = (e: React.MouseEvent<SVGPathElement>) => {
+		if (animated && e.currentTarget) {
+			e.currentTarget.style.transform = 'scale(1)'
+			e.currentTarget.style.fill = fill
+		}
+	}
 
 	const LogoSVG = (
 		<svg
@@ -106,18 +118,8 @@ export default function Logo({
 							...pathStyle,
 							transitionDelay: animated ? `${index * 0.2}s` : '0s'
 						}}
-						onMouseEnter={(e) => {
-							if (animated && e.currentTarget) {
-								e.currentTarget.style.transform = pathHoverStyle.transform
-								e.currentTarget.style.fill = pathHoverStyle.fill
-							}
-						}}
-						onMouseLeave={(e) => {
-							if (animated && e.currentTarget) {
-								e.currentTarget.style.transform = 'scale(1)'
-								e.currentTarget.style.fill = fill
-							}
-						}}
+						onMouseEnter={handlePathHover}
+						onMouseLeave={handlePathLeave}
 					/>
 				))}
 			</g>
