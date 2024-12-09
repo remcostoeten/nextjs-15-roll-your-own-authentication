@@ -5,12 +5,23 @@ import useAuthHeader from '@/hooks/use-auth-header'
 import { useMountedTheme } from '@/hooks/use-mounted-theme'
 import { AnimatePresence, motion } from 'framer-motion'
 import { cn } from 'helpers'
-import { ChevronDown, Github, Menu, Moon, Search, Sun, X } from 'lucide-react'
+import { ChevronDown, Github, LogOut, Menu, Moon, Search, Settings, Sun, User, X } from 'lucide-react'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { Avatar, AvatarFallback, AvatarImage } from 'ui'
+import * as React from 'react'
+import {
+    Avatar,
+    AvatarFallback,
+    AvatarImage,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+    DropdownMenu as UIDropdownMenu
+} from 'ui'
 import Logo from '../logo'
-import type { DropdownItem, HeaderProps, MenuItem } from './header.d'
+import type { HeaderProps } from './header.d'
 
 // Update the MenuBadge component to handle light/dark themes
 const MenuBadge = ({ type }: { type: 'new' | 'soon' | 'beta' }) => {
@@ -52,6 +63,11 @@ const MenuBadge = ({ type }: { type: 'new' | 'soon' | 'beta' }) => {
 }
 
 // Search Modal Component
+type SearchResult = {
+    title: string
+    href: string
+}
+
 const SearchModal = ({
     isOpen,
     onClose
@@ -59,6 +75,40 @@ const SearchModal = ({
     isOpen: boolean
     onClose: () => void
 }) => {
+    const [searchQuery, setSearchQuery] = React.useState('')
+    const [searchResults, setSearchResults] = React.useState<SearchResult[]>([])
+
+    React.useEffect(() => {
+        const handleEscape = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                onClose()
+            }
+        }
+
+        if (isOpen) {
+            document.addEventListener('keydown', handleEscape)
+        }
+
+        return () => {
+            document.removeEventListener('keydown', handleEscape)
+        }
+    }, [isOpen, onClose])
+
+    const handleSearch = (query: string) => {
+        setSearchQuery(query)
+        // Add your search logic here
+        // This is a basic example - enhance based on your needs
+        const results = [
+            { title: 'Dashboard', href: '/dashboard' },
+            { title: 'Profile', href: '/profile' },
+            { title: 'Settings', href: '/settings' },
+            // Add more routes as needed
+        ].filter(item => 
+            item.title.toLowerCase().includes(query.toLowerCase())
+        )
+        setSearchResults(results)
+    }
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -78,13 +128,16 @@ const SearchModal = ({
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.95, opacity: 0 }}
                         className="relative max-w-2xl mx-auto mt-[15vh]"
+                        onClick={(e: React.MouseEvent) => e.stopPropagation()}
                     >
                         <div className="m-4 bg-[#1C1C1C] border border-white/10 rounded-xl shadow-2xl overflow-hidden">
                             <div className="flex items-center p-4 border-b border-white/10">
-                                <Search className="w-5 h-5 text-white/40" />
+                                <Search className="w-5 h-5 text-white/40" aria-hidden="true" />
                                 <input
                                     autoFocus
                                     placeholder="Search..."
+                                    value={searchQuery}
+                                    onChange={(e) => handleSearch(e.target.value)}
                                     className="flex-1 ml-3 bg-transparent border-none outline-none text-white placeholder-white/40"
                                 />
                                 <kbd className="hidden sm:inline-flex items-center px-2 py-1 text-xs text-white/40 bg-white/5 rounded">
@@ -92,9 +145,30 @@ const SearchModal = ({
                                 </kbd>
                             </div>
                             <div className="p-4">
-                                <div className="text-sm text-white/40">
-                                    No recent searches
-                                </div>
+                                {searchQuery ? (
+                                    searchResults.length > 0 ? (
+                                        <div className="space-y-2">
+                                            {searchResults.map((result: SearchResult) => (
+                                                <Link
+                                                    key={result.href}
+                                                    href={result.href}
+                                                    onClick={onClose}
+                                                    className="block p-2 rounded hover:bg-white/5 transition-colors text-white/80 hover:text-white"
+                                                >
+                                                    {result.title}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="text-sm text-white/40">
+                                            No results found
+                                        </div>
+                                    )
+                                ) : (
+                                    <div className="text-sm text-white/40">
+                                        Start typing to search...
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </motion.div>
@@ -344,40 +418,22 @@ const MobileMenu = ({
 }
 
 export default function Header({ className }: HeaderProps) {
-    const [scrolled, setScrolled] = useState(false)
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-    const [openDropdown, setOpenDropdown] = useState<string | null>(null)
-    const [isSearchOpen, setIsSearchOpen] = useState(false)
-    const { theme, setTheme, mounted } = useMountedTheme()
+    const [scrolled, setScrolled] = React.useState(false)
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
+    const [isSearchOpen, setIsSearchOpen] = React.useState(false)
+    const { theme } = useMountedTheme()
     const { user, signOut } = useAuthHeader()
 
-    useEffect(() => {
-        // Set initial scroll state
+    React.useEffect(() => {
         setScrolled(window.scrollY > 20)
 
         const handleScroll = () => {
-            const isScrolled = window.scrollY > 20
-            setScrolled(isScrolled)
+            setScrolled(window.scrollY > 20)
         }
 
         window.addEventListener('scroll', handleScroll, { passive: true })
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
-
-    useEffect(() => {
-        const handleClickOutside = () => {
-            if (openDropdown) {
-                setOpenDropdown(null)
-            }
-        }
-
-        document.addEventListener('click', handleClickOutside)
-        return () => document.removeEventListener('click', handleClickOutside)
-    }, [openDropdown])
-
-    if (!mounted) {
-        return null // or a skeleton/loading state
-    }
 
     return (
         <>
@@ -560,31 +616,50 @@ export default function Header({ className }: HeaderProps) {
                             </button>
 
                             {user ? (
-                                <div className="flex items-center gap-2">
-                                    <Avatar className="h-8 w-8">
-                                        <AvatarImage
-                                            src={user.image || ''}
-                                            alt={user.name}
-                                        />
-                                        <AvatarFallback className={cn(
-                                            "text-white",
-                                            theme === 'dark' ? "bg-white/10" : "bg-black/10"
-                                        )}>
-                                            {user.name?.charAt(0).toUpperCase()}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                    <button
-                                        onClick={signOut}
-                                        className={cn(
-                                            "hidden sm:block px-4 py-1.5 text-sm font-medium transition-colors duration-200",
-                                            theme === 'dark'
-                                                ? "text-white/70 hover:text-white"
-                                                : "text-black/70 hover:text-black"
-                                        )}
-                                    >
-                                        Sign out
-                                    </button>
-                                </div>
+                                <UIDropdownMenu>
+                                    <DropdownMenuTrigger className="focus:outline-none">
+                                        <Avatar className="h-8 w-8 cursor-pointer">
+                                            <AvatarImage src={user.image || ''} alt={user.name} />
+                                            <AvatarFallback className={cn(
+                                                "text-white",
+                                                theme === 'dark' ? "bg-white/10" : "bg-black/10"
+                                            )}>
+                                                {user.name?.charAt(0).toUpperCase()}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end" className="w-56">
+                                        <DropdownMenuLabel>
+                                            <div className="flex flex-col space-y-1">
+                                                <p className="text-sm font-medium leading-none">{user.name}</p>
+                                                <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                                            </div>
+                                        </DropdownMenuLabel>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuGroup>
+                                            <DropdownMenuItem asChild>
+                                                <Link href="/profile" className="w-full cursor-pointer">
+                                                    <User strokeWidth={1.5} size={16} className="mr-2" />
+                                                    Profile
+                                                </Link>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem asChild>
+                                                <Link href="/dashboard" className="w-full cursor-pointer">
+                                                    <Settings strokeWidth={1.5} size={16} className="mr-2" />
+                                                    Dashboard
+                                                </Link>
+                                            </DropdownMenuItem>
+                                        </DropdownMenuGroup>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem 
+                                            onClick={signOut}
+                                            className="text-red-600 focus:text-red-600 cursor-pointer"
+                                        >
+                                            <LogOut strokeWidth={1.5} size={16} className="mr-2" />
+                                            Sign out
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </UIDropdownMenu>
                             ) : (
                                 <Link
                                     href="/login"

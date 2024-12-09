@@ -1,4 +1,3 @@
-import { featureFlags } from '@/config/features'
 import bcryptjs from 'bcryptjs'
 import { eq } from 'drizzle-orm'
 import { SignJWT } from 'jose'
@@ -19,10 +18,6 @@ export async function loginUser(email: string, password: string) {
 
 	if (!user) {
 		throw new Error('User not found')
-	}
-
-	if (featureFlags.emailVerification && !user.emailVerified) {
-		throw new Error('Please verify your email before logging in')
 	}
 
 	const passwordMatch = await bcryptjs.compare(password, user.password)
