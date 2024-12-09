@@ -1,17 +1,39 @@
-version: '3.8'
+version: "3.8"
 services:
-    frontend:
-        build:
-            context: .
-            dockerfile: Dockerfile
-        ports:
-            - "3000:3000"
-        volumes:
-            - .:/app
-            - /app/node_modules
-        environment:
-            - NODE_ENV=development
-        command: npm run dev
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - USE_LOCAL_DB=true
+      - DOCKER_DATABASE_URL=postgresql://username:password@db:5432/database
+      - POSTGRES_USER=username
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=database
+      - POSTGRES_HOST=db
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: database
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
-    postgres_data:
+  postgres_data:

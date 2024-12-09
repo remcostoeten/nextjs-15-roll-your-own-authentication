@@ -1,27 +1,34 @@
 # Use an official Node runtime as a parent image
 FROM node:18-alpine
 
+# Add necessary system dependencies
+RUN apk add --no-cache libc6-compat
+
 # Set the working directory in the container
 WORKDIR /app
 
-COPY package*.json ./
+# Install specific pnpm version
+RUN npm install -g pnpm@8.15.1
 
-# Install dependencies
-RUN npm install
+# Copy package files first for better caching
+COPY pnpm-lock.yaml package.json ./
 
-# Copy source code
+# Install dependencies with force flag to handle lockfile compatibility
+RUN pnpm install --force
+
+# Copy the rest of the application
 COPY . .
 
 # Build the application
-RUN npm run build
+RUN pnpm run build
 
 # Expose port
 EXPOSE 3000
 
-# Start the application
-CMD ["npm", "start"]
-
-# Add these lines before npm install if needed
-RUN chown -R node:node /app
+# Set proper permissions
+RUN chown -R node:node .
 USER node
+
+# Start the application
+CMD ["pnpm", "run", "dev"]
 

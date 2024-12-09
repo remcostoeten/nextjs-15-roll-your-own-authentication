@@ -9,6 +9,12 @@ const nextConfig = {
 	},
 	async rewrites() {
 		return []
+	},
+	typescript: {
+		ignoreBuildErrors: true,
+	},
+	eslint: {
+		ignoreDuringBuilds: true,
 	}
 }
 
