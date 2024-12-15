@@ -1,44 +1,36 @@
-## Rolling your own authentication
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-### Without any externaal libraires like NextAuth, Lucia or Clerk.
+## Getting Started
 
-> A bareboness, non styled, no bells, no whistles, the bare minimum dependencies version is on the git branch `barebones`. The `main` branch has some UI components, extra styling, and a few other things like a develop utillity indicator to check session.
+First, run the development server:
 
-> [!NOTICE]  
-> Highly experimental and a work in progres
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-A repository to showcase rolling your own authentication without utilizing external auth libraries. Using the latest NextJS 15 & React 19 API such as `useFormState`, `server actions`, protected routes via `middleware` and adhering to strong SOLID principles with a scalable and bullet proof base to builld on top of.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Features
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
--   Sign in
--   Sign up
--   Sign out
--
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Future features
+## Learn More
 
-<small>or rather, missing features</small>
+To learn more about Next.js, take a look at the following resources:
 
--   social oauth integration
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-    -   Github
-    -   Google
-    -   Discord
-    -   Whateveryouwish
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
--   Database implementation
-    \*crud actions
-    -   Delete account
-    -   Change emailadres
-    -   Change password
-    -   Account page
-    -   Roles
--   Forgot password implementation
+## Deploy on Vercel
 
-xxx remco stoeten,
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
--   [@remcostoeten on Github](https://github.com/remcostoeten)
--   [@yowremco on X](https://twitter.com/yowremco)
-
-<sub>A ✨ is appreciated for growning my e-penor</sub>
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
