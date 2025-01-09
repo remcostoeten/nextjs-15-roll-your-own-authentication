@@ -1,1 +1,0 @@
-ALTER TABLE "login_history" ALTER COLUMN "location" SET DEFAULT '{}';
