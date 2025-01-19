@@ -19,7 +19,7 @@ export async function GET() {
 	}
 
 	// Generate state parameter to prevent CSRF attacks
-	const state = generateOAuthState()
+	const state = await generateOAuthState()
 
 	const params = new URLSearchParams({
 		client_id: GITHUB_CLIENT_ID,

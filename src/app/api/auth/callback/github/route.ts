@@ -43,7 +43,7 @@ export async function GET(request: Request) {
 		const searchParams = new URL(request.url).searchParams
 		const code = searchParams.get('code')
 		const state = searchParams.get('state')
-		const cookieStore = cookies()
+		const cookieStore = await cookies()
 		const storedState = cookieStore.get(OAUTH_COOKIE_NAMES.GITHUB)?.value
 
 		console.log('OAuth Callback:', {

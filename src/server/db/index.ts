@@ -1,22 +1,16 @@
-import { PrismaClient } from '@prisma/client'
+// index.ts
+import { dbClient } from './db-client';
 
 declare global {
-	// eslint-disable-next-line no-var
-	var prisma: PrismaClient | undefined
+  // eslint-disable-next-line no-var
+  var dbClient: typeof dbClient | undefined;
 }
 
-const db =
-	globalThis.prisma ||
-	new PrismaClient({
-		log:
-			process.env.NODE_ENV === 'development'
-				? ['query', 'error', 'warn']
-				: ['error']
-	})
+const db = globalThis.dbClient || dbClient;
 
 if (process.env.NODE_ENV !== 'production') {
-	globalThis.prisma = db
+  globalThis.dbClient = db;
 }
 
-export { db }
-export default db
+export { db };
+export default db;

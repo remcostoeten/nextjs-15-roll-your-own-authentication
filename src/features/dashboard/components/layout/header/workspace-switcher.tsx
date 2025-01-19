@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { Check, ChevronsUpDown, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { PopoverContent, PopoverTrigger } from '@/shared/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/ui/popover'
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList, CommandInput, CommandSeparator } from '@/shared/components/ui/command'
 
 type Workspace = {
@@ -39,9 +39,9 @@ export function WorkspaceSwitcher({ isCollapsed }: WorkspaceSwitcherProps) {
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger asChild>
-				<button className="group relative flex h-10 w-full items-center text-neutral-400 transition-all duration-300 ease-in-out hover:text-white cursor-pointer">
+				<button className="group relative flex h-10 w-full items-center px-2 mx-1 transition-colors duration-200 hover:text-emerald-400 hover:bg-emerald-500/5 text-emerald-400 bg-emerald-500/5">
 					<span className="flex h-10 w-10 items-center justify-center">
-						<div className="relative h-6 w-6 overflow-hidden rounded-full bg-[#1f1f1f] flex items-center justify-center text-xs font-medium text-white">
+						<div className="relative h-7 w-7 overflow-hidden rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-xs font-medium text-emerald-400/90 transition-all duration-200 group-hover:border-emerald-500/30">
 							{selectedWorkspace.label.charAt(0)}
 						</div>
 					</span>
@@ -51,16 +51,16 @@ export function WorkspaceSwitcher({ isCollapsed }: WorkspaceSwitcherProps) {
 							isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'
 						)}
 					>
-						<span className="text-sm font-medium text-white">
+						<span className="text-sm font-medium text-emerald-400">
 							{selectedWorkspace.label}
 						</span>
-						<span className="text-xs text-neutral-500">
+						<span className="text-xs text-emerald-500/50">
 							Workspace
 						</span>
 					</div>
 					<ChevronsUpDown
 						className={cn(
-							'h-4 w-4 shrink-0 opacity-50 ml-auto',
+							'h-4 w-4 shrink-0 opacity-50 ml-auto text-emerald-400/50',
 							isCollapsed ? 'hidden' : 'block'
 						)}
 					/>
@@ -84,22 +84,26 @@ export function WorkspaceSwitcher({ isCollapsed }: WorkspaceSwitcherProps) {
 										setSelectedWorkspace(workspace)
 										setOpen(false)
 									}}
-									className="flex items-center gap-3 px-4 py-2 hover:bg-[#1f1f1f] cursor-pointer"
+									className={cn(
+										'flex items-center gap-2 p-2 rounded cursor-pointer transition-colors duration-200',
+										selectedWorkspace.value === workspace.value 
+											? 'text-emerald-400 bg-emerald-500/5' 
+											: 'hover:text-emerald-400 hover:bg-emerald-500/5 text-gray-400'
+									)}
 								>
-									<div className="relative h-8 w-8 overflow-hidden rounded-full bg-[#1f1f1f] flex items-center justify-center text-sm font-medium text-white">
+									<div className="relative h-8 w-8 overflow-hidden rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-sm font-medium text-emerald-400/90">
 										{workspace.label.charAt(0)}
 									</div>
 									<div className="flex flex-col">
-										<span className="text-sm font-medium text-white">
+										<span className="text-sm font-medium text-emerald-400">
 											{workspace.label}
 										</span>
-										<span className="text-xs text-neutral-500">
+										<span className="text-xs text-emerald-500/50">
 											Workspace
 										</span>
 									</div>
-									{selectedWorkspace.value ===
-										workspace.value && (
-										<Check className="ml-auto h-4 w-4 text-neutral-400" />
+									{selectedWorkspace.value === workspace.value && (
+										<Check className="ml-auto h-4 w-4 text-emerald-400/50" />
 									)}
 								</CommandItem>
 							))}
@@ -107,13 +111,13 @@ export function WorkspaceSwitcher({ isCollapsed }: WorkspaceSwitcherProps) {
 						<CommandSeparator className="my-2 bg-[#1f1f1f]" />
 						<CommandGroup>
 							<CommandItem
-								onSelect={() =>
-									console.log('Create new workspace')
-								}
-								className="flex items-center gap-2 px-4 py-2 text-sm text-neutral-400 hover:bg-[#1f1f1f] cursor-pointer"
+								onSelect={() => console.log('Create new workspace')}
+								className="flex items-center gap-2 p-2 text-sm hover:text-emerald-400 hover:bg-emerald-500/5 cursor-pointer transition-colors duration-200"
 							>
-								<Plus className="h-4 w-4" />
-								Create new workspace
+								<div className="relative h-8 w-8 overflow-hidden rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+									<Plus className="h-4 w-4 text-emerald-400/90" />
+								</div>
+								<span className="text-emerald-400/70">Create new workspace</span>
 							</CommandItem>
 						</CommandGroup>
 					</CommandList>

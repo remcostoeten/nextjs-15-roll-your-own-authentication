@@ -174,7 +174,7 @@ export default function MatrixGrid() {
                       <>
                         <motion.div className={styles.skeletonLoader} aria-hidden="true" variants={animationsEnabled ? itemVariants : {}} />
                         <motion.div className={styles.platformGradient} variants={animationsEnabled ? itemVariants : {}} />
-                        <motion.div className={styles.platformSideGradient} variants={animationsEnabled ? itemVariants : {}} />
+                        <motion.div className={styles.verticalFadetop} variants={animationsEnabled ? itemVariants : {}} />
                       </>
                     )}
                     <motion.div className={styles.horizontalBorder} variants={animationsEnabled ? itemVariants : {}} />

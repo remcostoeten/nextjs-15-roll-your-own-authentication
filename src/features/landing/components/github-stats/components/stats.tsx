@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, ReferenceArea } from 'recharts';
-import { ArrowUpRight } from 'lucide-react';
 import { getGithubStats, type GithubStats } from '@/services/github-stats.service';
 import { Container } from '@/components/layout/container';
 import Text from '@/shared/components/defaults/text';
@@ -136,11 +135,15 @@ const StatsChart = () => {
               href={`https://github.com/${REPO_OWNER}/${REPO_NAME}`}
               target="_blank"
               rel="noopener noreferrer" 
-              className="border border-[#666] px-4 py-2 text-sm flex items-center gap-2 hover:bg-[#444] transition-all duration-300 group relative overflow-hidden text-white"
+              className="relative px-4 py-2 text-sm text-[#888] hover:text-white transition-colors group"
             >
               <span className="relative z-10">VIEW ON GITHUB</span>
-              <ArrowUpRight size={16} className="relative z-10" />
-              <div className="absolute inset-0 w-0 bg-[#555] transition-all duration-300 group-hover:w-full"></div>
+              <div className="absolute inset-0 border border-[#333] opacity-50 group-hover:opacity-100 transition-opacity">
+                <div className="absolute inset-y-0 left-0 w-[1px] bg-gradient-to-b from-[#333] via-[#333] to-transparent"></div>
+                <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-[#333] via-[#333] to-transparent"></div>
+                <div className="absolute inset-y-0 right-0 w-[1px] bg-gradient-to-b from-[#333] via-transparent to-transparent"></div>
+                <div className="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-[#333] via-transparent to-transparent"></div>
+              </div>
             </a>
           </div>
 
