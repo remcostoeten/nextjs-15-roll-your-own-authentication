@@ -1,14 +1,22 @@
 'use server'
 
 import { featureFlags } from '@/config/features'
-import VerifyEmail from '@/emails/verify-email'
 import { db } from '@/server/db'
 import { emailVerifications, users } from '@/server/db/schema'
 import { eq } from 'drizzle-orm'
-import { Resend } from 'resend'
+import nodemailer from 'nodemailer'
 import { v4 as uuidv4 } from 'uuid'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Create reusable transporter
+const transporter = nodemailer.createTransport({
+	host: 'smtp.gmail.com',
+	port: 587,
+	secure: false,
+	auth: {
+		user: process.env.EMAIL_USER,
+		pass: process.env.EMAIL_PASSWORD // App-specific password
+	}
+})
 
 export type EmailServiceResponse = {
 	success: boolean
@@ -16,12 +24,12 @@ export type EmailServiceResponse = {
 }
 
 /**
- * Sends verification email using Resend with custom template
+ * Sends verification email using nodemailer
  * @author remcostoeten
  */
 export async function sendVerificationEmail(
 	userId: number,
-	email: string
+	userEmail: string
 ): Promise<EmailServiceResponse> {
 	// Early return if email verification is disabled
 	if (!featureFlags.emailVerification) {
@@ -32,62 +40,40 @@ export async function sendVerificationEmail(
 	}
 
 	try {
-		// Log initial attempt
-		console.log('\n🔵 Attempting to send verification email to:', email)
-
 		const token = uuidv4()
-		const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000)
+		const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
 
-		// Get user info for personalized email
-		const user = await db.query.users.findFirst({
-			where: eq(users.id, userId)
-		})
-
-		console.log('🔵 User found:', user ? 'Yes' : 'No')
-
+		// Store verification token
 		await db.insert(emailVerifications).values({
 			userId,
 			token,
 			expiresAt
 		})
 
-		const verificationLink = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${token}`
-
-		// Log email configuration
-		console.log('\n🔵 Email Configuration:')
-		console.log('From:', process.env.RESEND_FROM_EMAIL)
-		console.log('To:', email)
-		console.log('Link:', verificationLink)
-
-		const emailResponse = await resend.emails.send({
-			from: `Auth System <${process.env.RESEND_FROM_EMAIL}>`,
-			to: email,
-			subject: 'Verify your email address',
-			react: VerifyEmail({
-				verificationLink,
-				userName: user?.name || email.split('@')[0]
-			})
+		// Send email
+		await transporter.sendMail({
+			from: process.env.EMAIL_USER,
+			to: userEmail,
+			subject: 'Verify your email',
+			html: `
+				<h1>Verify your email</h1>
+				<p>Click the link below to verify your email:</p>
+				<a href="${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${token}">
+					Verify Email
+				</a>
+			`
 		})
-
-		// Log Resend response
-		console.log('\n🔵 Resend Response:', emailResponse)
 
 		return {
 			success: true,
 			message: 'Verification email sent successfully'
 		}
 	} catch (error) {
-		// Detailed error logging
-		console.error('\n🔴 Email Service Error:')
-		console.error('Error details:', error)
-		console.error(
-			'Resend API Key configured:',
-			!!process.env.RESEND_API_KEY
-		)
-		console.error('From email configured:', !!process.env.RESEND_FROM_EMAIL)
-		console.error('App URL configured:', !!process.env.NEXT_PUBLIC_APP_URL)
-
-		return { success: false, message: 'Failed to send verification email' }
+		console.error('Failed to send verification email:', error)
+		return {
+			success: false,
+			message: 'Failed to send verification email'
+		}
 	}
 }
 

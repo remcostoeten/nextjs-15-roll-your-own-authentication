@@ -9,15 +9,19 @@
     "push": "drizzle-kit push",
     "gen": "drizzle-kit generate",
     "check": "tsc --noEmit # Type check the project",
-    "f": "prettier --write \"**/*.{ts,tsx,mdx,json}\" --cache # Format code",
+    "f": "prettier --write \"*z*/*.{ts,tsx,mdx,json}\" --cache # Format code",
     "re": "rm -rf node_modules && rm -rf .next && pnpm i && pnpm dev --turbo # Clean reinstall",
     "gen-secret": "node scripts/generate-secret.js",
-    "extract-db": "node scripts/extract-db.js",
+    "extract-db": "node scriptzs/extract-db.js",
     "env": "node scripts/env-manager.js",
     "help": "node scripts/help.js",
     "db:local": "tsx src/scripts/database-config.ts local",
     "db:vercel": "tsx src/scripts/database-config.ts vercel",
-    "verify-db": "tsx src/scripts/verify-db.ts"
+    "verify-db": "tsx src/scripts/verify-db.ts",
+    "db:generate": "drizzle-kit generate:pg",
+    "db:push": "drizzle-kit push:pg",
+    "db:studio": "drizzle-kit studio",
+    "db:migrate": "tsx src/server/db/migrate.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -41,7 +45,6 @@
     "component": "link:@react/-email/component",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.5",
-    "drizzle-orm": "^0.36.3",
     "framer-motion": "^10.12.16",
     "jose": "^4.14.4",
     "lucide-react": "^0.244.0",
@@ -56,7 +59,6 @@
     "react-hook-form": "^7.53.2",
     "react-toastify": "^10.0.6",
     "recharts": "^2.7.1",
-    "resend": "^4.0.1",
     "tailwind-merge": "^1.14.0",
     "tailwindcss": "3.3.2",
     "tailwindcss-animate": "^1.0.7",
@@ -73,7 +75,6 @@
     "@types/pg": "^8.11.10",
     "@types/uuid": "^10.0.0",
     "@types/zxcvbn": "^4.4.1",
-    "drizzle-kit": "^0.28.1",
     "prettier": "^3.3.3",
     "tsx": "^4.19.2"
   }

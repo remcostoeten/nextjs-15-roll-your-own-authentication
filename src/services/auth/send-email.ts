@@ -2,6 +2,7 @@
 
 import nodemailer from 'nodemailer'
 import { Resend } from 'resend'
+import { env } from '@/server/env'
 
 type EmailOptions = {
 	to: string
@@ -10,23 +11,29 @@ type EmailOptions = {
 	html?: string
 }
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Only initialize Resend if API key is available
+const resend = env.RESEND_API_KEY ? new Resend(env.RESEND_API_KEY) : null
 
-const transporter = nodemailer.createTransport({
-	host: process.env.SMTP_HOST,
-	port: Number(process.env.SMTP_PORT),
-	secure: process.env.SMTP_SECURE === 'true',
+// Only initialize nodemailer if SMTP settings are available
+const transporter = env.SMTP_HOST ? nodemailer.createTransport({
+	host: env.SMTP_HOST,
+	port: Number(env.SMTP_PORT),
+	secure: env.SMTP_SECURE === 'true',
 	auth: {
-		user: process.env.SMTP_USER,
-		pass: process.env.SMTP_PASS
+		user: env.SMTP_USER,
+		pass: env.SMTP_PASS
 	}
-})
+}) : null
 
 export async function sendEmail({ to, subject, text, html }: EmailOptions) {
-	if (process.env.NODE_ENV === 'production') {
+	if (env.NODE_ENV === 'production') {
+		if (!resend) {
+			console.warn('Resend API key not configured, skipping email send')
+			return
+		}
 		try {
 			await resend.emails.send({
-				from: process.env.SMTP_FROM || 'onboarding@resend.dev',
+				from: env.SMTP_FROM || 'onboarding@resend.dev',
 				to,
 				subject,
 				text,
@@ -37,9 +44,13 @@ export async function sendEmail({ to, subject, text, html }: EmailOptions) {
 			throw new Error('Failed to send email')
 		}
 	} else {
+		if (!transporter) {
+			console.warn('SMTP not configured, skipping email send')
+			return
+		}
 		try {
 			await transporter.sendMail({
-				from: process.env.SMTP_FROM,
+				from: env.SMTP_FROM,
 				to,
 				subject,
 				text,

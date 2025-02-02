@@ -17,6 +17,10 @@ module.exports = {
 		},
 		extend: {
 			colors: {
+				// custom colors
+				offwhite: '#F5F5F5',
+				
+				// tailwind colors
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',

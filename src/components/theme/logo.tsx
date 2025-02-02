@@ -1,8 +1,8 @@
 'use client'
 
 import { useMountedTheme } from '@/hooks/use-mounted-theme'
+import { cn } from '@/shared/helpers'
 import Link from 'next/link'
-
 type LogoProps = {
 	className?: string
 	size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
@@ -43,7 +43,7 @@ export default function Logo({
 	const finalWidth = width || defaultWidth
 	const finalHeight = height || defaultHeight
 
-	const fill = theme === 'dark' ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)'
+	const fill = theme === 'dark' ? 'rgba(113, 105, 105, 0.6)' : 'rgba(249, 249, 249, .1)'
 
 	const containerStyle = {
 		transform: 'scale(1)',
@@ -83,7 +83,7 @@ export default function Logo({
 
 	const LogoSVG = (
 		<svg
-			className={className}
+			className={cn("!text-offwhite", className)}
 			xmlns="http://www.w3.org/2000/svg"
 			width={finalWidth}
 			height={finalHeight}

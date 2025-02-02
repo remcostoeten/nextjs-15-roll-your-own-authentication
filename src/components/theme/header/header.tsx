@@ -21,7 +21,10 @@ import {
     DropdownMenu as UIDropdownMenu
 } from 'ui'
 import Logo from '../logo'
-import type { HeaderProps } from './header.d'
+import type { DropdownItem, HeaderProps, MenuItem } from './header.d'
+
+const TEXT_BLACK = 'text-offwhite'
+const TEXT_BLACK_60 = 'text-offwhite/60'
 
 // Update the MenuBadge component to handle light/dark themes
 const MenuBadge = ({ type }: { type: 'new' | 'soon' | 'beta' }) => {
@@ -32,7 +35,7 @@ const MenuBadge = ({ type }: { type: 'new' | 'soon' | 'beta' }) => {
             text: 'New',
             className: theme === 'dark'
                 ? 'bg-white/10 text-white border-white/[0.15]'
-                : 'bg-black/10 text-black border-black/[0.15]'
+                : `bg-black/10 ${TEXT_BLACK} border-black/[0.15]`
         },
         soon: {
             text: 'Soon',
@@ -421,8 +424,17 @@ export default function Header({ className }: HeaderProps) {
     const [scrolled, setScrolled] = React.useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
     const [isSearchOpen, setIsSearchOpen] = React.useState(false)
-    const { theme } = useMountedTheme()
+    const { theme, setTheme } = useMountedTheme()
     const { user, signOut } = useAuthHeader()
+    const [openDropdown, setOpenDropdown] = React.useState<string | null>(null)
+
+    const toggleDropdown = (id: string) => {
+        if (openDropdown === id) {
+            setOpenDropdown(null)
+        } else {
+            setOpenDropdown(id)
+        }
+    }
 
     React.useEffect(() => {
         setScrolled(window.scrollY > 20)
@@ -495,7 +507,7 @@ export default function Header({ className }: HeaderProps) {
                                 "transition-colors duration-200",
                                 theme === 'dark'
                                     ? "text-white/60 hover:text-white"
-                                    : "text-black/60 hover:text-black"
+                                    : `${TEXT_BLACK_60} hover:${TEXT_BLACK}`
                             )}
                         />
 
@@ -509,19 +521,13 @@ export default function Header({ className }: HeaderProps) {
                                 >
                                     {item.dropdownItems ? (
                                         <button
-                                            onClick={() =>
-                                                setOpenDropdown(
-                                                    openDropdown === item.label
-                                                        ? null
-                                                        : item.label
-                                                )
-                                            }
+                                            onClick={() => toggleDropdown(item.label)}
                                             className={cn(
                                                 "flex items-center px-3 py-2 text-[14px] font-medium",
                                                 "transition-colors duration-200",
                                                 theme === 'dark'
                                                     ? "text-white/60 hover:text-white"
-                                                    : "text-black/60 hover:text-black"
+                                                    : `${TEXT_BLACK_60} hover:${TEXT_BLACK}`
                                             )}
                                         >
                                             {item.icon ? item.icon : item.label}
@@ -549,7 +555,7 @@ export default function Header({ className }: HeaderProps) {
                                                 "transition-colors duration-200",
                                                 theme === 'dark'
                                                     ? "text-white/60 hover:text-white"
-                                                    : "text-black/60 hover:text-black"
+                                                    : `${TEXT_BLACK_60} hover:${TEXT_BLACK}`
                                             )}
                                             {...(item.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                                         >
@@ -564,7 +570,7 @@ export default function Header({ className }: HeaderProps) {
                                         <DropdownMenu
                                             items={item.dropdownItems}
                                             isOpen={openDropdown === item.label}
-                                            onClose={() => setOpenDropdown(null)}
+                                            onClose={() => toggleDropdown(item.label)}
                                         />
                                     )}
                                 </div>
@@ -578,7 +584,7 @@ export default function Header({ className }: HeaderProps) {
                                     "p-2 rounded-lg transition-colors duration-200",
                                     theme === 'dark'
                                         ? "text-white/60 hover:text-white"
-                                        : "text-black/60 hover:text-black"
+                                        : `${TEXT_BLACK_60} hover:${TEXT_BLACK}`
                                 )}
                                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                             >
@@ -595,7 +601,7 @@ export default function Header({ className }: HeaderProps) {
                                     "p-2 rounded-lg transition-colors duration-200",
                                     theme === 'dark'
                                         ? "text-white/60 hover:text-white"
-                                        : "text-black/60 hover:text-black"
+                                        : `${TEXT_BLACK_60} hover:${TEXT_BLACK}`
                                 )}
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -608,7 +614,7 @@ export default function Header({ className }: HeaderProps) {
                                     "p-2 rounded-lg transition-colors duration-200",
                                     theme === 'dark'
                                         ? "text-white/60 hover:text-white"
-                                        : "text-black/60 hover:text-black"
+                                        : `${TEXT_BLACK_60} hover:${TEXT_BLACK}`
                                 )}
                                 onClick={() => setIsSearchOpen(true)}
                             >
@@ -667,7 +673,7 @@ export default function Header({ className }: HeaderProps) {
                                         "hidden sm:block ml-2 px-5 py-1.5 text-sm font-medium rounded-full transition-colors duration-200",
                                         theme === 'dark'
                                             ? "text-white bg-white/10 hover:bg-white/[0.15]"
-                                            : "text-black bg-black/10 hover:bg-black/[0.15]"
+                                            : `${TEXT_BLACK} bg-black/10 hover:bg-black/[0.15]`
                                     )}
                                 >
                                     Sign in
@@ -679,7 +685,7 @@ export default function Header({ className }: HeaderProps) {
                                     "lg:hidden p-2 transition-colors duration-200",
                                     theme === 'dark'
                                         ? "text-white/60 hover:text-white"
-                                        : "text-black/60 hover:text-black"
+                                        : `${TEXT_BLACK_60} hover:${TEXT_BLACK}`
                                 )}
                                 onClick={() => setIsMobileMenuOpen(true)}
                             >

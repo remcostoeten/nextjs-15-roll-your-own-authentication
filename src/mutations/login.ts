@@ -6,12 +6,12 @@ import { SignJWT } from 'jose'
 import { cookies } from 'next/headers'
 import { createEntity } from '../server/db/generics/entity'
 import { sessions, users } from '../server/db/schema'
+import { env } from '../server/env'
 
 const userEntity = createEntity(users)
 const sessionEntity = createEntity(sessions)
 
-const SECRET_KEY = process.env.JWT_SECRET_KEY!
-const key = new TextEncoder().encode(SECRET_KEY)
+const key = new TextEncoder().encode(env.JWT_SECRET)
 
 export async function loginMutation(email: string, password: string) {
 	try {
@@ -49,7 +49,7 @@ export async function loginMutation(email: string, password: string) {
 		})
 		;(await cookies()).set('auth_token', token, {
 			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production'
+			secure: env.NODE_ENV === 'production'
 		})
 
 		return { success: true }
