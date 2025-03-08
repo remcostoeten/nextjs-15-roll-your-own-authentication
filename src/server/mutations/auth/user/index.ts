@@ -1,5 +1,0 @@
-export { register } from './register'
-export { login } from './login'
-export { logout } from './logout'
-export { getUser } from './get-user'
-export type { User, UserResponse, AuthResponse } from './types'
