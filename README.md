@@ -10,9 +10,6 @@ To get started with development, you can use the CLI tool:
 # Start local development server (no database)
 ./devtool start
 
-# Start with PostgreSQL
-./devtool dev --postgres
-
 # Start with SQLite
 ./devtool dev --sqlite
 ```
@@ -22,9 +19,6 @@ You can also use the npm scripts:
 ```bash
 # Start Next.js development server
 npm run dev
-
-# Start with PostgreSQL
-npm run dev:postgres
 
 # Start with SQLite
 npm run dev:sqlite
@@ -40,15 +34,10 @@ For a containerized setup:
 # or
 npm run docker:start
 
-# Start with Docker + PostgreSQL
-./devtool docker:start --postgres
-# or
-npm run docker:postgres
-
 # Start with Docker + SQLite in detached mode
 ./devtool docker:start --sqlite -d
 # or
-npm run docker:sqlite -- -d
+npm run docker:sqlite
 ```
 
 ## ⚙️ Environment Configuration
@@ -65,16 +54,10 @@ The system uses environment variables for configuration. You can set them using:
 
 ## 🗄️ Database Configuration
 
-### 📊 PostgreSQL
-
-- **Connection String**: `postgresql://raioa:raioa_password@localhost:5432/raioa_db`
-- **Docker**: A PostgreSQL container is created when using `--postgres`
-- **Admin Interface**: Available at http://localhost:8080 when running with Docker
-
 ### 📁 SQLite
 
-- **Connection String**: `file:./data/raioa.db`
-- **Docker**: A volume is created to persist data
+-   **Connection String**: `file:./data/raioa.db`
+-   **Docker**: A volume is created to persist data
 
 ## 🧰 Development Tools
 
@@ -132,12 +115,12 @@ npm run tool:menu
 
 This project follows a modular architecture:
 
-- `src/shared`: Shared logic, components, hooks, and utilities
-- `src/components`: Singular-use components
-- `src/app`: Page rendering and routing
-- `src/views`: UI composition for specific pages
-- `src/modules`: Feature-specific code organized by feature name
-- `src/server`: Server-side code including database access
+-   `src/shared`: Shared logic, components, hooks, and utilities
+-   `src/components`: Singular-use components
+-   `src/app`: Page rendering and routing
+-   `src/views`: UI composition for specific pages
+-   `src/modules`: Feature-specific code organized by feature name
+-   `src/server`: Server-side code including database access
 
 ## 🔧 Development Environment
 
@@ -157,8 +140,8 @@ pnpm dev
 # Start with Docker (no database)
 ./devtool docker:start
 
-# Start with Docker + PostgreSQL in development mode
-./devtool docker:start --postgres --dev
+# Start with Docker + SQLite in development mode
+./devtool docker:start --sqlite --dev
 
 # Start with Docker + SQLite in detached mode
 ./devtool docker:start --sqlite -d
@@ -171,8 +154,8 @@ pnpm dev
 
 To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+-   [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+-   [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 ## 📄 License
 
@@ -182,7 +165,7 @@ To learn more about Next.js, take a look at the following resources:
 
 ```bash
 # Start in detached mode (background)
-./devtool docker:start --postgres --detached
+./devtool docker:start --sqlite --detached
 
 # Rebuild Docker containers
 ./devtool docker:start --build

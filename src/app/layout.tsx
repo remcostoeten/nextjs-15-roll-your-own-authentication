@@ -4,15 +4,13 @@ import { fontVariables, siteMetadata } from '@/core/config'
 export const metadata = siteMetadata
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode
+	children: React.ReactNode
 }>) {
-  return (
-    <html lang="en">
-      <body className={fontVariables}>
-        {children}
-      </body>
-    </html>
-  )
+	return (
+		<html lang="en">
+			<body className={fontVariables}>{children}</body>
+		</html>
+	)
 }

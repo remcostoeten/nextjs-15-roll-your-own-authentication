@@ -1,2 +1,2 @@
-export * from './update-login-metrics';
-export * from './log-activity'; 
+export * from './update-login-metrics'
+export * from './log-activity'

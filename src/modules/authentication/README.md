@@ -33,11 +33,11 @@ src/modules/authentication/
 
 ## Core Technologies
 
-- **JWT (Jose)**: For secure token generation and validation
-- **Server Sessions**: For maintaining user state
-- **Drizzle ORM**: For database interactions
-- **Zod**: For schema validation
-- **Next.js Server Actions**: For secure server-side operations
+-   **JWT (Jose)**: For secure token generation and validation
+-   **Server Sessions**: For maintaining user state
+-   **Drizzle ORM**: For database interactions
+-   **Zod**: For schema validation
+-   **Next.js Server Actions**: For secure server-side operations
 
 ## Authentication Flow
 
@@ -75,12 +75,12 @@ src/modules/authentication/
 
 ## Security Measures
 
-- **HTTP-Only Cookies**: Prevents client-side JavaScript from accessing tokens
-- **CSRF Protection**: Implemented via Next.js built-in protection
-- **Password Hashing**: Using bcrypt with appropriate salt rounds
-- **Token Expiration**: JWTs have a configurable expiration time
-- **Session Validation**: Double-checking session validity in the database
-- **Rate Limiting**: Preventing brute force attacks
+-   **HTTP-Only Cookies**: Prevents client-side JavaScript from accessing tokens
+-   **CSRF Protection**: Implemented via Next.js built-in protection
+-   **Password Hashing**: Using bcrypt with appropriate salt rounds
+-   **Token Expiration**: JWTs have a configurable expiration time
+-   **Session Validation**: Double-checking session validity in the database
+-   **Rate Limiting**: Preventing brute force attacks
 
 ## Database Schema
 
@@ -118,24 +118,24 @@ The authentication system is exposed to the client through React hooks:
 ### `useAuth` Hook
 
 ```typescript
-const { 
-  user,           // Current user object or null
-  isLoading,      // Loading state
-  error,          // Error message if any
-  login,          // Function to log in
-  register,       // Function to register
-  logout,         // Function to log out
-  isAuthenticated // Boolean indicating if user is authenticated
-} = useAuth();
+const {
+	user, // Current user object or null
+	isLoading, // Loading state
+	error, // Error message if any
+	login, // Function to log in
+	register, // Function to register
+	logout, // Function to log out
+	isAuthenticated, // Boolean indicating if user is authenticated
+} = useAuth()
 ```
 
 ### `usePermissions` Hook
 
 ```typescript
 const {
-  can,            // Function to check if user can perform an action
-  hasRole         // Function to check if user has a specific role
-} = usePermissions();
+	can, // Function to check if user can perform an action
+	hasRole, // Function to check if user has a specific role
+} = usePermissions()
 ```
 
 ## Configuration
@@ -160,59 +160,73 @@ PASSWORD_HASH_ROUNDS=12
 ### JWT Generation (using jose)
 
 ```typescript
-import { SignJWT } from 'jose';
+import { SignJWT } from 'jose'
 
-const generateToken = async (payload: any, secret: string, expiration: string) => {
-  const secretKey = new TextEncoder().encode(secret);
-  
-  return new SignJWT(payload)
-    .setProtectedHeader({ alg: 'HS256' })
-    .setIssuedAt()
-    .setExpirationTime(expiration)
-    .sign(secretKey);
-};
+const generateToken = async (
+	payload: any,
+	secret: string,
+	expiration: string
+) => {
+	const secretKey = new TextEncoder().encode(secret)
+
+	return new SignJWT(payload)
+		.setProtectedHeader({ alg: 'HS256' })
+		.setIssuedAt()
+		.setExpirationTime(expiration)
+		.sign(secretKey)
+}
 ```
 
 ### Password Hashing
 
 ```typescript
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt'
 
 const hashPassword = async (password: string): Promise<string> => {
-  const saltRounds = Number(process.env.PASSWORD_HASH_ROUNDS) || 12;
-  return bcrypt.hash(password, saltRounds);
-};
+	const saltRounds = Number(process.env.PASSWORD_HASH_ROUNDS) || 12
+	return bcrypt.hash(password, saltRounds)
+}
 
-const verifyPassword = async (password: string, hash: string): Promise<boolean> => {
-  return bcrypt.compare(password, hash);
-};
+const verifyPassword = async (
+	password: string,
+	hash: string
+): Promise<boolean> => {
+	return bcrypt.compare(password, hash)
+}
 ```
 
 ### Session Management
 
 ```typescript
-import { db } from 'db';
-import { sessions } from '@/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { db } from 'db'
+import { sessions } from '@/server/db/schema'
+import { eq } from 'drizzle-orm'
 
-const createSession = async (userId: string, token: string, expiresAt: Date) => {
-  return db.insert(sessions).values({
-    userId,
-    token,
-    expiresAt
-  }).returning();
-};
+const createSession = async (
+	userId: string,
+	token: string,
+	expiresAt: Date
+) => {
+	return db
+		.insert(sessions)
+		.values({
+			userId,
+			token,
+			expiresAt,
+		})
+		.returning()
+}
 
 const validateSession = async (userId: string, token: string) => {
-  const session = await db.query.sessions.findFirst({
-    where: eq(sessions.userId, userId) && eq(sessions.token, token)
-  });
-  
-  if (!session) return false;
-  if (new Date() > session.expiresAt) return false;
-  
-  return true;
-};
+	const session = await db.query.sessions.findFirst({
+		where: eq(sessions.userId, userId) && eq(sessions.token, token),
+	})
+
+	if (!session) return false
+	if (new Date() > session.expiresAt) return false
+
+	return true
+}
 ```
 
 ## Best Practices
@@ -229,14 +243,13 @@ const validateSession = async (userId: string, token: string) => {
 
 Authentication components and logic should be thoroughly tested:
 
-- **Unit Tests**: For individual functions like token generation and password hashing
-- **Integration Tests**: For the complete authentication flow
-- **E2E Tests**: For the user experience of registration, login, and protected routes
+-   **Unit Tests**: For individual functions like token generation and password hashing
+-   **Integration Tests**: For the complete authentication flow
+-   **E2E Tests**: For the user experience of registration, login, and protected routes
 
 ## Future Enhancements
 
-- Multi-factor authentication
-- OAuth integration for social logins
-- Role-based access control
-- Password reset functionality
-- Account verification via email 
+-   Multi-factor authentication
+-   OAuth integration for social logins
+-   Role-based access control
+-   Account verification via email
