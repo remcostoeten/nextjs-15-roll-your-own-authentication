@@ -5,6 +5,6 @@ export default {
     out: './drizzle',
     dialect: 'sqlite',
     dbCredentials: {
-        url: 'database.db',
+        url: './data/raioa.db',
     },
 } satisfies Config; 
