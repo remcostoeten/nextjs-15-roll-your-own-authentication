@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * This hook provides functions for calling the authentication API endpoints
  */
@@ -13,15 +15,15 @@ export function useAuthApi() {
       },
       body: JSON.stringify(credentials),
     });
-    
+
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.error || 'Failed to login');
     }
-    
+
     return response.json();
   };
-  
+
   /**
    * Register a new user
    */
@@ -39,15 +41,15 @@ export function useAuthApi() {
       },
       body: JSON.stringify(userData),
     });
-    
+
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.error || 'Failed to register');
     }
-    
+
     return response.json();
   };
-  
+
   /**
    * Logout the current user
    */
@@ -58,15 +60,15 @@ export function useAuthApi() {
         'Content-Type': 'application/json',
       },
     });
-    
+
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.error || 'Failed to logout');
     }
-    
+
     return response.json();
   };
-  
+
   /**
    * Refresh the authentication tokens
    */
@@ -77,15 +79,15 @@ export function useAuthApi() {
         'Content-Type': 'application/json',
       },
     });
-    
+
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.error || 'Failed to refresh authentication');
     }
-    
+
     return response.json();
   };
-  
+
   /**
    * Get the current user
    */
@@ -96,7 +98,7 @@ export function useAuthApi() {
         'Content-Type': 'application/json',
       },
     });
-    
+
     if (!response.ok) {
       if (response.status === 401) {
         return null;
@@ -104,10 +106,10 @@ export function useAuthApi() {
       const errorData = await response.json();
       throw new Error(errorData.error || 'Failed to get user');
     }
-    
+
     return response.json();
   };
-  
+
   return {
     login,
     register,
