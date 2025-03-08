@@ -1,5 +1,6 @@
-import '@/styles/globals.css'
+import '@/styles/styles.css'
 import { fontVariables, siteMetadata } from '@/core/config'
+import { ThemeProvider } from '@/components/theme/providers'
 
 export const metadata = siteMetadata
 
@@ -9,8 +10,12 @@ export default function RootLayout({
 	children: React.ReactNode
 }>) {
 	return (
-		<html lang="en">
-			<body className={fontVariables}>{children}</body>
+		<html lang="en" suppressHydrationWarning>
+			<body className={fontVariables}>
+				<ThemeProvider>
+					{children}
+				</ThemeProvider>
+			</body>
 		</html>
 	)
 }
