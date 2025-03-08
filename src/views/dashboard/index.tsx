@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useAuth } from '@/modules/authentication/hooks/use-auth';
-import { useUserMetrics } from '@/modules/dashboard/hooks';
+import { useUserMetrics } from '@/modules/user-metrics/hooks';
 import { useRouter } from 'next/navigation';
 
 /**
@@ -99,7 +99,7 @@ export default function DashboardView() {
                         </div>
                         <div className="flex justify-between">
                             <span className="text-gray-600 dark:text-gray-300">Last Login:</span>
-                            <span className="font-medium">{metrics.lastLogin}</span>
+                            <span className="font-medium">{metrics.lastLoginFormatted}</span>
                         </div>
                     </div>
                 </div>
@@ -109,10 +109,13 @@ export default function DashboardView() {
                     <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
                     <div className="space-y-3">
                         {metrics.activityLog.length > 0 ? (
-                            metrics.activityLog.map((activity, index) => (
-                                <div key={index} className="border-l-2 border-blue-500 pl-3">
+                            metrics.activityLog.map((activity) => (
+                                <div key={activity.id} className="border-l-2 border-blue-500 pl-3">
                                     <p className="text-sm text-gray-500 dark:text-gray-400">{activity.timestamp}</p>
                                     <p className="text-gray-700 dark:text-gray-300">{activity.action}</p>
+                                    {activity.details && (
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">{activity.details}</p>
+                                    )}
                                 </div>
                             ))
                         ) : (

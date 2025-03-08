@@ -4,6 +4,7 @@ import { userLoginSchema } from '@/modules/authentication/models';
 import { verifyPassword } from '@/shared/utils/password';
 import { generateTokens } from '@/shared/utils/jwt';
 import { eq } from 'drizzle-orm';
+import { updateLoginMetrics, logActivity } from '@/modules/user-metrics/api';
 
 export async function loginUser(credentials: unknown, requestInfo?: {
     userAgent?: string;
@@ -45,6 +46,16 @@ export async function loginUser(credentials: unknown, requestInfo?: {
         expiresAt,
         userAgent: requestInfo?.userAgent,
         ipAddress: requestInfo?.ipAddress,
+    });
+
+    // Update user metrics
+    await updateLoginMetrics(user.id);
+
+    // Log login activity
+    await logActivity({
+        userId: user.id,
+        action: 'User login',
+        details: `Login from ${requestInfo?.userAgent || 'unknown device'}`
     });
 
     // Return user data (excluding password) and tokens
