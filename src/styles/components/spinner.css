@@ -1,0 +1,13 @@
+@keyframes spinner-blade {
+    0% {
+        opacity: 0.85;
+    }
+
+    50% {
+        opacity: 0.25;
+    }
+
+    100% {
+        opacity: 0.25;
+    }
+}
