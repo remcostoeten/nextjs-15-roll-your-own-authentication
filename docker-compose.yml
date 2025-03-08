@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  nextjs:
+    image: node:20-alpine
+    working_dir: /app
+    command: sh -c "echo -e '\\033[1;35m🚀 Installing dependencies...\\033[0m' && corepack enable && corepack prepare pnpm@latest --activate && pnpm install && echo -e '\\033[1;36m✨ Dependencies installed successfully!\\033[0m' && echo -e '\\033[1;32m🔥 Starting Next.js in development mode...\\033[0m' && pnpm dev"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_TYPE=${DATABASE_TYPE:-none}
+      - DATABASE_URL=${DATABASE_URL:-}
+      - NEXT_TELEMETRY_DISABLED=1
+    volumes:
+      - ./:/app
+      - node_modules:/app/node_modules
+    ports:
+      - "${PORT:-3000}:3000"
+    networks:
+      - raioa-network
+
+  # PostgreSQL service (only started if DATABASE_TYPE=postgres)
+  postgres:
+    container_name: raioa-postgres
+    image: postgres:16-alpine
+    restart: always
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-raioa}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-raioa_password}
+      - POSTGRES_DB=${POSTGRES_DB:-raioa_db}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - raioa-network
+    profiles:
+      - postgres
+    command: >
+      bash -c "
+        echo -e '\\033[1;34m🗄️  Starting PostgreSQL database...\\033[0m' &&
+        docker-entrypoint.sh postgres
+      "
+
+  # SQLite service (only started if DATABASE_TYPE=sqlite)
+  sqlite:
+    container_name: raioa-sqlite
+    image: keinos/sqlite3:latest
+    restart: always
+    volumes:
+      - sqlite-data:/data
+    networks:
+      - raioa-network
+    profiles:
+      - sqlite
+    command: >
+      sh -c "
+        echo -e '\\033[1;33m📁 Setting up SQLite database...\\033[0m' &&
+        touch /data/raioa.db &&
+        echo -e '\\033[1;32m✅ SQLite database ready!\\033[0m' &&
+        tail -f /dev/null
+      "
+
+  # Development tools
+  adminer:
+    container_name: raioa-adminer
+    image: adminer:latest
+    restart: always
+    ports:
+      - "${ADMINER_PORT:-8080}:8080"
+    networks:
+      - raioa-network
+    profiles:
+      - postgres
+    depends_on:
+      - postgres
+
+networks:
+  raioa-network:
+    driver: bridge
+
+volumes:
+  node_modules:
+  postgres-data:
+  sqlite-data: 

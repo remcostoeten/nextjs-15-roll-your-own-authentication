@@ -1,0 +1,158 @@
+---
+title: 'Docker Overview'
+description: 'Overview of Docker setup for Raioa application'
+---
+
+# Docker Environment
+
+This project provides a full-featured Docker development environment for easy setup and consistent development experience.
+
+## Features
+
+- Next.js application container
+- PostgreSQL database (optional)
+- SQLite database (optional)
+- Adminer database management interface
+- Development mode with hot-reloading
+- Production mode with optimized builds
+
+## Getting Started
+
+You can start the Docker environment using the CLI:
+
+```bash
+# Start with Docker (no database)
+./devtool docker:start
+# or
+npm run docker:start
+
+# Start with Docker + PostgreSQL
+./devtool docker:start --postgres
+# or
+npm run docker:postgres
+
+# Start with Docker + SQLite
+./devtool docker:start --sqlite
+# or
+npm run docker:sqlite
+```
+
+## Docker Development Tools
+
+```bash
+# Stop all containers
+./devtool docker:down
+# or
+npm run docker:down
+
+# Clean up Docker resources
+./devtool docker:clean
+
+# Clean up Docker resources including volumes
+./devtool docker:clean --volumes
+```
+
+## Configuration Options
+
+Control the Docker environment with various options:
+
+```bash
+# Run in detached mode
+./devtool docker:start --detached
+
+# Rebuild containers
+./devtool docker:start --build
+
+# Start in development mode (default)
+./devtool docker:start --dev
+
+# Open in browser after starting
+./devtool docker:start --open
+```
+
+## Database Access
+
+When running PostgreSQL, you can access the database using:
+
+- **Adminer**: [http://localhost:8080](http://localhost:8080)
+    - System: PostgreSQL
+    - Server: postgres
+    - Username: raioa
+    - Password: raioa_password
+    - Database: raioa_db
+
+## Environment Variables
+
+Key environment variables for Docker:
+
+| Variable            | Description                          | Default        |
+| ------------------- | ------------------------------------ | -------------- |
+| `NODE_ENV`          | Environment mode                     | development    |
+| `PORT`              | Application port                     | 3000           |
+| `DATABASE_TYPE`     | Database type (postgres/sqlite/none) | none           |
+| `DATABASE_URL`      | Database connection URL              | -              |
+| `POSTGRES_USER`     | PostgreSQL username                  | raioa          |
+| `POSTGRES_PASSWORD` | PostgreSQL password                  | raioa_password |
+| `POSTGRES_DB`       | PostgreSQL database name             | raioa_db       |
+| `POSTGRES_PORT`     | PostgreSQL port                      | 5432           |
+
+## Profiles
+
+The Docker Compose configuration uses profiles to selectively enable services:
+
+- `postgres` - Activates PostgreSQL database
+- `sqlite` - Activates SQLite database
+
+These are automatically enabled based on the CLI options.
+
+## Docker Files
+
+The Docker setup uses the following files:
+
+- `docker-compose.yml`: Main configuration file defining all services
+- `docker-compose.dev.yml`: Development-specific overrides
+- `.env`: Environment variables for configuration
+- `.env.example`: Example environment configuration
+- `scripts/raioa.sh`: Script for managing Docker environment
+
+## Troubleshooting
+
+### Common Issues
+
+1. **"Cannot connect to the Docker daemon"**
+
+    - Make sure Docker is running on your system
+    - On Linux: `sudo systemctl start docker`
+    - On macOS: Start Docker Desktop
+
+2. **"Connection refused" when connecting to database**
+
+    - Ensure the database container is running: `docker ps`
+    - Check logs for any errors: `docker-compose logs postgres`
+    - Verify the connection string in your application
+
+3. **Container exits immediately**
+    - Check container logs: `docker-compose logs nextjs`
+    - Ensure environment variables are set correctly
+
+### Container Management
+
+```bash
+# View logs
+docker-compose logs -f
+
+# View specific service logs
+docker-compose logs -f postgres
+
+# Connect to container shell
+docker-compose exec nextjs sh
+
+# Restart a service
+docker-compose restart nextjs
+```
+
+## Security Notes
+
+- The default PostgreSQL credentials are for development only
+- In production, use strong passwords and consider Docker secrets
+- For production deployment, follow security best practices
