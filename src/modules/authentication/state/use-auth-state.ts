@@ -1,7 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { loginUser, registerUser, logoutUser, refreshToken } from '../api/mutations';
-import { getCurrentUser } from '../api/queries';
+import { getCookie } from '@/shared/utils/cookies';
+import { useAuthApi } from '../hooks/use-auth-api';
+
+// Create API instance outside of the store to avoid
+// recreating it on every state change
+const api = typeof window !== 'undefined' ? useAuthApi() : null;
 
 type User = {
     id: string;
@@ -39,79 +43,94 @@ export const useAuthStore = create<AuthState>()(
             error: null,
 
             login: async (credentials) => {
+                if (!api) return;
+                
                 set({ isLoading: true, error: null });
                 try {
-                    const { user } = await loginUser(credentials);
+                    const { user } = await api.login(credentials);
                     set({ user, isAuthenticated: true, isLoading: false });
                 } catch (error) {
-                    set({
-                        error: error instanceof Error ? error.message : 'Failed to login',
-                        isLoading: false
+                    set({ 
+                        error: error instanceof Error ? error.message : 'Failed to login', 
+                        isLoading: false 
                     });
                     throw error;
                 }
             },
 
             register: async (userData) => {
+                if (!api) return;
+                
                 set({ isLoading: true, error: null });
                 try {
                     // Register and automatically log in
-                    const { user } = await registerUser(userData);
+                    const { user } = await api.register(userData);
                     set({ user, isAuthenticated: true, isLoading: false });
                 } catch (error) {
-                    set({
-                        error: error instanceof Error ? error.message : 'Failed to register',
-                        isLoading: false
+                    set({ 
+                        error: error instanceof Error ? error.message : 'Failed to register', 
+                        isLoading: false 
                     });
                     throw error;
                 }
             },
 
             logout: async () => {
+                if (!api) return;
+                
                 set({ isLoading: true, error: null });
                 try {
-                    await logoutUser();
+                    await api.logout();
                     set({ user: null, isAuthenticated: false, isLoading: false });
                 } catch (error) {
-                    set({
-                        error: error instanceof Error ? error.message : 'Failed to logout',
-                        isLoading: false
+                    set({ 
+                        error: error instanceof Error ? error.message : 'Failed to logout', 
+                        isLoading: false 
                     });
                     throw error;
                 }
             },
 
             refreshAuth: async () => {
+                if (!api) return;
+                
                 set({ isLoading: true, error: null });
                 try {
-                    const { user } = await refreshToken();
+                    const { user } = await api.refreshAuth();
                     set({ user, isAuthenticated: true, isLoading: false });
                 } catch (error) {
-                    set({
-                        user: null,
-                        isAuthenticated: false,
-                        error: error instanceof Error ? error.message : 'Failed to refresh authentication',
-                        isLoading: false
+                    set({ 
+                        user: null, 
+                        isAuthenticated: false, 
+                        error: error instanceof Error ? error.message : 'Failed to refresh authentication', 
+                        isLoading: false 
                     });
                     throw error;
                 }
             },
 
             fetchUser: async () => {
+                if (!api) return;
+                
+                // Skip if already loading or if no access token is present
+                if (get().isLoading || !getCookie('access_token')) {
+                    return;
+                }
+                
                 set({ isLoading: true, error: null });
                 try {
-                    const user = await getCurrentUser();
-                    set({
-                        user,
-                        isAuthenticated: !!user,
-                        isLoading: false
+                    const user = await api.getUser();
+                    set({ 
+                        user, 
+                        isAuthenticated: !!user, 
+                        isLoading: false 
                     });
                 } catch (error) {
-                    set({
-                        user: null,
-                        isAuthenticated: false,
-                        error: error instanceof Error ? error.message : 'Failed to fetch user',
-                        isLoading: false
+                    set({ 
+                        user: null, 
+                        isAuthenticated: false, 
+                        error: error instanceof Error ? error.message : 'Failed to fetch user', 
+                        isLoading: false 
                     });
                     throw error;
                 }
@@ -119,7 +138,7 @@ export const useAuthStore = create<AuthState>()(
         }),
         {
             name: 'auth-storage',
-            partialize: (state) => ({
+            partialize: (state) => ({ 
                 user: state.user,
                 isAuthenticated: state.isAuthenticated
             }),

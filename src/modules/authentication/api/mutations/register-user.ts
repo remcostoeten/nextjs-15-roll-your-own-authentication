@@ -4,7 +4,6 @@ import { userRegistrationSchema } from '@/modules/authentication/models';
 import { hashPassword } from '@/shared/utils/password';
 import { generateTokens } from '@/shared/utils/jwt';
 import { eq } from 'drizzle-orm';
-import { cookies } from 'next/headers';
 
 export async function registerUser(userData: unknown, requestInfo?: {
     userAgent?: string;
@@ -63,31 +62,6 @@ export async function registerUser(userData: unknown, requestInfo?: {
         expiresAt,
         userAgent: requestInfo?.userAgent,
         ipAddress: requestInfo?.ipAddress,
-    });
-
-    // Set cookies for automatic sign-in
-    const cookieStore = cookies();
-
-    // Set access token in cookie (httpOnly for security)
-    cookieStore.set({
-        name: 'access_token',
-        value: tokens.accessToken,
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 15 * 60, // 15 minutes
-        path: '/',
-    });
-
-    // Set refresh token in cookie (httpOnly for security)
-    cookieStore.set({
-        name: 'refresh_token',
-        value: tokens.refreshToken,
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60, // 7 days
-        path: '/',
     });
 
     // Return user data and tokens

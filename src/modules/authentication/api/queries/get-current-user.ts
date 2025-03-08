@@ -2,13 +2,9 @@ import { db } from '@/server/db';
 import { users } from '@/server/db/schemas';
 import { verifyAccessToken } from '@/shared/utils/jwt';
 import { eq } from 'drizzle-orm';
-import { cookies } from 'next/headers';
 
-export async function getCurrentUser() {
+export async function getCurrentUser(accessToken?: string) {
     try {
-        const cookieStore = cookies();
-        const accessToken = cookieStore.get('access_token')?.value;
-
         if (!accessToken) {
             return null;
         }

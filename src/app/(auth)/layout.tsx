@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 
 export default function AuthLayout({
     children,
@@ -8,40 +7,40 @@ export default function AuthLayout({
     children: React.ReactNode;
 }) {
     return (
-        <div className="bg-gray-50 min-h-screen flex flex-col">
+        <div className="min-h-screen bg-[#0a0a0a]">
             {/* Header */}
-            <header className="w-full border-b border-gray-200 bg-white py-3">
-                <div className="container mx-auto px-4 flex justify-between items-center">
+            <header className="w-full py-5 border-b border-gray-800">
+                <div className="container mx-auto px-6 flex justify-between items-center">
                     <Link href="/" className="flex items-center">
-                        <div className="h-8 w-8 bg-blue-600 rounded-md flex items-center justify-center">
+                        <div className="h-8 w-8 bg-[#2E71E5] rounded-full flex items-center justify-center">
                             <span className="text-white font-bold">R</span>
                         </div>
-                        <span className="ml-2 text-lg font-medium text-gray-900">Raioa</span>
+                        <span className="ml-2 text-lg font-semibold text-white">Raioa</span>
                     </Link>
                     <nav>
                         <ul className="flex space-x-6">
                             <li>
-                                <Link
-                                    href="/"
-                                    className="text-sm text-gray-600 hover:text-gray-900"
+                                <Link 
+                                    href="/" 
+                                    className="text-sm text-gray-400 hover:text-white transition-colors"
                                 >
                                     Home
                                 </Link>
                             </li>
                             <li>
-                                <Link
-                                    href="/docs"
-                                    className="text-sm text-gray-600 hover:text-gray-900"
+                                <Link 
+                                    href="/docs" 
+                                    className="text-sm text-gray-400 hover:text-white transition-colors"
                                 >
                                     Documentation
                                 </Link>
                             </li>
                             <li>
-                                <Link
-                                    href="/pricing"
-                                    className="text-sm text-gray-600 hover:text-gray-900"
+                                <Link 
+                                    href="/login" 
+                                    className="text-sm text-gray-400 hover:text-white transition-colors"
                                 >
-                                    Pricing
+                                    Login
                                 </Link>
                             </li>
                         </ul>
@@ -55,19 +54,28 @@ export default function AuthLayout({
             </main>
 
             {/* Footer */}
-            <footer className="py-6 border-t border-gray-200 bg-white">
-                <div className="container mx-auto px-4 flex flex-col sm:flex-row justify-between items-center text-sm text-gray-500">
-                    <div className="mb-4 sm:mb-0">
+            <footer className="py-6 border-t border-gray-800">
+                <div className="container mx-auto px-6 flex flex-col sm:flex-row justify-between items-center text-sm">
+                    <div className="mb-4 sm:mb-0 text-gray-400">
                         &copy; {new Date().getFullYear()} Raioa, Inc. All rights reserved.
                     </div>
                     <div className="flex space-x-6">
-                        <Link href="/privacy" className="hover:text-gray-900">
-                            Privacy Policy
+                        <Link 
+                            href="/privacy" 
+                            className="text-gray-400 hover:text-white transition-colors"
+                        >
+                            Privacy
                         </Link>
-                        <Link href="/terms" className="hover:text-gray-900">
-                            Terms of Service
+                        <Link 
+                            href="/terms" 
+                            className="text-gray-400 hover:text-white transition-colors"
+                        >
+                            Terms
                         </Link>
-                        <Link href="/contact" className="hover:text-gray-900">
+                        <Link 
+                            href="/contact" 
+                            className="text-gray-400 hover:text-white transition-colors"
+                        >
                             Contact
                         </Link>
                     </div>

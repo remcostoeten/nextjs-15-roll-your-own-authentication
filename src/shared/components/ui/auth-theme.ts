@@ -1,6 +1,4 @@
-// Auth UI Theme constants
 export const authTheme = {
-    // Colors
     colors: {
         primary: '#0070f3', // Vercel-like blue
         text: '#000000',
