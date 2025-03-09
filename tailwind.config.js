@@ -18,6 +18,7 @@ module.exports = {
         },
         extend: {
             colors: {
+                "offwhite": "red",
                 border: "hsl(var(--border))",
                 input: "hsl(var(--input))",
                 ring: "hsl(var(--ring))",
@@ -66,10 +67,28 @@ module.exports = {
                     from: { height: "var(--radix-accordion-content-height)" },
                     to: { height: 0 },
                 },
+                "error-pulse": {
+                    "0%, 100%": { borderColor: "rgb(185, 28, 28)" },
+                    "50%": { borderColor: "rgb(239, 68, 68)" },
+                },
+                "fade-in-up": {
+                    "0%": { opacity: 0, transform: "translateY(10px)" },
+                    "100%": { opacity: 1, transform: "translateY(0)" },
+                },
+                "fade-in": {
+                    "0%": { opacity: 0 },
+                    "100%": { opacity: 1 },
+                },
             },
             animation: {
                 "accordion-down": "accordion-down 0.2s ease-out",
                 "accordion-up": "accordion-up 0.2s ease-out",
+                "pulse": "error-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+                "fade-in-1": "fade-in-up 0.5s ease-out forwards",
+                "fade-in-2": "fade-in-up 0.5s ease-out 0.1s forwards",
+                "fade-in-3": "fade-in-up 0.5s ease-out 0.2s forwards",
+                "fade-in-4": "fade-in-up 0.5s ease-out 0.3s forwards",
+                "fade-in-5": "fade-in-up 0.5s ease-out 0.4s forwards",
             },
         },
     },

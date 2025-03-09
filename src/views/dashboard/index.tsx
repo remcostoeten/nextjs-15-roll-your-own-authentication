@@ -5,17 +5,11 @@ import { useAuth } from '@/modules/authentication/hooks/use-auth'
 import { useUserMetrics } from '@/modules/user-metrics/hooks'
 import { useRouter } from 'next/navigation'
 
-/**
- * Dashboard view component
- * This component handles the UI presentation for the dashboard page
- * Following the architecture, this file should contain only UI elements and composition
- */
 export default function DashboardView() {
 	const { user, isLoading, logout } = useAuth()
 	const metrics = useUserMetrics()
 	const router = useRouter()
 
-	// Check if user is authenticated and redirect if not
 	React.useEffect(() => {
 		if (!isLoading && !user) {
 			router.push('/login?callbackUrl=/dashboard')
@@ -41,7 +35,6 @@ export default function DashboardView() {
 		)
 	}
 
-	// If user is not authenticated, don't render the dashboard
 	if (!user) {
 		return (
 			<div className="container mx-auto py-8">
