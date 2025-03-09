@@ -1,28 +1,23 @@
 "use client";
 
 import * as React from "react";
-import { motion } from "framer-motion";
+import { CoreButton } from "@/shared/components/core/core-button";
 
-type SocialAuthButtonProps = {
+interface SocialAuthButtonProps {
     icon: React.ReactNode;
-    children: React.ReactNode;
     onClick: () => void;
-};
+    children: React.ReactNode;
+}
 
-export function SocialAuthButton({
-    icon,
-    children,
-    onClick,
-}: SocialAuthButtonProps) {
+export function SocialAuthButton({ icon, onClick, children }: SocialAuthButtonProps) {
     return (
-        <motion.button
-            className="flex w-full items-center justify-center gap-2.5 rounded-md border border-solid border-neutral-800 bg-neutral-900 px-10 py-2.5 text-center text-white transition-colors hover:bg-neutral-800"
+        <CoreButton
+            variant="sso"
+            fullWidth
+            icon={icon}
             onClick={onClick}
         >
-            <span className="flex items-center gap-2.5 max-w-full">
-                {icon}
-                <span className="text-sm">{children}</span>
-            </span>
-        </motion.button>
+            {children}
+        </CoreButton>
     );
 }

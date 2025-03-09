@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { z } from "zod";
 import { useAuth } from "../hooks";
 import { loginSchema } from "../api/models/z.login";
@@ -9,6 +9,30 @@ import { Spinner } from "@/shared/components/effects/spinner";
 import { useFormStatus } from "react-dom";
 import { Checkbox, Input } from "@/shared/components/ui";
 import { cn } from "helpers";
+import { CoreButton } from "@/shared/components/core/core-button";
+
+const container = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+            delayChildren: 0.3,
+        },
+    },
+};
+
+const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: 0.4,
+            ease: "easeOut"
+        }
+    },
+};
 
 function RememberMe() {
     const [rememberMe, setRememberMe] = React.useState(() => {
@@ -39,38 +63,16 @@ function SubmitButton() {
     const { pending } = useFormStatus();
 
     return (
-        <motion.button
-            whileHover={{ scale: 1.02, backgroundColor: "#f8f8f8" }}
-            whileTap={{ scale: 0.98 }}
-            transition={{
-                type: "spring",
-                stiffness: 400,
-                damping: 17
-            }}
+        <CoreButton
             type="submit"
-            disabled={pending}
-            className="px-10 py-2.5 mt-5 text-center text-black bg-white rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            variant="primary"
+            fullWidth
+            isLoading={pending}
+            loadingText="Signing in..."
+            className="mt-5"
         >
-            {pending ? (
-                <motion.div
-                    className="flex items-center justify-center"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.2 }}
-                >
-                    <Spinner size="sm" color="black" className="mr-2" />
-                    <span>Signing in...</span>
-                </motion.div>
-            ) : (
-                <motion.span
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.2 }}
-                >
-                    Sign in
-                </motion.span>
-            )}
-        </motion.button>
+            Sign in
+        </CoreButton>
     );
 }
 
@@ -83,12 +85,7 @@ export function AuthForm() {
     });
     const [password, setPassword] = React.useState("");
     const [errors, setErrors] = React.useState<Record<string, string>>({});
-    const [isVisible, setIsVisible] = React.useState(false);
     const { login } = useAuth();
-
-    React.useEffect(() => {
-        setIsVisible(true);
-    }, []);
 
     async function loginAction(formData: FormData) {
         setErrors({});
@@ -126,36 +123,26 @@ export function AuthForm() {
     }
 
     return (
-        <>
-            <div className={cn(
-                "mb-8 opacity-0",
-                isVisible && "animate-fade-in-1"
-            )}>
+        <motion.div
+            variants={container}
+            initial="hidden"
+            animate="show"
+        >
+            <motion.div variants={item}>
                 <motion.h1
                     className="text-2xl font-bold text-white mb-2"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1, duration: 0.5 }}
                 >
                     Welcome back
                 </motion.h1>
                 <motion.p
                     className="text-neutral-400 text-sm"
-                    initial={{ opacity: 0, y: -5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2, duration: 0.5 }}
                 >
                     Sign in to your account to continue
                 </motion.p>
-            </div>
+            </motion.div>
 
-            <form action={loginAction} className="flex flex-col w-full">
-                <div
-                    className={cn(
-                        "opacity-0",
-                        isVisible && "animate-fade-in-2"
-                    )}
-                >
+            <form action={loginAction} className="flex flex-col w-full mt-8">
+                <motion.div variants={item}>
                     <Input
                         label="Email address"
                         name="email"
@@ -165,14 +152,9 @@ export function AuthForm() {
                         error={errors.email}
                         className="mb-5"
                     />
-                </div>
+                </motion.div>
 
-                <div
-                    className={cn(
-                        "opacity-0",
-                        isVisible && "animate-fade-in-3"
-                    )}
-                >
+                <motion.div variants={item}>
                     <div className="flex justify-between items-center">
                         <Input
                             label="Password"
@@ -185,34 +167,26 @@ export function AuthForm() {
                             className="w-full"
                         />
                     </div>
-                </div>
+                </motion.div>
 
-                <div
-                    className={cn(
-                        "flex justify-between items-center mt-2 mb-4 opacity-0",
-                        isVisible && "animate-fade-in-4"
-                    )}
+                <motion.div
+                    variants={item}
+                    className="flex justify-between items-center mt-2 mb-4"
                 >
                     <RememberMe />
-                    <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
+                    <CoreButton
+                        variant="link"
+                        size="sm"
                         type="button"
-                        className="text-white hover:underline focus:underline text-sm"
                     >
                         Forgot password?
-                    </motion.button>
-                </div>
+                    </CoreButton>
+                </motion.div>
 
-                <div
-                    className={cn(
-                        "opacity-0",
-                        isVisible && "animate-fade-in-5"
-                    )}
-                >
+                <motion.div variants={item}>
                     <SubmitButton />
-                </div>
+                </motion.div>
             </form>
-        </>
+        </motion.div>
     );
 }

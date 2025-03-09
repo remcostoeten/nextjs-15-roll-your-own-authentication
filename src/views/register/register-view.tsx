@@ -5,23 +5,23 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { SocialAuthButton } from "@/modules/authentication/components/social-auth-button";
 import { Divider } from "@/shared/components/ui/divider";
-import { AuthForm } from "@/modules/authentication/components/auth-form";
+import { RegisterForm } from "@/modules/authentication/components/register-form";
 import { GitHubIcon, DiscordIcon } from "@/modules/authentication/components/icons";
 
-export default function LoginView() {
+export default function RegisterView() {
     const router = useRouter();
 
-    const handleGitHubLogin = () => {
-        // Implement GitHub login
-        console.log("GitHub login");
+    const handleGitHubRegister = () => {
+        // Implement GitHub registration
+        console.log("GitHub registration");
     };
 
-    const handleDiscordLogin = () => {
-        console.log("Discord login");
+    const handleDiscordRegister = () => {
+        console.log("Discord registration");
     };
 
-    const handleSignUp = () => {
-        router.push("/register");
+    const handleSignIn = () => {
+        router.push("/login");
     };
 
     return (
@@ -34,23 +34,23 @@ export default function LoginView() {
                     className="flex flex-col mb-0 max-w-full w-[401px] max-md:mb-2.5"
                 >
                     <h1 className="self-start text-3xl font-medium text-white">
-                        Welcome back
+                        Create an account
                     </h1>
                     <p className="self-start mt-3 text-zinc-500">
-                        Sign in to your account to continue
+                        Fill in your details to get started
                     </p>
 
                     <div className="space-y-3 mt-8">
                         <SocialAuthButton
                             icon={<GitHubIcon className="w-4 h-4" />}
-                            onClick={handleGitHubLogin}
+                            onClick={handleGitHubRegister}
                         >
                             Continue with GitHub
                         </SocialAuthButton>
 
                         <SocialAuthButton
                             icon={<DiscordIcon className="w-6 h-4 text-red-400" />}
-                            onClick={handleDiscordLogin}
+                            onClick={handleDiscordRegister}
                         >
                             Continue with Discord
                         </SocialAuthButton>
@@ -58,21 +58,21 @@ export default function LoginView() {
 
                     <Divider text="or" />
 
-                    <AuthForm />
+                    <RegisterForm />
 
                     <div className="flex gap-1.5 self-center mt-8 max-w-full w-[210px]">
-                        <span className="text-stone-500">Don't have an account?</span>
+                        <span className="text-stone-500">Already have an account?</span>
                         <motion.button
                             className="text-offwhite underline"
-                            onClick={handleSignUp}
+                            onClick={handleSignIn}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                         >
-                            Sign up
+                            Sign in
                         </motion.button>
                     </div>
                 </motion.div>
             </section>
         </main>
     );
-}
+} 
