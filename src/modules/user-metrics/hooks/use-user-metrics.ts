@@ -4,6 +4,36 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '@/modules/authentication/hooks/use-auth'
 import { getUserMetrics, getUserActivities } from '../api/queries'
 
+type GeoLocation = {
+	city: string
+	country: string
+	region: string
+	timezone: string
+	ip: string
+}
+
+type DeviceInfo = {
+	browser: string
+	os: string
+	device: string
+	screenResolution: string
+}
+
+type PageView = {
+	path: string
+	title: string
+	referrer: string
+	timeSpent: number
+	timestamp: Date
+}
+
+type ErrorEvent = {
+	message: string
+	stack?: string
+	path: string
+	timestamp: Date
+}
+
 type ActivityLog = {
 	id: string
 	userId: string
@@ -11,6 +41,26 @@ type ActivityLog = {
 	details?: string | null
 	createdAt: Date
 	timestamp: string
+	location?: GeoLocation
+	device?: DeviceInfo
+	type: 'auth' | 'navigation' | 'error' | 'system'
+}
+
+type SessionMetrics = {
+	totalSessions: number
+	averageSessionDuration: number
+	lastSession: {
+		start: Date
+		end: Date
+		duration: number
+	}
+}
+
+type NavigationMetrics = {
+	mostVisitedPages: Array<{ path: string; count: number }>
+	averageTimeOnSite: number
+	bounceRate: number
+	exitPages: Array<{ path: string; count: number }>
 }
 
 type UserMetricsData = {
@@ -20,6 +70,12 @@ type UserMetricsData = {
 	activityLog: ActivityLog[]
 	isLoading: boolean
 	error: string | null
+	sessions: SessionMetrics
+	navigation: NavigationMetrics
+	currentLocation?: GeoLocation
+	device?: DeviceInfo
+	recentErrors: ErrorEvent[]
+	pageViews: PageView[]
 }
 
 /**
@@ -34,8 +90,96 @@ export function useUserMetrics(): UserMetricsData {
 		activityLog: [],
 		isLoading: true,
 		error: null,
+		sessions: {
+			totalSessions: 0,
+			averageSessionDuration: 0,
+			lastSession: {
+				start: new Date(),
+				end: new Date(),
+				duration: 0
+			}
+		},
+		navigation: {
+			mostVisitedPages: [],
+			averageTimeOnSite: 0,
+			bounceRate: 0,
+			exitPages: []
+		},
+		recentErrors: [],
+		pageViews: []
 	})
 
+	// Track page views
+	useEffect(() => {
+		if (!user || !isAuthenticated) return
+
+		const trackPageView = () => {
+			const path = window.location.pathname
+			const title = document.title
+			const referrer = document.referrer
+
+			setMetrics(prev => ({
+				...prev,
+				pageViews: [...prev.pageViews, {
+					path,
+					title,
+					referrer,
+					timeSpent: 0,
+					timestamp: new Date()
+				}]
+			}))
+		}
+
+		trackPageView()
+		window.addEventListener('popstate', trackPageView)
+
+		return () => window.removeEventListener('popstate', trackPageView)
+	}, [user, isAuthenticated])
+
+	// Track errors
+	useEffect(() => {
+		if (!user || !isAuthenticated) return
+
+		const handleError = (error: ErrorEvent) => {
+			setMetrics(prev => ({
+				...prev,
+				recentErrors: [...prev.recentErrors, {
+					message: error.message,
+					stack: error.error?.stack,
+					path: window.location.pathname,
+					timestamp: new Date()
+				}]
+			}))
+		}
+
+		window.addEventListener('error', handleError)
+
+		return () => window.removeEventListener('error', handleError)
+	}, [user, isAuthenticated])
+
+	// Get device info
+	useEffect(() => {
+		if (!user || !isAuthenticated) return
+
+		const getDeviceInfo = (): DeviceInfo => {
+			const ua = navigator.userAgent
+			const screenRes = `${window.screen.width}x${window.screen.height}`
+
+			return {
+				browser: getBrowserInfo(ua),
+				os: getOSInfo(ua),
+				device: getDeviceType(ua),
+				screenResolution: screenRes
+			}
+		}
+
+		setMetrics(prev => ({
+			...prev,
+			device: getDeviceInfo()
+		}))
+	}, [user, isAuthenticated])
+
+	// Fetch main metrics data
 	useEffect(() => {
 		if (!user || !isAuthenticated) {
 			setMetrics((prev) => ({ ...prev, isLoading: false }))
@@ -44,27 +188,34 @@ export function useUserMetrics(): UserMetricsData {
 
 		const fetchData = async () => {
 			try {
-				const metricsData = await getUserMetrics(user.id)
+				const [metricsData, activities, geoData] = await Promise.all([
+					getUserMetrics(user.id),
+					getUserActivities(user.id),
+					fetch('https://ipapi.co/json/').then(res => res.json())
+				])
 
-				const activities = await getUserActivities(user.id)
-
-				setMetrics({
+				setMetrics(prev => ({
+					...prev,
 					loginStreak: metricsData.loginStreak || 0,
 					accountAge: metricsData.accountAge,
 					lastLoginFormatted: metricsData.lastLoginFormatted,
 					activityLog: activities,
+					currentLocation: {
+						city: geoData.city,
+						country: geoData.country_name,
+						region: geoData.region,
+						timezone: geoData.timezone,
+						ip: geoData.ip
+					},
 					isLoading: false,
-					error: null,
-				})
+					error: null
+				}))
 			} catch (error) {
 				console.error('Error fetching user metrics:', error)
 				setMetrics((prev) => ({
 					...prev,
 					isLoading: false,
-					error:
-						error instanceof Error
-							? error.message
-							: 'Failed to fetch metrics',
+					error: error instanceof Error ? error.message : 'Failed to fetch metrics'
 				}))
 			}
 		}
@@ -73,4 +224,29 @@ export function useUserMetrics(): UserMetricsData {
 	}, [user, isAuthenticated])
 
 	return metrics
+}
+
+// Helper functions for device detection
+function getBrowserInfo(ua: string): string {
+	if (ua.includes('Firefox')) return 'Firefox'
+	if (ua.includes('Chrome')) return 'Chrome'
+	if (ua.includes('Safari')) return 'Safari'
+	if (ua.includes('Edge')) return 'Edge'
+	if (ua.includes('Opera')) return 'Opera'
+	return 'Unknown'
+}
+
+function getOSInfo(ua: string): string {
+	if (ua.includes('Windows')) return 'Windows'
+	if (ua.includes('Mac')) return 'MacOS'
+	if (ua.includes('Linux')) return 'Linux'
+	if (ua.includes('Android')) return 'Android'
+	if (ua.includes('iOS')) return 'iOS'
+	return 'Unknown'
+}
+
+function getDeviceType(ua: string): string {
+	if (ua.includes('Mobile')) return 'Mobile'
+	if (ua.includes('Tablet')) return 'Tablet'
+	return 'Desktop'
 }

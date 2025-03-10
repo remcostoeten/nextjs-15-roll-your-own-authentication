@@ -36,8 +36,8 @@ export default function RegisterView() {
                     <h1 className="self-start text-3xl font-medium text-white">
                         Create an account
                     </h1>
-                    <p className="self-start mt-3 text-zinc-500">
-                        Fill in your details to get started
+                    <p className="self-start mt-3 text-zinc-500 max-w-sm">
+                        Join our community and experience seamless authentication. Your data is secure, and you're in control.
                     </p>
 
                     <div className="space-y-3 mt-8">

@@ -174,17 +174,28 @@ export function AuthForm() {
                     className="flex justify-between items-center mt-2 mb-4"
                 >
                     <RememberMe />
-                    <CoreButton
-                        variant="link"
-                        size="sm"
-                        type="button"
-                    >
-                        Forgot password?
-                    </CoreButton>
                 </motion.div>
 
                 <motion.div variants={item}>
                     <SubmitButton />
+                </motion.div>
+
+                <motion.div
+                    variants={item}
+                    className="mt-4 text-center"
+                >
+                    <p className="text-neutral-400 text-sm">
+                        No account yet?{' '}
+                        <CoreButton
+                            variant="link"
+                            size="sm"
+                            type="button"
+                            href="/register"
+                            className="text-primary hover:text-primary/90 font-medium p-0 h-auto"
+                        >
+                            Create one
+                        </CoreButton>
+                    </p>
                 </motion.div>
             </form>
         </motion.div>

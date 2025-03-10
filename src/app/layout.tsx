@@ -1,5 +1,5 @@
 import '@/styles/styles.css'
-import { fontVariables, siteMetadata } from '@/core/config'
+import { fontVariables, siteMetadata } from '@/shared/config'
 import { ThemeProvider } from '@/components/theme/providers'
 
 export const metadata = siteMetadata

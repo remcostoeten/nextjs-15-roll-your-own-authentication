@@ -95,20 +95,7 @@ export function RegisterForm() {
             initial="hidden"
             animate="show"
         >
-            <motion.div variants={item}>
-                <motion.h1
-                    className="text-2xl font-bold text-white mb-2"
-                >
-                    Create an account
-                </motion.h1>
-                <motion.p
-                    className="text-neutral-400 text-sm"
-                >
-                    Fill in your details to get started
-                </motion.p>
-            </motion.div>
-
-            <form action={registerAction} className="flex flex-col w-full mt-8">
+            <form action={registerAction} className="flex flex-col w-full">
                 <motion.div variants={item}>
                     <div className="grid grid-cols-2 gap-4">
                         <div>

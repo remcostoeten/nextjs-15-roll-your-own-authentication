@@ -3,6 +3,9 @@
 # Previous git backup
 .bit
 
+# Database files
+database.db
+*.db
 
 # dependencies
 /node_modules
