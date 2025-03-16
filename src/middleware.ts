@@ -1,108 +1,74 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-import { jwtVerify } from 'jose'
-import { rateLimit, getRateLimit } from '@/server/lib/rate-limit'
-import { AUTH_COOKIE_NAME } from '@/server/mutations/auth/oauth/constants'
-import { env } from '@/env'
+import { NextRequest, NextResponse } from 'next/server'
 
-const secretKey = new TextEncoder().encode(env.JWT_SECRET)
-
+/**
+ * Next.js Middleware function
+ * This runs on every request and enforces authentication rules
+ */
 export async function middleware(request: NextRequest) {
-	const response = NextResponse.next()
+    // Check if the route is login or register - prevent authenticated access
+    const url = request.nextUrl.pathname
+    if (
+        ['/login', '/register', '/auth/login', '/auth/register'].includes(url)
+    ) {
+        // Check for access token
+        const accessToken = request.cookies.get('access_token')?.value
+        if (accessToken) {
+            // User is authenticated, redirect to dashboard
+            return NextResponse.redirect(new URL('/dashboard', request.url))
+        }
 
-	// Apply rate limiting to all API routes
-	if (request.nextUrl.pathname.startsWith('/api/')) {
-		const ip =
-			request.headers.get('x-forwarded-for') ||
-			request.nextUrl.searchParams.get('ip') ||
-			'anonymous'
+        // No access token, allow access to login/register
+        return NextResponse.next()
+    }
 
-		const routeLimit = await getRateLimit(request.nextUrl.pathname)
+    // Check if this is an admin route
+    if (url === '/admin' || url.startsWith('/admin/')) {
+        // Check for access token
+        const accessToken = request.cookies.get('access_token')?.value
+        if (!accessToken) {
+            // No access token, redirect to login
+            const loginUrl = new URL('/login', request.url)
+            loginUrl.searchParams.set('callbackUrl', encodeURI(url))
+            return NextResponse.redirect(loginUrl)
+        }
 
-		try {
-			const { remaining, reset } = await rateLimit(
-				`${ip}:${request.nextUrl.pathname}`,
-				routeLimit
-			)
+        // We'll let the server component handle the admin role check
+        // This avoids using Node.js modules in the Edge Runtime
+        return NextResponse.next()
+    }
 
-			// Set rate limit headers
-			response.headers.set(
-				'X-RateLimit-Limit',
-				routeLimit.maxRequests.toString()
-			)
-			response.headers.set('X-RateLimit-Remaining', remaining.toString())
-			response.headers.set('X-RateLimit-Reset', reset.toString())
-			response.headers.set(
-				'X-RateLimit-Policy',
-				`${routeLimit.maxRequests} requests per ${routeLimit.interval} seconds`
-			)
-		} catch (error) {
-			if (
-				error instanceof Error &&
-				'reset' in error &&
-				'remaining' in error
-			) {
-				return new NextResponse(
-					JSON.stringify({
-						error: 'Too Many Requests',
-						message: `Rate limit exceeded. Please try again later.`,
-						retryAfter: (error as { reset: number }).reset
-					}),
-					{
-						status: 429,
-						headers: {
-							'Content-Type': 'application/json',
-							'Retry-After': Math.ceil(
-								(error as { reset: number }).reset -
-									Date.now() / 1000
-							).toString()
-						}
-					}
-				)
-			}
+    // Check if this is a protected route
+    const protectedRoutes = ['/dashboard', '/profile', '/settings']
 
-			return new NextResponse(
-				JSON.stringify({ error: 'Internal Server Error' }),
-				{ status: 500 }
-			)
-		}
-	}
+    // Check if the current path starts with any of the protected routes
+    const isProtectedRoute = protectedRoutes.some(
+        (route) => url === route || url.startsWith(`${route}/`)
+    )
 
-	const token = request.cookies.get(AUTH_COOKIE_NAME)?.value
-	const isAuthPage =
-		request.nextUrl.pathname === '/login' ||
-		request.nextUrl.pathname === '/register'
+    if (!isProtectedRoute) {
+        return NextResponse.next() // Not a protected route, continue
+    }
 
-	// Protect dashboard routes
-	if (request.nextUrl.pathname.startsWith('/dashboard')) {
-		if (!token) {
-			return NextResponse.redirect(new URL('/login', request.url))
-		}
+    // Check for access token
+    const accessToken = request.cookies.get('access_token')?.value
+    if (!accessToken) {
+        // No access token, redirect to login
+        const loginUrl = new URL('/login', request.url)
+        loginUrl.searchParams.set('callbackUrl', encodeURI(url))
+        return NextResponse.redirect(loginUrl)
+    }
 
-		try {
-			const { payload } = await jwtVerify(token, secretKey)
-
-			if (
-				!payload ||
-				typeof payload !== 'object' ||
-				!('userId' in payload)
-			) {
-				throw new Error('Invalid token payload')
-			}
-		} catch (error) {
-			console.error('Auth middleware error:', error)
-			return NextResponse.redirect(new URL('/login', request.url))
-		}
-	}
-
-	// Redirect authenticated users away from auth pages
-	if (isAuthPage && token) {
-		return NextResponse.redirect(new URL('/dashboard', request.url))
-	}
-
-	return response
+    // We don't verify the token here to avoid importing Node.js modules
+    // If the token is invalid, the API routes will handle that
+    return NextResponse.next()
 }
 
+/**
+ * Configure which paths this middleware will run on
+ */
 export const config = {
-	matcher: ['/api/:path*', '/dashboard/:path*', '/login', '/register']
+    matcher: [
+        // Match login, register, dashboard, profile, settings, and admin paths
+        '/(login|register|dashboard|profile|settings|admin)(.*)',
+    ],
 }

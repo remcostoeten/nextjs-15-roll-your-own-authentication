@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1741812135499,
+      "tag": "0000_ambiguous_the_hand",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1741812841836,
+      "tag": "0001_swift_joystick",
+      "breakpoints": true
+    }
+  ]
+}

@@ -1,5 +1,12 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# Previous git backup
+.bit
+
+# Database files
+database.db
+*.db
+
 # dependencies
 /node_modules
 /.pnp
@@ -28,20 +35,17 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.pnpm-debug.log*
 
-# env files (can opt-in for commiting if needed)
+# env files (can opt-in for committing if needed)
 .env*
-.env*.local
 
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
+next-env.d.tsbuildinfo
 
-.cursorignore
-.cursorrules
+bun.lockb
 
-# Keep example
-!.env.example

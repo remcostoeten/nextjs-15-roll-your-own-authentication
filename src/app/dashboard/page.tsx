@@ -1,71 +1,93 @@
-'use client'
+import { Metadata } from 'next'
+import { db } from '@/server/db'
+import { users } from '@/server/db/schemas'
+import { auth } from '@/shared/auth'
+import { redirect } from 'next/navigation'
+import { LogoutButton } from '@/modules/authentication/components/logout-button'
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { useUser } from '@/contexts/user-context'
-import { toast } from 'sonner'
-import Image from 'next/image'
+export const metadata: Metadata = {
+	title: 'Dashboard | Raioa',
+	description: 'User dashboard for managing your account and data',
+}
 
-export default function Dashboard() {
-	const router = useRouter()
-	const { user, isLoading } = useUser()
+/**
+ * Dashboard page
+ * Follows the architecture by importing the view component
+ * This file should contain minimal logic, focusing on server component setup and metadata
+ */
+export default async function DashboardPage() {
+	const session = await auth()
+	if (!session?.user) {
+		redirect('/login?callbackUrl=/dashboard')
+	}
 
-	useEffect(() => {
-		if (!isLoading && !user) {
-			toast.error('Please log in to access the dashboard')
-			router.push('/login')
-		}
-	}, [user, isLoading, router])
+	const user = await db.query.users.findFirst({
+		where: (users, { eq }) => eq(users.id, session.user.id)
+	})
 
-	if (isLoading) {
+	if (!user) {
 		return (
-			<div className="flex items-center justify-center min-h-screen">
-				<div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-emerald-500"></div>
+			<div className="flex min-h-screen items-center justify-center">
+				<div className="text-center">
+					<h1 className="text-2xl font-bold text-red-600">Error</h1>
+					<p className="mt-2 text-gray-600">User data not found. Please try logging in again.</p>
+				</div>
 			</div>
 		)
 	}
 
-	if (!user) {
-		return null
-	}
+	const fields = [
+		{ label: 'ID', value: user.id },
+		{ label: 'Email', value: user.email },
+		{ label: 'First Name', value: user.firstName || 'Not set' },
+		{ label: 'Last Name', value: user.lastName || 'Not set' },
+		{ label: 'Role', value: user.role },
+		{ label: 'Location', value: user.location || 'Not set' },
+		{ label: 'Timezone', value: user.timezone || 'Not set' },
+		{ label: 'Last Login', value: user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Never' },
+		{ label: 'Login Streak', value: user.loginStreak || 0 },
+		{ label: 'Account Status', value: user.accountStatus || 'active' },
+		{ label: 'GitHub ID', value: user.githubId || 'Not connected' },
+		{ label: 'Created At', value: user.createdAt ? new Date(Number(user.createdAt)).toLocaleString() : 'Unknown' },
+		{ label: 'Updated At', value: user.updatedAt ? new Date(Number(user.updatedAt)).toLocaleString() : 'Unknown' },
+	]
 
 	return (
-		<div className="flex flex-col items-center justify-center min-h-screen text-foreground">
-			<div className="p-8 rounded-lg border border-border bg-card shadow-lg">
-				<h1 className="mb-6 text-2xl font-bold">
-					Welcome to your Dashboard
-				</h1>
-				<div className="space-y-4">
-					<div className="flex items-center gap-4">
-						{user.image ? (
-							<Image
-								width={64}
-								height={64}
-								src={user.image}
-								alt={user.name || ''}
-								className="w-16 h-16 rounded-full"
+		<div className="container mx-auto p-6">
+			<div className="mb-8 flex items-center justify-between">
+				<h1 className="text-3xl font-bold">Dashboard</h1>
+				<LogoutButton />
+			</div>
+
+			<div className="grid gap-6 md:grid-cols-[300px_1fr]">
+				{/* Profile Section */}
+				<div className="rounded-lg bg-white p-6 shadow dark:bg-gray-800">
+					<div className="text-center">
+						<div className="mb-4">
+							<img
+								src={user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`}
+								alt="Profile Avatar"
+								className="mx-auto h-32 w-32 rounded-full"
 							/>
-						) : (
-							<div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center">
-								<span className="text-xl font-semibold text-emerald-500">
-									{user.firstName?.[0]}
-									{user.lastName?.[0]}
-								</span>
-							</div>
-						)}
-						<div>
-							<h2 className="text-xl font-semibold">
-								{user.name}
-							</h2>
-							<p className="text-sm text-muted-foreground">
-								{user.email}
-							</p>
 						</div>
+						<h2 className="text-xl font-semibold">
+							{user.firstName} {user.lastName}
+						</h2>
+						<p className="text-sm text-gray-500">{user.email}</p>
+						<p className="mt-1 text-xs text-gray-500">Role: {user.role}</p>
 					</div>
-					<div className="pt-4 border-t border-border">
-						<p className="text-sm text-muted-foreground">
-							Signed in with {user.provider || 'Email/Password'}
-						</p>
+				</div>
+
+				{/* User Details Grid */}
+				<div className="rounded-lg bg-white p-6 shadow dark:bg-gray-800">
+					<h2 className="mb-4 text-xl font-semibold">User Details</h2>
+					<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+						{fields.map(({ label, value }) => (
+							<div key={label} className="rounded border p-4 dark:border-gray-700">
+								<div className="text-sm text-gray-500 dark:text-gray-400">{label}</div>
+								<div className="mt-1 font-medium">{value}</div>
+							</div>
+						))}
 					</div>
 				</div>
 			</div>

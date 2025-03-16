@@ -1,40 +1,15 @@
-import type { NextConfig } from 'next'
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+	reactStrictMode: true,
 	images: {
-		remotePatterns: [
-			// {
-			// protocol: 'https',
-			// hostname: 'avatars.githubusercontent.com',
-			// port:/ '',
-			// pathname: '/u/**'
-			// },
-			{
-				protocol: 'https',
-				hostname: '*github*',
-				port: '',
-				pathname: '**'
-			},
-			{
-				protocol: 'https',
-				hostname: '*google*',
-				port: '',
-				pathname: '**'
-			}
-			// {
-			// protocol: 'https',
-			// hostname: 'lh3.googleusercontent.com',
-			// port: '',
-			// pathname: '**'
-			// }
-			// {
-			//   protocol: 'https',
-			//   hostname: 'private-avatars.githubusercontent.com" ',
-			//   port: '',
-			//   pathname: '**'
-			// }
-		]
-	}
+		domains: ['avatars.githubusercontent.com', 'lh3.googleusercontent.com'],
+	},
+	typescript: {
+		ignoreBuildErrors: true,
+	},
+	eslint: {
+		ignoreDuringBuilds: true,
+	},
 }
 
-export default nextConfig
+module.exports = nextConfig

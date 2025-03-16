@@ -1,28 +1,48 @@
-'use client'
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from 'helpers';
 
-import { cn } from 'helpers'
+const spinnerVariants = cva(
+    "relative inline-block",
+    {
+        variants: {
+            size: {
+                sm: "w-3 h-3",
+                md: "w-4 h-4",
+                lg: "w-5 h-5",
+                xl: "w-6 h-6",
+            },
+            color: {
+                white: "[--spinner-color:255,255,255]",
+                black: "[--spinner-color:0,0,0]",
+                primary: "[--spinner-color:var(--primary)]",
+                secondary: "[--spinner-color:var(--secondary)]",
+            }
+        },
+        defaultVariants: {
+            size: "md",
+            color: "white"
+        }
+    }
+);
 
-type SpinnerProps = {
-	size?: 'sm' | 'md' | 'lg'
-	className?: string
-}
+export type TProps = VariantProps<typeof spinnerVariants> & {
+    className?: string;
+};
 
-export default function Spinner({ size = 'md', className }: SpinnerProps) {
-	return (
-		<div
-			className={cn(
-				'inline-block animate-spin rounded-full border-2 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]',
-				{
-					'h-4 w-4': size === 'sm',
-					'h-6 w-6': size === 'md',
-					'h-8 w-8': size === 'lg'
-				},
-				'text-primary/60',
-				className
-			)}
-			role="status"
-		>
-			<span className="sr-only">Loading...</span>
-		</div>
-	)
+export function Spinner({ size, color, className }: TProps) {
+    return (
+        <div className={cn(spinnerVariants({ size, color }), className)}>
+            {Array.from({ length: 12 }).map((_, i) => (
+                <div
+                    key={i}
+                    className="absolute top-[37%] left-[44%] w-0.5 h-1.5 bg-[rgb(var(--spinner-color))] rounded-sm will-change-opacity"
+                    style={{
+                        transform: `rotate(${i * 30}deg) translateY(-130%)`,
+                        animation: `spinner-blade 1s linear infinite`,
+                        animationDelay: `${-1.667 + i * 0.083}s`
+                    }}
+                />
+            ))}
+        </div>
+    );
 }
