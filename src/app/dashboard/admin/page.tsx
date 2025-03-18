@@ -7,7 +7,7 @@ import { AdminBanner } from '@/views/admin';
 import { UserTable } from '@/views/admin/user-table';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { verifyAccessToken } from '@/shared/utils/jwt';
+import { verifyAccessToken } from '@/shared/utils/jwt/jwt';
 import { eq } from 'drizzle-orm';
 import { users } from '@/server/db/schemas';
 

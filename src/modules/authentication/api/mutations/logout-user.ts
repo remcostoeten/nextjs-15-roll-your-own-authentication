@@ -1,6 +1,6 @@
 import { db } from '@/server/db'
 import { sessions } from '@/server/db/schemas'
-import { verifyRefreshToken } from '@/shared/utils/jwt'
+import { verifyRefreshToken } from '@/shared/utils/jwt/jwt'
 import { eq } from 'drizzle-orm'
 
 export async function logoutUser(refreshToken?: string) {

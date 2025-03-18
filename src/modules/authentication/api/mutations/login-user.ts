@@ -2,10 +2,11 @@ import { db } from '@/server/db'
 import { users, sessions } from '@/server/db/schemas'
 import { userLoginSchema } from '@/modules/authentication/models'
 import { verifyPassword } from '@/shared/utils/password'
-import { generateTokens } from '@/shared/utils/jwt'
+import { generateTokens } from '@/shared/utils/jwt/jwt'
 import { eq } from 'drizzle-orm'
 import { updateLoginMetrics } from '@/modules/user-metrics/api'
 import { logUserActivity } from '@/shared/utils/activity-logger'
+import bcrypt from 'bcrypt'
 
 export async function loginUser(
 	credentials: unknown,
@@ -44,6 +45,12 @@ export async function loginUser(
 		console.log('[loginUser] User found:', user.id)
 		userId = user.id
 
+		if (!user.passwordHash) {
+			loginFailed = true;
+			failureReason = 'invalid_password';
+			throw new Error('Invalid email or password');
+		}
+
 		// Verify password
 		const isPasswordValid = await verifyPassword(
 			validatedData.password,
@@ -63,6 +70,7 @@ export async function loginUser(
 		const tokens = await generateTokens({
 			sub: user.id,
 			email: user.email,
+			role: typeof user.role === 'string' ? user.role : 'user',
 		})
 		console.log('[loginUser] Tokens generated')
 
@@ -149,4 +157,3 @@ export async function loginUser(
 
 		throw error
 	}
-}

@@ -172,22 +172,15 @@ const FloatingTodo: React.FC = () => {
 
 	useEffect(() => {
 		if (isDragging || isResizing) {
-			window.addEventListener('mousemove', handleMouseMove)
-			window.addEventListener('mouseup', handleMouseUp)
+			document.addEventListener('mousemove', handleMouseMove)
+			document.addEventListener('mouseup', handleMouseUp)
 		}
 
 		return () => {
-			window.removeEventListener('mousemove', handleMouseMove)
-			window.removeEventListener('mouseup', handleMouseUp)
+			document.removeEventListener('mousemove', handleMouseMove)
+			document.removeEventListener('mouseup', handleMouseUp)
 		}
-	}, [
-		isDragging,
-		isResizing,
-		resizeDirection,
-		dragOffset,
-		resizeStartPos,
-		resizeStartSize,
-	])
+	}, [handleMouseMove])
 
 	const handleAddTodo = (e: React.FormEvent) => {
 		e.preventDefault()
@@ -581,11 +574,10 @@ const FloatingTodo: React.FC = () => {
 							<button
 								type="submit"
 								disabled={!newTodoTitle.trim()}
-								className={`flex-shrink-0 p-1.5 rounded-md btn-hover ${
-									newTodoTitle.trim()
+								className={`flex-shrink-0 p-1.5 rounded-md btn-hover ${newTodoTitle.trim()
 										? 'bg-blue-600 hover:bg-blue-700'
 										: 'bg-gray-800 text-gray-500'
-								} transition-colors`}
+									} transition-colors`}
 							>
 								<Plus
 									size={16}
@@ -609,9 +601,8 @@ const FloatingTodo: React.FC = () => {
 								{todos.map((todo, index) => (
 									<li
 										key={todo.id}
-										className={`border-b border-gray-800 last:border-b-0 p-2 todo-item ${
-											todo.completed ? 'bg-gray-900' : ''
-										}`}
+										className={`border-b border-gray-800 last:border-b-0 p-2 todo-item ${todo.completed ? 'bg-gray-900' : ''
+											}`}
 										style={{
 											animationDelay: `${index * 0.05}s`,
 										}}
@@ -681,11 +672,10 @@ const FloatingTodo: React.FC = () => {
 												<div className="flex-grow min-w-0">
 													<div className="flex items-start justify-between gap-2">
 														<span
-															className={`text-sm line-clamp-2 ${
-																todo.completed
+															className={`text-sm line-clamp-2 ${todo.completed
 																	? 'text-gray-500 line-through'
 																	: 'text-white'
-															}`}
+																}`}
 														>
 															{todo.title}
 														</span>
@@ -693,19 +683,18 @@ const FloatingTodo: React.FC = () => {
 														<div className="flex items-center gap-1 mt-0.5 flex-shrink-0">
 															{todo.richContent &&
 																todo.richContent !==
-																	'<p></p>' && (
+																'<p></p>' && (
 																	<button
 																		onClick={() =>
 																			toggleNotes(
 																				todo.id
 																			)
 																		}
-																		className={`p-1 rounded action-icon ${
-																			showNotes ===
-																			todo.id
+																		className={`p-1 rounded action-icon ${showNotes ===
+																				todo.id
 																				? 'text-blue-500 bg-gray-800'
 																				: 'text-gray-400 hover:text-white hover:bg-gray-800'
-																		} transition-colors`}
+																			} transition-colors`}
 																	>
 																		<MessageSquare
 																			size={
@@ -749,7 +738,7 @@ const FloatingTodo: React.FC = () => {
 													{showNotes === todo.id &&
 														todo.richContent &&
 														todo.richContent !==
-															'<p></p>' && (
+														'<p></p>' && (
 															<div className="mt-2 px-3 py-2.5 text-gray-300 bg-gray-800/90 border border-gray-700 rounded-md animate-fade-in rich-content">
 																<div
 																	className="prose prose-sm prose-invert max-w-none"

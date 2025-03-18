@@ -28,7 +28,22 @@ const nextConfig = {
             )
         }
 
+        // Improve module resolution
+        config.resolve.modules = [
+            ...config.resolve.modules || [],
+            'src',
+            'node_modules',
+        ]
+
+        config.resolve.alias = {
+            ...config.resolve.alias,
+            '@': require('path').resolve(__dirname, './src'),
+        }
+
         return config
+    },
+    experimental: {
+        esmExternals: 'loose',
     },
 }
 

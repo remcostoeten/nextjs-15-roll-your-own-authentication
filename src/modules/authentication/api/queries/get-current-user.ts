@@ -2,7 +2,7 @@
 
 import { db } from '@/server/db'
 import { users } from '@/server/db/schemas'
-import { verifyAccessToken } from '@/shared/utils/jwt'
+import { verifyAccessToken } from '@/shared/utils/jwt/jwt'
 import { eq } from 'drizzle-orm'
 import { cookies } from 'next/headers'
 

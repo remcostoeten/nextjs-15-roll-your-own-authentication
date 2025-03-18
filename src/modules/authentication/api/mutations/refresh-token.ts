@@ -1,6 +1,6 @@
 import { db } from '@/server/db'
 import { users, sessions } from '@/server/db/schemas'
-import { verifyRefreshToken, generateTokens } from '@/shared/utils/jwt'
+import { verifyRefreshToken, generateTokens } from '@/shared/utils/jwt/jwt'
 import { eq } from 'drizzle-orm'
 
 export async function refreshToken(

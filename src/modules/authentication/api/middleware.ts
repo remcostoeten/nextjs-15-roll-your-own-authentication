@@ -66,86 +66,69 @@ export async function preventAuthenticatedAccess(
 /**
  * Higher-order function to protect API routes with authentication
  * @param request The Next.js request object
- * @param handler The handler function to execute if authentication is successful
  * @returns The response from the handler or an unauthorized response
  */
-export async function withAuth(
-  request: NextRequest,
-  handler: () => Promise<NextResponse>
-): Promise<NextResponse> {
+export async function withAuth(request: NextRequest) {
+  const token = request.cookies.get('accessToken')?.value;
+
+  if (!token) {
+    return new Response(JSON.stringify({ message: 'No token provided' }), {
+      status: 401,
+    });
+  }
+
   try {
-    // Check for access token
-    const accessToken = request.cookies.get('access_token')?.value
-
-    if (!accessToken) {
-      return NextResponse.json(
-        { error: 'Unauthorized - No access token' },
-        { status: 401 }
-      )
-    }
-
-    try {
-      // Verify access token
-      const payload = await verifyAccessToken(accessToken)
-
-      // Token is valid, proceed with the handler
-      return await handler()
-    } catch (error) {
-      // Access token is invalid or expired
-      return NextResponse.json(
-        { error: 'Unauthorized - Invalid or expired token' },
-        { status: 401 }
-      )
-    }
-  } catch (error) {
-    console.error('Authentication middleware error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error during authentication' },
-      { status: 500 }
-    )
+    await verifyAccessToken(token);
+    return null;
+  } catch {
+    return new Response(JSON.stringify({ message: 'Invalid token' }), {
+      status: 401,
+    });
   }
 }
 
 /**
  * Middleware to protect admin routes
  */
-export async function requireAdminRole(
-  request: NextRequest,
-  handler: () => Promise<NextResponse>
-): Promise<NextResponse> {
+export async function requireAdminRole(request: NextRequest) {
+  const token = request.cookies.get('accessToken')?.value;
+
+  if (!token) {
+    return new Response(JSON.stringify({ message: 'No token provided' }), {
+      status: 401,
+    });
+  }
+
   try {
-    // Check for access token
-    const accessToken = request.cookies.get('access_token')?.value
-
-    if (!accessToken) {
-      return NextResponse.json(
-        { error: 'Unauthorized - No access token' },
-        { status: 401 }
-      )
+    const payload = await verifyAccessToken(token);
+    if (payload.role !== 'admin') {
+      return new Response(JSON.stringify({ message: 'Unauthorized' }), {
+        status: 403,
+      });
     }
+    return null;
+  } catch {
+    return new Response(JSON.stringify({ message: 'Invalid token' }), {
+      status: 401,
+    });
+  }
+}
 
-    // Verify access token
-    const payload = await verifyAccessToken(accessToken)
+export async function withRefreshToken(request: NextRequest) {
+  const token = request.cookies.get('refreshToken')?.value;
 
-    // Check if user has admin role
-    const user = await db.query.users.findFirst({
-      where: eq(users.id, payload.sub),
-    })
+  if (!token) {
+    return new Response(JSON.stringify({ message: 'No refresh token provided' }), {
+      status: 401,
+    });
+  }
 
-    if (user?.role !== 'admin') {
-      return NextResponse.json(
-        { error: 'Forbidden - Admins only' },
-        { status: 403 }
-      )
-    }
-
-    // User is admin, proceed with the handler
-    return await handler()
-  } catch (error) {
-    console.error('Admin role middleware error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error during admin check' },
-      { status: 500 }
-    )
+  try {
+    await verifyRefreshToken(token);
+    return null;
+  } catch {
+    return new Response(JSON.stringify({ message: 'Invalid refresh token' }), {
+      status: 401,
+    });
   }
 }

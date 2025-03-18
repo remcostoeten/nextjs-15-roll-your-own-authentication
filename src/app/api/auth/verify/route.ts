@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { verifyAccessToken } from '@/shared/utils/jwt'
+import { verifyAccessToken } from '@/shared/utils/jwt/jwt'
 
 /**
  * API route to verify the current token

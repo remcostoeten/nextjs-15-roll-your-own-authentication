@@ -1,8 +1,8 @@
 import React from 'react'
-import { useEditor, EditorContent } from '@tiptap/react'
+import { useEditor, EditorContent, Editor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
-import { Bold, Italic, List, ListOrdered, Link } from 'lucide-react'
+import { Bold, Italic, List, ListOrdered } from 'lucide-react'
 import { Resizable } from '@/shared/components/ui/resizable'
 
 interface RichTextEditorProps {
@@ -12,7 +12,7 @@ interface RichTextEditorProps {
 }
 
 interface MenuBarProps {
-	editor: any | null // Using any temporarily until we resolve the type issues
+	editor: Editor | null
 }
 
 const MenuBar = ({ editor }: MenuBarProps) => {

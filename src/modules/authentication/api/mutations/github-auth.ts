@@ -4,7 +4,7 @@ import { cookies } from 'next/headers'
 import { db } from '@/server/db'
 import { users } from '@/server/db/schemas'
 import { eq } from 'drizzle-orm'
-import { generateTokens } from '@/shared/utils/jwt'
+import { generateTokens } from '@/shared/utils/jwt/jwt'
 import { env } from 'env'
 import { nanoid } from 'nanoid'
 
