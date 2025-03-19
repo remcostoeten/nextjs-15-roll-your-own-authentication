@@ -74,4 +74,4 @@ When adding new tools or enhancing existing ones:
 1. Keep tools focused on specific tasks
 2. Maintain backward compatibility
 3. Update documentation and package.json scripts
-4. Add special cases to `fix-barrel.js` as needed 
+4. Add special cases to `fix-barrel.js` as needed

@@ -1,2 +1,2 @@
-export { Spinner } from './spinner';
-export { TProps } from './spinner';
+export { Spinner } from './spinner'
+export { TProps } from './spinner'

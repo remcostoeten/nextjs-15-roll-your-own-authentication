@@ -1,48 +1,48 @@
 /* Tailwind colors won't work properly currently so I define some custom colors here */
 
 :root {
-    --offwhite: #f5f4f4;
-    --title-light: #f5f4f4;
-    /* Used for titles and light text */
-    --offblack: #08080b;
-    --bg: #111112;
-    /* Used for main background of popover,tooltips etc*/
-    --background-lighter: #19191b;
-    /* Used for panels/cards etc. */
-    --button: #19191b;
-    /* Used for buttons */
-    --text-button: #8d877c;
-    --button-border: #4e4b47;
+	--offwhite: #f5f4f4;
+	--title-light: #f5f4f4;
+	/* Used for titles and light text */
+	--offblack: #08080b;
+	--bg: #111112;
+	/* Used for main background of popover,tooltips etc*/
+	--background-lighter: #19191b;
+	/* Used for panels/cards etc. */
+	--button: #19191b;
+	/* Used for buttons */
+	--text-button: #8d877c;
+	--button-border: #4e4b47;
 }
 
 .bg-offwhite {
-    background-color: var(--offwhite);
+	background-color: var(--offwhite);
 }
 
 .text-title-light {
-    color: var(--title-light);
+	color: var(--title-light);
 }
 
 .bg-offblack {
-    background-color: var(--offblack);
+	background-color: var(--offblack);
 }
 
 .text-offblack {
-    color: var(--offblack);
+	color: var(--offblack);
 }
 
 .bg-background-lighter {
-    background-color: var(--background-lighter);
+	background-color: var(--background-lighter);
 }
 
 .bg-bg {
-    background-color: var(--bg);
+	background-color: var(--bg);
 }
 
 .bg-button {
-    background-color: var(--button);
+	background-color: var(--button);
 }
 
 .text-button {
-    color: var(--text-button);
+	color: var(--text-button);
 }

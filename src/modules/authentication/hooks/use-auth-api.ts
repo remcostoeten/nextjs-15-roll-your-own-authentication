@@ -2,7 +2,10 @@
 
 import { logoutMutation } from '../api/mutations/logout'
 import { type User } from '@/modules/authentication/models/z.user'
-import { registerMutation, type RegisterFormState } from '../api/mutations/register'
+import {
+	registerMutation,
+	type RegisterFormState,
+} from '../api/mutations/register'
 
 type RegisterResponse = RegisterFormState
 
@@ -72,7 +75,7 @@ export const useAuthApi = () => {
 				email: userData.email.trim().toLowerCase(),
 				firstName: userData.firstName.trim(),
 				lastName: userData.lastName.trim(),
-				password: userData.password.trim()
+				password: userData.password.trim(),
 			}
 
 			// Call the server action with cleaned data

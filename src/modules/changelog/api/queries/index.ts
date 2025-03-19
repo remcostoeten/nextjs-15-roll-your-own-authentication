@@ -1,1 +1,1 @@
-export * from './get-changelog-items' 
+export * from './get-changelog-items'

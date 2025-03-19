@@ -1,1 +1,1 @@
-export * from './vote-changelog-item' 
+export * from './vote-changelog-item'

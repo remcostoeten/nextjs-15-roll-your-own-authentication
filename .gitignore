@@ -1,12 +1,5 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Previous git backup
-.bit
-
-# Database files
-database.db
-*.db
-
 # dependencies
 /node_modules
 /.pnp
@@ -38,7 +31,8 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
-.env*
+.env
+.env.local
 
 # vercel
 .vercel
@@ -48,3 +42,5 @@ yarn-error.log*
 next-env.d.tsbuildinfo
 
 bun.lockb
+database.db
+*.db

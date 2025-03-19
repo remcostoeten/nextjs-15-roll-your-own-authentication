@@ -9,11 +9,11 @@ This document outlines the dark-themed authentication components used across the
 
 ## Design Principles
 
--   **Minimal and Clean**: Simple, focused UI with excellent typography and spacing
--   **Dark Background**: Deep, dark backgrounds with contrasting text and elements
--   **Blue Accents**: Primary blue color (#2E71E5) for buttons and interactive elements
--   **Subtle Depth**: Subtle shadows and borders to create depth without being distracting
--   **Responsive**: Components adapt seamlessly to mobile and desktop views
+- **Minimal and Clean**: Simple, focused UI with excellent typography and spacing
+- **Dark Background**: Deep, dark backgrounds with contrasting text and elements
+- **Blue Accents**: Primary blue color (#2E71E5) for buttons and interactive elements
+- **Subtle Depth**: Subtle shadows and borders to create depth without being distracting
+- **Responsive**: Components adapt seamlessly to mobile and desktop views
 
 ## Components
 
@@ -218,5 +218,5 @@ Success messages use a blue-tinted background with a border.
 
 See the following pages for implementation examples:
 
--   Login page: `src/app/(auth)/login/page.tsx`
--   Register page: `src/app/(auth)/register/page.tsx`
+- Login page: `src/app/(auth)/login/page.tsx`
+- Register page: `src/app/(auth)/register/page.tsx`

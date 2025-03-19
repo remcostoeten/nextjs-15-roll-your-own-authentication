@@ -56,8 +56,8 @@ The system uses environment variables for configuration. You can set them using:
 
 ### 📁 SQLite
 
--   **Connection String**: `file:./data/raioa.db`
--   **Docker**: A volume is created to persist data
+- **Connection String**: `file:./data/raioa.db`
+- **Docker**: A volume is created to persist data
 
 ## 🧰 Development Tools
 
@@ -115,12 +115,12 @@ npm run tool:menu
 
 This project follows a modular architecture:
 
--   `src/shared`: Shared logic, components, hooks, and utilities
--   `src/components`: Singular-use components
--   `src/app`: Page rendering and routing
--   `src/views`: UI composition for specific pages
--   `src/modules`: Feature-specific code organized by feature name
--   `src/server`: Server-side code including database access
+- `src/shared`: Shared logic, components, hooks, and utilities
+- `src/components`: Singular-use components
+- `src/app`: Page rendering and routing
+- `src/views`: UI composition for specific pages
+- `src/modules`: Feature-specific code organized by feature name
+- `src/server`: Server-side code including database access
 
 ## 🔧 Development Environment
 
@@ -154,8 +154,8 @@ pnpm dev
 
 To learn more about Next.js, take a look at the following resources:
 
--   [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
--   [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 ## 📄 License
 

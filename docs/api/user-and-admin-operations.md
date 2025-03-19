@@ -10,6 +10,7 @@ This guide covers all user-related operations, admin functionalities, and role-b
 ## Current User Operations
 
 ### Get Current User (Me)
+
 ```typescript
 // Server-side
 import { getCurrentUser } from '@/modules/authentication/api/queries/get-current-user'
@@ -24,10 +25,10 @@ import { useAuth } from '@/modules/authentication/hooks/use-auth'
 
 function MyComponent() {
     const { user, isLoading } = useAuth()
-    
+
     if (isLoading) return <Loading />
     if (!user) return <NotLoggedIn />
-    
+
     return <div>Welcome {user.email}</div>
 }
 ```
@@ -35,6 +36,7 @@ function MyComponent() {
 ## Admin Operations
 
 ### Query All Users (Admin Only)
+
 ```typescript
 'use server'
 
@@ -43,21 +45,22 @@ import { users } from '@/server/db/schemas'
 import { desc } from 'drizzle-orm'
 
 export async function getAllUsers() {
-    return db.query.users.findMany({
-        orderBy: desc(users.createdAt),
-        columns: {
-            id: true,
-            email: true,
-            firstName: true,
-            lastName: true,
-            role: true,
-            createdAt: true,
-        }
-    })
+	return db.query.users.findMany({
+		orderBy: desc(users.createdAt),
+		columns: {
+			id: true,
+			email: true,
+			firstName: true,
+			lastName: true,
+			role: true,
+			createdAt: true,
+		},
+	})
 }
 ```
 
 ### Query Users with Pagination
+
 ```typescript
 'use server'
 
@@ -65,51 +68,52 @@ import { db } from '@/server/db'
 import { users } from '@/server/db/schemas'
 
 type PaginationParams = {
-    page: number
-    limit: number
-    orderBy?: string
-    order?: 'asc' | 'desc'
+	page: number
+	limit: number
+	orderBy?: string
+	order?: 'asc' | 'desc'
 }
 
-export async function getPaginatedUsers({ 
-    page = 1, 
-    limit = 10,
-    orderBy = 'createdAt',
-    order = 'desc'
+export async function getPaginatedUsers({
+	page = 1,
+	limit = 10,
+	orderBy = 'createdAt',
+	order = 'desc',
 }: PaginationParams) {
-    const offset = (page - 1) * limit
-    
-    const [totalCount] = await db
-        .select({ count: sql<number>`count(*)` })
-        .from(users)
-    
-    const results = await db.query.users.findMany({
-        limit,
-        offset,
-        orderBy: order === 'desc' ? desc(users[orderBy]) : asc(users[orderBy]),
-        columns: {
-            id: true,
-            email: true,
-            firstName: true,
-            lastName: true,
-            role: true,
-            createdAt: true,
-        }
-    })
-    
-    return {
-        users: results,
-        pagination: {
-            total: totalCount.count,
-            pages: Math.ceil(totalCount.count / limit),
-            current: page,
-            limit
-        }
-    }
+	const offset = (page - 1) * limit
+
+	const [totalCount] = await db
+		.select({ count: sql<number>`count(*)` })
+		.from(users)
+
+	const results = await db.query.users.findMany({
+		limit,
+		offset,
+		orderBy: order === 'desc' ? desc(users[orderBy]) : asc(users[orderBy]),
+		columns: {
+			id: true,
+			email: true,
+			firstName: true,
+			lastName: true,
+			role: true,
+			createdAt: true,
+		},
+	})
+
+	return {
+		users: results,
+		pagination: {
+			total: totalCount.count,
+			pages: Math.ceil(totalCount.count / limit),
+			current: page,
+			limit,
+		},
+	}
 }
 ```
 
 ### Search Users by Email or Name
+
 ```typescript
 'use server'
 
@@ -118,27 +122,28 @@ import { users } from '@/server/db/schemas'
 import { like, or } from 'drizzle-orm'
 
 export async function searchUsers(query: string) {
-    const searchTerm = `%${query.toLowerCase()}%`
-    
-    return db.query.users.findMany({
-        where: or(
-            like(sql`lower(${users.email})`, searchTerm),
-            like(sql`lower(${users.firstName})`, searchTerm),
-            like(sql`lower(${users.lastName})`, searchTerm)
-        ),
-        columns: {
-            id: true,
-            email: true,
-            firstName: true,
-            lastName: true,
-            role: true,
-            createdAt: true,
-        }
-    })
+	const searchTerm = `%${query.toLowerCase()}%`
+
+	return db.query.users.findMany({
+		where: or(
+			like(sql`lower(${users.email})`, searchTerm),
+			like(sql`lower(${users.firstName})`, searchTerm),
+			like(sql`lower(${users.lastName})`, searchTerm)
+		),
+		columns: {
+			id: true,
+			email: true,
+			firstName: true,
+			lastName: true,
+			role: true,
+			createdAt: true,
+		},
+	})
 }
 ```
 
 ### Query All Admins
+
 ```typescript
 'use server'
 
@@ -147,29 +152,30 @@ import { users } from '@/server/db/schemas'
 import { eq } from 'drizzle-orm'
 
 export async function getAllAdmins() {
-    return db.query.users.findMany({
-        where: eq(users.role, 'admin'),
-        columns: {
-            id: true,
-            email: true,
-            firstName: true,
-            lastName: true,
-            createdAt: true,
-        }
-    })
+	return db.query.users.findMany({
+		where: eq(users.role, 'admin'),
+		columns: {
+			id: true,
+			email: true,
+			firstName: true,
+			lastName: true,
+			createdAt: true,
+		},
+	})
 }
 ```
 
 ## Role-Based Access Control
 
 ### Check if Current User is Admin
+
 ```typescript
 // Using hooks (client-side)
 import { usePermissions } from '@/modules/authentication/hooks/use-permissions'
 
 function AdminComponent() {
     const { isAdmin } = usePermissions()
-    
+
     if (!isAdmin) return null
     return <div>Admin Content</div>
 }
@@ -177,7 +183,7 @@ function AdminComponent() {
 // Or using the can() method
 function AdminComponent() {
     const { can } = usePermissions()
-    
+
     if (!can('access_admin')) return null
     return <div>Admin Content</div>
 }
@@ -195,6 +201,7 @@ async function adminServerAction() {
 ```
 
 ### Admin-Only Components
+
 ```typescript
 // Create an AdminGuard component
 import { usePermissions } from '@/modules/authentication/hooks/use-permissions'
@@ -207,7 +214,7 @@ type AdminGuardProps = {
 
 export function AdminGuard({ children, fallback = null }: AdminGuardProps) {
     const { isAdmin } = usePermissions()
-    
+
     if (!isAdmin) return fallback
     return <>{children}</>
 }
@@ -223,6 +230,7 @@ function AdminDashboard() {
 ```
 
 ### Handle Unauthorized Access
+
 ```typescript
 // Route protection (middleware)
 import { NextResponse } from 'next/server'
@@ -230,11 +238,11 @@ import { getCurrentUser } from '@/modules/authentication/api/queries/get-current
 
 export async function adminMiddleware(request: NextRequest) {
     const { user } = await getCurrentUser()
-    
+
     if (!user || user.role !== 'admin') {
         // Option 1: Redirect to home
         return NextResponse.redirect(new URL('/', request.url))
-        
+
         // Option 2: Return error response
         return NextResponse.json(
             { error: 'Unauthorized - Admin access required' },
@@ -252,7 +260,7 @@ import { toast } from 'sonner'
 function AdminPage() {
     const router = useRouter()
     const { isAdmin } = usePermissions()
-    
+
     useEffect(() => {
         if (!isAdmin) {
             toast.error('Access Denied', {
@@ -261,13 +269,14 @@ function AdminPage() {
             router.push('/')
         }
     }, [isAdmin, router])
-    
+
     if (!isAdmin) return null
     return <div>Admin Content</div>
 }
 ```
 
 ### Promote User to Admin
+
 ```typescript
 'use server'
 
@@ -283,14 +292,14 @@ export async function promoteToAdmin(userId: string) {
     if (!currentUser || currentUser.role !== 'admin') {
         throw new Error('Unauthorized - Only admins can promote users')
     }
-    
+
     // Update user role
     const [updatedUser] = await db
         .update(users)
         .set({ role: 'admin' })
         .where(eq(users.id, userId))
         .returning()
-    
+
     // Log the action
     await logUserActivity({
         userId: currentUser.id,
@@ -300,14 +309,14 @@ export async function promoteToAdmin(userId: string) {
             timestamp: new Date().toISOString()
         }
     })
-    
+
     return updatedUser
 }
 
 // Client-side usage in data table
 function UserDataTable() {
     const { data: users, mutate } = useSWR('/api/users', fetcher)
-    
+
     const handlePromoteToAdmin = async (userId: string) => {
         try {
             await promoteToAdmin(userId)
@@ -319,7 +328,7 @@ function UserDataTable() {
             })
         }
     }
-    
+
     return (
         <DataTable
             columns={[
@@ -358,4 +367,4 @@ function UserDataTable() {
 
 7. **Performance**: Use pagination for large datasets and implement proper loading states.
 
-8. **Type Safety**: Leverage TypeScript to ensure type safety across all operations. 
+8. **Type Safety**: Leverage TypeScript to ensure type safety across all operations.

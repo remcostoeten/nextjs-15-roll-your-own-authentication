@@ -1,1 +1,1 @@
-export * from './vote-roadmap-item' 
+export * from './vote-roadmap-item'

@@ -18,13 +18,14 @@ To add a new special case to the fix-barrel tool:
 
 ```javascript
 const KNOWN_FIXES = {
-  'src/shared/components/json-viewer': { 'JsonViewer': 'JSONViewer' },
-  // Add your new special case here
-  'path/to/component': { 'wrongName': 'correctName' }
-};
+	'src/shared/components/json-viewer': { JsonViewer: 'JSONViewer' },
+	// Add your new special case here
+	'path/to/component': { wrongName: 'correctName' },
+}
 ```
 
 The fix-barrel tool is particularly useful when:
+
 - You have components with uppercase acronyms (e.g., `JSONViewer`, `APIClient`)
 - Components with special naming conventions
-- Components that don't follow the standard export pattern 
+- Components that don't follow the standard export pattern

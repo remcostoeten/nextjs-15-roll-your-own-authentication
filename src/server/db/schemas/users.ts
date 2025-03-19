@@ -9,7 +9,9 @@ export const users = sqliteTable('users', {
 	passwordHash: text('password_hash').notNull(),
 	firstName: text('first_name'),
 	lastName: text('last_name'),
-	role: text('role', { enum: ['admin', 'user'] }).default('user').notNull(),
+	role: text('role', { enum: ['admin', 'user'] })
+		.default('user')
+		.notNull(),
 	githubId: text('github_id').unique(),
 	githubAccessToken: text('github_access_token'),
 	avatar: text('avatar').default(''),
@@ -18,10 +20,18 @@ export const users = sqliteTable('users', {
 	timezone: text('timezone').default(''),
 	lastLogin: integer('last_login', { mode: 'timestamp' }),
 	loginStreak: integer('login_streak').default(0),
-	accountStatus: text('account_status', { enum: ['active', 'inactive', 'suspended'] }).notNull().default('active'),
+	accountStatus: text('account_status', {
+		enum: ['active', 'inactive', 'suspended'],
+	})
+		.notNull()
+		.default('active'),
 	// Timestamps
-	createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
-	updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+	createdAt: integer('created_at', { mode: 'timestamp' })
+		.default(sql`CURRENT_TIMESTAMP`)
+		.notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' })
+		.default(sql`CURRENT_TIMESTAMP`)
+		.notNull(),
 })
 
 export const insertUserSchema = createInsertSchema(users, {

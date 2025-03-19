@@ -11,4 +11,3 @@ export * from './widget-todos'
 export * from './widget-categories'
 export * from './changelog.schema'
 export * from './roadmap.schema'
-

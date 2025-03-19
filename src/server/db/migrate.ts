@@ -8,7 +8,9 @@ export default async function runMigrations() {
 	try {
 		// The first argument is the DB connection, the second is the migrations folder
 		// Use the migrations folder in src/server/db/migrations
-		await migrate(db, { migrationsFolder: path.resolve(__dirname, 'migrations') })
+		await migrate(db, {
+			migrationsFolder: path.resolve(__dirname, 'migrations'),
+		})
 		console.log('Migrations completed successfully')
 	} catch (error) {
 		console.error('Migration failed:', error)

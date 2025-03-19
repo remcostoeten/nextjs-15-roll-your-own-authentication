@@ -33,11 +33,11 @@ src/modules/authentication/
 
 ## Core Technologies
 
--   **JWT (Jose)**: For secure token generation and validation
--   **Server Sessions**: For maintaining user state
--   **Drizzle ORM**: For database interactions
--   **Zod**: For schema validation
--   **Next.js Server Actions**: For secure server-side operations
+- **JWT (Jose)**: For secure token generation and validation
+- **Server Sessions**: For maintaining user state
+- **Drizzle ORM**: For database interactions
+- **Zod**: For schema validation
+- **Next.js Server Actions**: For secure server-side operations
 
 ## Authentication Flow
 
@@ -75,12 +75,12 @@ src/modules/authentication/
 
 ## Security Measures
 
--   **HTTP-Only Cookies**: Prevents client-side JavaScript from accessing tokens
--   **CSRF Protection**: Implemented via Next.js built-in protection
--   **Password Hashing**: Using bcrypt with appropriate salt rounds
--   **Token Expiration**: JWTs have a configurable expiration time
--   **Session Validation**: Double-checking session validity in the database
--   **Rate Limiting**: Preventing brute force attacks
+- **HTTP-Only Cookies**: Prevents client-side JavaScript from accessing tokens
+- **CSRF Protection**: Implemented via Next.js built-in protection
+- **Password Hashing**: Using bcrypt with appropriate salt rounds
+- **Token Expiration**: JWTs have a configurable expiration time
+- **Session Validation**: Double-checking session validity in the database
+- **Rate Limiting**: Preventing brute force attacks
 
 ## Database Schema
 
@@ -243,13 +243,13 @@ const validateSession = async (userId: string, token: string) => {
 
 Authentication components and logic should be thoroughly tested:
 
--   **Unit Tests**: For individual functions like token generation and password hashing
--   **Integration Tests**: For the complete authentication flow
--   **E2E Tests**: For the user experience of registration, login, and protected routes
+- **Unit Tests**: For individual functions like token generation and password hashing
+- **Integration Tests**: For the complete authentication flow
+- **E2E Tests**: For the user experience of registration, login, and protected routes
 
 ## Future Enhancements
 
--   Multi-factor authentication
--   OAuth integration for social logins
--   Role-based access control
--   Account verification via email
+- Multi-factor authentication
+- OAuth integration for social logins
+- Role-based access control
+- Account verification via email

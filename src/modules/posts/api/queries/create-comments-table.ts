@@ -1,23 +1,23 @@
-"use server"
+'use server'
 
 import { db } from '@/server/db'
 import { sql } from 'drizzle-orm'
 
 export async function createCommentsTable() {
-    try {
-        // Check if the comments table already exists
-        const checkTableExists = await db.run(
-            sql`SELECT name FROM sqlite_master WHERE type='table' AND name='comments'`
-        )
+	try {
+		// Check if the comments table already exists
+		const checkTableExists = await db.run(
+			sql`SELECT name FROM sqlite_master WHERE type='table' AND name='comments'`
+		)
 
-        if (checkTableExists.rows.length > 0) {
-            console.log('Comments table already exists')
-            return { success: true, message: 'Comments table already exists' }
-        }
+		if (checkTableExists.rows.length > 0) {
+			console.log('Comments table already exists')
+			return { success: true, message: 'Comments table already exists' }
+		}
 
-        // Create the comments table
-        await db.run(
-            sql`CREATE TABLE IF NOT EXISTS comments (
+		// Create the comments table
+		await db.run(
+			sql`CREATE TABLE IF NOT EXISTS comments (
                 id TEXT PRIMARY KEY NOT NULL,
                 content TEXT NOT NULL,
                 post_id TEXT NOT NULL,
@@ -29,12 +29,12 @@ export async function createCommentsTable() {
                 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE,
                 FOREIGN KEY (parent_id) REFERENCES comments(id) ON DELETE CASCADE
             )`
-        )
+		)
 
-        console.log('Comments table created successfully')
-        return { success: true, message: 'Comments table created successfully' }
-    } catch (error) {
-        console.error('Error creating comments table:', error)
-        return { success: false, error: String(error) }
-    }
-} 
+		console.log('Comments table created successfully')
+		return { success: true, message: 'Comments table created successfully' }
+	} catch (error) {
+		console.error('Error creating comments table:', error)
+		return { success: false, error: String(error) }
+	}
+}

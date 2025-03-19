@@ -8,11 +8,13 @@ TypeScript is case-sensitive, which means these are different:
 
 ```typescript
 // Component file exports:
-export const JSONViewer = () => { /* ... */ };
+export const JSONViewer = () => {
+	/* ... */
+}
 
 // In barrel file:
-export { JsonViewer } from './json-viewer'; // Wrong! Notice the casing difference
-export { JSONViewer } from './json-viewer'; // Correct
+export { JsonViewer } from './json-viewer' // Wrong! Notice the casing difference
+export { JSONViewer } from './json-viewer' // Correct
 ```
 
 ### Multiple Exports
@@ -22,14 +24,14 @@ UI components often export multiple items:
 ```typescript
 // dropdown-menu.tsx
 export {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  // ... many more exports
+	DropdownMenu,
+	DropdownMenuTrigger,
+	DropdownMenuContent,
+	// ... many more exports
 }
 
 // Barrel file needs to include ALL exports
-export { DropdownMenu, DropdownMenuTrigger, /* etc */ } from './dropdown-menu';
+export { DropdownMenu, DropdownMenuTrigger /* etc */ } from './dropdown-menu'
 ```
 
 ### Fixing Case Sensitivity Issues
@@ -58,8 +60,8 @@ These exclusions help keep barrel files focused on component exports rather than
 
 ```typescript
 // Don't import Props from barrel files
-import { Button } from '@/shared/components/ui';
-import { ButtonProps } from '@/shared/components/ui/button';
+import { Button } from '@/shared/components/ui'
+import { ButtonProps } from '@/shared/components/ui/button'
 ```
 
 ### Customizing Exclusions
@@ -68,8 +70,8 @@ You can customize which exports are excluded by modifying the `EXCLUDE_PATTERNS`
 
 ```javascript
 const EXCLUDE_PATTERNS = [
-  /Props$/,         // Skip component props interfaces
-  /[a-z]Variants$/, // Skip variant utilities like badgeVariants
-  // Add your own patterns here
-];
-``` 
+	/Props$/, // Skip component props interfaces
+	/[a-z]Variants$/, // Skip variant utilities like badgeVariants
+	// Add your own patterns here
+]
+```

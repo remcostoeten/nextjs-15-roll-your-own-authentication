@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { loginUser } from '@/modules/authentication/api/mutations/login-user'
-import { env } from 'env'
 
 export async function POST(request: NextRequest) {
 	try {

@@ -46,9 +46,9 @@ export async function loginUser(
 		userId = user.id
 
 		if (!user.passwordHash) {
-			loginFailed = true;
-			failureReason = 'invalid_password';
-			throw new Error('Invalid email or password');
+			loginFailed = true
+			failureReason = 'invalid_password'
+			throw new Error('Invalid email or password')
 		}
 
 		// Verify password

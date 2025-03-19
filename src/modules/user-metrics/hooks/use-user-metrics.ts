@@ -97,17 +97,17 @@ export function useUserMetrics(): UserMetricsData {
 			lastSession: {
 				start: new Date(),
 				end: new Date(),
-				duration: 0
-			}
+				duration: 0,
+			},
 		},
 		navigation: {
 			mostVisitedPages: [],
 			averageTimeOnSite: 0,
 			bounceRate: 0,
-			exitPages: []
+			exitPages: [],
 		},
 		recentErrors: [],
-		pageViews: []
+		pageViews: [],
 	})
 
 	// Track page views
@@ -119,7 +119,7 @@ export function useUserMetrics(): UserMetricsData {
 			const title = document.title
 			const referrer = document.referrer
 
-			setMetrics(prev => ({
+			setMetrics((prev) => ({
 				...prev,
 				pageViews: [
 					...prev.pageViews,
@@ -128,9 +128,9 @@ export function useUserMetrics(): UserMetricsData {
 						title,
 						referrer,
 						timeSpent: 0,
-						timestamp: new Date()
-					}
-				]
+						timestamp: new Date(),
+					},
+				],
 			}))
 		}
 
@@ -145,7 +145,7 @@ export function useUserMetrics(): UserMetricsData {
 		if (!user || !isAuthenticated) return
 
 		const handleError = (event: ErrorEvent) => {
-			setMetrics(prev => ({
+			setMetrics((prev) => ({
 				...prev,
 				recentErrors: [
 					...prev.recentErrors,
@@ -154,9 +154,9 @@ export function useUserMetrics(): UserMetricsData {
 						stack: event.error?.stack,
 						path: window.location.pathname,
 						timestamp: new Date(),
-						error: event.error
-					}
-				]
+						error: event.error,
+					},
+				],
 			}))
 		}
 
@@ -177,20 +177,20 @@ export function useUserMetrics(): UserMetricsData {
 				browser: getBrowserInfo(ua),
 				os: getOSInfo(ua),
 				device: getDeviceType(ua),
-				screenResolution: screenRes
+				screenResolution: screenRes,
 			}
 		}
 
-		setMetrics(prev => ({
+		setMetrics((prev) => ({
 			...prev,
-			device: getDeviceInfo()
+			device: getDeviceInfo(),
 		}))
 	}, [user, isAuthenticated])
 
 	// Fetch main metrics data
 	useEffect(() => {
 		if (!user || !isAuthenticated) {
-			setMetrics(prev => ({ ...prev, isLoading: false }))
+			setMetrics((prev) => ({ ...prev, isLoading: false }))
 			return
 		}
 
@@ -199,37 +199,43 @@ export function useUserMetrics(): UserMetricsData {
 				const [metricsData, activities, geoData] = await Promise.all([
 					getUserMetrics(user.id),
 					getUserActivities(user.id),
-					fetch('https://ipapi.co/json/').then(res => res.json())
+					fetch('https://ipapi.co/json/').then((res) => res.json()),
 				])
 
-				setMetrics(prev => ({
+				setMetrics((prev) => ({
 					...prev,
 					loginStreak: metricsData.loginStreak || 0,
 					accountAge: metricsData.accountAge,
 					lastLoginFormatted: metricsData.lastLoginFormatted,
-					activityLog: activities.map(activity => ({
+					activityLog: activities.map((activity) => ({
 						...activity,
-						type: activity.action.startsWith('auth_') ? 'auth' :
-							activity.action.startsWith('nav_') ? 'navigation' :
-								activity.action.startsWith('error_') ? 'error' : 'system'
+						type: activity.action.startsWith('auth_')
+							? 'auth'
+							: activity.action.startsWith('nav_')
+								? 'navigation'
+								: activity.action.startsWith('error_')
+									? 'error'
+									: 'system',
 					})),
 					currentLocation: {
 						city: geoData.city,
 						country: geoData.country_name,
 						region: geoData.region,
 						timezone: geoData.timezone,
-						ip: geoData.ip
+						ip: geoData.ip,
 					},
 					isLoading: false,
-					error: null
+					error: null,
 				}))
 			} catch (error) {
 				console.error('Error fetching user metrics:', error)
-				setMetrics(prev => ({
+				setMetrics((prev) => ({
 					...prev,
 					isLoading: false,
 					error:
-						error instanceof Error ? error.message : 'Failed to fetch metrics'
+						error instanceof Error
+							? error.message
+							: 'Failed to fetch metrics',
 				}))
 			}
 		}

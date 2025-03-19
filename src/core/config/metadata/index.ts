@@ -7,4 +7,4 @@
 /* TODO: Research what metadata is actually helpful, best practices etc. */
 
 export * from './base-metadata'
-export * from "./colors-metadata"
+export * from './colors-metadata'

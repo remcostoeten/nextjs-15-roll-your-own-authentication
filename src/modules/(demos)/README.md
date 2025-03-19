@@ -16,13 +16,13 @@ This project uses explicit named exports in barrel files:
 
 ```typescript
 // GOOD - Explicit exports (used in this project)
-export { ComponentA } from './components/component-a';
-export { ComponentB } from './components/component-b';
-export type { TypeA } from './types';
+export { ComponentA } from './components/component-a'
+export { ComponentB } from './components/component-b'
+export type { TypeA } from './types'
 
 // BAD - Avoid wildcard exports
-export * from './components';
-export * from './helpers';
+export * from './components'
+export * from './helpers'
 ```
 
 ## Benefits of This Approach
@@ -36,10 +36,10 @@ export * from './helpers';
 
 ```typescript
 // Import specific components - bundler will only include what you use
-import { ColorCard, ColorsGrid } from '@/modules/(demos)';
+import { ColorCard, ColorsGrid } from '@/modules/(demos)'
 
 // Component-level imports still work if you prefer
-import { ColorCard } from '@/modules/(demos)/colors/components/color-card';
+import { ColorCard } from '@/modules/(demos)/colors/components/color-card'
 ```
 
 ## Structure
@@ -53,4 +53,4 @@ import { ColorCard } from '@/modules/(demos)/colors/components/color-card';
 2. Avoid wildcard exports (`export * from...`)
 3. Keep barrel files flat and avoid nesting them
 4. When importing, only import what you need
-5. For very large modules, consider direct imports instead of going through barrel files 
+5. For very large modules, consider direct imports instead of going through barrel files

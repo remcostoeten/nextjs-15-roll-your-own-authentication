@@ -1,5 +1,6 @@
 'use client'
-import React, { useState, useRef, useEffect } from 'react'
+import type React from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 import { useTodoStore } from '@/store/todo-store'
 import RichTextEditor from './rich-text-editor'
@@ -9,12 +10,10 @@ import {
 	ChevronUp,
 	ChevronDown,
 	Plus,
-	X,
 	Trash2,
 	Edit,
 	MessageSquare,
 	Grip,
-	Eye,
 	EyeOff,
 	Lock,
 	Unlock,
@@ -27,7 +26,11 @@ import {
 import { Slider } from '@/shared/components/ui/slider'
 import { toast } from 'sonner'
 
-const FloatingTodo: React.FC = () => {
+interface FloatingTodoProps {
+	inDevTools?: boolean
+}
+
+const FloatingTodo: React.FC<FloatingTodoProps> = ({ inDevTools = false }) => {
 	const {
 		todos,
 		position,
@@ -180,7 +183,7 @@ const FloatingTodo: React.FC = () => {
 			document.removeEventListener('mousemove', handleMouseMove)
 			document.removeEventListener('mouseup', handleMouseUp)
 		}
-	}, [handleMouseMove])
+	}, [isDragging, isResizing])
 
 	const handleAddTodo = (e: React.FormEvent) => {
 		e.preventDefault()
@@ -300,92 +303,96 @@ const FloatingTodo: React.FC = () => {
 		}
 	}
 
-	if (!isVisible) {
-		return (
-			<div
-				className="fixed z-50 p-2 animate-pulse"
-				style={{ left: `${position.x}px`, top: `${position.y}px` }}
-			>
-				<button
-					onClick={toggleVisibility}
-					className="bg-black p-2 rounded-full border border-gray-800 text-white hover:bg-gray-900 transition-all duration-200 hover:scale-110"
-					style={{ pointerEvents: 'auto' }}
-				>
-					<Eye
-						size={16}
-						className="animate-fade-in"
-					/>
-				</button>
-			</div>
-		)
+	// Add conditional styling based on inDevTools prop
+	const containerStyle: React.CSSProperties = inDevTools
+		? {
+				position: 'relative',
+				top: 0,
+				left: 0,
+				width: '100%',
+				height: '100%',
+				opacity: 1,
+			}
+		: {
+				position: 'fixed',
+				top: `${position.y}px`,
+				left: `${position.x}px`,
+				width: `${size.width}px`,
+				height: `${size.height}px`,
+				opacity: isVisible ? opacity : 0,
+				pointerEvents: isVisible ? 'auto' : ('none' as 'auto' | 'none'),
+			}
+
+	// Return early with simpler UI if not visible and not in dev tools
+	if (!isVisible && !inDevTools) {
+		return null
+	}
+
+	// ... handle toast notifications properly
+	const showToast = (
+		title: string,
+		description: string,
+		type: 'success' | 'error' = 'success'
+	) => {
+		toast({
+			title,
+			description,
+		})
 	}
 
 	return (
 		<div
 			ref={containerRef}
-			className={`fixed z-50 transition-all duration-300 floating-todo ${isLocked ? 'locked' : ''} ${animateIn ? 'animate-scale-in' : ''}`}
-			style={{
-				left: `${position.x}px`,
-				top: `${position.y}px`,
-				width: `${size.width}px`,
-				opacity: opacity,
-				pointerEvents: isLocked ? 'none' : 'auto',
-			}}
+			className={`floating-note bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg shadow-lg flex flex-col overflow-hidden transition-all duration-200 ${
+				animateIn ? 'animate-in fade-in-50 zoom-in-95' : ''
+			} ${isDragging ? 'cursor-grabbing' : ''}`}
+			style={containerStyle}
 		>
-			{/* Hidden file input for import */}
-			<input
-				type="file"
-				ref={fileInputRef}
-				onChange={handleFileChange}
-				style={{ display: 'none' }}
-				accept=".json"
-			/>
-
-			{!isCollapsed && !isLocked && (
+			{/* Only render resize handles if not in dev tools */}
+			{!inDevTools && (
 				<>
-					{/* Corner handles */}
+					{/* Resize handles */}
 					<div
-						className="resize-handle resize-handle-nw"
-						onMouseDown={startResizing('nw')}
-					/>
-					<div
-						className="resize-handle resize-handle-ne"
-						onMouseDown={startResizing('ne')}
-					/>
-					<div
-						className="resize-handle resize-handle-sw"
-						onMouseDown={startResizing('sw')}
-					/>
-					<div
-						className="resize-handle resize-handle-se"
-						onMouseDown={startResizing('se')}
-					/>
-
-					{/* Edge handles */}
-					<div
-						className="resize-handle resize-handle-n"
+						className="absolute top-0 right-0 left-0 h-1 cursor-ns-resize z-50"
 						onMouseDown={startResizing('n')}
-					/>
+					></div>
 					<div
-						className="resize-handle resize-handle-e"
+						className="absolute top-0 bottom-0 right-0 w-1 cursor-ew-resize z-50"
 						onMouseDown={startResizing('e')}
-					/>
+					></div>
 					<div
-						className="resize-handle resize-handle-s"
+						className="absolute bottom-0 right-0 left-0 h-1 cursor-ns-resize z-50"
 						onMouseDown={startResizing('s')}
-					/>
+					></div>
 					<div
-						className="resize-handle resize-handle-w"
+						className="absolute top-0 bottom-0 left-0 w-1 cursor-ew-resize z-50"
 						onMouseDown={startResizing('w')}
-					/>
+					></div>
+					<div
+						className="absolute top-0 right-0 w-3 h-3 cursor-nesw-resize z-50"
+						onMouseDown={startResizing('ne')}
+					></div>
+					<div
+						className="absolute bottom-0 right-0 w-3 h-3 cursor-nwse-resize z-50"
+						onMouseDown={startResizing('se')}
+					></div>
+					<div
+						className="absolute bottom-0 left-0 w-3 h-3 cursor-nesw-resize z-50"
+						onMouseDown={startResizing('sw')}
+					></div>
+					<div
+						className="absolute top-0 left-0 w-3 h-3 cursor-nwse-resize z-50"
+						onMouseDown={startResizing('nw')}
+					></div>
 				</>
 			)}
 
-			{/* Header with drag handle and editable title */}
+			{/* Header */}
 			<div
-				className="bg-black text-white p-3 rounded-t-lg border border-gray-800 flex items-center justify-between"
-				onMouseDown={handleMouseDown}
-				style={{ pointerEvents: 'auto' }} // Always allow interactions with header
+				className={`flex items-center justify-between p-2 border-b border-gray-200 dark:border-zinc-800 ${
+					!inDevTools ? 'cursor-grab' : ''
+				}`}
+				onMouseDown={!inDevTools ? handleMouseDown : undefined}
 			>
 				<div className="flex items-center gap-2 todo-handle">
 					<Grip
@@ -574,10 +581,11 @@ const FloatingTodo: React.FC = () => {
 							<button
 								type="submit"
 								disabled={!newTodoTitle.trim()}
-								className={`flex-shrink-0 p-1.5 rounded-md btn-hover ${newTodoTitle.trim()
+								className={`flex-shrink-0 p-1.5 rounded-md btn-hover ${
+									newTodoTitle.trim()
 										? 'bg-blue-600 hover:bg-blue-700'
 										: 'bg-gray-800 text-gray-500'
-									} transition-colors`}
+								} transition-colors`}
 							>
 								<Plus
 									size={16}
@@ -601,8 +609,9 @@ const FloatingTodo: React.FC = () => {
 								{todos.map((todo, index) => (
 									<li
 										key={todo.id}
-										className={`border-b border-gray-800 last:border-b-0 p-2 todo-item ${todo.completed ? 'bg-gray-900' : ''
-											}`}
+										className={`border-b border-gray-800 last:border-b-0 p-2 todo-item ${
+											todo.completed ? 'bg-gray-900' : ''
+										}`}
 										style={{
 											animationDelay: `${index * 0.05}s`,
 										}}
@@ -672,10 +681,11 @@ const FloatingTodo: React.FC = () => {
 												<div className="flex-grow min-w-0">
 													<div className="flex items-start justify-between gap-2">
 														<span
-															className={`text-sm line-clamp-2 ${todo.completed
+															className={`text-sm line-clamp-2 ${
+																todo.completed
 																	? 'text-gray-500 line-through'
 																	: 'text-white'
-																}`}
+															}`}
 														>
 															{todo.title}
 														</span>
@@ -683,18 +693,19 @@ const FloatingTodo: React.FC = () => {
 														<div className="flex items-center gap-1 mt-0.5 flex-shrink-0">
 															{todo.richContent &&
 																todo.richContent !==
-																'<p></p>' && (
+																	'<p></p>' && (
 																	<button
 																		onClick={() =>
 																			toggleNotes(
 																				todo.id
 																			)
 																		}
-																		className={`p-1 rounded action-icon ${showNotes ===
-																				todo.id
+																		className={`p-1 rounded action-icon ${
+																			showNotes ===
+																			todo.id
 																				? 'text-blue-500 bg-gray-800'
 																				: 'text-gray-400 hover:text-white hover:bg-gray-800'
-																			} transition-colors`}
+																		} transition-colors`}
 																	>
 																		<MessageSquare
 																			size={
@@ -738,7 +749,7 @@ const FloatingTodo: React.FC = () => {
 													{showNotes === todo.id &&
 														todo.richContent &&
 														todo.richContent !==
-														'<p></p>' && (
+															'<p></p>' && (
 															<div className="mt-2 px-3 py-2.5 text-gray-300 bg-gray-800/90 border border-gray-700 rounded-md animate-fade-in rich-content">
 																<div
 																	className="prose prose-sm prose-invert max-w-none"

@@ -1,5 +1,5 @@
 export interface ColorVariable {
-    name: string
-    value: string
-    classes: string[]
+	name: string
+	value: string
+	classes: string[]
 }

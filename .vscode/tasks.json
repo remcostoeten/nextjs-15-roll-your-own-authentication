@@ -1,35 +1,35 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "Generate Barrel Files",
-            "type": "shell",
-            "command": "npm run barrels",
-            "problemMatcher": [],
-            "presentation": {
-                "reveal": "silent",
-                "panel": "dedicated",
-                "clear": true
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            }
-        },
-        {
-            "label": "Watch & Generate Barrel Files",
-            "type": "shell",
-            "command": "npm run barrels:watch",
-            "problemMatcher": [],
-            "presentation": {
-                "reveal": "always",
-                "panel": "dedicated"
-            },
-            "isBackground": true,
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            }
-        }
-    ]
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Generate Barrel Files",
+			"type": "shell",
+			"command": "npm run barrels",
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "silent",
+				"panel": "dedicated",
+				"clear": true
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			}
+		},
+		{
+			"label": "Watch & Generate Barrel Files",
+			"type": "shell",
+			"command": "npm run barrels:watch",
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			},
+			"isBackground": true,
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			}
+		}
+	]
 }

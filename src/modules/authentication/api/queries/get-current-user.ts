@@ -10,16 +10,16 @@ import { cookies } from 'next/headers'
  * Response type for getCurrentUser server action
  */
 export type GetCurrentUserResponse = {
-	success: boolean;
-	error?: string;
+	success: boolean
+	error?: string
 	user?: {
-		id: string;
-		email: string;
-		firstName: string | null;
-		lastName: string | null;
-		role: 'admin' | 'user';
-		createdAt: Date;
-	} | null;
+		id: string
+		email: string
+		firstName: string | null
+		lastName: string | null
+		role: 'admin' | 'user'
+		createdAt: Date
+	} | null
 }
 
 /**
@@ -35,7 +35,7 @@ export async function getCurrentUser(): Promise<GetCurrentUserResponse> {
 			return {
 				success: false,
 				error: 'Unauthorized',
-				user: null
+				user: null,
 			}
 		}
 
@@ -52,14 +52,14 @@ export async function getCurrentUser(): Promise<GetCurrentUserResponse> {
 					lastName: true,
 					role: true,
 					createdAt: true,
-				}
+				},
 			})
 
 			if (!user) {
 				return {
 					success: false,
 					error: 'User not found',
-					user: null
+					user: null,
 				}
 			}
 
@@ -67,23 +67,26 @@ export async function getCurrentUser(): Promise<GetCurrentUserResponse> {
 				success: true,
 				user: {
 					...user,
-					role: user.role as 'admin' | 'user'
-				}
+					role: user.role as 'admin' | 'user',
+				},
 			}
 		} catch (error) {
 			console.error('Token verification or user fetch error:', error)
 			return {
 				success: false,
 				error: 'Invalid token',
-				user: null
+				user: null,
 			}
 		}
 	} catch (error) {
 		console.error('Get current user error:', error)
 		return {
 			success: false,
-			error: error instanceof Error ? error.message : 'An unexpected error occurred',
-			user: null
+			error:
+				error instanceof Error
+					? error.message
+					: 'An unexpected error occurred',
+			user: null,
 		}
 	}
 }
