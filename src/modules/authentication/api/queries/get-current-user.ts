@@ -41,7 +41,7 @@ export async function getCurrentUser(): Promise<GetCurrentUserResponse> {
 
 		try {
 			const payload = await verifyAccessToken(accessToken)
-			console.log('Token payload:', payload) // Debug log
+			console.log('Token payload:', payload)
 
 			const user = await db.query.users.findFirst({
 				where: eq(users.id, payload.sub),
@@ -55,8 +55,6 @@ export async function getCurrentUser(): Promise<GetCurrentUserResponse> {
 				}
 			})
 
-			console.log('Database user:', user) // Debug log
-
 			if (!user) {
 				return {
 					success: false,
@@ -69,7 +67,7 @@ export async function getCurrentUser(): Promise<GetCurrentUserResponse> {
 				success: true,
 				user: {
 					...user,
-					role: user.role as 'admin' | 'user' // Ensure correct typing
+					role: user.role as 'admin' | 'user'
 				}
 			}
 		} catch (error) {
