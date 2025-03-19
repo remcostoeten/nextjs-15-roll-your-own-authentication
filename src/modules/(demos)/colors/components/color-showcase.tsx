@@ -151,16 +151,16 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                             <HoverCard key={color.name}>
                                                 <HoverCardTrigger asChild>
                                                     <div
-                                                        className="group border border-button-border p-4 rounded-lg flex items-center gap-4 bg-background-lighter cursor-pointer hover:border-title-light/30 transition-colors"
+                                                        className="group border border-button-border p-4 rounded-lg flex items-center gap-4 bg-background-lighter cursor-pointer hover:border-title-light/30 hover:bg-background-lighter/80 transition-all"
                                                         onClick={() => handleCopyColor(color.value)}
                                                     >
                                                         <div
-                                                            className="h-12 w-12 rounded-md border border-button-border"
+                                                            className="h-12 w-12 rounded-md border border-button-border shadow-sm group-hover:scale-105 group-hover:shadow-md transition-all"
                                                             style={{ backgroundColor: color.value }}
                                                         />
                                                         <div className="flex-1">
-                                                            <p className="text-title-light text-sm">--{color.name}</p>
-                                                            <p className="text-text-button text-xs">{color.value}</p>
+                                                            <p className="text-title-light text-sm group-hover:text-title-light/90">--{color.name}</p>
+                                                            <p className="text-text-button text-xs group-hover:text-button/90">{color.value}</p>
                                                         </div>
                                                         <div className="opacity-0 group-hover:opacity-100 transition-opacity">
                                                             {copiedColor === color.value ? (
@@ -180,7 +180,7 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                                                 <Button
                                                                     size="sm"
                                                                     variant="ghost"
-                                                                    className="h-6 w-6 p-0"
+                                                                    className="h-6 w-6 p-0 hover:bg-background/50 hover:text-title-light transition-colors"
                                                                     onClick={(e) => {
                                                                         e.stopPropagation();
                                                                         handleCopyColor(`var(--${color.name})`);
@@ -231,7 +231,7 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                                                                     <Button
                                                                                         size="sm"
                                                                                         variant="ghost"
-                                                                                        className="h-6 w-6 p-0 ml-1"
+                                                                                        className="h-6 w-6 p-0 ml-1 hover:bg-background/50 hover:text-title-light transition-colors"
                                                                                         onClick={(e) => {
                                                                                             e.stopPropagation();
                                                                                             handleCopyClass(className);
@@ -259,7 +259,7 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                                                                     <Button
                                                                                         size="sm"
                                                                                         variant="ghost"
-                                                                                        className="h-6 w-6 p-0 ml-1"
+                                                                                        className="h-6 w-6 p-0 ml-1 hover:bg-background/50 hover:text-title-light transition-colors"
                                                                                         onClick={(e) => {
                                                                                             e.stopPropagation();
                                                                                             handleCopyClass(className);
@@ -287,7 +287,7 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                                                                     <Button
                                                                                         size="sm"
                                                                                         variant="ghost"
-                                                                                        className="h-6 w-6 p-0 ml-1"
+                                                                                        className="h-6 w-6 p-0 ml-1 hover:bg-background/50 hover:text-title-light transition-colors"
                                                                                         onClick={(e) => {
                                                                                             e.stopPropagation();
                                                                                             handleCopyClass(className);
@@ -317,7 +317,7 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                                                         <Button
                                                                             size="sm"
                                                                             variant="ghost"
-                                                                            className="h-6 w-6 p-0 ml-1"
+                                                                            className="h-6 w-6 p-0 ml-1 hover:bg-background/50 hover:text-title-light transition-colors"
                                                                             onClick={(e) => {
                                                                                 e.stopPropagation();
                                                                                 handleCopyClass(className.substring(1)); // Remove the dot
@@ -356,13 +356,19 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                             <div className="border border-button-border rounded-lg p-6 bg-background-lighter">
                                 <h3 className="text-title-light font-medium mb-4">Buttons & Interactive Elements</h3>
                                 <div className="flex flex-wrap gap-3">
-                                    <Button className="bg-button border border-button-border text-button hover:text-title-light">
+                                    <Button className="bg-button border border-button-border text-button hover:text-title-light hover:bg-background transition-colors">
                                         Default Button
                                     </Button>
-                                    <Button variant="outline" className="border-button-border text-title-light">
+                                    <Button
+                                        variant="outline"
+                                        className="border-button-border text-title-light hover:bg-button/30 hover:border-title-light/50 transition-all"
+                                    >
                                         Outline Button
                                     </Button>
-                                    <Button variant="ghost" className="text-button hover:text-title-light">
+                                    <Button
+                                        variant="ghost"
+                                        className="text-button hover:text-title-light hover:bg-button/30 transition-colors"
+                                    >
                                         Ghost Button
                                     </Button>
                                 </div>
