@@ -1,3 +1,3 @@
 export * from './fonts'
-export * from './metadata'
+export * from '../../core/config/metadata/base-metadata'
 export * from './site-config'

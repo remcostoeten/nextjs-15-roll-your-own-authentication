@@ -1220,9 +1220,9 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
                                     style={arrowPosition}
                                 ></div>
 
-                                <div className="bg-white dark:bg-zinc-950 border border-gray-200 dark:border-zinc-800 rounded-lg shadow-xl p-4 w-full text-sm relative z-10">
+                                <div className="bg-bg border border-[#222] rounded-lg shadow-xl p-4 w-full text-sm relative z-10">
                                     <div className="flex items-center justify-between mb-4">
-                                        <h3 className="font-semibold text-gray-800 dark:text-offwhite">Developer Tools</h3>
+                                        <h3 className="font-semibold text-title-light">Developer Tools</h3>
                                         <Button
                                             variant="ghost"
                                             size="icon"
@@ -1321,7 +1321,6 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
                                         </div>
                                     </div>
 
-                                    {/* Action Result Message */}
                                     {actionResult && (
                                         <div className="mb-3 p-2 bg-gray-100 dark:bg-zinc-900/80 border border-gray-200 dark:border-zinc-800 rounded text-xs text-center text-gray-800 dark:text-offwhite font-medium">
                                             {actionResult}
@@ -1415,7 +1414,8 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
                                                     localStorageItems.map((item) => (
                                                         <div
                                                             key={item.key}
-                                                            className="border border-gray-200 dark:border-zinc-800 rounded-md p-2 bg-gray-50 dark:bg-zinc-900/30 mb-2"
+                                                            className="
+border border-button-borderrounded-md p-2 bg-gray-50 dark:bg-zinc-900/30 mb-2"
                                                         >
                                                             {editingKey === item.key ? (
                                                                 <div className="flex gap-2">
@@ -1483,7 +1483,8 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
                                                     sessionStorageItems.map((item) => (
                                                         <div
                                                             key={item.key}
-                                                            className="border border-gray-200 dark:border-zinc-800 rounded-md p-2 bg-gray-50 dark:bg-zinc-900/30 mb-2"
+                                                            className="
+border border-button-borderrounded-md p-2 bg-gray-50 dark:bg-zinc-900/30 mb-2"
                                                         >
                                                             {editingKey === item.key ? (
                                                                 <div className="flex gap-2">
