@@ -14,6 +14,7 @@ interface ColorInfo {
     element: string
     cssVar: string
     value: string
+    children?: React.ReactNode
 }
 
 interface ThemeDemoPanelProps {
@@ -34,10 +35,10 @@ export function ThemeDemoPanel({ colors }: ThemeDemoPanelProps) {
     )
 
     // Helper function to create hover elements
-    const ColorElement = ({ element, cssVar, value }: ColorInfo) => (
+    const ColorElement = ({ element, cssVar, value, children }: ColorInfo) => (
         <HoverCard>
             <HoverCardTrigger asChild>
-                <div className={element}>{element.includes("text") ? null : element}</div>
+                <div className={element}>{children || element.includes("text") ? null : element}</div>
             </HoverCardTrigger>
             <HoverCardContent className="w-80 bg-background-lighter border light-border">
                 <div className="flex justify-between">
@@ -191,7 +192,7 @@ export function ThemeDemoPanel({ colors }: ThemeDemoPanelProps) {
             </ColorElement>
 
             <ColorElement
-                element="bg-background text-center p-3 mx-4 mb-4 rounded text-button"
+                element="bg-bg text-center p-3 mx-4 mb-4 rounded text-button"
                 cssVar="--background"
                 value={colorMap["--background"] || "#08080b"}
             >

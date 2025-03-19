@@ -19,85 +19,20 @@ module.exports = {
         },
         extend: {
             colors: {
+                // Custom color system
+                'offwhite': 'var(--offwhite)',
+                'title-light': 'var(--title-light)',
+                'offblack': 'var(--offblack)',
+                'background': 'var(--background)',
+                'background-lighter': 'var(--background-lighter)',
+                'button': 'var(--button)',
+                'text-button': 'var(--text-button)',
+                'button-border': 'var(--button-border)',
 
-                'offwhite'
-                    :
-
-                    'var(--offwhite)'
-                ,
-
-
-                'title-light'
-                    :
-
-                    'var(--title-light)'
-                ,
-
-
-                'offblack'
-                    :
-
-                    'var(--offblack)'
-                ,
-
-
-                'background'
-                    :
-
-                    'var(--background)'
-                ,
-
-
-                'panel'
-                    :
-
-                    'var(--panel)'
-                ,
-
-
-                'button'
-                    :
-
-                    'var(--button)'
-                ,
-
-
-                'text-button'
-                    :
-
-                    'var(--text-button)'
-                ,
-
-
-                'button-border'
-                    :
-
-                    'var(--button-border)'
-                ,
-
-
-                'border'
-                    :
-
-                    'var(--border)'
-                ,
-
-
-                'input'
-                    :
-
-                    'var(--input)'
-                ,
-
-
-                'ring'
-                    :
-
-                    'var(--ring)'
-                , border: "hsl(var(--border))",
+                // Shadcn color system
+                border: "hsl(var(--border))",
                 input: "hsl(var(--input))",
                 ring: "hsl(var(--ring))",
-                background: "hsl(var(--background))",
                 foreground: "hsl(var(--foreground))",
                 primary: {
                     DEFAULT: "hsl(var(--primary))",
