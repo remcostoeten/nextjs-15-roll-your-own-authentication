@@ -7,6 +7,7 @@ import { Button } from "@/shared/components/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/shared/components/ui/tabs"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/shared/components/ui/hover-card"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/components/ui/tooltip"
+import { Text, Heading, Flex } from "@/shared/components/core"
 import type { ColorVariable } from "@/modules/(demos)/colors/types"
 
 interface ColorShowcaseProps {
@@ -82,12 +83,16 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
             transition={{ duration: 0.5 }}
             className="w-full max-w-5xl mx-auto rounded-xl overflow-hidden border border-button-border bg-background"
         >
-            <div className="flex items-center justify-between p-4 border-b border-button-border bg-background-lighter">
-                <div className="flex items-center gap-2">
+            <Flex
+                items="center"
+                justify="between"
+                className="p-4 border-b border-button-border bg-background-lighter"
+            >
+                <Flex items="center" gap={2}>
                     <Palette className="h-5 w-5 text-title-light" />
-                    <h2 className="text-lg font-medium text-title-light">Developer Tools</h2>
-                </div>
-                <div className="flex gap-2">
+                    <Heading level="h2" className="text-lg font-medium" hasMargin={false}>Developer Tools</Heading>
+                </Flex>
+                <Flex gap={2}>
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
@@ -100,7 +105,7 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                                <p>Light Mode (Coming soon)</p>
+                                <Text as="span" size="sm" variant="muted">Light Mode (Coming soon)</Text>
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
@@ -117,12 +122,12 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                                <p>Dark Mode (Active)</p>
+                                <Text as="span" size="sm" variant="muted">Dark Mode (Active)</Text>
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
-                </div>
-            </div>
+                </Flex>
+            </Flex>
 
             <div className="p-6">
                 <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'colors' | 'usage')}>
@@ -145,7 +150,7 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                         <div className="space-y-8">
                             {Object.entries(colorsByCategory).map(([category, colorList]) => (
                                 <div key={category} className="space-y-3">
-                                    <h3 className="text-title-light font-medium capitalize">{category}</h3>
+                                    <Heading level="h3" variant="default" hasMargin={false} className="capitalize">{category}</Heading>
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                         {colorList.map((color) => (
                                             <HoverCard key={color.name}>
@@ -158,10 +163,10 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                                             className="h-12 w-12 rounded-md border border-button-border shadow-sm group-hover:scale-[1.02] transition-all"
                                                             style={{ backgroundColor: color.value }}
                                                         />
-                                                        <div className="flex-1">
-                                                            <p className="text-title-light text-sm">--{color.name}</p>
-                                                            <p className="text-text-button text-xs">{color.value}</p>
-                                                        </div>
+                                                        <Flex direction="col" className="flex-1">
+                                                            <Text size="sm">--{color.name}</Text>
+                                                            <Text variant="muted" size="xs">{color.value}</Text>
+                                                        </Flex>
                                                         <div className="opacity-0 group-hover:opacity-100 transition-opacity">
                                                             {copiedColor === color.value ? (
                                                                 <Check className="h-4 w-4 text-title-light" />
@@ -172,10 +177,10 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                                     </div>
                                                 </HoverCardTrigger>
                                                 <HoverCardContent className="w-96 bg-background-lighter border border-button-border">
-                                                    <div className="space-y-4">
+                                                    <Flex direction="col" gap={4}>
                                                         <div>
-                                                            <h4 className="text-sm font-medium text-title-light">CSS Variable</h4>
-                                                            <div className="flex items-center gap-2 mt-1">
+                                                            <Heading level="h4" className="text-sm font-medium" hasMargin={false}>CSS Variable</Heading>
+                                                            <Flex items="center" gap={2} className="mt-1">
                                                                 <code className="flex-1 text-xs bg-background px-1 py-0.5 rounded text-button">var(--{color.name})</code>
                                                                 <Button
                                                                     size="sm"
@@ -192,12 +197,12 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                                                         <Copy className="h-3 w-3 text-button" />
                                                                     )}
                                                                 </Button>
-                                                            </div>
+                                                            </Flex>
                                                         </div>
 
                                                         <div>
-                                                            <h4 className="text-sm font-medium text-title-light">Hex Value</h4>
-                                                            <div className="flex items-center gap-2 mt-1">
+                                                            <Heading level="h4" className="text-sm font-medium" hasMargin={false}>Hex Value</Heading>
+                                                            <Flex items="center" gap={2} className="mt-1">
                                                                 <code className="flex-1 text-xs bg-background px-1 py-0.5 rounded text-button">{color.value}</code>
                                                                 <Button
                                                                     size="sm"
@@ -214,19 +219,19 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                                                         <Copy className="h-3 w-3 text-button" />
                                                                     )}
                                                                 </Button>
-                                                            </div>
+                                                            </Flex>
                                                         </div>
 
                                                         {/* Tailwind Classes */}
                                                         <div>
-                                                            <h4 className="text-sm font-medium text-title-light mb-2">Tailwind Classes</h4>
-                                                            <div className="space-y-2">
+                                                            <Heading level="h4" className="text-sm font-medium mb-2" hasMargin={false}>Tailwind Classes</Heading>
+                                                            <Flex direction="col" gap={2}>
                                                                 {color.tailwindClasses.filter(cls => cls.startsWith('bg-')).length > 0 && (
-                                                                    <div className="flex items-center gap-2">
-                                                                        <div className="flex-shrink-0 w-20 text-xs text-button">Background:</div>
-                                                                        <div className="flex flex-wrap gap-1 flex-1">
+                                                                    <Flex items="center" gap={2}>
+                                                                        <Text variant="muted" size="xs" className="flex-shrink-0 w-20">Background:</Text>
+                                                                        <Flex wrap="wrap" gap={1} className="flex-1">
                                                                             {color.tailwindClasses.filter(cls => cls.startsWith('bg-')).map(className => (
-                                                                                <div key={className} className="flex items-center bg-background rounded">
+                                                                                <Flex key={className} items="center" className="bg-background rounded">
                                                                                     <code className="text-xs px-1 py-0.5 text-button">{className}</code>
                                                                                     <Button
                                                                                         size="sm"
@@ -243,18 +248,18 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                                                                             <Copy className="h-3 w-3 text-button" />
                                                                                         )}
                                                                                     </Button>
-                                                                                </div>
+                                                                                </Flex>
                                                                             ))}
-                                                                        </div>
-                                                                    </div>
+                                                                        </Flex>
+                                                                    </Flex>
                                                                 )}
 
                                                                 {color.tailwindClasses.filter(cls => cls.startsWith('text-')).length > 0 && (
-                                                                    <div className="flex items-center gap-2">
-                                                                        <div className="flex-shrink-0 w-20 text-xs text-button">Text:</div>
-                                                                        <div className="flex flex-wrap gap-1 flex-1">
+                                                                    <Flex items="center" gap={2}>
+                                                                        <Text variant="muted" size="xs" className="flex-shrink-0 w-20">Text:</Text>
+                                                                        <Flex wrap="wrap" gap={1} className="flex-1">
                                                                             {color.tailwindClasses.filter(cls => cls.startsWith('text-')).map(className => (
-                                                                                <div key={className} className="flex items-center bg-background rounded">
+                                                                                <Flex key={className} items="center" className="bg-background rounded">
                                                                                     <code className="text-xs px-1 py-0.5 text-button">{className}</code>
                                                                                     <Button
                                                                                         size="sm"
@@ -271,18 +276,18 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                                                                             <Copy className="h-3 w-3 text-button" />
                                                                                         )}
                                                                                     </Button>
-                                                                                </div>
+                                                                                </Flex>
                                                                             ))}
-                                                                        </div>
-                                                                    </div>
+                                                                        </Flex>
+                                                                    </Flex>
                                                                 )}
 
                                                                 {color.tailwindClasses.filter(cls => cls.startsWith('border-')).length > 0 && (
-                                                                    <div className="flex items-center gap-2">
-                                                                        <div className="flex-shrink-0 w-20 text-xs text-button">Border:</div>
-                                                                        <div className="flex flex-wrap gap-1 flex-1">
+                                                                    <Flex items="center" gap={2}>
+                                                                        <Text variant="muted" size="xs" className="flex-shrink-0 w-20">Border:</Text>
+                                                                        <Flex wrap="wrap" gap={1} className="flex-1">
                                                                             {color.tailwindClasses.filter(cls => cls.startsWith('border-')).map(className => (
-                                                                                <div key={className} className="flex items-center bg-background rounded">
+                                                                                <Flex key={className} items="center" className="bg-background rounded">
                                                                                     <code className="text-xs px-1 py-0.5 text-button">{className}</code>
                                                                                     <Button
                                                                                         size="sm"
@@ -299,20 +304,20 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                                                                             <Copy className="h-3 w-3 text-button" />
                                                                                         )}
                                                                                     </Button>
-                                                                                </div>
+                                                                                </Flex>
                                                                             ))}
-                                                                        </div>
-                                                                    </div>
+                                                                        </Flex>
+                                                                    </Flex>
                                                                 )}
-                                                            </div>
+                                                            </Flex>
                                                         </div>
 
                                                         {/* Available Classes */}
                                                         <div>
-                                                            <h4 className="text-sm font-medium text-title-light">Available CSS Classes</h4>
-                                                            <div className="flex flex-wrap gap-1 mt-1">
+                                                            <Heading level="h4" className="text-sm font-medium" hasMargin={false}>Available CSS Classes</Heading>
+                                                            <Flex wrap="wrap" gap={1} className="mt-1">
                                                                 {color.classes.map((className) => (
-                                                                    <div key={className} className="flex items-center bg-background rounded">
+                                                                    <Flex key={className} items="center" className="bg-background rounded">
                                                                         <code className="text-xs px-1 py-0.5 text-button">{className}</code>
                                                                         <Button
                                                                             size="sm"
@@ -329,11 +334,11 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                                                                 <Copy className="h-3 w-3 text-button" />
                                                                             )}
                                                                         </Button>
-                                                                    </div>
+                                                                    </Flex>
                                                                 ))}
-                                                            </div>
+                                                            </Flex>
                                                         </div>
-                                                    </div>
+                                                    </Flex>
                                                 </HoverCardContent>
                                             </HoverCard>
                                         ))}
@@ -344,18 +349,18 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                     )}
 
                     {activeTab === 'usage' && (
-                        <div className="grid gap-6">
+                        <Flex direction="col" gap={6}>
                             <div className="border border-button-border rounded-lg p-6 bg-background-lighter">
-                                <h3 className="text-title-light font-medium mb-4">Text & Typography</h3>
-                                <div className="space-y-2">
-                                    <p className="text-title-light text-lg">Primary Text (--title-light)</p>
-                                    <p className="text-button">Secondary Text (--text-button)</p>
-                                </div>
+                                <Heading level="h3" hasMargin={true}>Text & Typography</Heading>
+                                <Flex direction="col" gap={2}>
+                                    <Text size="lg">Primary Text (--title-light)</Text>
+                                    <Text variant="muted">Secondary Text (--text-button)</Text>
+                                </Flex>
                             </div>
 
                             <div className="border border-button-border rounded-lg p-6 bg-background-lighter">
-                                <h3 className="text-title-light font-medium mb-4">Buttons & Interactive Elements</h3>
-                                <div className="flex flex-wrap gap-3">
+                                <Heading level="h3" hasMargin={true}>Buttons & Interactive Elements</Heading>
+                                <Flex wrap="wrap" gap={3}>
                                     <Button className="bg-button border border-button-border text-button hover:text-title-light hover:bg-background transition-colors">
                                         Default Button
                                     </Button>
@@ -371,34 +376,131 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                     >
                                         Ghost Button
                                     </Button>
-                                </div>
+                                </Flex>
                             </div>
 
                             <div className="border border-button-border rounded-lg p-6 bg-background-lighter">
-                                <h3 className="text-title-light font-medium mb-4">Background Elements</h3>
+                                <Heading level="h3" hasMargin={true}>Background Elements</Heading>
                                 <div className="grid grid-cols-2 gap-3">
                                     <div className="h-24 rounded-lg border border-button-border bg-background p-4">
-                                        <span className="text-title-light text-sm">Background (--background)</span>
+                                        <Text size="sm">Background (--background)</Text>
                                     </div>
                                     <div className="h-24 rounded-lg border border-button-border bg-background-lighter p-4">
-                                        <span className="text-title-light text-sm">Background Lighter (--background-lighter)</span>
+                                        <Text size="sm">Background Lighter (--background-lighter)</Text>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Add an expandable item example to show the chevron with bg-background */}
                             <div className="border border-button-border rounded-lg overflow-hidden">
-                                <div className="p-4 flex items-center justify-between bg-background-lighter">
-                                    <h3 className="text-title-light font-medium">Expandable Item</h3>
+                                <Flex items="center" justify="between" className="p-4 bg-background-lighter">
+                                    <Heading level="h3" hasMargin={false}>Expandable Item</Heading>
                                     <div className="h-6 w-6 rounded flex items-center justify-center bg-background">
                                         <ChevronRight className="h-4 w-4 text-button" />
                                     </div>
-                                </div>
-                                <div className="p-4 text-button border-t border-button-border">
-                                    This demonstrates the expandable item with a chevron indicator that has bg-background.
+                                </Flex>
+                                <div className="p-4 border-t border-button-border">
+                                    <Text variant="muted">
+                                        This demonstrates the expandable item with a chevron indicator that has bg-background.
+                                    </Text>
                                 </div>
                             </div>
-                        </div>
+
+                            {/* New section to showcase the Text and Heading components */}
+                            <div className="border border-button-border rounded-lg p-6 bg-background-lighter">
+                                <Heading level="h3" hasMargin={true}>Core Typography Components</Heading>
+
+                                <Flex direction="col" gap={6}>
+                                    <div>
+                                        <Heading level="h4" hasMargin={true}>Heading Variants</Heading>
+                                        <Flex direction="col" gap={2}>
+                                            <Heading level="h1" hasMargin={false}>Heading 1</Heading>
+                                            <Heading level="h2" hasMargin={false}>Heading 2</Heading>
+                                            <Heading level="h3" hasMargin={false}>Heading 3</Heading>
+                                            <Heading level="h4" hasMargin={false}>Heading 4</Heading>
+                                            <Heading level="h5" hasMargin={false}>Heading 5</Heading>
+                                            <Heading level="h6" hasMargin={false}>Heading 6</Heading>
+                                        </Flex>
+                                    </div>
+
+                                    <div>
+                                        <Heading level="h4" hasMargin={true}>Text Variants</Heading>
+                                        <Flex direction="col" gap={2}>
+                                            <Text variant="default">Default Text</Text>
+                                            <Text variant="muted">Muted Text</Text>
+                                            <Text variant="lead">Lead Text</Text>
+                                            <Text variant="large">Large Text</Text>
+                                            <Text variant="small">Small Text</Text>
+                                            <Text variant="subtle">Subtle Text</Text>
+                                        </Flex>
+                                    </div>
+
+                                    <div>
+                                        <Heading level="h4" hasMargin={true}>Linked Headers & Text</Heading>
+                                        <Flex direction="col" gap={2}>
+                                            <Heading level="h4" hasLink linkHref="#" hasMargin={false}>Linked Heading</Heading>
+                                            <Text hasLink linkHref="#" variant="default">Linked Text</Text>
+                                            <Heading level="h4" hasLink linkHref="#" isExternal hasMargin={false}>External Link</Heading>
+                                        </Flex>
+                                    </div>
+
+                                    <div>
+                                        <Heading level="h4" hasMargin={true}>Headers with Icons</Heading>
+                                        <Flex direction="col" gap={2}>
+                                            <Heading
+                                                level="h4"
+                                                iconBefore={<Palette className="h-4 w-4" />}
+                                                hasMargin={false}
+                                            >
+                                                Icon Before
+                                            </Heading>
+                                            <Heading
+                                                level="h4"
+                                                iconAfter={<Copy className="h-4 w-4" />}
+                                                hasMargin={false}
+                                            >
+                                                Icon After
+                                            </Heading>
+                                        </Flex>
+                                    </div>
+                                </Flex>
+                            </div>
+
+                            {/* Flexbox Demo */}
+                            <div className="border border-button-border rounded-lg p-6 bg-background-lighter">
+                                <Heading level="h3" hasMargin={true}>Flex Component</Heading>
+
+                                <Flex direction="col" gap={6}>
+                                    <div>
+                                        <Heading level="h4" hasMargin={true}>Row with items centered</Heading>
+                                        <Flex items="center" justify="between" className="bg-background p-3 rounded">
+                                            <Text>Left item</Text>
+                                            <Text>Right item</Text>
+                                        </Flex>
+                                    </div>
+
+                                    <div>
+                                        <Heading level="h4" hasMargin={true}>Column with gap</Heading>
+                                        <Flex direction="col" gap={2} className="bg-background p-3 rounded">
+                                            <Text>First item</Text>
+                                            <Text>Second item</Text>
+                                            <Text>Third item</Text>
+                                        </Flex>
+                                    </div>
+
+                                    <div>
+                                        <Heading level="h4" hasMargin={true}>Wrapped items</Heading>
+                                        <Flex wrap="wrap" gap={2} className="bg-background p-3 rounded">
+                                            {[1, 2, 3, 4, 5, 6].map(num => (
+                                                <div key={num} className="h-10 w-20 bg-button flex items-center justify-center border border-button-border rounded">
+                                                    <Text variant="muted" size="sm">Item {num}</Text>
+                                                </div>
+                                            ))}
+                                        </Flex>
+                                    </div>
+                                </Flex>
+                            </div>
+                        </Flex>
                     )}
                 </Tabs>
             </div>

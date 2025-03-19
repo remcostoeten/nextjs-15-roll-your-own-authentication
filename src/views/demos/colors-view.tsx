@@ -3,6 +3,7 @@ import { Header } from "@/modules/(demos)/colors/components/colors-header"
 import { Hero } from "@/modules/(demos)/colors/components/colors-hero"
 import { ColorsGrid } from "@/modules/(demos)/colors/components/colors-grid"
 import { DemoSection } from "@/modules/(demos)/colors/components/demo-section"
+import { Heading, Flex } from "@/shared/components/core"
 
 export async function ColorsView() {
     const colors = await parseColorVariables()
@@ -18,10 +19,12 @@ export async function ColorsView() {
                     <DemoSection colors={colors} />
                 </div>
 
-                <div className="max-w-7xl mx-auto">
-                    <h2 className="text-3xl font-bold text-title-light mb-8 text-center">All Color Variables</h2>
+                <Flex direction="col" justify="center" items="center" className="max-w-7xl mx-auto">
+                    <Heading level="h2" align="center" hasMargin={true} className="mb-8">
+                        All Color Variables
+                    </Heading>
                     <ColorsGrid colors={colors} />
-                </div>
+                </Flex>
             </main>
         </div>
     )
