@@ -1,45 +1,44 @@
 "use server"
 
-import { Metadata } from "next"
+import { forumMetadata } from "@/core/config/metadata/forum-metadata"
 import { ForumView } from "@/views/forum/forum-view"
 import { getPosts } from "@/modules/posts/api/queries"
 import { getCurrentUser } from "@/modules/authentication/api/queries/get-current-user"
-import { cookies } from "next/headers"
-import { headers } from "next/headers"
+import { cookies, headers } from "next/headers"
 
-export const metadata: Metadata = {
-    title: "Forum | RAIOA",
-    description: "Join the discussion and share your thoughts with the community",
-}
+export const metadata = forumMetadata
 
 export default async function ForumPage({
-    searchParams,
+    searchParams
 }: {
-    searchParams: { page?: string }
+    searchParams: { page?: string; tab?: string }
 }) {
+    // Get current user (if logged in)
     const user = await getCurrentUser()
-    const page = searchParams.page ? parseInt(searchParams.page) : 1
-    const cookieStore = cookies()
-    const headersList = headers()
 
-    // Get user IP and agent for activity logging
-    const userAgent = headersList.get("user-agent") || undefined
-    const ip = headersList.get("x-forwarded-for") ||
-        headersList.get("x-real-ip") || undefined
+    // Handle pagination
+    const page = Number(searchParams.page) || 1
+    const limit = 10
 
-    // Get posts with context for activity logging
-    const postsData = await getPosts(
-        {
-            page,
-            limit: 10,
-            includeDrafts: !!user // Show user's drafts if logged in
-        },
-        {
-            userId: user?.id || "",
-            userAgent,
-            ipAddress: ip
-        }
+    // Log user activity
+    const userAgent = headers().get("user-agent") || "unknown"
+    const ip = headers().get("x-forwarded-for") || "unknown"
+
+    // Fetch posts
+    const postsData = await getPosts({
+        page,
+        limit,
+        userId: user?.id,
+        userAgent,
+        ipAddress: ip,
+    })
+
+    return (
+        <ForumView
+            posts={postsData.posts}
+            currentPage={page}
+            totalPages={postsData.pagination.totalPages}
+            currentUser={user}
+        />
     )
-
-    return <ForumView posts={postsData.posts} pagination={postsData.pagination} user={user} />
 } 

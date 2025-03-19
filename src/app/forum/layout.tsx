@@ -1,18 +1,13 @@
+"use client"
+
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
-import { Metadata } from "next"
 import { ForumSidebar } from "@/views/forum/forum-sidebar"
+import { forumLayoutMetadata } from "@/core/config/metadata/forum-metadata"
 
-export const metadata: Metadata = {
-    title: "Forum | RAIOA",
-    description: "Join the discussion and share your thoughts with the community",
-}
+export const metadata = forumLayoutMetadata
 
-export default function ForumLayout({
-    children,
-}: {
-    children: React.ReactNode
-}) {
+export default function ForumLayout({ children }: { children: React.ReactNode }) {
     return (
         <div className="min-h-screen bg-[#0D0C0C]">
             <Header />

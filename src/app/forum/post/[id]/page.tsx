@@ -1,16 +1,13 @@
 "use server"
 
-import { Metadata } from "next"
+import { viewPostMetadata } from "@/core/config/metadata/forum-metadata"
 import { notFound } from "next/navigation"
 import { PostView } from "@/views/forum/post-view"
 import { getCurrentUser } from "@/modules/authentication/api/queries/get-current-user"
 import { getPost } from "@/modules/posts/api/queries"
-import { cookies, headers } from "next/headers"
+import { headers } from "next/headers"
 
-export const metadata: Metadata = {
-    title: "View Post | Forum | RAIOA",
-    description: "Join the RAIOA community discussion",
-}
+export const metadata = viewPostMetadata
 
 interface PostPageProps {
     params: {

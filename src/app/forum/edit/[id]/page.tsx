@@ -1,15 +1,12 @@
 "use server"
 
-import { Metadata } from "next"
+import { editPostMetadata } from "@/core/config/metadata/forum-metadata"
 import { notFound, redirect } from "next/navigation"
 import { EditPostView } from "@/views/forum/edit-post-view"
 import { getCurrentUser } from "@/modules/authentication/api/queries/get-current-user"
 import { getPost } from "@/modules/posts/api/queries"
 
-export const metadata: Metadata = {
-    title: "Edit Post | Forum | RAIOA",
-    description: "Edit your post in the RAIOA community",
-}
+export const metadata = editPostMetadata
 
 interface EditPostPageProps {
     params: {
