@@ -1,3 +1,3 @@
-export * from './use-auth'
-export * from './use-auth-api'
-export * from './use-permissions'
+export { useAuth } from './use-auth';
+export { useAuthApi } from './use-auth-api';
+export { usePermissions } from './use-permissions';

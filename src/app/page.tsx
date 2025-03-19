@@ -1,9 +1,9 @@
-import { Header } from "../components/layout/header"
-import { Footer } from "../components/layout/footer"
-import { Hero } from "../components/sections/hero"
-import { Features } from "../components/sections/features"
-import { SecurityShowcase } from "../components/sections/security-showcase"
-import MatrixGrid from "../components/matrix-grid/matrix-grid"
+import { Header } from "@/components/layout/header"
+import { Footer } from "@/components/layout/footer"
+import { Hero } from "@/components/sections/hero"
+import { Features } from "@/components/sections/features"
+import { SecurityShowcase } from "@/components/sections/security-showcase"
+import MatrixGrid from "@/components/matrix-grid/matrix-grid"
 
 export default function Home() {
   return (
