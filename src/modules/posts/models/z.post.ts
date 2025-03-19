@@ -1,19 +1,43 @@
 import { z } from 'zod'
 
+// Post input schema - for creating/updating posts
 export const postSchema = z.object({
-    title: z.string().min(1, "Title is required").max(100, "Title must be 100 characters or less"),
-    content: z.string().min(1, "Content is required"),
-    published: z.boolean().default(false),
+    title: z
+        .string()
+        .min(3, { message: "Title must be at least 3 characters long" })
+        .max(200, { message: "Title must be at most 200 characters long" }),
+    content: z
+        .string()
+        .min(10, { message: "Content must be at least 10 characters long" })
+        .max(10000, { message: "Content must be at most 10000 characters long" }),
+    published: z.boolean().default(true),
     sensitive: z.boolean().default(false),
 })
 
-export type Post = z.infer<typeof postSchema>
+// Post schema with database fields
+export const postDbSchema = postSchema.extend({
+    id: z.string(),
+    authorId: z.string(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+})
 
-// Input type for creating a post
+// Types
 export type PostInput = z.infer<typeof postSchema>
+export type Post = z.infer<typeof postDbSchema>
 
-// Input type for updating a post (all fields optional)
-export type PostUpdateInput = z.infer<typeof postSchema.partial() >
+// Post with author schema
+export const postWithAuthorSchema = postDbSchema.extend({
+    author: z.object({
+        id: z.string(),
+        email: z.string().email(),
+        name: z.string().nullable(),
+        username: z.string().nullable(),
+        avatarUrl: z.string().nullable(),
+    }),
+})
+
+export type PostWithAuthor = z.infer<typeof postWithAuthorSchema>
 
 // Request context for post operations
 export interface PostRequestContext {
