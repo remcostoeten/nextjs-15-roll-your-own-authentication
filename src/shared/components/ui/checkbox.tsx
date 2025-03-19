@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { cn } from "helpers"
+import { cn } from "@/shared/utils/helpers"
 import styles from "@/styles/modules/checkbox.module.css"
 
 export interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {

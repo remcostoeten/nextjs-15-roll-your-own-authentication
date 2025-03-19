@@ -112,3 +112,114 @@
     @apply bg-background text-foreground;
   }
 }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  color: #8c877d;
+  background: #0d0c0c;
+}
+
+/* Syntax highlighting */
+.code-line {
+  display: block;
+  position: relative;
+  white-space: pre;
+}
+
+.line-number {
+  display: inline-block;
+  width: 2rem;
+  text-align: right;
+  padding-right: 1rem;
+  user-select: none;
+  opacity: 0.5;
+}
+
+.token {
+  color: #f2f0ed;
+  /* Default token color */
+}
+
+.token.keyword {
+  color: #cf9c2;
+  /* Light gold for keywords */
+}
+
+.token.string {
+  color: #ff4800;
+  /* Orange for strings */
+}
+
+.token.comment {
+  color: #8c877d;
+  /* Gray for comments */
+}
+
+.token.function {
+  color: #4e9815;
+  /* Green for functions */
+}
+
+.token.variable {
+  color: #f2f0ed;
+  /* White for variables */
+}
+
+.token.property {
+  color: #4e9815;
+  /* Green for properties */
+}
+
+.token.punctuation {
+  color: #8c877d;
+  /* Gray for punctuation */
+}
+
+.token.operator {
+  color: #cf9c2;
+  /* Light gold for operators */
+}
+
+.token.boolean {
+  color: #ff4800;
+  /* Orange for booleans */
+}
+
+.token.number {
+  color: #ff4800;
+  /* Orange for numbers */
+}
+
+/* Selection highlighting */
+::selection {
+  background-color: rgba(15, 255, 15, 0.2);
+  color: white;
+}
+
+pre::selection,
+pre *::selection {
+  background-color: rgba(15, 255, 15, 0.2);
+  color: white;
+}
+
+/* Copy button animation */
+@keyframes success-pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.copy-success {
+  animation: success-pulse 0.5s ease;
+}

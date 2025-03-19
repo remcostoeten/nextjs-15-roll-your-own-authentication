@@ -6,6 +6,8 @@ export * from './sessions'
 export * from './user-metrics'
 export * from './activity-logs'
 export * from './posts'
+export * from './changelog.schema'
+export * from './roadmap.schema'
 
 export const users = sqliteTable('users', {
     id: text('id').primaryKey().notNull(),

@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, memo } from "react"
 import { motion, AnimatePresence, m } from "framer-motion"
 import {
     Database,
@@ -106,10 +106,34 @@ type WidgetSize = "SMALL" | "NORMAL" | "LARGE"
 const useDevToolsStore = createDevToolsStore()
 
 export function DevToolsWidget({ allowDrag = true, showInProduction = false, authInfo }: DevToolsWidgetProps) {
+    // Get values from the store first
+    const {
+        position,
+        setPosition,
+        opacity: storedOpacity,
+        setOpacity: setStoredOpacity,
+        widgetPosition: storedWidgetPosition,
+        setWidgetPosition: setStoredWidgetPosition,
+        isPinned: storedIsPinned,
+        setIsPinned: setStoredIsPinned,
+        widgetSize: storedWidgetSize,
+        setWidgetSize: setStoredWidgetSize,
+        theme: storedTheme,
+        setTheme: setStoredTheme,
+    } = useDevToolsStore()
+
+    // Compute safe position values
+    const safePosition = {
+        x: typeof position?.x === "number" ? position.x : 20,
+        y: typeof position?.y === "number" ? position.y : 20,
+    }
+
+    // Then initialize states
     const [isOpen, setIsOpen] = useState(false)
     const [activeTab, setActiveTab] = useState("localStorage")
     const containerRef = useRef<HTMLDivElement>(null)
-    const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 })
+    // Initialize dragPosition with the safe position
+    const [dragPosition, setDragPosition] = useState(safePosition)
     const [isDragging, setIsDragging] = useState(false)
     const hasMovedRef = useRef(false)
     const dragTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
@@ -259,22 +283,6 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
 
     const [isVisible, setIsVisible] = useState(true)
 
-    // Get and set position from Zustand store with fallback
-    const {
-        position,
-        setPosition,
-        opacity: storedOpacity,
-        setOpacity: setStoredOpacity,
-        widgetPosition: storedWidgetPosition,
-        setWidgetPosition: setStoredWidgetPosition,
-        isPinned: storedIsPinned,
-        setIsPinned: setStoredIsPinned,
-        widgetSize: storedWidgetSize,
-        setWidgetSize: setStoredWidgetSize,
-        theme: storedTheme,
-        setTheme: setStoredTheme,
-    } = useDevToolsStore()
-
     // Update the state initialization to use store values
     const [widgetOpacity, setWidgetOpacity] = useState(storedOpacity || 1)
     const [widgetPosition, setWidgetPosition] = useState<WidgetPosition>(storedWidgetPosition || "CUSTOM")
@@ -282,11 +290,6 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
     const [widgetSize, setWidgetSize] = useState<WidgetSize>(storedWidgetSize || "NORMAL")
     const [isDarkTheme, setIsDarkTheme] = useState(storedTheme === "dark")
     const [startDragPos, setStartDragPos] = useState({ x: 0, y: 0 })
-
-    const safePosition = {
-        x: typeof position?.x === "number" ? position.x : 20,
-        y: typeof position?.y === "number" ? position.y : 20,
-    }
 
     // Load storage data when tab changes or panel opens
     const refreshStorageData = (tab: string) => {
@@ -493,6 +496,7 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
         }
     }, [])
 
+    // Effect to sync dragPosition with stored position on mount
     useEffect(() => {
         // Ensure the widget is visible on the screen on initial load
         if (typeof window !== "undefined") {
@@ -504,18 +508,16 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
             const safeX = Math.max(20, Math.min(windowWidth - 60, safePosition.x))
             const safeY = Math.max(20, Math.min(windowHeight - 60, safePosition.y))
 
-            // If position is outside safe viewport bounds, reset to safe position
+            // Set the drag position to match the safe stored position
+            setDragPosition({ x: safeX, y: safeY })
+
+            // If position is outside safe viewport bounds, update the stored position
             if (safeX !== safePosition.x || safeY !== safePosition.y) {
                 setPosition({ x: safeX, y: safeY })
             }
-
-            // Clean up event listeners on unmount
-            return () => {
-                document.removeEventListener('mousemove', (e: globalThis.MouseEvent) => { })
-                document.removeEventListener('mouseup', () => { })
-            }
         }
-    }, [])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []) // We want this to run only once on mount, other dependencies handled separately
 
     // Add effect to update space below when needed
     useEffect(() => {
@@ -524,6 +526,7 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
             const windowHeight = window.innerHeight
             setSpaceBelow(windowHeight - rect.bottom)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, dragPosition.x, dragPosition.y])
 
     const calculatePanelPosition = () => {
@@ -1117,4 +1120,6 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
         </div>
     )
 }
+
+export default memo(DevToolsWidget);
 

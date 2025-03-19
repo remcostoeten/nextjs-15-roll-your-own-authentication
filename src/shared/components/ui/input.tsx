@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { cn } from "helpers"
+import { cn } from "@/shared/utils/helpers"
 import { EyeIcon, EyeOffIcon } from "lucide-react"
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {

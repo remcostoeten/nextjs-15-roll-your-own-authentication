@@ -1,5 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from 'helpers';
+import { cn } from '@/shared/utils/helpers';
 
 const spinnerVariants = cva(
     "relative inline-block",
