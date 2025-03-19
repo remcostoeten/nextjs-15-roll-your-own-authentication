@@ -13,6 +13,11 @@ interface PostCardProps {
 export function PostCard({ post, currentUserId }: PostCardProps) {
     const formattedDate = formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })
 
+    // Format author name from firstName/lastName
+    const authorName = post.author.firstName && post.author.lastName
+        ? `${post.author.firstName} ${post.author.lastName}`
+        : post.author.firstName || "Anonymous"
+
     return (
         <article className="bg-background-lighter border border-button-border rounded-lg overflow-hidden mb-4 transition-all hover:border-[#4e9815]/30">
             <Link href={`/forum/post/${post.id}`} className="block p-6">
@@ -25,7 +30,7 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
                         <div className="flex items-center">
                             <div className="h-6 w-6 rounded-full bg-gradient-to-br from-[#3a6d10] to-[#4e9815] mr-2"></div>
                             <span className="font-medium text-button-hover">
-                                {post.author.name || post.author.username || "Anonymous"}
+                                {authorName}
                             </span>
                         </div>
                         <span className="mx-2">•</span>

@@ -26,14 +26,12 @@ export const postDbSchema = postSchema.extend({
 export type PostInput = z.infer<typeof postSchema>
 export type Post = z.infer<typeof postDbSchema>
 
-// Post with author schema
+// Post with author schema - updated to match our database schema
 export const postWithAuthorSchema = postDbSchema.extend({
     author: z.object({
         id: z.string(),
-        email: z.string().email(),
-        name: z.string().nullable(),
-        username: z.string().nullable(),
-        avatarUrl: z.string().nullable(),
+        firstName: z.string().nullable(),
+        lastName: z.string().nullable(),
     }),
 })
 

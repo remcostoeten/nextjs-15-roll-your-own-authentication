@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -27,7 +27,7 @@ const sections = [
     { id: "components", label: "Components", icon: <Component className="h-5 w-5" /> },
 ]
 
-export default function StyleguidePage() {
+function StyleguideContent() {
     const searchParams = useSearchParams()
     const router = useRouter()
     const [activeSection, setActiveSection] = useState(searchParams.get("section") || "colors")
@@ -46,7 +46,7 @@ export default function StyleguidePage() {
     // Update URL when section changes
     const handleSectionChange = (section: string) => {
         setActiveSection(section)
-        router.push(`/demos/styleguide?section=${section}`, { scroll: false })
+        router.push(`/styleguide?section=${section}`, { scroll: false })
         setIsMobileNavOpen(false)
     }
 
@@ -526,6 +526,14 @@ export default function StyleguidePage() {
                 </div>
             </Flex>
         </div>
+    )
+}
+
+export default function StyleguidePage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <StyleguideContent />
+        </Suspense>
     )
 }
 
