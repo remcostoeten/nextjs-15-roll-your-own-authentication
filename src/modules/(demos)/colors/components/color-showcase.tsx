@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Palette, Copy, Check, Sun, Moon } from "lucide-react"
+import { Palette, Copy, Check, Sun, Moon, Code } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/shared/components/ui/tabs"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/shared/components/ui/hover-card"
@@ -15,6 +15,7 @@ interface ColorShowcaseProps {
 
 export function ColorShowcase({ colors }: ColorShowcaseProps) {
     const [copiedColor, setCopiedColor] = useState<string | null>(null)
+    const [copiedClass, setCopiedClass] = useState<string | null>(null)
     const [activeTab, setActiveTab] = useState<'colors' | 'usage'>('colors')
 
     const handleCopyColor = (value: string) => {
@@ -23,7 +24,41 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
         setTimeout(() => setCopiedColor(null), 2000)
     }
 
-    const colorsByCategory = colors.reduce((acc, color) => {
+    const handleCopyClass = (className: string) => {
+        navigator.clipboard.writeText(className)
+        setCopiedClass(className)
+        setTimeout(() => setCopiedClass(null), 2000)
+    }
+
+    // Generate Tailwind classes for each color
+    const enhanceColorWithClasses = (color: ColorVariable) => {
+        const tailwindClasses = [];
+        const name = color.name;
+
+        // Add background class
+        if (name.includes('background') || name.includes('button') || name === 'offblack' || name === 'offwhite' || name === 'panel') {
+            tailwindClasses.push(`bg-${name.replace('--', '')}`);
+        }
+
+        // Add text class
+        if (name.includes('text') || name.includes('title') || name === 'offwhite' || name === 'offblack') {
+            tailwindClasses.push(`text-${name.replace('--', '')}`);
+        }
+
+        // Add border class
+        if (name.includes('border') || name === 'button-border') {
+            tailwindClasses.push(`border-${name.replace('--', '')}`);
+        }
+
+        return {
+            ...color,
+            tailwindClasses
+        };
+    };
+
+    const enhancedColors = colors.map(enhanceColorWithClasses);
+
+    const colorsByCategory = enhancedColors.reduce((acc, color) => {
         const category = color.name.includes('background')
             ? 'backgrounds'
             : color.name.includes('button')
@@ -38,7 +73,7 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
 
         acc[category].push(color)
         return acc
-    }, {} as Record<string, ColorVariable[]>)
+    }, {} as Record<string, ReturnType<typeof enhanceColorWithClasses>[]>)
 
     return (
         <motion.div
@@ -136,31 +171,167 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                                         </div>
                                                     </div>
                                                 </HoverCardTrigger>
-                                                <HoverCardContent className="w-80 bg-background-lighter border border-button-border">
-                                                    <div className="space-y-3">
+                                                <HoverCardContent className="w-96 bg-background-lighter border border-button-border">
+                                                    <div className="space-y-4">
                                                         <div>
                                                             <h4 className="text-sm font-medium text-title-light">CSS Variable</h4>
-                                                            <code className="text-xs bg-background px-1 py-0.5 rounded text-button">var(--{color.name})</code>
-                                                        </div>
-                                                        <div>
-                                                            <h4 className="text-sm font-medium text-title-light">Available Classes</h4>
-                                                            <div className="flex flex-wrap gap-1 mt-1">
-                                                                {color.classes.map((className) => (
-                                                                    <code key={className} className="text-xs bg-background px-1 py-0.5 rounded text-button">
-                                                                        {className}
-                                                                    </code>
-                                                                ))}
+                                                            <div className="flex items-center gap-2 mt-1">
+                                                                <code className="flex-1 text-xs bg-background px-1 py-0.5 rounded text-button">var(--{color.name})</code>
+                                                                <Button
+                                                                    size="sm"
+                                                                    variant="ghost"
+                                                                    className="h-6 w-6 p-0"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        handleCopyColor(`var(--${color.name})`);
+                                                                    }}
+                                                                >
+                                                                    {copiedColor === `var(--${color.name})` ? (
+                                                                        <Check className="h-3 w-3 text-title-light" />
+                                                                    ) : (
+                                                                        <Copy className="h-3 w-3 text-button" />
+                                                                    )}
+                                                                </Button>
                                                             </div>
                                                         </div>
+
                                                         <div>
-                                                            <Button
-                                                                variant="outline"
-                                                                size="sm"
-                                                                className="w-full text-xs mt-2 hover:bg-background hover:text-title-light"
-                                                                onClick={() => handleCopyColor(color.value)}
-                                                            >
-                                                                {copiedColor === color.value ? 'Copied!' : 'Copy HEX Value'}
-                                                            </Button>
+                                                            <h4 className="text-sm font-medium text-title-light">Hex Value</h4>
+                                                            <div className="flex items-center gap-2 mt-1">
+                                                                <code className="flex-1 text-xs bg-background px-1 py-0.5 rounded text-button">{color.value}</code>
+                                                                <Button
+                                                                    size="sm"
+                                                                    variant="ghost"
+                                                                    className="h-6 w-6 p-0"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        handleCopyColor(color.value);
+                                                                    }}
+                                                                >
+                                                                    {copiedColor === color.value ? (
+                                                                        <Check className="h-3 w-3 text-title-light" />
+                                                                    ) : (
+                                                                        <Copy className="h-3 w-3 text-button" />
+                                                                    )}
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Tailwind Classes */}
+                                                        <div>
+                                                            <h4 className="text-sm font-medium text-title-light mb-2">Tailwind Classes</h4>
+                                                            <div className="space-y-2">
+                                                                {color.tailwindClasses.filter(cls => cls.startsWith('bg-')).length > 0 && (
+                                                                    <div className="flex items-center gap-2">
+                                                                        <div className="flex-shrink-0 w-20 text-xs text-button">Background:</div>
+                                                                        <div className="flex flex-wrap gap-1 flex-1">
+                                                                            {color.tailwindClasses.filter(cls => cls.startsWith('bg-')).map(className => (
+                                                                                <div key={className} className="flex items-center bg-background rounded">
+                                                                                    <code className="text-xs px-1 py-0.5 text-button">{className}</code>
+                                                                                    <Button
+                                                                                        size="sm"
+                                                                                        variant="ghost"
+                                                                                        className="h-6 w-6 p-0 ml-1"
+                                                                                        onClick={(e) => {
+                                                                                            e.stopPropagation();
+                                                                                            handleCopyClass(className);
+                                                                                        }}
+                                                                                    >
+                                                                                        {copiedClass === className ? (
+                                                                                            <Check className="h-3 w-3 text-title-light" />
+                                                                                        ) : (
+                                                                                            <Copy className="h-3 w-3 text-button" />
+                                                                                        )}
+                                                                                    </Button>
+                                                                                </div>
+                                                                            ))}
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+
+                                                                {color.tailwindClasses.filter(cls => cls.startsWith('text-')).length > 0 && (
+                                                                    <div className="flex items-center gap-2">
+                                                                        <div className="flex-shrink-0 w-20 text-xs text-button">Text:</div>
+                                                                        <div className="flex flex-wrap gap-1 flex-1">
+                                                                            {color.tailwindClasses.filter(cls => cls.startsWith('text-')).map(className => (
+                                                                                <div key={className} className="flex items-center bg-background rounded">
+                                                                                    <code className="text-xs px-1 py-0.5 text-button">{className}</code>
+                                                                                    <Button
+                                                                                        size="sm"
+                                                                                        variant="ghost"
+                                                                                        className="h-6 w-6 p-0 ml-1"
+                                                                                        onClick={(e) => {
+                                                                                            e.stopPropagation();
+                                                                                            handleCopyClass(className);
+                                                                                        }}
+                                                                                    >
+                                                                                        {copiedClass === className ? (
+                                                                                            <Check className="h-3 w-3 text-title-light" />
+                                                                                        ) : (
+                                                                                            <Copy className="h-3 w-3 text-button" />
+                                                                                        )}
+                                                                                    </Button>
+                                                                                </div>
+                                                                            ))}
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+
+                                                                {color.tailwindClasses.filter(cls => cls.startsWith('border-')).length > 0 && (
+                                                                    <div className="flex items-center gap-2">
+                                                                        <div className="flex-shrink-0 w-20 text-xs text-button">Border:</div>
+                                                                        <div className="flex flex-wrap gap-1 flex-1">
+                                                                            {color.tailwindClasses.filter(cls => cls.startsWith('border-')).map(className => (
+                                                                                <div key={className} className="flex items-center bg-background rounded">
+                                                                                    <code className="text-xs px-1 py-0.5 text-button">{className}</code>
+                                                                                    <Button
+                                                                                        size="sm"
+                                                                                        variant="ghost"
+                                                                                        className="h-6 w-6 p-0 ml-1"
+                                                                                        onClick={(e) => {
+                                                                                            e.stopPropagation();
+                                                                                            handleCopyClass(className);
+                                                                                        }}
+                                                                                    >
+                                                                                        {copiedClass === className ? (
+                                                                                            <Check className="h-3 w-3 text-title-light" />
+                                                                                        ) : (
+                                                                                            <Copy className="h-3 w-3 text-button" />
+                                                                                        )}
+                                                                                    </Button>
+                                                                                </div>
+                                                                            ))}
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Available Classes */}
+                                                        <div>
+                                                            <h4 className="text-sm font-medium text-title-light">Available CSS Classes</h4>
+                                                            <div className="flex flex-wrap gap-1 mt-1">
+                                                                {color.classes.map((className) => (
+                                                                    <div key={className} className="flex items-center bg-background rounded">
+                                                                        <code className="text-xs px-1 py-0.5 text-button">{className}</code>
+                                                                        <Button
+                                                                            size="sm"
+                                                                            variant="ghost"
+                                                                            className="h-6 w-6 p-0 ml-1"
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                handleCopyClass(className.substring(1)); // Remove the dot
+                                                                            }}
+                                                                        >
+                                                                            {copiedClass === className.substring(1) ? (
+                                                                                <Check className="h-3 w-3 text-title-light" />
+                                                                            ) : (
+                                                                                <Copy className="h-3 w-3 text-button" />
+                                                                            )}
+                                                                        </Button>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </HoverCardContent>
