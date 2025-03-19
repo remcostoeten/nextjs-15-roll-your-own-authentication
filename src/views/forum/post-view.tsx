@@ -8,6 +8,8 @@ import { ArrowLeft, Edit, Heart, MessageCircle, Share2, Trash2 } from "lucide-re
 import { User } from "@/server/db/schemas/users"
 import { deletePost } from "@/modules/posts/api/mutations"
 import { Post } from "@/modules/posts/models/z.post"
+import { CommentSection } from "@/modules/posts/components/comment-section"
+import { createCommentsTable } from "@/modules/posts/api/queries"
 
 interface PostViewProps {
     post: Post & { author: User }
@@ -18,6 +20,11 @@ export function PostView({ post, currentUser }: PostViewProps) {
     const router = useRouter()
     const [isDeleting, setIsDeleting] = useState(false)
     const [error, setError] = useState<string | null>(null)
+
+    // Ensure the comments table exists
+    useState(() => {
+        createCommentsTable().catch(console.error)
+    })
 
     const isAuthor = currentUser?.id === post.authorId
     const canEdit = isAuthor
@@ -74,7 +81,7 @@ export function PostView({ post, currentUser }: PostViewProps) {
                         <div className="flex items-center text-sm text-button">
                             <div className="flex items-center">
                                 <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#3a6d10] to-[#4e9815] mr-2"></div>
-                                <span className="font-medium text-button-hover">{post.author.name}</span>
+                                <span className="font-medium text-button-hover">{post.author.firstName} {post.author.lastName}</span>
                             </div>
                             <span className="mx-2">•</span>
                             <time>{formattedDate}</time>
@@ -104,10 +111,10 @@ export function PostView({ post, currentUser }: PostViewProps) {
                             <span>Like</span>
                         </button>
 
-                        <button className="flex items-center text-button hover:text-title-light">
+                        <a href="#comments" className="flex items-center text-button hover:text-title-light">
                             <MessageCircle className="h-5 w-5 mr-1" />
                             <span>Comment</span>
-                        </button>
+                        </a>
 
                         <button className="flex items-center text-button hover:text-title-light">
                             <Share2 className="h-5 w-5 mr-1" />
@@ -138,14 +145,8 @@ export function PostView({ post, currentUser }: PostViewProps) {
                 </div>
             </article>
 
-            <section className="mt-8">
-                <h2 className="text-xl font-semibold text-title-light mb-4">
-                    Comments
-                </h2>
-
-                <div className="bg-background-lighter border border-button-border rounded-lg p-6 text-center text-button">
-                    <p>Comments coming soon</p>
-                </div>
+            <section id="comments">
+                <CommentSection postId={post.id} currentUser={currentUser} />
             </section>
         </div>
     )
