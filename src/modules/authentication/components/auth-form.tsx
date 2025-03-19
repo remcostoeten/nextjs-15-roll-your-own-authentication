@@ -8,7 +8,7 @@ import { loginSchema } from "../api/models/z.login";
 import { Spinner } from "@/shared/components/effects/spinner";
 import { useFormStatus } from "react-dom";
 import { Checkbox, Input } from "@/shared/components/ui";
-import { cn } from "helpers";
+import { cn } from "@/shared/utils/helpers";
 import { CoreButton } from "@/shared/components/core/core-button";
 
 const container = {

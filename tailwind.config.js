@@ -7,6 +7,7 @@ module.exports = {
         './src/app/**/*.{js,ts,jsx,tsx,mdx}',
         './src/views/**/*.{js,ts,jsx,tsx,mdx}',
         './src/shared/**/*.{js,ts,jsx,tsx,mdx}',
+        './src/modules/**/*.{js,ts,jsx,tsx,mdx}',
     ],
     theme: {
         container: {
@@ -18,8 +19,82 @@ module.exports = {
         },
         extend: {
             colors: {
-                "offwhite": "red",
-                border: "hsl(var(--border))",
+
+                'offwhite'
+                    :
+
+                    'var(--offwhite)'
+                ,
+
+
+                'title-light'
+                    :
+
+                    'var(--title-light)'
+                ,
+
+
+                'offblack'
+                    :
+
+                    'var(--offblack)'
+                ,
+
+
+                'bg'
+                    :
+
+                    'var(--bg)'
+                ,
+
+
+                'panel'
+                    :
+
+                    'var(--panel)'
+                ,
+
+
+                'button'
+                    :
+
+                    'var(--button)'
+                ,
+
+
+                'text-button'
+                    :
+
+                    'var(--text-button)'
+                ,
+
+
+                'button-border'
+                    :
+
+                    'var(--button-border)'
+                ,
+
+
+                'border'
+                    :
+
+                    'var(--border)'
+                ,
+
+
+                'input'
+                    :
+
+                    'var(--input)'
+                ,
+
+
+                'ring'
+                    :
+
+                    'var(--ring)'
+                , border: "hsl(var(--border))",
                 input: "hsl(var(--input))",
                 ring: "hsl(var(--ring))",
                 background: "hsl(var(--background))",

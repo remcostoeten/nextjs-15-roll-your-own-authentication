@@ -1,7 +1,7 @@
 'use client'
 
-import React, { createContext, ReactNode, useContext, useState } from 'react'
-import { DevToolsWidget } from '@/modules/widgets/dev-tools/components/dev-tools-widget'
+import React, { createContext, ReactNode, useContext, useState, useEffect } from 'react'
+import DevToolsWidget from '@/modules/widgets/dev-tools/components/dev-tools-widget'
 
 type WidgetContextType = {
     isDevToolVisible: boolean
@@ -20,13 +20,21 @@ export const useWidgets = () => {
 
 export function WidgetProvider({ children }: { children: ReactNode }) {
     const [isDevToolVisible, setIsDevToolVisible] = useState(true)
+    const [isInitialized, setIsInitialized] = useState(false)
+
+    // Only log when the state actually changes, not on every render
+    useEffect(() => {
+        console.log('Widget visibility changed:', isDevToolVisible)
+    }, [isDevToolVisible])
+
+    // Initialize once on mount
+    useEffect(() => {
+        setIsInitialized(true)
+    }, [])
 
     const toggleDevTool = () => {
-        console.log('Toggling DevTool, current state:', isDevToolVisible)
         setIsDevToolVisible(prev => !prev)
     }
-
-    console.log('Widget states:', { isDevToolVisible })
 
     return (
         <WidgetContext.Provider
@@ -37,12 +45,17 @@ export function WidgetProvider({ children }: { children: ReactNode }) {
         >
             {children}
 
-            {/* Dev Tool Widget - Always visible */}
-            <div className="fixed inset-0 z-[9998] pointer-events-none">
-                <div className="pointer-events-auto">
-                    <DevToolsWidget allowDrag showInProduction />
+            {/* Dev Tool Widget - Always visible but only render after initialization */}
+            {isDevToolVisible && isInitialized && (
+                <div className="fixed inset-0 z-[9998] pointer-events-none">
+                    <div className="relative pointer-events-auto">
+                        <DevToolsWidget
+                            allowDrag
+                            showInProduction
+                        />
+                    </div>
                 </div>
-            </div>
+            )}
         </WidgetContext.Provider>
     )
 } 

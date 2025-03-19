@@ -1,5 +1,5 @@
 import RegisterView from '@/views/auth/register'
-import { siteMetadata } from '@/shared/config/metadata'
+import { siteMetadata } from '@/core/config/metadata/base-metadata'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {

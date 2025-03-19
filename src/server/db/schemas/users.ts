@@ -24,7 +24,6 @@ export const users = sqliteTable('users', {
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 })
 
-// Schema for inserting a user
 export const insertUserSchema = createInsertSchema(users, {
 	email: z.string().email(),
 	role: z.enum(['admin', 'user']).default('user'),
@@ -32,7 +31,6 @@ export const insertUserSchema = createInsertSchema(users, {
 	githubAccessToken: z.string().optional(),
 })
 
-// Schema for selecting a user
 export const selectUserSchema = createSelectSchema(users)
 
 export type User = typeof users.$inferSelect

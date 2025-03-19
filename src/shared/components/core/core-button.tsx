@@ -3,7 +3,7 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import { Spinner } from "@/shared/components/effects/spinner";
-import { cn } from "helpers";
+import { cn } from "@/shared/utils/helpers";
 import Link from "next/link";
 
 export type ButtonVariant =

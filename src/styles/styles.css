@@ -1,13 +1,14 @@
 @import "tailwindcss";
 @import "./components/spinner.css";
+@import "./variables/colors.css";
 
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --offwhite: red;
-  --color-background: var(--background);
+  --color-background: var(--bg);
+
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -53,7 +54,7 @@
   --foreground: 20 14.3% 4.1%;
   --card: 0 0% 100%;
   --card-foreground: 20 14.3% 4.1%;
-  --popover: 0 0% 100%;
+  --popover: var(--background);
   --popover-foreground: 20 14.3% 4.1%;
   --primary: 24.6 95% 53.1%;
   --primary-foreground: 60 9.1% 97.8%;
@@ -93,7 +94,7 @@
   --accent-foreground: 60 9.1% 97.8%;
   --destructive: 0 72.2% 50.6%;
   --destructive-foreground: 60 9.1% 97.8%;
-  --border: 12 6.5% 15.1%;
+  --border: var(--button-border);
   --input: 12 6.5% 15.1%;
   --ring: 20.5 90.2% 48.2%;
   --chart-1: 220 70% 50%;
@@ -111,4 +112,115 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  color: #8c877d;
+  background: #0d0c0c;
+}
+
+/* Syntax highlighting */
+.code-line {
+  display: block;
+  position: relative;
+  white-space: pre;
+}
+
+.line-number {
+  display: inline-block;
+  width: 2rem;
+  text-align: right;
+  padding-right: 1rem;
+  user-select: none;
+  opacity: 0.5;
+}
+
+.token {
+  color: #f2f0ed;
+  /* Default token color */
+}
+
+.token.keyword {
+  color: #cf9c2;
+  /* Light gold for keywords */
+}
+
+.token.string {
+  color: #ff4800;
+  /* Orange for strings */
+}
+
+.token.comment {
+  color: #8c877d;
+  /* Gray for comments */
+}
+
+.token.function {
+  color: #4e9815;
+  /* Green for functions */
+}
+
+.token.variable {
+  color: #f2f0ed;
+  /* White for variables */
+}
+
+.token.property {
+  color: #4e9815;
+  /* Green for properties */
+}
+
+.token.punctuation {
+  color: #8c877d;
+  /* Gray for punctuation */
+}
+
+.token.operator {
+  color: #cf9c2;
+  /* Light gold for operators */
+}
+
+.token.boolean {
+  color: #ff4800;
+  /* Orange for booleans */
+}
+
+.token.number {
+  color: #ff4800;
+  /* Orange for numbers */
+}
+
+/* Selection highlighting */
+::selection {
+  background-color: rgba(15, 255, 15, 0.2);
+  color: white;
+}
+
+pre::selection,
+pre *::selection {
+  background-color: rgba(15, 255, 15, 0.2);
+  color: white;
+}
+
+/* Copy button animation */
+@keyframes success-pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.copy-success {
+  animation: success-pulse 0.5s ease;
 }

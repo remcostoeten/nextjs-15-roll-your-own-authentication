@@ -1,79 +1,32 @@
 "use client";
 
-import * as React from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { useFormState, useFormStatus } from "react-dom";
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Checkbox, Input } from "@/shared/components/ui";
 import { CoreButton } from "@/shared/components/core/core-button";
 import { formAnimations } from '@/shared/animations/form';
-import { getBrowserInfo } from '@/modules/user-metrics/helpers/get-browser-info';
-import {
-    registerMutation,
-    type RegisterFormState
-} from '../api/mutations/register';
-import { useActionState } from "react";
-
-function SubmitButton() {
-    const { pending } = useFormStatus();
-
-    return (
-        <CoreButton
-            type="submit"
-            variant="primary"
-            fullWidth
-            isLoading={pending}
-            loadingText="Creating account..."
-            className="mt-5"
-        >
-            Create account
-        </CoreButton>
-    );
-}
-
-const initialState: RegisterFormState = {
-    message: null,
-    success: false,
-};
+import { registerMutation } from '../api/mutations/register';
 
 export function RegisterForm() {
     const router = useRouter();
-    const formRef = React.useRef<HTMLFormElement>(null);
-    const [error, setError] = React.useState<string | null>(null);
+    const formRef = useRef<HTMLFormElement>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    async function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+        setIsLoading(true);
         setError(null);
 
-        const form = e.currentTarget;
-        const formData = new FormData(form);
+        if (!formRef.current) return;
 
-        // Basic validation
-        const email = formData.get('email')?.toString() || '';
-        const password = formData.get('password')?.toString() || '';
-        const firstName = formData.get('firstName')?.toString() || '';
-        const lastName = formData.get('lastName')?.toString() || '';
-
-        if (!email.trim()) {
-            toast.error('Email is required');
-            return;
-        }
-        if (!password.trim()) {
-            toast.error('Password is required');
-            return;
-        }
-        if (!firstName.trim()) {
-            toast.error('First name is required');
-            return;
-        }
-        if (!lastName.trim()) {
-            toast.error('Last name is required');
-            return;
-        }
+        const formData = new FormData(formRef.current);
 
         try {
             const result = await registerMutation(formData);
+
             if (result.success) {
                 toast.success(result.message || 'Registration successful', {
                     description: "Redirecting you to the dashboard...",
@@ -87,8 +40,10 @@ export function RegisterForm() {
             const message = error instanceof Error ? error.message : 'Registration failed';
             toast.error(message);
             setError(message);
+        } finally {
+            setIsLoading(false);
         }
-    };
+    }
 
     return (
         <motion.div
@@ -96,7 +51,7 @@ export function RegisterForm() {
             initial="hidden"
             animate="show"
         >
-            <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col w-full">
+            <form ref={formRef} onSubmit={handleFormSubmit} className="flex flex-col w-full">
                 {error && (
                     <div className="mb-4 p-4 bg-red-500/10 text-red-500 rounded-lg">
                         {error}
@@ -162,7 +117,16 @@ export function RegisterForm() {
                 </motion.div>
 
                 <motion.div variants={formAnimations.item}>
-                    <SubmitButton />
+                    <CoreButton
+                        type="submit"
+                        variant="primary"
+                        fullWidth
+                        isLoading={isLoading}
+                        loadingText="Creating account..."
+                        className="mt-5"
+                    >
+                        Create account
+                    </CoreButton>
                 </motion.div>
             </form>
         </motion.div>

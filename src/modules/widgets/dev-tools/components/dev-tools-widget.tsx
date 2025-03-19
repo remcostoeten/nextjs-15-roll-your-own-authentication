@@ -2,8 +2,8 @@
 
 import type React from "react"
 
-import { useState, useRef, useEffect } from "react"
-import { motion, AnimatePresence, m } from "framer-motion"
+import { useState, useRef, useEffect, memo, useMemo } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import {
     Database,
     Key,
@@ -35,6 +35,14 @@ import { ScrollArea } from "@/shared/components/ui/scroll-area"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/components/ui/tooltip"
 import { Slider as UISlider } from "@/shared/components/ui/slider"
 import { createDevToolsStore } from "../store/dev-tools-store"
+import { JSONViewer } from "@/shared/components/json-viewer"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from "@/shared/components/ui/dialog"
 
 type DevToolsWidgetProps = {
     allowDrag?: boolean
@@ -103,13 +111,40 @@ type DevAction = {
 type WidgetPosition = "TOP_LEFT" | "TOP_RIGHT" | "BOTTOM_LEFT" | "BOTTOM_RIGHT" | "CUSTOM"
 type WidgetSize = "SMALL" | "NORMAL" | "LARGE"
 
+// Add new type for panel position
+type PanelPlacement = 'top' | 'right' | 'bottom' | 'left' | 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+
 const useDevToolsStore = createDevToolsStore()
 
 export function DevToolsWidget({ allowDrag = true, showInProduction = false, authInfo }: DevToolsWidgetProps) {
+    // Get values from the store first
+    const {
+        position,
+        setPosition,
+        opacity: storedOpacity,
+        setOpacity: setStoredOpacity,
+        widgetPosition: storedWidgetPosition,
+        setWidgetPosition: setStoredWidgetPosition,
+        isPinned: storedIsPinned,
+        setIsPinned: setStoredIsPinned,
+        widgetSize: storedWidgetSize,
+        setWidgetSize: setStoredWidgetSize,
+        theme: storedTheme,
+        setTheme: setStoredTheme,
+    } = useDevToolsStore()
+
+    // Compute safe position values
+    const safePosition = {
+        x: typeof position?.x === "number" ? position.x : 20,
+        y: typeof position?.y === "number" ? position.y : 20,
+    }
+
+    // Then initialize states
     const [isOpen, setIsOpen] = useState(false)
     const [activeTab, setActiveTab] = useState("localStorage")
     const containerRef = useRef<HTMLDivElement>(null)
-    const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 })
+    // Initialize dragPosition with the safe position
+    const [dragPosition, setDragPosition] = useState(safePosition)
     const [isDragging, setIsDragging] = useState(false)
     const hasMovedRef = useRef(false)
     const dragTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
@@ -259,22 +294,6 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
 
     const [isVisible, setIsVisible] = useState(true)
 
-    // Get and set position from Zustand store with fallback
-    const {
-        position,
-        setPosition,
-        opacity: storedOpacity,
-        setOpacity: setStoredOpacity,
-        widgetPosition: storedWidgetPosition,
-        setWidgetPosition: setStoredWidgetPosition,
-        isPinned: storedIsPinned,
-        setIsPinned: setStoredIsPinned,
-        widgetSize: storedWidgetSize,
-        setWidgetSize: setStoredWidgetSize,
-        theme: storedTheme,
-        setTheme: setStoredTheme,
-    } = useDevToolsStore()
-
     // Update the state initialization to use store values
     const [widgetOpacity, setWidgetOpacity] = useState(storedOpacity || 1)
     const [widgetPosition, setWidgetPosition] = useState<WidgetPosition>(storedWidgetPosition || "CUSTOM")
@@ -283,10 +302,22 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
     const [isDarkTheme, setIsDarkTheme] = useState(storedTheme === "dark")
     const [startDragPos, setStartDragPos] = useState({ x: 0, y: 0 })
 
-    const safePosition = {
-        x: typeof position?.x === "number" ? position.x : 20,
-        y: typeof position?.y === "number" ? position.y : 20,
-    }
+    const [panelPlacement, setPanelPlacement] = useState<PanelPlacement>('bottom-left');
+    const [spaceData, setSpaceData] = useState({
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+    });
+
+    // Fix the typed state declaration
+    const [showDebugInfo, setShowDebugInfo] = useState<boolean>(process.env.NODE_ENV === 'development' && false);
+
+    // Add adaptive panel size state
+    const [panelSize, setPanelSize] = useState({ width: 385, height: 400 });
+
+    // Add state for view all dialog
+    const [viewAllData, setViewAllData] = useState<{ title: string; data: string } | null>(null);
 
     // Load storage data when tab changes or panel opens
     const refreshStorageData = (tab: string) => {
@@ -358,7 +389,6 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
         }
     }, [])
 
-    // Delete storage item
     const deleteStorageItem = (key: string, storageType: "local" | "session") => {
         if (storageType === "local") {
             localStorage.removeItem(key)
@@ -425,21 +455,29 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
         }
     }
 
-    // Ensure the widget stays within viewport bounds
+    // Enhance the constrainPosition function to be more robust
     const constrainPosition = (x: number, y: number) => {
         if (typeof window === "undefined") return { x, y }
 
         const windowWidth = window.innerWidth
         const windowHeight = window.innerHeight
-        const widgetWidth = 32 // Approximate widget width
-        const widgetHeight = 32 // Approximate widget height
+        const WIDGET_SIZE = widgetSize === "SMALL" ? 24 : widgetSize === "LARGE" ? 40 : 32
+        const SAFETY_MARGIN = 16 // Keep at least this amount visible
 
-        return {
-            x: Math.max(0, Math.min(windowWidth - widgetWidth, x)),
-            y: Math.max(0, Math.min(windowHeight - widgetHeight, y)),
-        }
+        // Make sure at least part of the widget is visible
+        const safeX = Math.max(
+            -WIDGET_SIZE + SAFETY_MARGIN,
+            Math.min(windowWidth - SAFETY_MARGIN, x)
+        )
+        const safeY = Math.max(
+            -WIDGET_SIZE + SAFETY_MARGIN,
+            Math.min(windowHeight - SAFETY_MARGIN, y)
+        )
+
+        return { x: safeX, y: safeY }
     }
 
+    // Update the handleDragStart function to use the improved constrainPosition
     const handleDragStart = (event: React.MouseEvent<HTMLDivElement>) => {
         if (!allowDrag) return
 
@@ -449,10 +487,12 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
 
         function handleDrag(e: MouseEvent) {
             hasMovedRef.current = true
-            setDragPosition({
-                x: e.clientX - startPos.x,
-                y: e.clientY - startPos.y
-            })
+            // Constrain the position to keep widget visible
+            const newPosition = constrainPosition(
+                e.clientX - startPos.x,
+                e.clientY - startPos.y
+            )
+            setDragPosition(newPosition)
         }
 
         function handleDragEnd() {
@@ -493,29 +533,35 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
         }
     }, [])
 
+    // Add a viewport boundary check on mount and window resize
     useEffect(() => {
-        // Ensure the widget is visible on the screen on initial load
-        if (typeof window !== "undefined") {
-            const windowWidth = window.innerWidth
-            const windowHeight = window.innerHeight
+        // Function to ensure widget stays within viewport
+        function ensureWidgetIsVisible() {
+            if (typeof window === "undefined") return
 
-            // Force position to be visible regardless of stored position
-            // This ensures the widget is always accessible
-            const safeX = Math.max(20, Math.min(windowWidth - 60, safePosition.x))
-            const safeY = Math.max(20, Math.min(windowHeight - 60, safePosition.y))
+            // Constrain current position and update if needed
+            const safePosition = constrainPosition(dragPosition.x, dragPosition.y)
 
-            // If position is outside safe viewport bounds, reset to safe position
-            if (safeX !== safePosition.x || safeY !== safePosition.y) {
-                setPosition({ x: safeX, y: safeY })
-            }
-
-            // Clean up event listeners on unmount
-            return () => {
-                document.removeEventListener('mousemove', (e: globalThis.MouseEvent) => { })
-                document.removeEventListener('mouseup', () => { })
+            // Only update if position actually changed
+            if (safePosition.x !== dragPosition.x || safePosition.y !== dragPosition.y) {
+                setDragPosition(safePosition)
+                // Also update stored position if widget is now in a different position
+                setPosition(safePosition)
             }
         }
-    }, [])
+
+        // Run on mount
+        ensureWidgetIsVisible()
+
+        // Add resize listener
+        window.addEventListener('resize', ensureWidgetIsVisible)
+
+        // Clean up
+        return () => {
+            window.removeEventListener('resize', ensureWidgetIsVisible)
+        }
+        // Include all dependencies used inside the effect
+    }, [dragPosition, widgetSize, setPosition, constrainPosition]);
 
     // Add effect to update space below when needed
     useEffect(() => {
@@ -524,35 +570,400 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
             const windowHeight = window.innerHeight
             setSpaceBelow(windowHeight - rect.bottom)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, dragPosition.x, dragPosition.y])
 
-    const calculatePanelPosition = () => {
-        if (typeof window === "undefined" || !containerRef.current) {
-            return { top: "auto", left: "0", right: "auto", bottom: "100%" }
-        }
+    // Enhance space calculation with viewport boundary checking and adaptive sizing
+    useEffect(() => {
+        if (isOpen && containerRef.current) {
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const rect = containerRef.current.getBoundingClientRect();
 
-        const rect = containerRef.current.getBoundingClientRect()
-        const widgetHeight = rect.height
-        const panelHeight = 400 // Approximate panel height
+            // Adjust panel size for very small viewports
+            const idealPanelWidth = 385; // Default panel width
+            const idealPanelHeight = 400; // Default panel height
 
-        // If there's not enough space below, position above
-        if (spaceBelow < panelHeight) {
-            return {
-                bottom: `${widgetHeight + 8}px`, // 8px gap between widget and panel
-                left: "0",
-                right: "auto",
-                top: "auto"
+            // Adaptive sizing for small screens - never use more than 85% of viewport
+            const adaptiveWidth = Math.min(idealPanelWidth, windowWidth * 0.85);
+            const adaptiveHeight = Math.min(idealPanelHeight, windowHeight * 0.85);
+
+            setPanelSize({
+                width: adaptiveWidth,
+                height: adaptiveHeight
+            });
+
+            // Get current panel positions
+            const spaceAvailable = {
+                top: rect.top,
+                right: windowWidth - rect.right,
+                bottom: windowHeight - rect.bottom,
+                left: rect.left,
+            };
+
+            setSpaceData(spaceAvailable);
+
+            // Check if element is too close to edges
+            const isTooCloseToRightEdge = windowWidth - rect.right < 20;
+            const isTooCloseToLeftEdge = rect.left < 20;
+            const isTooCloseToTopEdge = rect.top < 20;
+            const isTooCloseToBottomEdge = windowHeight - rect.bottom < 20;
+
+            let bestPlacement: PanelPlacement = 'bottom-left'; // Default fallback
+
+            // Check if panel would render outside the viewport in any direction
+            const wouldExceedRight = rect.left + adaptiveWidth > windowWidth;
+            const wouldExceedLeft = rect.right - adaptiveWidth < 0;
+            const wouldExceedTop = rect.bottom - adaptiveHeight < 0;
+            const wouldExceedBottom = rect.top + adaptiveHeight > windowHeight;
+
+            // Primary direction logic - check each direction in priority order
+            if (spaceAvailable.right >= adaptiveWidth && !isTooCloseToTopEdge && !isTooCloseToBottomEdge) {
+                // If there's enough space to the right and not too close to top/bottom edges
+                bestPlacement = 'right';
             }
+            else if (spaceAvailable.left >= adaptiveWidth && !isTooCloseToTopEdge && !isTooCloseToBottomEdge) {
+                // If there's enough space to the left and not too close to top/bottom edges
+                bestPlacement = 'left';
+            }
+            else if (spaceAvailable.bottom >= adaptiveHeight && !wouldExceedRight && !wouldExceedLeft) {
+                // If there's enough space below and won't exceed left/right bounds
+                bestPlacement = 'bottom';
+            }
+            else if (spaceAvailable.top >= adaptiveHeight && !wouldExceedRight && !wouldExceedLeft) {
+                // If there's enough space above and won't exceed left/right bounds
+                bestPlacement = 'top';
+            }
+            // Corner placement logic - when primary directions aren't feasible
+            else {
+                // Near right edge of viewport - use left side placements
+                if (wouldExceedRight || isTooCloseToRightEdge) {
+                    bestPlacement = wouldExceedBottom || isTooCloseToBottomEdge ? 'top-left' : 'bottom-left';
+                }
+                // Near left edge of viewport - use right side placements
+                else if (wouldExceedLeft || isTooCloseToLeftEdge) {
+                    bestPlacement = wouldExceedBottom || isTooCloseToBottomEdge ? 'top-right' : 'bottom-right';
+                }
+                // Near bottom edge - use top placements
+                else if (wouldExceedBottom || isTooCloseToBottomEdge) {
+                    bestPlacement = wouldExceedRight || rect.left > windowWidth / 2 ? 'top-left' : 'top-right';
+                }
+                // Near top edge - use bottom placements
+                else if (wouldExceedTop || isTooCloseToTopEdge) {
+                    bestPlacement = wouldExceedRight || rect.left > windowWidth / 2 ? 'bottom-left' : 'bottom-right';
+                }
+                // Default corner placement based on quadrant position
+                else {
+                    const isInRightHalf = rect.left > windowWidth / 2;
+                    const isInBottomHalf = rect.top > windowHeight / 2;
+
+                    if (isInRightHalf && isInBottomHalf) {
+                        bestPlacement = 'top-left';
+                    } else if (isInRightHalf && !isInBottomHalf) {
+                        bestPlacement = 'bottom-left';
+                    } else if (!isInRightHalf && isInBottomHalf) {
+                        bestPlacement = 'top-right';
+                    } else {
+                        bestPlacement = 'bottom-right';
+                    }
+                }
+            }
+
+            // Final safety check - for extremely small viewports, 
+            // choose direction with most available space
+            const allDirections = [
+                { dir: 'right', space: spaceAvailable.right },
+                { dir: 'left', space: spaceAvailable.left },
+                { dir: 'top', space: spaceAvailable.top },
+                { dir: 'bottom', space: spaceAvailable.bottom }
+            ];
+
+            // If all directions have very limited space, use direction with most space
+            if (
+                spaceAvailable.right < adaptiveWidth &&
+                spaceAvailable.left < adaptiveWidth &&
+                spaceAvailable.top < adaptiveHeight &&
+                spaceAvailable.bottom < adaptiveHeight
+            ) {
+                // Sort directions by available space (descending)
+                allDirections.sort((a, b) => b.space - a.space);
+
+                // Use direction with most available space
+                bestPlacement = allDirections[0].dir as PanelPlacement;
+
+                // If even the best direction has very limited space,
+                // force center positioning for small viewports
+                if (allDirections[0].space < Math.min(adaptiveWidth, adaptiveHeight) * 0.8) {
+                    // Special handling for absolute center positioning (rare case)
+                    bestPlacement = 'bottom'; // Will be centered in the calculations below
+
+                    // Set very small panel size for extreme cases
+                    setPanelSize({
+                        width: Math.min(adaptiveWidth, windowWidth * 0.7),
+                        height: Math.min(adaptiveHeight, windowHeight * 0.7)
+                    });
+                }
+            }
+
+            setPanelPlacement(bestPlacement);
+        }
+    }, [isOpen, dragPosition.x, dragPosition.y]);
+
+    // Update panelPosition to account for adaptive sizing
+    const panelPosition = useMemo(() => {
+        const ARROW_OFFSET = 8; // Gap between widget and panel
+
+        // Helper to center the panel on very small screens
+        const centerOffset = (dir: 'horizontal' | 'vertical') => {
+            if (typeof window === 'undefined' || !containerRef.current) return '0px';
+
+            const rect = containerRef.current.getBoundingClientRect();
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            if (dir === 'horizontal') {
+                // Ensure panel is centered horizontally but doesn't go off-screen
+                const leftPosition = rect.left - (panelSize.width / 2) + (rect.width / 2);
+                const rightEdge = leftPosition + panelSize.width;
+
+                if (leftPosition < 10) return '10px'; // Prevent going off left edge
+                if (rightEdge > windowWidth - 10) return `${windowWidth - panelSize.width - 10}px`; // Prevent going off right edge
+
+                return `${leftPosition}px`;
+            } else {
+                // Ensure panel is centered vertically but doesn't go off-screen
+                const topPosition = rect.top - (panelSize.height / 2) + (rect.height / 2);
+                const bottomEdge = topPosition + panelSize.height;
+
+                if (topPosition < 10) return '10px'; // Prevent going off top edge
+                if (bottomEdge > windowHeight - 10) return `${windowHeight - panelSize.height - 10}px`; // Prevent going off bottom edge
+
+                return `${topPosition}px`;
+            }
+        };
+
+        // For extremely cramped viewports, use absolute positioning
+        const isExtremelyCramped = typeof window !== 'undefined' &&
+            panelSize.width > window.innerWidth * 0.7 &&
+            panelSize.height > window.innerHeight * 0.7;
+
+        if (isExtremelyCramped) {
+            return {
+                position: 'fixed' as const,
+                top: centerOffset('vertical'),
+                left: centerOffset('horizontal'),
+                transform: 'none',
+                right: 'auto',
+                bottom: 'auto',
+            };
         }
 
-        // Default to positioning below with a small gap
-        return {
-            top: `${widgetHeight + 8}px`,
-            left: "0",
-            right: "auto",
-            bottom: "auto"
+        switch (panelPlacement) {
+            case 'right':
+                return {
+                    top: '0',
+                    left: `calc(100% + ${ARROW_OFFSET}px)`,
+                    right: 'auto',
+                    bottom: 'auto'
+                };
+            case 'left':
+                return {
+                    top: '0',
+                    right: `calc(100% + ${ARROW_OFFSET}px)`,
+                    left: 'auto',
+                    bottom: 'auto'
+                };
+            case 'top':
+                return {
+                    bottom: `calc(100% + ${ARROW_OFFSET}px)`,
+                    left: '0',
+                    right: 'auto',
+                    top: 'auto'
+                };
+            case 'bottom':
+                return {
+                    top: `calc(100% + ${ARROW_OFFSET}px)`,
+                    left: '0',
+                    right: 'auto',
+                    bottom: 'auto'
+                };
+            case 'top-right':
+                return {
+                    bottom: `calc(100% + ${ARROW_OFFSET}px)`,
+                    left: 'auto',
+                    right: '0',
+                    top: 'auto'
+                };
+            case 'top-left':
+                return {
+                    bottom: `calc(100% + ${ARROW_OFFSET}px)`,
+                    left: '0',
+                    right: 'auto',
+                    top: 'auto'
+                };
+            case 'bottom-right':
+                return {
+                    top: `calc(100% + ${ARROW_OFFSET}px)`,
+                    left: 'auto',
+                    right: '0',
+                    bottom: 'auto'
+                };
+            case 'bottom-left':
+            default:
+                return {
+                    top: `calc(100% + ${ARROW_OFFSET}px)`,
+                    left: '0',
+                    right: 'auto',
+                    bottom: 'auto'
+                };
         }
-    }
+    }, [panelPlacement, panelSize, containerRef]);
+
+    // Update arrowPosition to hide arrow when using absolute positioning
+    const arrowPosition = useMemo(() => {
+        // For extremely cramped viewports, hide the arrow
+        const isExtremelyCramped = typeof window !== 'undefined' &&
+            panelSize.width > window.innerWidth * 0.7 &&
+            panelSize.height > window.innerHeight * 0.7;
+
+        if (isExtremelyCramped) {
+            return {
+                display: 'none'
+            };
+        }
+
+        switch (panelPlacement) {
+            case 'right':
+                return {
+                    top: '12px',
+                    left: '-6px',
+                    bottom: 'auto',
+                    right: 'auto',
+                    transform: 'rotate(-45deg)'
+                };
+            case 'left':
+                return {
+                    top: '12px',
+                    right: '-6px',
+                    bottom: 'auto',
+                    left: 'auto',
+                    transform: 'rotate(135deg)'
+                };
+            case 'top':
+                return {
+                    bottom: '-6px',
+                    left: '12px',
+                    top: 'auto',
+                    right: 'auto',
+                    transform: 'rotate(225deg)'
+                };
+            case 'bottom':
+                return {
+                    top: '-6px',
+                    left: '12px',
+                    bottom: 'auto',
+                    right: 'auto',
+                    transform: 'rotate(45deg)'
+                };
+            case 'top-right':
+                return {
+                    bottom: '-6px',
+                    right: '12px',
+                    top: 'auto',
+                    left: 'auto',
+                    transform: 'rotate(225deg)'
+                };
+            case 'top-left':
+                return {
+                    bottom: '-6px',
+                    left: '12px',
+                    top: 'auto',
+                    right: 'auto',
+                    transform: 'rotate(225deg)'
+                };
+            case 'bottom-right':
+                return {
+                    top: '-6px',
+                    right: '12px',
+                    bottom: 'auto',
+                    left: 'auto',
+                    transform: 'rotate(45deg)'
+                };
+            case 'bottom-left':
+            default:
+                return {
+                    top: '-6px',
+                    left: '12px',
+                    bottom: 'auto',
+                    right: 'auto',
+                    transform: 'rotate(45deg)'
+                };
+        }
+    }, [panelPlacement, panelSize]);
+
+    // Replace the getPanelAnimation function with useMemo
+    const panelAnimation = useMemo(() => {
+        // Base for all animations
+        const base = {
+            initial: { opacity: 0, scale: 0.9 },
+            animate: { opacity: 1, scale: 1 },
+            exit: { opacity: 0, scale: 0.9 },
+            transition: {
+                type: "spring",
+                stiffness: 400,
+                damping: 25
+            }
+        };
+
+        // Add direction-specific transform
+        switch (panelPlacement) {
+            case 'right':
+                return {
+                    ...base,
+                    initial: { ...base.initial, x: -10 },
+                    animate: { ...base.animate, x: 0 },
+                    exit: { ...base.exit, x: -10 },
+                };
+            case 'left':
+                return {
+                    ...base,
+                    initial: { ...base.initial, x: 10 },
+                    animate: { ...base.animate, x: 0 },
+                    exit: { ...base.exit, x: 10 },
+                };
+            case 'top':
+                return {
+                    ...base,
+                    initial: { ...base.initial, y: 10 },
+                    animate: { ...base.animate, y: 0 },
+                    exit: { ...base.exit, y: 10 },
+                };
+            case 'bottom':
+                return {
+                    ...base,
+                    initial: { ...base.initial, y: -10 },
+                    animate: { ...base.animate, y: 0 },
+                    exit: { ...base.exit, y: -10 },
+                };
+            case 'top-right':
+            case 'top-left':
+                return {
+                    ...base,
+                    initial: { ...base.initial, y: 10 },
+                    animate: { ...base.animate, y: 0 },
+                    exit: { ...base.exit, y: 10 },
+                };
+            case 'bottom-right':
+            case 'bottom-left':
+            default:
+                return {
+                    ...base,
+                    initial: { ...base.initial, y: -10 },
+                    animate: { ...base.animate, y: 0 },
+                    exit: { ...base.exit, y: -10 },
+                };
+        }
+    }, [panelPlacement]);
 
     // Update the opacity setter
     const updateOpacity = (value: number) => {
@@ -592,7 +1003,9 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
                 break
         }
 
+        // Update both stored position and visual position
         setPosition({ x: newX, y: newY })
+        setDragPosition({ x: newX, y: newY })
         setWidgetPosition(position)
         setStoredWidgetPosition(position)
     }
@@ -681,7 +1094,27 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
             id: "toggle-visibility",
             name: "Toggle Visibility",
             description: "Hides or shows the widget.",
-            action: () => setIsVisible((prev) => !prev),
+            action: () => {
+                const newVisibility = !isVisible;
+                setIsVisible(newVisibility);
+                setIsOpen(false); // Close popover panel
+
+                if (!newVisibility) {
+                    // Save current opacity before hiding
+                    const currentOpacity = widgetOpacity;
+                    if (currentOpacity > 0.1) {
+                        setStoredOpacity(currentOpacity);
+                    }
+                    // Set low opacity when hidden
+                    setWidgetOpacity(0.1);
+                } else {
+                    // Restore to previously stored opacity or default
+                    setWidgetOpacity(storedOpacity || 1);
+                }
+
+                setActionResult(`Widget ${newVisibility ? "visible" : "dimmed"}`);
+                setTimeout(() => setActionResult(null), 3000);
+            },
             icon: isVisible ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />,
         },
         {
@@ -691,7 +1124,45 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
             action: () => setPresetPosition("TOP_LEFT"),
             icon: <Wand2 className="w-3.5 h-3.5" />,
         },
+        {
+            id: "toggle-debug",
+            name: "Toggle Debug Info",
+            description: "Shows or hides positioning debug information",
+            action: () => {
+                setShowDebugInfo(!showDebugInfo);
+                setActionResult(`Debug info ${!showDebugInfo ? 'shown' : 'hidden'}`);
+                setTimeout(() => setActionResult(null), 3000);
+            },
+            icon: <Slider className="w-3.5 h-3.5" />,
+        },
     ]
+
+    // Modify the handleViewAllItems function
+    const handleViewAllItems = (storageType: "local" | "session") => {
+        // Create a simplified view of all items as a single JSON object
+        const items = storageType === "local" ? localStorageItems : sessionStorageItems;
+        const combinedData = items.reduce((acc, item) => {
+            try {
+                // Try to parse the value first
+                acc[item.key] = JSON.parse(item.value);
+            } catch {
+                // If not valid JSON, just use the string
+                acc[item.key] = item.value;
+            }
+            return acc;
+        }, {} as Record<string, any>);
+
+        // Set the data to show in the modal
+        setViewAllData({
+            title: `All ${storageType === "local" ? "localStorage" : "sessionStorage"} Items`,
+            data: JSON.stringify(combinedData, null, 2)
+        });
+    };
+
+    // Function to close the modal
+    const handleCloseViewAll = () => {
+        setViewAllData(null);
+    };
 
     if (!shouldShow) {
         return null
@@ -703,40 +1174,55 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
     const buttonSize = widgetSize === "SMALL" ? "w-6 h-6" : widgetSize === "LARGE" ? "w-10 h-10" : "w-8 h-8"
     const iconSize = widgetSize === "SMALL" ? "w-3 h-3" : widgetSize === "LARGE" ? "w-5 h-5" : "w-4 h-4"
 
-    // Then update the return statement
     return (
         <div className={themeClass}>
-            {isVisible && (
-                <div
-                    className="fixed z-[9999]"
-                    style={{
-                        transform: `translate(${dragPosition.x}px, ${dragPosition.y}px)`,
-                        cursor: isDragging ? 'grabbing' : 'grab',
-                        opacity: widgetOpacity,
-                        transition: "opacity 0.3s ease"
-                    }}
-                >
-                    <div className="relative" ref={containerRef}>
-                        <div
-                            className={`${buttonSize} rounded-full flex items-center justify-center cursor-pointer border bg-white dark:bg-zinc-950 border-gray-300 dark:border-zinc-700 text-gray-600 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-zinc-200 shadow-sm`}
-                            onMouseDown={handleDragStart}
-                            onClick={handleClick}
-                        >
-                            <Settings className={iconSize} />
-                        </div>
+            <div
+                className="fixed z-[9999]"
+                style={{
+                    transform: `translate(${dragPosition.x}px, ${dragPosition.y}px)`,
+                    cursor: isDragging ? 'grabbing' : 'grab',
+                    opacity: widgetOpacity,
+                    transition: "opacity 0.3s ease",
+                    pointerEvents: isVisible ? 'auto' : 'none'
+                }}
+            >
+                {/* Display the debug info if enabled */}
+                {showDebugInfo && (
+                    <div className="absolute -top-12 -left-1 bg-black/90 text-white text-[10px] px-2 py-1 rounded-sm whitespace-nowrap z-[10000]">
+                        Pos: {Math.round(dragPosition.x)},{Math.round(dragPosition.y)} |
+                        Placement: {panelPlacement} |
+                        Space: T:{Math.round(spaceData.top)} R:{Math.round(spaceData.right)} B:{Math.round(spaceData.bottom)} L:{Math.round(spaceData.left)}
+                    </div>
+                )}
 
-                        <AnimatePresence>
-                            {isOpen && !isDragging && (
-                                <motion.div
-                                    className="absolute bg-white dark:bg-zinc-950 border border-gray-200 dark:border-zinc-800 rounded-lg shadow-xl p-4 w-96 text-sm z-[9999]"
-                                    style={calculatePanelPosition()}
-                                    initial={{ opacity: 0, scale: 0.95, originY: spaceBelow < 400 ? "bottom" : "top" }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    transition={{ duration: 0.2 }}
-                                >
+                <div className="relative" ref={containerRef}>
+                    <div
+                        className={`${buttonSize} rounded-full flex items-center justify-center cursor-pointer border bg-white dark:bg-zinc-950 border-gray-300 dark:border-zinc-700 text-gray-600 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-zinc-200 shadow-sm`}
+                        onMouseDown={handleDragStart}
+                        onClick={handleClick}
+                    >
+                        <Settings className={iconSize} />
+                    </div>
+
+                    <AnimatePresence>
+                        {isOpen && !isDragging && (
+                            <motion.div
+                                className="absolute z-[9999]"
+                                style={{
+                                    ...panelPosition,
+                                    width: `${panelSize.width}px`,
+                                }}
+                                {...panelAnimation}
+                            >
+                                {/* Improved connector indicator pointing to the trigger button */}
+                                <div
+                                    className="absolute w-3.5 h-3.5 bg-white dark:bg-zinc-950 border-t border-l border-gray-200 dark:border-zinc-800 shadow-sm z-50"
+                                    style={arrowPosition}
+                                ></div>
+
+                                <div className="bg-bg border border-[#222] rounded-lg shadow-xl p-4 w-full text-sm relative z-10">
                                     <div className="flex items-center justify-between mb-4">
-                                        <h3 className="font-semibold text-gray-800 dark:text-zinc-100">Developer Tools</h3>
+                                        <h3 className="font-semibold text-title-light">Developer Tools</h3>
                                         <Button
                                             variant="ghost"
                                             size="icon"
@@ -835,9 +1321,8 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
                                         </div>
                                     </div>
 
-                                    {/* Action Result Message */}
                                     {actionResult && (
-                                        <div className="mb-3 p-2 bg-gray-100 dark:bg-zinc-900/80 border border-gray-200 dark:border-zinc-800 rounded text-xs text-center text-gray-800 dark:text-zinc-100 font-medium">
+                                        <div className="mb-3 p-2 bg-gray-100 dark:bg-zinc-900/80 border border-gray-200 dark:border-zinc-800 rounded text-xs text-center text-gray-800 dark:text-offwhite font-medium">
                                             {actionResult}
                                         </div>
                                     )}
@@ -929,7 +1414,8 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
                                                     localStorageItems.map((item) => (
                                                         <div
                                                             key={item.key}
-                                                            className="border border-gray-200 dark:border-zinc-800 rounded-md p-2 bg-gray-50 dark:bg-zinc-900/30 mb-2"
+                                                            className="
+border border-button-borderrounded-md p-2 bg-gray-50 dark:bg-zinc-900/30 mb-2"
                                                         >
                                                             {editingKey === item.key ? (
                                                                 <div className="flex gap-2">
@@ -944,29 +1430,18 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
                                                                 </div>
                                                             ) : (
                                                                 <div className="flex flex-col gap-1">
-                                                                    <div className="flex justify-between items-center">
-                                                                        <span className="font-medium text-gray-800 dark:text-zinc-200">{item.key}</span>
-                                                                        <div className="flex gap-1">
-                                                                            <Button
-                                                                                variant="ghost"
-                                                                                size="icon"
-                                                                                className="h-6 w-6 hover:bg-gray-100 dark:hover:bg-zinc-800"
-                                                                                onClick={() => startEditing(item.key, item.value)}
-                                                                            >
-                                                                                <Edit className="h-3.5 w-3.5" />
-                                                                            </Button>
-                                                                            <Button
-                                                                                variant="ghost"
-                                                                                size="icon"
-                                                                                className="h-6 w-6 text-red-500 hover:bg-gray-100 dark:hover:bg-zinc-800 hover:text-red-400"
-                                                                                onClick={() => deleteStorageItem(item.key, "local")}
-                                                                            >
-                                                                                <Trash2 className="h-3.5 w-3.5" />
-                                                                            </Button>
-                                                                        </div>
+                                                                    <div className="font-medium text-gray-800 dark:text-zinc-200 mb-1">
+                                                                        {item.key}
                                                                     </div>
-                                                                    <div className="bg-gray-100 dark:bg-black/50 p-2 rounded-md text-xs font-mono break-all mt-1">
-                                                                        {item.value}
+                                                                    <div>
+                                                                        <JSONViewer
+                                                                            data={item.value}
+                                                                            defaultExpanded={false}
+                                                                            onEdit={() => startEditing(item.key, item.value)}
+                                                                            onDelete={() => deleteStorageItem(item.key, "local")}
+                                                                            isMultiple={localStorageItems.length > 3}
+                                                                            onViewAll={() => handleViewAllItems("local")}
+                                                                        />
                                                                     </div>
                                                                 </div>
                                                             )}
@@ -1008,7 +1483,8 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
                                                     sessionStorageItems.map((item) => (
                                                         <div
                                                             key={item.key}
-                                                            className="border border-gray-200 dark:border-zinc-800 rounded-md p-2 bg-gray-50 dark:bg-zinc-900/30 mb-2"
+                                                            className="
+border border-button-borderrounded-md p-2 bg-gray-50 dark:bg-zinc-900/30 mb-2"
                                                         >
                                                             {editingKey === item.key ? (
                                                                 <div className="flex gap-2">
@@ -1023,29 +1499,18 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
                                                                 </div>
                                                             ) : (
                                                                 <div className="flex flex-col gap-1">
-                                                                    <div className="flex justify-between items-center">
-                                                                        <span className="font-medium text-gray-800 dark:text-zinc-200">{item.key}</span>
-                                                                        <div className="flex gap-1">
-                                                                            <Button
-                                                                                variant="ghost"
-                                                                                size="icon"
-                                                                                className="h-6 w-6 hover:bg-gray-100 dark:hover:bg-zinc-800"
-                                                                                onClick={() => startEditing(item.key, item.value)}
-                                                                            >
-                                                                                <Edit className="h-3.5 w-3.5" />
-                                                                            </Button>
-                                                                            <Button
-                                                                                variant="ghost"
-                                                                                size="icon"
-                                                                                className="h-6 w-6 text-red-500 hover:bg-gray-100 dark:hover:bg-zinc-800 hover:text-red-400"
-                                                                                onClick={() => deleteStorageItem(item.key, "session")}
-                                                                            >
-                                                                                <Trash2 className="h-3.5 w-3.5" />
-                                                                            </Button>
-                                                                        </div>
+                                                                    <div className="font-medium text-gray-800 dark:text-zinc-200 mb-1">
+                                                                        {item.key}
                                                                     </div>
-                                                                    <div className="bg-gray-100 dark:bg-black/50 p-2 rounded-md text-xs font-mono break-all mt-1">
-                                                                        {item.value}
+                                                                    <div>
+                                                                        <JSONViewer
+                                                                            data={item.value}
+                                                                            defaultExpanded={false}
+                                                                            onEdit={() => startEditing(item.key, item.value)}
+                                                                            onDelete={() => deleteStorageItem(item.key, "session")}
+                                                                            isMultiple={sessionStorageItems.length > 3}
+                                                                            onViewAll={() => handleViewAllItems("session")}
+                                                                        />
                                                                     </div>
                                                                 </div>
                                                             )}
@@ -1108,13 +1573,35 @@ export function DevToolsWidget({ allowDrag = true, showInProduction = false, aut
 
                                         {/* Other tabs would continue here */}
                                     </Tabs>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
-            )}
+            </div>
+
+            {/* View All Dialog */}
+            <Dialog open={viewAllData !== null} onOpenChange={handleCloseViewAll}>
+                <DialogContent className="sm:max-w-[600px] max-h-[85vh] overflow-hidden flex flex-col">
+                    <DialogHeader>
+                        <DialogTitle>{viewAllData?.title}</DialogTitle>
+                        <DialogDescription>
+                            Complete overview of all stored items.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="overflow-auto flex-grow">
+                        {viewAllData && (
+                            <JSONViewer
+                                data={viewAllData.data}
+                                defaultExpanded={true}
+                            />
+                        )}
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }
+
+export default memo(DevToolsWidget);
 
