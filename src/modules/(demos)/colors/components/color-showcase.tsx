@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Palette, Copy, Check, Sun, Moon, Code } from "lucide-react"
+import { Palette, Copy, Check, Sun, Moon, ChevronRight } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/shared/components/ui/tabs"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/shared/components/ui/hover-card"
@@ -83,9 +83,9 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
             className="w-full max-w-5xl mx-auto rounded-xl overflow-hidden border border-button-border bg-background"
         >
             <div className="flex items-center justify-between p-4 border-b border-button-border bg-background-lighter">
-                <div className="flex items-center gap-2 text-title-light">
-                    <Palette className="h-5 w-5" />
-                    <h2 className="text-lg font-medium">Color System</h2>
+                <div className="flex items-center gap-2">
+                    <Palette className="h-5 w-5 text-title-light" />
+                    <h2 className="text-lg font-medium text-title-light">Developer Tools</h2>
                 </div>
                 <div className="flex gap-2">
                     <TooltipProvider>
@@ -151,16 +151,16 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                             <HoverCard key={color.name}>
                                                 <HoverCardTrigger asChild>
                                                     <div
-                                                        className="group border border-button-border p-4 rounded-lg flex items-center gap-4 bg-background-lighter cursor-pointer hover:border-title-light/30 hover:bg-background-lighter/80 transition-all"
+                                                        className="group border border-button-border p-4 rounded-lg flex items-center gap-4 bg-background-lighter cursor-pointer hover:border-title-light/20 hover:bg-background-lighter/95 transition-all"
                                                         onClick={() => handleCopyColor(color.value)}
                                                     >
                                                         <div
-                                                            className="h-12 w-12 rounded-md border border-button-border shadow-sm group-hover:scale-105 group-hover:shadow-md transition-all"
+                                                            className="h-12 w-12 rounded-md border border-button-border shadow-sm group-hover:scale-[1.02] transition-all"
                                                             style={{ backgroundColor: color.value }}
                                                         />
                                                         <div className="flex-1">
-                                                            <p className="text-title-light text-sm group-hover:text-title-light/90">--{color.name}</p>
-                                                            <p className="text-text-button text-xs group-hover:text-button/90">{color.value}</p>
+                                                            <p className="text-title-light text-sm">--{color.name}</p>
+                                                            <p className="text-text-button text-xs">{color.value}</p>
                                                         </div>
                                                         <div className="opacity-0 group-hover:opacity-100 transition-opacity">
                                                             {copiedColor === color.value ? (
@@ -180,7 +180,7 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                                                 <Button
                                                                     size="sm"
                                                                     variant="ghost"
-                                                                    className="h-6 w-6 p-0 hover:bg-background/50 hover:text-title-light transition-colors"
+                                                                    className="h-6 w-6 p-0 hover:bg-background/30 hover:text-title-light transition-colors"
                                                                     onClick={(e) => {
                                                                         e.stopPropagation();
                                                                         handleCopyColor(`var(--${color.name})`);
@@ -202,7 +202,7 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                                                 <Button
                                                                     size="sm"
                                                                     variant="ghost"
-                                                                    className="h-6 w-6 p-0"
+                                                                    className="h-6 w-6 p-0 hover:bg-background/30 hover:text-title-light transition-colors"
                                                                     onClick={(e) => {
                                                                         e.stopPropagation();
                                                                         handleCopyColor(color.value);
@@ -231,7 +231,7 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                                                                     <Button
                                                                                         size="sm"
                                                                                         variant="ghost"
-                                                                                        className="h-6 w-6 p-0 ml-1 hover:bg-background/50 hover:text-title-light transition-colors"
+                                                                                        className="h-6 w-6 p-0 ml-1 hover:bg-background/30 hover:text-title-light transition-colors"
                                                                                         onClick={(e) => {
                                                                                             e.stopPropagation();
                                                                                             handleCopyClass(className);
@@ -259,7 +259,7 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                                                                     <Button
                                                                                         size="sm"
                                                                                         variant="ghost"
-                                                                                        className="h-6 w-6 p-0 ml-1 hover:bg-background/50 hover:text-title-light transition-colors"
+                                                                                        className="h-6 w-6 p-0 ml-1 hover:bg-background/30 hover:text-title-light transition-colors"
                                                                                         onClick={(e) => {
                                                                                             e.stopPropagation();
                                                                                             handleCopyClass(className);
@@ -287,7 +287,7 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                                                                     <Button
                                                                                         size="sm"
                                                                                         variant="ghost"
-                                                                                        className="h-6 w-6 p-0 ml-1 hover:bg-background/50 hover:text-title-light transition-colors"
+                                                                                        className="h-6 w-6 p-0 ml-1 hover:bg-background/30 hover:text-title-light transition-colors"
                                                                                         onClick={(e) => {
                                                                                             e.stopPropagation();
                                                                                             handleCopyClass(className);
@@ -317,7 +317,7 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                                                         <Button
                                                                             size="sm"
                                                                             variant="ghost"
-                                                                            className="h-6 w-6 p-0 ml-1 hover:bg-background/50 hover:text-title-light transition-colors"
+                                                                            className="h-6 w-6 p-0 ml-1 hover:bg-background/30 hover:text-title-light transition-colors"
                                                                             onClick={(e) => {
                                                                                 e.stopPropagation();
                                                                                 handleCopyClass(className.substring(1)); // Remove the dot
@@ -361,13 +361,13 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                     </Button>
                                     <Button
                                         variant="outline"
-                                        className="border-button-border text-title-light hover:bg-button/30 hover:border-title-light/50 transition-all"
+                                        className="border-button-border text-title-light hover:bg-button/20 hover:border-title-light/30 transition-all"
                                     >
                                         Outline Button
                                     </Button>
                                     <Button
                                         variant="ghost"
-                                        className="text-button hover:text-title-light hover:bg-button/30 transition-colors"
+                                        className="text-button hover:text-title-light hover:bg-button/20 transition-colors"
                                     >
                                         Ghost Button
                                     </Button>
@@ -383,6 +383,19 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
                                     <div className="h-24 rounded-lg border border-button-border bg-background-lighter p-4">
                                         <span className="text-title-light text-sm">Background Lighter (--background-lighter)</span>
                                     </div>
+                                </div>
+                            </div>
+
+                            {/* Add an expandable item example to show the chevron with bg-background */}
+                            <div className="border border-button-border rounded-lg overflow-hidden">
+                                <div className="p-4 flex items-center justify-between bg-background-lighter">
+                                    <h3 className="text-title-light font-medium">Expandable Item</h3>
+                                    <div className="h-6 w-6 rounded flex items-center justify-center bg-background">
+                                        <ChevronRight className="h-4 w-4 text-button" />
+                                    </div>
+                                </div>
+                                <div className="p-4 text-button border-t border-button-border">
+                                    This demonstrates the expandable item with a chevron indicator that has bg-background.
                                 </div>
                             </div>
                         </div>
