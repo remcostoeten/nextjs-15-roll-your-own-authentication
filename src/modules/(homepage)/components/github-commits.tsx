@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { fetchLatestCommits } from "@/app/actions/github"
 
 interface Commit {
   sha: string
@@ -19,67 +20,21 @@ const CACHE_DURATION = 60 * 60 * 1000 // 1 hour in milliseconds
 
 export function GitHubCommits() {
   const [activeSquare, setActiveSquare] = useState<number | null>(null)
-  const [tooltipPosition, setTooltipPosition] = useState<"top" | "bottom">("top") // Default to top
+  const [tooltipPosition, setTooltipPosition] = useState<"top" | "bottom">("top")
   const [commits, setCommits] = useState<Commit[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [dataSource, setDataSource] = useState<"api" | "cache" | "fallback" | null>(null)
+  const [dataSource, setDataSource] = useState<"api" | "cache" | null>(null)
 
-  // Fix the ref type declaration
   const squareRefs = useRef<Array<HTMLDivElement | null>>([])
   const tooltipRef = useRef<HTMLDivElement | null>(null)
 
-  // Define opacity values for the fade-out effect with green color
   const squares = [
     { opacity: 1, bg: "bg-[#4e9815]" },
     { opacity: 0.75, bg: "bg-[#4e9815]/75" },
     { opacity: 0.5, bg: "bg-[#4e9815]/50" },
     { opacity: 0.25, bg: "bg-[#4e9815]/25" },
     { opacity: 0.1, bg: "bg-[#4e9815]/10" },
-  ]
-
-  // Fallback commits in case the API fails
-  const fallbackCommits = [
-    {
-      sha: "abcd1234",
-      message: "Implement JWT authentication",
-      author: "remcostoeten",
-      authorAvatar: "",
-      date: "2023-11-15T10:30:00Z",
-      url: "https://github.com/remcostoeten/nextjs-15-roll-your-own-authentication/commit/abcd1234",
-    },
-    {
-      sha: "efgh5678",
-      message: "Add password hashing utility",
-      author: "remcostoeten",
-      authorAvatar: "",
-      date: "2023-11-14T14:20:00Z",
-      url: "https://github.com/remcostoeten/nextjs-15-roll-your-own-authentication/commit/efgh5678",
-    },
-    {
-      sha: "ijkl9012",
-      message: "Create user registration flow",
-      author: "remcostoeten",
-      authorAvatar: "",
-      date: "2023-11-13T09:15:00Z",
-      url: "https://github.com/remcostoeten/nextjs-15-roll-your-own-authentication/commit/ijkl9012",
-    },
-    {
-      sha: "mnop3456",
-      message: "Set up database schema",
-      author: "remcostoeten",
-      authorAvatar: "",
-      date: "2023-11-12T16:45:00Z",
-      url: "https://github.com/remcostoeten/nextjs-15-roll-your-own-authentication/commit/mnop3456",
-    },
-    {
-      sha: "qrst7890",
-      message: "Initial commit",
-      author: "remcostoeten",
-      authorAvatar: "",
-      date: "2023-11-10T11:00:00Z",
-      url: "https://github.com/remcostoeten/nextjs-15-roll-your-own-authentication/commit/qrst7890",
-    },
   ]
 
   useEffect(() => {
@@ -100,51 +55,22 @@ export function GitHubCommits() {
           }
         }
 
-        // Fetch from GitHub API if no valid cache exists
-        const response = await fetch(
-          "https://api.github.com/repos/remcostoeten/nextjs-15-roll-your-own-authentication/commits?per_page=5",
-          {
-            headers: {
-              Accept: "application/vnd.github.v3+json",
-            },
-          },
-        )
-
-        if (!response.ok) {
-          throw new Error(`GitHub API error: ${response.status} - ${response.statusText}`)
-        }
-
-        const data = await response.json()
-
-        if (!Array.isArray(data) || data.length === 0) {
-          throw new Error("No commits returned from GitHub API")
-        }
-
-        const formattedCommits = data.map((commit) => ({
-          sha: commit.sha,
-          message: commit.commit.message,
-          author: commit.author?.login || commit.commit.author.name,
-          authorAvatar: commit.author?.avatar_url || "",
-          date: commit.commit.author.date,
-          url: commit.html_url,
-        }))
-
+        const result = await fetchLatestCommits("remcostoeten/nextjs-15-roll-your-own-authentication", "main", 5)
+        
         // Cache the results
         if (typeof window !== "undefined") {
-          localStorage.setItem(CACHE_KEY, JSON.stringify(formattedCommits))
+          localStorage.setItem(CACHE_KEY, JSON.stringify(result.commits))
           localStorage.setItem(CACHE_EXPIRY_KEY, (Date.now() + CACHE_DURATION).toString())
         }
 
-        setCommits(formattedCommits)
+        setCommits(result.commits)
         setDataSource("api")
+        setError(null)
         console.log("Fetched fresh GitHub commits data")
       } catch (err) {
         console.error("Error fetching GitHub commits:", err)
-        setError(err instanceof Error ? err.message : "Unknown error")
-
-        // Use fallback data on error
-        setCommits(fallbackCommits)
-        setDataSource("fallback")
+        setError(err instanceof Error ? err.message : "Failed to fetch commits")
+        setCommits([])
       } finally {
         setIsLoading(false)
       }
@@ -172,13 +98,23 @@ export function GitHubCommits() {
     return message.split("\n")[0]
   }
 
+  if (error) {
+    return (
+      <div className="text-red-500 text-sm">
+        Failed to load commits: {error}
+      </div>
+    )
+  }
+
   return (
     <div className="relative ml-2 flex gap-1">
       {squares.map((square, index) => (
         <div
           key={index}
           className="relative"
-          ref={(el) => (squareRefs.current[index] = el)}
+          ref={(el) => {
+            squareRefs.current[index] = el
+          }}
           onMouseEnter={() => setActiveSquare(index)}
           onMouseLeave={() => setActiveSquare(null)}
         >
@@ -211,8 +147,6 @@ export function GitHubCommits() {
 
                 {isLoading ? (
                   <p className="text-[#8C877D]">Loading commits...</p>
-                ) : error && dataSource !== "fallback" ? (
-                  <p className="text-red-500">{error}</p>
                 ) : commits.length > 0 && index < commits.length ? (
                   <>
                     <p className="mb-1 text-[#8C877D]">{commits[index].sha.substring(0, 7)}</p>
@@ -238,19 +172,11 @@ export function GitHubCommits() {
                       View on GitHub
                     </a>
 
-                    {dataSource === "fallback" && (
-                      <p className="mt-2 text-[10px] text-[#8C877D] italic">
-                        Using sample data (GitHub API unavailable)
-                      </p>
-                    )}
-
                     {dataSource === "cache" && (
                       <p className="mt-2 text-[10px] text-[#8C877D] italic">Using cached data</p>
                     )}
                   </>
-                ) : (
-                  <p className="text-[#8C877D]">No commit data available</p>
-                )}
+                ) : null}
               </motion.div>
             )}
           </AnimatePresence>

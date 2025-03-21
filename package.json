@@ -3,6 +3,7 @@
 	"description": "Roll Your Own ",
 	"version": "0.1.0",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
@@ -17,12 +18,14 @@
 		"f": "prettier --write \"**/*.{js,jsx,ts,tsx,md}\"",
 		"gen": "drizzle-kit generate",
 		"push": "drizzle-kit push",
-		"barrels": "node tools/advanced-barrel-generator.js",
-		"barrels:src": "node tools/advanced-barrel-generator.js src",
-		"barrels:watch": "nodemon --watch src --ext tsx,ts,jsx,js --ignore index.ts --exec 'npm run barrels'",
-		"barrels:fix": "node tools/advanced-barrel-generator.js",
-		"fix-barrel": "node tools/fix-barrel.js",
-		"prepare": "husky"
+		"seed": "tsx src/server/db/seed.ts",
+		"barrels": "tsx tools/barrel-generator.ts",
+		"barrels:src": "tsx tools/barrel-generator.ts src",
+		"barrels:watch": "nodemon --watch src --ext tsx,ts,jsx,js --ignore index.ts --exec 'pnpm barrels'",
+		"barrels:fix": "tsx tools/barrel-generator.ts",
+		"fix-barrel": "tsx tools/fix-barrel.ts",
+		"prepare": "husky",
+		"format:interactive": "tsx tools/prettier-interactive/interactive-format.ts"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^4.1.3",
@@ -34,6 +37,7 @@
 		"@radix-ui/react-dropdown-menu": "^2.1.6",
 		"@radix-ui/react-hover-card": "^1.1.6",
 		"@radix-ui/react-label": "^2.1.2",
+		"@radix-ui/react-popover": "^1.1.6",
 		"@radix-ui/react-scroll-area": "^1.2.3",
 		"@radix-ui/react-select": "^2.1.6",
 		"@radix-ui/react-separator": "^1.1.2",

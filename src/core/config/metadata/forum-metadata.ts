@@ -4,32 +4,32 @@ import { siteMetadata } from './base-metadata'
 export const forumLayoutMetadata: Metadata = {
 	...siteMetadata,
 	title: {
-		template: '%s | RAIOA Forum',
-		default: 'RAIOA Forum',
+		template: '%s | RYOA Forum',
+		default: 'RYOA Forum',
 	},
-	description: 'Join the RAIOA community discussion',
+	description: 'Join the RYOA community discussion',
 }
 
 export const forumMetadata: Metadata = {
 	...siteMetadata,
-	title: 'Forum | RAIOA',
-	description: 'Join the RAIOA community discussion',
+	title: 'Forum | RYOA',
+	description: 'Join the RYOA community discussion',
 }
 
 export const createPostMetadata: Metadata = {
 	...siteMetadata,
-	title: 'Create Post | Forum | RAIOA',
-	description: 'Share your thoughts with the RAIOA community',
+	title: 'Create Post | Forum | RYOA',
+	description: 'Share your thoughts with the RYOA community',
 }
 
 export const editPostMetadata: Metadata = {
 	...siteMetadata,
-	title: 'Edit Post | Forum | RAIOA',
-	description: 'Edit your post in the RAIOA community',
+	title: 'Edit Post | Forum | RYOA',
+	description: 'Edit your post in the RYOA community',
 }
 
 export const viewPostMetadata: Metadata = {
 	...siteMetadata,
-	title: 'View Post | Forum | RAIOA',
-	description: 'Join the RAIOA community discussion',
+	title: 'View Post | Forum | RYOA',
+	description: 'Join the RYOA community discussion',
 }

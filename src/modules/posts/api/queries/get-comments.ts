@@ -12,7 +12,6 @@ export interface GetCommentsOptions {
 
 export async function getComments(
 	options: GetCommentsOptions,
-	ctx?: PostRequestContext
 ) {
 	try {
 		const { postId, includeReplies = true } = options

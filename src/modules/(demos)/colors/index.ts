@@ -8,7 +8,6 @@
 // Re-export components with their original names
 export { ColorCard } from './components/color-card'
 export { ColorsGrid } from './components/colors-grid'
-export { Header } from './components/colors-header'
 export { Hero } from './components/colors-hero'
 
 // Re-export utilities

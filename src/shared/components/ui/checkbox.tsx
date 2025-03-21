@@ -1,25 +1,25 @@
 'use client'
 
-import * as React from 'react'
-import { cn } from '@/shared/utils/helpers'
+import { cn } from 'helpers'
 import styles from '@/styles/modules/checkbox.module.css'
+import React, { InputHTMLAttributes, forwardRef, useState, CSSProperties, useEffect, useId } from 'react'
 
 export interface CheckboxProps
-	extends React.InputHTMLAttributes<HTMLInputElement> {
+	extends InputHTMLAttributes<HTMLInputElement> {
 	label?: string
 	labelClassName?: string
 	error?: string
 	size?: number
 }
 
-const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
+const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
 	({ className, label, labelClassName, error, size = 1, ...props }, ref) => {
-		const [showError, setShowError] = React.useState(false)
-		const inputId = props.id || React.useId()
+		const [showError, setShowError] = useState(false)
+		const generatedId = useId()
+		const inputId = props.id || generatedId
 		const errorId = error ? `${inputId}-error` : undefined
 
-		// Handle error animation
-		React.useEffect(() => {
+		useEffect(() => {
 			if (error) {
 				setShowError(true)
 			} else {
@@ -36,7 +36,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
 						'--brdr-hovr': '#dc2626',
 					}
 				: {}),
-		} as React.CSSProperties
+		} as CSSProperties
 
 		return (
 			<div className={cn('flex flex-col', className)}>

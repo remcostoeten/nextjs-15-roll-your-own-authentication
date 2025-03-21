@@ -5,18 +5,13 @@ import { persist } from 'zustand/middleware'
 import { getCookie } from '@/shared/utils/cookies'
 import { useAuthApi } from '../hooks/use-auth-api'
 import { toast } from 'sonner'
+import type { User as DbUser } from '@/server/db/schemas/users'
 
 // Create API instance outside of the store to avoid
 // recreating it on every state change
 const api = typeof window !== 'undefined' ? useAuthApi() : null
 
-type User = {
-	id: string
-	email: string
-	firstName: string | null
-	lastName: string | null
-	role: 'admin' | 'user'
-}
+export type User = Pick<DbUser, 'id' | 'email' | 'firstName' | 'lastName' | 'role' | 'githubId'>
 
 type AuthState = {
 	user: User | null
@@ -28,8 +23,8 @@ type AuthState = {
 		email: string
 		password: string
 		confirmPassword: string
-		firstName?: string
-		lastName?: string
+		firstName: string
+		lastName: string
 	}) => Promise<void>
 	logout: () => Promise<void>
 	refreshAuth: () => Promise<void>

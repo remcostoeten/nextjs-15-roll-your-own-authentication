@@ -9,7 +9,6 @@
 // Colors module - Component exports
 export { ColorCard } from './colors/components/color-card'
 export { ColorsGrid } from './colors/components/colors-grid'
-export { Header as ColorsHeader } from './colors/components/colors-header'
 export { Hero as ColorsHero } from './colors/components/colors-hero'
 
 // Colors module - Utility exports

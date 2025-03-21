@@ -1,9 +1,9 @@
 import { parseColorVariables } from '@/modules/(demos)/colors/helpers/color-parser'
-import { Header } from '@/modules/(demos)/colors/components/colors-header'
 import { Hero } from '@/modules/(demos)/colors/components/colors-hero'
 import { ColorsGrid } from '@/modules/(demos)/colors/components/colors-grid'
 import { DemoSection } from '@/modules/(demos)/colors/components/demo-section'
 import { Heading, Flex } from '@/shared/components/core'
+import { Header } from '@/components/layout/header'
 
 export async function ColorsView() {
 	const colors = await parseColorVariables()

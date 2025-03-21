@@ -15,7 +15,6 @@ export const users = sqliteTable('users', {
 	githubId: text('github_id').unique(),
 	githubAccessToken: text('github_access_token'),
 	avatar: text('avatar').default(''),
-	// Profile data
 	location: text('location').default(''),
 	timezone: text('timezone').default(''),
 	lastLogin: integer('last_login', { mode: 'timestamp' }),

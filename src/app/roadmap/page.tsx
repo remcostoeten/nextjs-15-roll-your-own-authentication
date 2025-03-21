@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
-import { Header } from '../../modules/(homepage)/components/header'
+import { Header } from '../../components/layout/header'
 import RoadmapView from '../../modules/roadmap/roadmap-view'
-import { Footer } from '../../modules/(homepage)/components/footer'
+import { Footer } from '../../components/layout/footer'
 
 export const metadata: Metadata = {
 	title: 'Roadmap | Roll Your Own Auth',

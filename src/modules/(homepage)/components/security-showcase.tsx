@@ -276,7 +276,7 @@ export async function createToken(payload: Record<string, any>, secret: string) 
           <motion.div className="text-center mb-16" variants={itemVariants}>
             <div className="inline-flex items-center justify-center mb-4">
               <Lock className="h-6 w-6 text-[#4e9815] mr-2" />
-              <h2 className="text-3xl font-bold bg-gradient-to-b from-[#F2F0ED] to-[#ADADAD] bg-clip-text text-transparent">
+              <h2 className="text-3xl font-bold text-[#F2F0ED]">
                 Break Free from Auth Libraries
               </h2>
             </div>
@@ -339,7 +339,7 @@ export async function createToken(payload: Record<string, any>, secret: string) 
                 <span
                   className={`
         relative z-10 font-medium
-        ${activeTab === index ? "bg-gradient-to-r from-[#F2F0ED] to-[#4e9815] bg-clip-text text-transparent" : ""}
+        ${activeTab === index ? "text-[#4e9815]" : ""}
       `}
                 >
                   {principle.title}

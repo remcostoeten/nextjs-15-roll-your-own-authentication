@@ -2,7 +2,7 @@
 import type React from 'react'
 import { useState, useRef, useEffect } from 'react'
 
-import { useTodoStore } from '@/store/todo-store'
+import { useTodoStore } from '@/modules/todos/state/todo-store'
 import RichTextEditor from './rich-text-editor'
 import {
 	CheckCircle,

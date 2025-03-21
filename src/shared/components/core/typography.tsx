@@ -65,8 +65,7 @@ const headingVariants = cva('text-title-light tracking-tight', {
 			default: 'text-title-light',
 			subtle: 'text-title-light/80',
 			muted: 'text-button',
-			gradient:
-				'text-transparent bg-clip-text bg-gradient-to-r from-[#F5F4F4] to-[#4E4B47]',
+			gradient: 'text-[#F2F0ED]',
 		},
 		align: {
 			left: 'text-left',

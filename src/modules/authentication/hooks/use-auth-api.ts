@@ -35,7 +35,14 @@ export const useAuthApi = () => {
 			throw new Error(errorData.error || 'Failed to login')
 		}
 
-		return response.json()
+		const data = await response.json()
+		
+		// Store the JWT token in localStorage for devtools
+		if (data.tokens?.accessToken) {
+			localStorage.setItem('jwt_token', data.tokens.accessToken)
+		}
+
+		return data
 	}
 
 	/**
@@ -94,11 +101,16 @@ export const useAuthApi = () => {
 	 * Logout the current user using server action
 	 */
 	const logout = async () => {
-		const result = await logoutMutation()
-		if (!result.success) {
-			throw new Error(result.message || 'Failed to logout')
+		try {
+			await logoutMutation()
+			
+			// Remove JWT token from localStorage
+			localStorage.removeItem('jwt_token')
+			
+			return { success: true }
+		} catch (error) {
+			throw new Error('Failed to logout')
 		}
-		return result
 	}
 
 	/**

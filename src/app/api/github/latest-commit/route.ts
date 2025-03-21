@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server'
-import { fetchLatestCommit } from '@/modules/github/api/queries/fetch-latest-commit'
+import { fetchLatestCommits } from '@/app/actions/github'
 
 export async function GET() {
-	const { commit, error } = await fetchLatestCommit()
-
-	if (error) {
-		return NextResponse.json({ error }, { status: 500 })
+	try {
+		const result = await fetchLatestCommits('remcostoeten/nextjs-15-roll-your-own-authentication', 'main', 1)
+		return NextResponse.json(result)
+	} catch (error) {
+		return NextResponse.json(
+			{ error: error instanceof Error ? error.message : 'Failed to fetch commit' },
+			{ status: 500 }
+		)
 	}
-
-	return NextResponse.json({ commit })
 }

@@ -1,4 +1,4 @@
-import { WIDGET_POSITIONS, WIDGET_SIZES } from '../constants/widget-constants'
+import { WIDGET_POSITIONS, WIDGET_SIZES } from '../constants/widget.const'
 
 export type Position = {
 	x: number

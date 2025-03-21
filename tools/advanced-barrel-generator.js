@@ -9,7 +9,6 @@ const stat = promisify(fs.stat)
 const writeFile = promisify(fs.writeFile)
 const readFile = promisify(fs.readFile)
 
-// Config
 const IGNORE_PATTERNS = [
 	'node_modules',
 	'.next',
@@ -31,7 +30,6 @@ const TARGET_DIRS = process.argv.slice(2).length
 	? process.argv.slice(2)
 	: ['src']
 
-// Additional exclusion patterns
 const EXCLUDE_PATTERNS = [
 	/Props$/, // Skip component props interfaces
 	/[a-z]Variants$/, // Skip variant utilities like badgeVariants
@@ -41,7 +39,6 @@ const shouldExcludeExport = (exportName) => {
 	return EXCLUDE_PATTERNS.some((pattern) => pattern.test(exportName))
 }
 
-// Helper functions
 const isDirectory = async (path) => {
 	try {
 		const stats = await stat(path)

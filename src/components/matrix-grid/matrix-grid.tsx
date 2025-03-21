@@ -1,13 +1,46 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, type ReactNode } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import styles from "./matrix-grid.module.css"
 import { matrixGridContent } from "./matrix-grid-content"
 import { isMatrixGridAnimationEnabled } from "../../core/config/feature-flags"
-import MatrixGridLayout from "./matrix-grid-layout"
 import { CodeBlock } from "./code-block"
+import { CharacterSets } from "helpers"
+
+const MATRIX_GRID_CONFIG = {
+  MATRIX_RAIN: {
+    ENABLED: true,
+    SPEED: 33,
+    COLOR: "rgba(0, 255, 0, 0.5)",
+    FONT_SIZE: 15,
+    CHARACTERS: CharacterSets.UPPERCASE_ALPHANUMERIC,
+  },
+  SPOTLIGHT: {
+    ENABLED: true,
+    COLOR: "rgba(15, 255, 15, 0.1)",
+    STRENGTH: 1,
+    RADIUS: 35,
+  },
+  ANIMATIONS: {
+    CARD_HOVER: true,
+    STAGGERED_ENTRANCE: true,
+  },
+  ACCESSIBILITY: {
+    HIGH_CONTRAST_MODE: false,
+    REDUCED_MOTION: false,
+  },
+} as const
+
+// Matrix Grid Layout Component
+function MatrixGridLayout({ children }: { children: ReactNode }) {
+  return (
+    <div className={styles.layout} id="matrix-grid-section">
+      {children}
+    </div>
+  )
+}
 
 const Arrow = () => (
   <svg width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg" className={styles.arrow}>
@@ -233,9 +266,6 @@ export default function MatrixGrid() {
   const [headerSubtitle, setHeaderSubtitle] = useState(matrixGridContent.header.subtitle)
   const [isScrambling, setIsScrambling] = useState(false)
 
-  // Characters for scrambling
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()_+~`|}{[]\\:;?><,./-="
-
   // Function to scramble text
   const scrambleText = (text: string, progress: number) => {
     return text
@@ -243,7 +273,7 @@ export default function MatrixGrid() {
       .map((char, i) => {
         if (char === " ") return " "
         if (Math.random() > progress) {
-          return chars[Math.floor(Math.random() * chars.length)]
+          return MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)]
         }
         return char
       })
@@ -298,7 +328,7 @@ export default function MatrixGrid() {
                     <span className="text-xs text-[#8C877D] font-mono">system.auth.module</span>
                   </div>
 
-                  <h2 className="text-xl font-mono bg-gradient-to-b from-[#F2F0ED] to-[#ADADAD] bg-clip-text text-transparent mb-2">
+                  <h2 className="text-xl font-mono text-[#F2F0ED] mb-2">
                     {headerTitle}
                   </h2>
 
@@ -321,8 +351,8 @@ export default function MatrixGrid() {
                     key={tool.title}
                     href={tool.href}
                     className={`${styles.card} ${tool.isLarge ? styles.platformCard : ""} ${
-                      index < 3 ? styles.noTopBorder : ""
-                    } ${tool.isLarge ? styles.largeBorders : ""}`}
+                      index < 3 ? styles.noTopRightBottomBorder : ""
+                    } ${tool.isLarge ? styles.largeBorders : ""} `}
                     variants={itemVariants}
                     ref={(el) => (cardRefs.current[index] = el)}
                     {...(tool.href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
@@ -343,7 +373,7 @@ export default function MatrixGrid() {
                       <div>
                         <motion.div className={styles.cardHeader} variants={textVariants}>
                           <motion.h3
-                            className={`${styles.cardTitle} bg-gradient-to-b from-[#F2F0ED] to-[#ADADAD] bg-clip-text text-transparent`}
+                            className={`${styles.cardTitle} text-[#F2F0ED]`}
                             variants={textVariants}
                           >
                             {tool.title}

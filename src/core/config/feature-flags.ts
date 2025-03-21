@@ -1,5 +1,3 @@
-import { MATRIX_GRID_CONFIG } from "../../components/matrix-grid/matrix-grid-config"
-
 /**
  * Feature Flag Management System
  *
@@ -7,35 +5,34 @@ import { MATRIX_GRID_CONFIG } from "../../components/matrix-grid/matrix-grid-con
  * Provides a centralized, type-safe mechanism for managing application features.
  */
 
-export const featureFlags = {
-  ANIMATIONS: {
-    grid: true,
+// Feature flags for the application
+const FEATURE_FLAGS = {
+  MATRIX_GRID: {
+    ENABLED: true,
+    ANIMATIONS: true,
   },
-  MATRIX_GRID: MATRIX_GRID_CONFIG,
+  // Add other feature flags here
 } as const
 
-export type FeatureFlag = keyof typeof featureFlags
+export const isMatrixGridAnimationEnabled = (feature: keyof typeof FEATURE_FLAGS.MATRIX_GRID) => {
+  return FEATURE_FLAGS.MATRIX_GRID.ENABLED && FEATURE_FLAGS.MATRIX_GRID.ANIMATIONS
+}
+
+export type FeatureFlags = typeof FEATURE_FLAGS
 
 /**
  * Check if a specific feature is currently enabled
  */
-export function isFeatureEnabled(feature: FeatureFlag): boolean {
-  return featureFlags[feature]
-}
-
-/**
- * Check if a specific Matrix Grid animation is enabled
- */
-export function isMatrixGridAnimationEnabled(animationKey: keyof typeof featureFlags.ANIMATIONS): boolean {
-  return featureFlags.ANIMATIONS[animationKey]
+export function isFeatureEnabled(feature: FeatureFlags): boolean {
+  return FEATURE_FLAGS[feature]
 }
 
 /**
  * Check if a specific Matrix Grid accessibility feature is enabled
  */
 export function isMatrixGridAccessibilityFeatureEnabled(
-  featureKey: keyof typeof MATRIX_GRID_CONFIG.ACCESSIBILITY,
+  featureKey: keyof typeof FEATURE_FLAGS.MATRIX_GRID,
 ): boolean {
-  return MATRIX_GRID_CONFIG.ACCESSIBILITY[featureKey]
+  return FEATURE_FLAGS.MATRIX_GRID[featureKey]
 }
 

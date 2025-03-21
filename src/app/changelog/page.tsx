@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Header } from '../../modules/(homepage)/components/header'
+import { Header } from '../../components/layout/header'
 import ChangelogView from '../../modules/changelog/changelog-view'
 
 export const metadata: Metadata = {

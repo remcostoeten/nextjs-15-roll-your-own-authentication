@@ -1,6 +1,6 @@
 import { SignJWT } from 'jose'
 import { env } from 'env'
-import { FIFTEEN_MINUTES, WEEK } from '@/shared/helpers/date-helpers'
+import { FIFTEEN_MINUTES, WEEK } from 'helpers'
 
 const encoder = new TextEncoder()
 

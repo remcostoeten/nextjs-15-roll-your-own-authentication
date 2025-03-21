@@ -215,6 +215,7 @@
 
 .cardHeader {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 0.5rem;
@@ -228,8 +229,8 @@
 }
 
 .tagNew {
-  background-color: rgba(59, 130, 246, 0.1);
-  color: rgb(99, 102, 241);
+  background-color: rgba(59, 246, 240, 0.1);
+  color: rgb(99, 241, 179);
 }
 
 .tagSoon {
@@ -239,6 +240,16 @@
 
 .noTopBorder {
   border-top: none;
+}
+
+.noRightBorder {
+  border-right: none;
+}
+
+.noTopRightBottomBorder {
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
 }
 
 .largeBorders {

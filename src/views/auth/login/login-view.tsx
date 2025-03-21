@@ -67,7 +67,7 @@ export default function LoginView() {
 
 					<div className="flex gap-1.5 self-center mt-8 max-w-full w-[210px]">
 						<span className="text-stone-500">
-							Don't have an account?
+							Don&apos;t have an account?
 						</span>
 						<motion.button
 							className="text-offwhite underline"

@@ -13,7 +13,7 @@ interface CommentSectionProps {
 }
 
 export function CommentSection({ postId, currentUser }: CommentSectionProps) {
-	const [comments, setComments] = useState<any[]>([])
+	const [comments, setComments] = useState<unknown[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
 	const [newComment, setNewComment] = useState('')
@@ -133,7 +133,7 @@ export function CommentSection({ postId, currentUser }: CommentSectionProps) {
 		comment,
 		isReply = false,
 	}: {
-		comment: any
+		comment: unknown
 		isReply?: boolean
 	}) => {
 		const formattedDate = formatDistanceToNow(new Date(comment.createdAt), {

@@ -3,24 +3,21 @@
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
+import { scrambleText, CharacterSets } from 'helpers'
 
-interface MatrixMenuItemProps {
+type TProps = {
   href: string
   text: string
   isActive: boolean
 }
 
-// Characters to use for the scramble effect
-const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()_+~`|}{[]\\:;?><,./-="
-
-export function MatrixMenuItem({ href, text, isActive }: MatrixMenuItemProps) {
+  export function MatrixMenuItem({ href, text, isActive }: TProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [scrambledText, setScrambledText] = useState(text)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const requestRef = useRef<number>()
   const intervalRef = useRef<NodeJS.Timeout>()
 
-  // Matrix rain effect
   useEffect(() => {
     if (!isHovered || !canvasRef.current) return
 
@@ -36,7 +33,6 @@ export function MatrixMenuItem({ href, text, isActive }: MatrixMenuItemProps) {
     const drops: number[] = Array(columns).fill(1)
 
     const drawMatrixRain = () => {
-      // Semi-transparent black to create fade effect
       ctx.fillStyle = "rgba(13, 12, 12, 0.05)"
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
@@ -44,18 +40,14 @@ export function MatrixMenuItem({ href, text, isActive }: MatrixMenuItemProps) {
       ctx.font = `${fontSize}px monospace`
 
       for (let i = 0; i < drops.length; i++) {
-        // Random character
-        const char = chars[Math.floor(Math.random() * chars.length)]
+        const char = scrambleText(1, CharacterSets.MATRIX)
 
-        // Draw the character
         ctx.fillText(char, i * fontSize, drops[i] * fontSize)
 
-        // Reset drop when it reaches bottom or randomly
         if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
           drops[i] = 0
         }
 
-        // Move drop down
         drops[i]++
       }
 
@@ -83,20 +75,16 @@ export function MatrixMenuItem({ href, text, isActive }: MatrixMenuItemProps) {
 
     intervalRef.current = setInterval(() => {
       setScrambledText((prevText) => {
-        // As iterations increase, more characters will be correct
         const correctChars = Math.floor((iteration / maxIterations) * text.length)
 
         return text
           .split("")
           .map((char, idx) => {
-            // Keep spaces as spaces
             if (char === " ") return " "
 
-            // If we've reached the correct iteration for this character, show the real character
             if (idx < correctChars) return text[idx]
 
-            // Otherwise show a random character
-            return chars[Math.floor(Math.random() * chars.length)]
+            return scrambleText(1, CharacterSets.MATRIX)
           })
           .join("")
       })

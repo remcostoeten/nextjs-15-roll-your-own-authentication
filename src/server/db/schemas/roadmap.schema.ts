@@ -1,7 +1,7 @@
-import { text, integer, timestamp, pgTable } from 'drizzle-orm/pg-core'
+import { text, integer, sqliteTable } from 'drizzle-orm/sqlite-core'
 import { createId } from '@paralleldrive/cuid2'
 
-export const roadmapItems = pgTable('roadmap_items', {
+export const roadmapItems = sqliteTable('roadmap_items', {
 	id: text('id')
 		.primaryKey()
 		.$defaultFn(() => createId()),
@@ -13,6 +13,6 @@ export const roadmapItems = pgTable('roadmap_items', {
 	priority: integer('priority').default(0),
 	quarter: text('quarter').notNull(), // e.g., "Q2 2024"
 	votes: integer('votes').default(0),
-	createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
-	updatedAt: timestamp('updated_at', { mode: 'date' }).notNull().defaultNow(),
+	createdAt: text('created_at').notNull().$defaultFn(() => new Date().toISOString()),
+	updatedAt: text('updated_at').notNull().$defaultFn(() => new Date().toISOString()),
 })

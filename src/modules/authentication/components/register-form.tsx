@@ -8,8 +8,13 @@ import { Checkbox, Input } from '@/shared/components/ui'
 import { CoreButton } from '@/shared/components/core/core-button'
 import { formAnimations } from '@/shared/animations/form'
 import { registerMutation } from '../api/mutations/register'
+import type { RegisterUserInput } from '../models/z.user'
 
-export function RegisterForm() {
+interface RegisterFormProps {
+	onSubmit: (data: RegisterUserInput) => Promise<void>
+}
+
+export function RegisterForm({ onSubmit }: RegisterFormProps) {
 	const router = useRouter()
 	const formRef = useRef<HTMLFormElement>(null)
 	const [isLoading, setIsLoading] = useState(false)

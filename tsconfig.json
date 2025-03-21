@@ -1,39 +1,61 @@
 {
-	"compilerOptions": {
-		"target": "ES2020",
-		"lib": ["dom", "dom.iterable", "esnext"],
-		"allowJs": true,
-		"skipLibCheck": true,
-		"strict": true,
-		"noEmit": true,
-		"esModuleInterop": true,
-		"module": "esnext",
-		"moduleResolution": "bundler",
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"jsx": "preserve",
-		"incremental": true,
-		"types": ["react", "react-dom"],
-		"plugins": [
-			{
-				"name": "next"
-			}
-		],
-		"paths": {
-			"@/*": ["./src/*"],
-			"env": ["./src/server/env.ts"],
-			"db": ["./src/server/db/index.ts"],
-			"schema": ["./src/serrver/db/schema/index.ts"],
-			"ui": ["./src/shared/components/ui/index.ts"],
-			"helpers": ["./src/shared/helpers/index.ts"]
-		}
-	},
-	"include": [
-		"next-env.d.ts",
-		"**/*.ts",
-		"**/*.tsx",
-		".next/types/**/*.ts",
-		"**/*.html"
-	],
-	"exclude": ["node_modules"]
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "jsxImportSource": "react",
+    "incremental": true,
+    "types": [
+      "react",
+      "react-dom"
+    ],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "env": [
+        "./src/server/env.ts"
+      ],
+      "db": [
+        "./src/server/db/index.ts"
+      ],
+      "schema": [
+        "./src/serrver/db/schema/index.ts"
+      ],
+      "ui": [
+        "./src/shared/components/ui/index.ts"
+      ],
+      "helpers": [
+        "./src/shared/helpers/index.ts"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "**/*.html"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

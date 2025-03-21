@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers'
 import { env } from 'env'
-import { FIFTEEN_MINUTES, WEEK } from '@/shared/helpers/date-helpers'
+import { FIFTEEN_MINUTES, WEEK } from 'helpers'
 import { generateTokens } from './tokens'
 
 export async function setAuthCookies(userId: string) {

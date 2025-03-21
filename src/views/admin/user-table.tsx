@@ -7,7 +7,7 @@ import {
 	Table,
 	TableBody,
 	TableCell,
-					TableHead,
+	TableHead,
 	TableHeader,
 	TableRow,
 } from '@/shared/components/ui/table'
@@ -113,7 +113,7 @@ export function UserTable({ users }: { users: UserWithMetrics[] }) {
 				id: 'loginCount',
 				label: 'Login Count',
 				sortable: true,
-				render: (user) => user.loginCount || 0,
+				render: (user) => Number(user.loginCount || 0),
 			},
 			{
 				id: 'lastLogin',

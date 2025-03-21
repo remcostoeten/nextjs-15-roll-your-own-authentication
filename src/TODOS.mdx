@@ -1,6 +1,17 @@
 ## TODO
 
-### Comming from src/core/config/metadata/index.ts
+### Refactor
+- [ ] Deprecate src/shared/utils 
+     -> migrate to src/shared/helpers
+     -> check for redundand files which can be removed or paired.
+
+### Core
+
+- [ ] ESLINT: Check if we can create rules for always using types exepct if we extend. And prefer TProps as name.
+- [ ] ESLINT: minimal as possible, get rid of semicolons, comma's etc.
+- [ ] ESLINT: Check if ESLint offers a way to favor functions over constants/arrow functions
+
+ ### Comming from src/core/config/metadata/index.ts
 
 - [ ] Find out a way to auto structure, generate metadata.ts files for each module
 - [ ] Research what metadata is actually helpful, best practices etc.
@@ -10,4 +21,3 @@
 
 - [ ] Make the todo widget mutate and query the database instead of local database
 - [ ] Add the todo widgeet to the dev tools widget
-

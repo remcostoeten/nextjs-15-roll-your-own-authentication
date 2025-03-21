@@ -5,7 +5,6 @@ import { sql } from 'drizzle-orm'
 
 export async function createCommentsTable() {
 	try {
-		// Check if the comments table already exists
 		const checkTableExists = await db.run(
 			sql`SELECT name FROM sqlite_master WHERE type='table' AND name='comments'`
 		)
@@ -15,7 +14,6 @@ export async function createCommentsTable() {
 			return { success: true, message: 'Comments table already exists' }
 		}
 
-		// Create the comments table
 		await db.run(
 			sql`CREATE TABLE IF NOT EXISTS comments (
                 id TEXT PRIMARY KEY NOT NULL,

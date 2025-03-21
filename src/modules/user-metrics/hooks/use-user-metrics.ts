@@ -160,9 +160,9 @@ export function useUserMetrics(): UserMetricsData {
 			}))
 		}
 
-		window.addEventListener('error', handleError as any)
+		window.addEventListener('error', handleError as unknown as EventListener)
 
-		return () => window.removeEventListener('error', handleError as any)
+		return () => window.removeEventListener('error', handleError as unknown as EventListener)
 	}, [user, isAuthenticated])
 
 	// Get device info

@@ -1,7 +1,7 @@
 /* Tailwind colors won't work properly currently so I define some custom colors here */
 
 :root {
-	--offwhite: #f5f4f4;
+	--offfwhite: #f5f4f4;
 	--title-light: #f5f4f4;
 	/* Used for titles and light text */
 	--offblack: #08080b;
@@ -13,6 +13,16 @@
 	/* Used for buttons */
 	--text-button: #8d877c;
 	--button-border: #4e4b47;
+
+	--matrix-green: #4e9815;
+}
+
+.bg-matrix-green {
+	background-color: var(--matrix-green);
+}
+
+.text-matrix-green {
+	color: var(--matrix-green);
 }
 
 .bg-offwhite {

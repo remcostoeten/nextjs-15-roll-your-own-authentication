@@ -78,11 +78,10 @@ const getRelativeTime = (dateString: string) => {
 
 // Mock hook for GitHub commit data
 const useGithubCommit = ({ initialCommit }: { initialCommit?: CommitData | null }) => {
-  // This is a simplified mock of the hook
   return {
     commit: initialCommit || {
       sha: "abcd1234efgh5678",
-      html_url: "https://github.com/yourusername/your-repo/commit/abcd1234efgh5678",
+      html_url: "https://github.com/remcostoeten/nextjs-15-roll-your-own-authentication/commit/abcd1234efgh5678",
       commit: {
         message: "Implement JWT authentication\n\nAdded secure token generation and validation",
         author: {

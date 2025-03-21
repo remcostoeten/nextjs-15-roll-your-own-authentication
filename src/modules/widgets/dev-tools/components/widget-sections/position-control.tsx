@@ -1,6 +1,6 @@
 import { Button } from "@/shared/components/ui/button"
 import { CornerLeftUp, CornerRightUp, CornerLeftDown, CornerRightDown } from "lucide-react"
-import type { WidgetPosition } from "../types"
+import type { WidgetPosition } from "../../types"
 
 interface PositionControlProps {
     widgetPosition: WidgetPosition
@@ -18,7 +18,7 @@ export function PositionControl({ widgetPosition, setPresetPosition }: PositionC
                     variant="outline"
                     size="sm"
                     onClick={() => setPresetPosition("top-left")}
-                    className={\`h-8 text-xs \${widgetPosition === "top-left" ? "bg-gray-200 dark:bg-zinc-800" : ""}\`}
+                    className={`h-8 text-xs ${widgetPosition === "top-left" ? "bg-gray-200 dark:bg-zinc-800" : ""}`}
                 >
                     <CornerLeftUp className="h-3.5 w-3.5 mr-1.5" /> Top Left
                 </Button>
@@ -26,7 +26,7 @@ export function PositionControl({ widgetPosition, setPresetPosition }: PositionC
                     variant="outline"
                     size="sm"
                     onClick={() => setPresetPosition("top-right")}
-                    className={\`h-8 text-xs \${widgetPosition === "top-right" ? "bg-gray-200 dark:bg-zinc-800" : ""}\`}
+                    className={`h-8 text-xs ${widgetPosition === "top-right" ? "bg-gray-200 dark:bg-zinc-800" : ""}`}
                 >
                     <CornerRightUp className="h-3.5 w-3.5 mr-1.5" /> Top Right
                 </Button>
@@ -34,7 +34,7 @@ export function PositionControl({ widgetPosition, setPresetPosition }: PositionC
                     variant="outline"
                     size="sm"
                     onClick={() => setPresetPosition("bottom-left")}
-                    className={\`h-8 text-xs \${widgetPosition === "bottom-left" ? "bg-gray-200 dark:bg-zinc-800" : ""}\`}
+                    className={`h-8 text-xs ${widgetPosition === "bottom-left" ? "bg-gray-200 dark:bg-zinc-800" : ""}`}
                 >
                     <CornerLeftDown className="h-3.5 w-3.5 mr-1.5" /> Bottom Left
                 </Button>
@@ -42,7 +42,7 @@ export function PositionControl({ widgetPosition, setPresetPosition }: PositionC
                     variant="outline"
                     size="sm"
                     onClick={() => setPresetPosition("bottom-right")}
-                    className={\`h-8 text-xs \${widgetPosition === "bottom-right" ? "bg-gray-200 dark:bg-zinc-800" : ""}\`}
+                    className={`h-8 text-xs ${widgetPosition === "bottom-right" ? "bg-gray-200 dark:bg-zinc-800" : ""}`}
                 >
                     <CornerRightDown className="h-3.5 w-3.5 mr-1.5" /> Bottom Right
                 </Button>

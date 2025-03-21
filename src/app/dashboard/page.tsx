@@ -4,11 +4,10 @@ import { users } from '@/server/db/schemas'
 import { auth } from '@/shared/auth'
 import { redirect } from 'next/navigation'
 import { LogoutButton } from '@/modules/authentication/components/logout-button'
+import DashboardView from '@/views/dashboard'
+import { dashboardMetadata } from '@/core/config/metadata/dashboard-metadata'
 
-export const metadata: Metadata = {
-	title: 'Dashboard | Raioa',
-	description: 'User dashboard for managing your account and data',
-}
+export const metadata: Metadata = dashboardMetadata
 
 /**
  * Dashboard page
@@ -70,9 +69,10 @@ export default async function DashboardPage() {
 	]
 
 	return (
+		<>
 		<div className="container mx-auto p-6">
 			<div className="mb-8 flex items-center justify-between">
-				<h1 className="text-3xl font-bold">Dashboard</h1>
+				<h1 className="text-3xl font-bold">Dashboardd</h1>
 				<LogoutButton />
 			</div>
 
@@ -119,5 +119,7 @@ export default async function DashboardPage() {
 				</div>
 			</div>
 		</div>
+		<DashboardView />
+		</>
 	)
 }

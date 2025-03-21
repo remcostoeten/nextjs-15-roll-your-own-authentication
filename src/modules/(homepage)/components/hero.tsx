@@ -7,10 +7,10 @@ import { motion, AnimatePresence } from "framer-motion"
 // Update imports for the moved components
 import { GitHubCommits } from "./github-commits"
 import { ProjectMetrics } from "./project-metrics"
+import { CommitData } from "@/modules/github/api/queries/fetch-latest-commit"
+import { useGithubCommit } from "@/modules/github/hooks/use-github-commit"
+import { formatCommitMessage, getRelativeTime, formatCommitDate } from "@/modules/github/utils/format-commit"
 // Update the import path here as well to maintain consistency
-import { useGithubCommit } from "../../github/hooks/use-github-commit"
-import { formatCommitMessage, formatDate, getRelativeTime } from "../../../modules/shared/helpers/date-helpers"
-import type { CommitData } from "../../github/api/queries/fetch-latest-commit"
 
 interface HeroProps {
   initialCommit?: CommitData | null
@@ -103,8 +103,7 @@ export function Hero({ initialCommit = null }: HeroProps) {
             key={i}
             custom={i}
             variants={wordVariants}
-            className="inline-block bg-gradient-to-b from-[#F2F0ED] to-[#ADADAD] bg-clip-text text-transparent"
-            style={{ marginRight: "0.3em" }}
+            className="inline-block text-[#F2F0ED] mr-[0.3em]"
           >
             {word}
           </motion.span>
@@ -140,115 +139,113 @@ export function Hero({ initialCommit = null }: HeroProps) {
             <Loader2 className="h-3 w-3 animate-spin mr-2" />
             <span>Fetching latest commit...</span>
           </div>
-        ) : error && !latestCommit ? (
+        ) : error ? (
           <div className="flex items-center">
             <span className="mr-2 font-mono">$</span>
             <span className="text-red-400">Error fetching commit: {error}</span>
           </div>
-        ) : (
-          latestCommit && (
-            <>
-              <span className="mr-2 font-mono">$</span>
-              <span className="mr-1">Latest commit:</span>
-              <a
-                ref={commitLinkRef}
-                href={latestCommit.html_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-mono text-[#4e9815] hover:text-[#6bc427] hover:underline transition-colors duration-200 group relative"
-                aria-label={`View commit: ${commitMessage.title}`}
-                onMouseEnter={() => setShowTooltip(true)}
-                onMouseLeave={() => setShowTooltip(false)}
-              >
-                <span>{commitMessage.title}</span>
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#4e9815] group-hover:w-full transition-all duration-300"></span>
-              </a>
-              <span className="ml-2 text-[#8C877D]">—</span>
-              <span className="ml-2 text-[#8C877D] italic">
-                {latestCommit.commit.author.date ? getRelativeTime(latestCommit.commit.author.date) : ""}
-              </span>
+        ) : latestCommit && (
+          <>
+            <span className="mr-2 font-mono">$</span>
+            <span className="mr-1">Latest commit:</span>
+            <a
+              ref={commitLinkRef}
+              href={latestCommit.html_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-[#4e9815] hover:text-[#6bc427] hover:underline transition-colors duration-200 group relative"
+              aria-label={`View commit: ${commitMessage.title}`}
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+            >
+              <span>{commitMessage.title}</span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#4e9815] group-hover:w-full transition-all duration-300"></span>
+            </a>
+            <span className="ml-2 text-[#8C877D]">—</span>
+            <span className="ml-2 text-[#8C877D] italic">
+              {latestCommit.commit.author.date ? getRelativeTime(latestCommit.commit.author.date) : ""}
+            </span>
 
-              {/* Git info tooltip - positioned ABOVE the commit message */}
-              <AnimatePresence>
-                {showTooltip && (
-                  <motion.div
-                    ref={tooltipRef}
-                    className="absolute left-24 bottom-8 z-[100] w-80 rounded-md border border-[#1E1E1E] bg-[#0D0C0C]/95 backdrop-blur-sm p-4 shadow-xl"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    transition={{ duration: 0.2 }}
-                    style={{ boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)" }}
-                  >
-                    {/* Arrow pointing DOWN */}
-                    <div className="absolute -bottom-2 left-24 h-4 w-4 rotate-45 border-r border-b border-[#1E1E1E] bg-[#0D0C0C]"></div>
+            {/* Git info tooltip - positioned ABOVE the commit message */}
+            <AnimatePresence>
+              {showTooltip && (
+                <motion.div
+                  ref={tooltipRef}
+                  className="absolute left-24 bottom-8 z-[100] w-80 rounded-md border border-[#1E1E1E] bg-[#0D0C0C]/95 backdrop-blur-sm p-4 shadow-xl"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.2 }}
+                  style={{ boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)" }}
+                >
+                  {/* Arrow pointing DOWN */}
+                  <div className="absolute -bottom-2 left-24 h-4 w-4 rotate-45 border-r border-b border-[#1E1E1E] bg-[#0D0C0C]"></div>
 
-                    {/* Commit header */}
-                    <div className="mb-3 border-b border-[#1E1E1E] pb-2">
-                      <h4 className="text-sm font-medium text-[#F2F0ED]">Commit Details</h4>
+                  {/* Commit header */}
+                  <div className="mb-3 border-b border-[#1E1E1E] pb-2">
+                    <h4 className="text-sm font-medium text-[#F2F0ED]">Commit Details</h4>
+                  </div>
+
+                  {/* Commit info */}
+                  <div className="space-y-2 text-xs">
+                    <div className="flex items-start gap-2">
+                      <GitCommit className="mt-0.5 h-3.5 w-3.5 text-[#4e9815]" />
+                      <div>
+                        <div className="text-[#8C877D]">Hash</div>
+                        <div className="font-mono text-[#F2F0ED]">{latestCommit.sha.substring(0, 10)}</div>
+                      </div>
                     </div>
 
-                    {/* Commit info */}
-                    <div className="space-y-2 text-xs">
-                      <div className="flex items-start gap-2">
-                        <GitCommit className="mt-0.5 h-3.5 w-3.5 text-[#4e9815]" />
-                        <div>
-                          <div className="text-[#8C877D]">Hash</div>
-                          <div className="font-mono text-[#F2F0ED]">{latestCommit.sha.substring(0, 10)}</div>
+                    <div className="flex items-start gap-2">
+                      <User className="mt-0.5 h-3.5 w-3.5 text-[#4e9815]" />
+                      <div>
+                        <div className="text-[#8C877D]">Author</div>
+                        <div className="text-[#F2F0ED]">
+                          {latestCommit.author?.login || latestCommit.commit.author.name}
+                          {latestCommit.commit.author.email && ` <${latestCommit.commit.author.email}>`}
                         </div>
                       </div>
+                    </div>
 
-                      <div className="flex items-start gap-2">
-                        <User className="mt-0.5 h-3.5 w-3.5 text-[#4e9815]" />
-                        <div>
-                          <div className="text-[#8C877D]">Author</div>
-                          <div className="text-[#F2F0ED]">
-                            {latestCommit.author?.login || latestCommit.commit.author.name}
-                            {latestCommit.commit.author.email && ` <${latestCommit.commit.author.email}>`}
+                    <div className="flex items-start gap-2">
+                      <Calendar className="mt-0.5 h-3.5 w-3.5 text-[#4e9815]" />
+                      <div>
+                        <div className="text-[#8C877D]">Date</div>
+                        <div className="text-[#F2F0ED]">{formatCommitDate(latestCommit.commit.author.date)}</div>
+                      </div>
+                    </div>
+
+                    <div className="pt-1">
+                      <div className="text-[#8C877D] mb-1">Message</div>
+                      <div className="rounded-md bg-[#1E1E1E]/50 p-2 font-mono text-[#F2F0ED]">
+                        {commitMessage.title}
+
+                        {commitMessage.description.length > 0 && (
+                          <div className="mt-2">
+                            {commitMessage.description.map((line, index) => (
+                              <div key={index} className="text-[#8C877D]">
+                                {line}
+                              </div>
+                            ))}
                           </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-2">
-                        <Calendar className="mt-0.5 h-3.5 w-3.5 text-[#4e9815]" />
-                        <div>
-                          <div className="text-[#8C877D]">Date</div>
-                          <div className="text-[#F2F0ED]">{formatDate(latestCommit.commit.author.date)}</div>
-                        </div>
-                      </div>
-
-                      <div className="pt-1">
-                        <div className="text-[#8C877D] mb-1">Message</div>
-                        <div className="rounded-md bg-[#1E1E1E]/50 p-2 font-mono text-[#F2F0ED]">
-                          {commitMessage.title}
-
-                          {commitMessage.description.length > 0 && (
-                            <div className="mt-2">
-                              {commitMessage.description.map((line, index) => (
-                                <div key={index} className="text-[#8C877D]">
-                                  {line}
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
+                        )}
                       </div>
                     </div>
+                  </div>
 
-                    {/* View on GitHub link */}
-                    <a
-                      href={latestCommit.html_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-3 flex items-center justify-center gap-1 rounded-md border border-[#1E1E1E] px-3 py-1.5 text-xs text-[#4e9815] transition-colors hover:bg-[#1E1E1E]/50"
-                    >
-                      View on GitHub <ExternalLink className="h-3 w-3" />
-                    </a>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </>
-          )
+                  {/* View on GitHub link */}
+                  <a
+                    href={latestCommit.html_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-3 flex items-center justify-center gap-1 rounded-md border border-[#1E1E1E] px-3 py-1.5 text-xs text-[#4e9815] transition-colors hover:bg-[#1E1E1E]/50"
+                  >
+                    View on GitHub <ExternalLink className="h-3 w-3" />
+                  </a>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </>
         )}
       </motion.div>
 

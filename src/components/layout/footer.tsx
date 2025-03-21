@@ -1,5 +1,5 @@
+import { TextScrambler } from "@/shared/components/effects"
 import { Github, Twitter, Terminal, Code, Shield, ExternalLink } from "lucide-react"
-import { HackerMenuItem } from "./hacker-menu-item"
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
@@ -52,7 +52,7 @@ export function Footer() {
                 <li key={link.name}>
                   <div className="flex items-center">
                     <Code className="h-3 w-3 mr-2 text-[#4e9815] opacity-70" />
-                    <HackerMenuItem href={link.href} text={link.name} isActive={false} className="text-sm" />
+                    <TextScrambler href={link.href} text={link.name} isActive={false} className="text-sm" />
                   </div>
                 </li>
               ))}
