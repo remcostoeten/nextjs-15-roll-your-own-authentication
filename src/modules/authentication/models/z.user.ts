@@ -45,19 +45,29 @@ export const userLoginSchema = z.object({
  * User schema with role
  */
 export const userSchema = z.object({
-	id: z.string(),
+	id: z.string().uuid(),
 	email: z.string().email(),
-	firstName: z.string().nullable(),
-	lastName: z.string().nullable(),
-	role: z.enum(['admin', 'user']),
-	avatar: z.string().nullable(),
-	githubId: z.string().nullable(),
-	githubAccessToken: z.string().nullable(),
-	createdAt: z.number(),
-	updatedAt: z.number(),
+	name: z.string().min(2).max(100).optional(),
+	password: z.string().min(8),
+	role: z.enum(['USER', 'ADMIN']).default('USER'),
+	createdAt: z.date(),
+	updatedAt: z.date(),
+})
+
+export const createUserSchema = userSchema.omit({ 
+	id: true, 
+	createdAt: true, 
+	updatedAt: true 
+})
+
+export const loginSchema = z.object({
+	email: z.string().email(),
+	password: z.string()
 })
 
 export type User = z.infer<typeof userSchema>
+export type CreateUser = z.infer<typeof createUserSchema>
+export type LoginCredentials = z.infer<typeof loginSchema>
 
 /**
  * User profile schema

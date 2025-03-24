@@ -7,7 +7,6 @@ import { cn } from '@/shared/utils'
 import { WidgetProvider } from '@/shared/providers/widget-provider'
 import { siteMetadata } from '@/core/config/metadata'
 import { DevToolsWidget } from '@/modules/widgets/dev-tools/components/dev-tools-widget'
-
 const inter = Inter({ subsets: ['latin'] })
 export const metadata = siteMetadata
 

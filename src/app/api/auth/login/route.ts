@@ -1,55 +1,116 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { loginUser } from '@/modules/authentication/api/mutations/login-user'
+import { cookies } from 'next/headers'
+import { db } from '@/server/db'
+import { users } from '@/server/db/schema'
+import { eq } from 'drizzle-orm'
+import { loginSchema } from '@/modules/authentication/models/z.user'
+import { comparePasswords } from '@/modules/authentication/utils/password'
+import { generateTokens } from '@/modules/authentication/utils/jwt'
+import { logUserActivity } from '@/shared/utils/activity-logger'
 
 export async function POST(request: NextRequest) {
 	try {
 		const body = await request.json()
+		const validatedData = loginSchema.parse(body)
 
-		// Get request info (optional)
-		const userAgent = request.headers.get('user-agent') || undefined
-		const ipAddress =
-			request.headers.get('x-forwarded-for') ||
-			request.headers.get('x-real-ip') ||
-			undefined
+		// Find user by email
+		const user = await db.query.users.findFirst({
+			where: eq(users.email, validatedData.email.toLowerCase()),
+		})
 
-		// Call the login function
-		const result = await loginUser(body, { userAgent, ipAddress })
+		if (!user) {
+			await logUserActivity({
+				type: 'login_failure',
+				userId: 'anonymous',
+				details: 'Invalid email or password',
+				metadata: {
+					email: validatedData.email,
+				},
+			})
 
-		// Create a response
-		const response = NextResponse.json(result, { status: 200 })
+			return NextResponse.json(
+				{ message: 'Invalid email or password' },
+				{ status: 401 }
+			)
+		}
+
+		// Verify password
+		const isValidPassword = await comparePasswords(
+			validatedData.password,
+			user.passwordHash
+		)
+
+		if (!isValidPassword) {
+			await logUserActivity({
+				type: 'login_failure',
+				userId: user.id,
+				details: 'Invalid password',
+				metadata: {
+					email: user.email,
+				},
+			})
+
+			return NextResponse.json(
+				{ message: 'Invalid email or password' },
+				{ status: 401 }
+			)
+		}
+
+		// Generate tokens
+		const tokenPayload = {
+			sub: user.id,
+			email: user.email,
+			role: user.role,
+			iat: Math.floor(Date.now() / 1000),
+			exp: Math.floor(Date.now() / 1000) + 15 * 60, // 15 minutes
+		}
+
+		const tokens = await generateTokens(tokenPayload)
 
 		// Set cookies
-		response.cookies.set({
-			name: 'access_token',
-			value: result.tokens.accessToken,
+		const cookieStore = cookies()
+		const cookieOptions = {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
-			sameSite: 'strict',
+			sameSite: 'lax' as const,
+			path: '/',
+		}
+
+		cookieStore.set('access_token', tokens.accessToken, {
+			...cookieOptions,
 			maxAge: 15 * 60, // 15 minutes
-			path: '/',
 		})
 
-		response.cookies.set({
-			name: 'refresh_token',
-			value: result.tokens.refreshToken,
-			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production',
-			sameSite: 'strict',
+		cookieStore.set('refresh_token', tokens.refreshToken, {
+			...cookieOptions,
 			maxAge: 7 * 24 * 60 * 60, // 7 days
-			path: '/',
 		})
 
-		return response
+		// Log successful login
+		await logUserActivity({
+			type: 'login_success',
+			userId: user.id,
+			details: 'User logged in successfully',
+			metadata: {
+				email: user.email,
+				role: user.role,
+			},
+		})
+
+		// Return user data (excluding sensitive information)
+		return NextResponse.json({
+			user: {
+				id: user.id,
+				email: user.email,
+				name: user.name,
+				role: user.role,
+			},
+		})
 	} catch (error) {
 		console.error('Login error:', error)
 		return NextResponse.json(
-			{
-				error:
-					error instanceof Error
-						? error.message
-						: 'An error occurred during login',
-			},
-			{ status: 400 }
+			{ message: 'Internal server error' },
+			{ status: 500 }
 		)
 	}
 }

@@ -1,0 +1,46 @@
+@keyframes subtle-pulse {
+  0% {
+    opacity: 0.12; /* Increased from 0.08 to 0.12 */
+  }
+  50% {
+    opacity: 0.18; /* Increased from 0.12 to 0.18 */
+  }
+  100% {
+    opacity: 0.12; /* Increased from 0.08 to 0.12 */
+  }
+}
+
+@keyframes border-glow {
+  0% {
+    box-shadow: 0 0 8px rgba(78, 152, 21, 0.15); /* Increased from 5px to 8px and opacity from 0.1 to 0.15 */
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(78, 152, 21, 0.3); /* Increased from 10px to 15px and opacity from 0.2 to 0.3 */
+  }
+  100% {
+    box-shadow: 0 0 8px rgba(78, 152, 21, 0.15); /* Increased from 5px to 8px and opacity from 0.1 to 0.15 */
+  }
+}
+
+/* Remove arrow-bounce animation */
+@keyframes color-shift {
+  0% {
+    color: rgb(140, 135, 125);
+  }
+  100% {
+    color: #4e9815;
+  }
+}
+
+.matrix-hover-animation {
+  animation: subtle-pulse 3s infinite ease-in-out;
+}
+
+.border-glow-animation {
+  animation: border-glow 4s infinite ease-in-out;
+}
+
+.color-shift-animation {
+  animation: color-shift 1.5s ease-in-out;
+}
+

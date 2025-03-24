@@ -1,58 +1,39 @@
-/**
- * Date and time constants for consistent use throughout the application.
- * All values are in seconds unless otherwise specified.
- */
-
-// Time constants (in seconds)
-export const SECOND = 1
-export const MINUTE = 60 * SECOND
-export const HOUR = 60 * MINUTE
-export const DAY = 24 * HOUR
-export const WEEK = 7 * DAY
-export const MONTH = 30 * DAY // Approximation
-export const YEAR = 365 * DAY // Approximation
-
-// Common durations for auth tokens, caching, etc.
-export const FIFTEEN_MINUTES = 15 * MINUTE
-export const THIRTY_MINUTES = 30 * MINUTE
-export const ONE_HOUR = HOUR
-export const FOUR_HOURS = 4 * HOUR
-export const EIGHT_HOURS = 8 * HOUR
-export const TWELVE_HOURS = 12 * HOUR
-export const ONE_DAY = DAY
-export const THREE_DAYS = 3 * DAY
-export const ONE_WEEK = WEEK
-export const TWO_WEEKS = 2 * WEEK
-export const ONE_MONTH = MONTH
-export const THREE_MONTHS = 3 * MONTH
-export const SIX_MONTHS = 6 * MONTH
-export const ONE_YEAR = YEAR
-
-// Utility functions to convert between units
-export const secondsToMilliseconds = (seconds: number): number => seconds * 1000
-export const minutesToSeconds = (minutes: number): number => minutes * MINUTE
-export const hoursToSeconds = (hours: number): number => hours * HOUR
-export const daysToSeconds = (days: number): number => days * DAY
-export const weeksToSeconds = (weeks: number): number => weeks * WEEK
-
-/**
- * Get expiration timestamp from now
- * @param seconds - Duration in seconds
- * @returns Timestamp in milliseconds
- */
-export const getExpirationFromNow = (seconds: number): number => {
-	return Date.now() + secondsToMilliseconds(seconds)
-}
-
-export function currentTimestamp(): number {
-	return Date.now()
+export function formatDate(dateString: string): string {
+  const date = new Date(dateString)
+  return date.toLocaleString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short",
+  })
 }
 
 /**
- * Check if a timestamp is expired
- * @param timestamp - Timestamp in milliseconds
- * @returns Boolean indicating if the timestamp is expired
+ * Calculate relative time (e.g., "3 days ago")
  */
-export const isExpired = (timestamp: number): boolean => {
-	return Date.now() > timestamp
+export function getRelativeTime(dateString: string): string {
+  const date = new Date(dateString)
+  const now = new Date()
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+
+  if (diffInSeconds < 60) return `${diffInSeconds} seconds ago`
+  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`
+  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`
+  if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)} days ago`
+  if (diffInSeconds < 31536000) return `${Math.floor(diffInSeconds / 2592000)} months ago`
+  return `${Math.floor(diffInSeconds / 31536000)} years ago`
 }
+
+/**
+ * Format commit message to extract title and description
+ */
+export function formatCommitMessage(message: string): { title: string; description: string[] } {
+  const lines = message.split("\n").filter((line) => line.trim() !== "")
+  const title = lines[0]
+  const description = lines.slice(1).map((line) => line.trim())
+  return { title, description }
+}
+

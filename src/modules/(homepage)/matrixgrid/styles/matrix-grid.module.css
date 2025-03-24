@@ -1,0 +1,472 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(13, 12, 12);
+  padding: 0;
+  width: 100%;
+}
+
+.container {
+  color: rgb(51, 51, 51);
+  background-color: rgb(13, 12, 12);
+  z-index: 2;
+  padding: 0 40px 80px;
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  border-top: 1px dashed #1e1e1e;
+}
+
+/* Make sure the wrapper is properly set up for side-by-side layout */
+.wrapper {
+  align-items: stretch;
+  display: flex;
+  z-index: 1;
+  max-width: 1800px; /* Increased from 1600px to 1800px for even wider container */
+  gap: 40px;
+  position: relative;
+  width: 100%;
+  border-left: 1px dashed #1e1e1e;
+  flex-direction: row; /* Ensure horizontal layout */
+  min-height: 100vh; /* Ensure enough height for scrolling effect */
+}
+
+/* Add the gradient effect to the top border */
+.container::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: 40px; /* Account for container padding */
+  width: 25%;
+  height: 1px;
+  background: linear-gradient(to right, #1e1e1e, rgba(13, 12, 12, 0));
+  pointer-events: none;
+}
+
+/* Update the stickyContainer class to ensure it doesn't interfere with the sticky behavior */
+.stickyContainer {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+}
+
+/* Update the header class to ensure it doesn't have conflicting sticky behavior */
+.header {
+  width: 30%; /* Reduced from 35% to 30% */
+  flex-direction: column;
+  justify-content: flex-start;
+  align-self: flex-start;
+  padding-top: 0;
+  padding-bottom: 30px;
+  display: flex;
+  position: relative; /* Changed from sticky to relative */
+  border-left: 1px dashed #1e1e1e;
+  border-top: 1px dashed #1e1e1e;
+  padding: 32px 24px 24px;
+  overflow: visible; /* Changed from overflow-y: auto to overflow: visible */
+}
+
+.stacksLink {
+  color: rgb(207, 201, 194);
+  text-decoration: none;
+}
+
+.grid {
+  width: 70%; /* Increased from 65% to 70% */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  position: relative;
+  padding-bottom: 2px;
+  padding-left: 2px;
+  z-index: 2;
+  min-height: 1200px; /* Add minimum height to ensure scrolling */
+}
+
+/* Update the card styling to remove transform effects */
+.card {
+  position: relative;
+  padding: 32px 28px 28px;
+  min-height: 280px;
+  color: rgb(242, 240, 237);
+  display: flex;
+  flex-direction: column;
+  border-left: 1px dashed #1e1e1e;
+  border-top: 1px dashed #1e1e1e;
+  transition: all 0.4s ease, background-color 0.4s ease;
+  overflow: hidden;
+  background-color: rgba(13, 12, 12, 0);
+}
+
+/* Update the card:hover style to make the effect more visible */
+.card:hover {
+  border-color: rgba(78, 152, 21, 0.25); /* Increased from 0.15 to 0.25 */
+  background-color: rgba(13, 12, 12, 0.8); /* Increased from 0.7 to 0.8 */
+  /* Remove transform: translateY(-6px); */
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.4); /* Increased from 30px to 40px and opacity from 0.3 to 0.4 */
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid transparent;
+  transition: all 0.4s ease;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.card:hover::after {
+  border-color: rgba(78, 152, 21, 0.3); /* Increased from 0.2 to 0.3 */
+  opacity: 1;
+  inset: -1px;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: 0;
+  width: 25%;
+  height: 1px;
+  background: linear-gradient(to right, #1e1e1e, rgba(13, 12, 12, 0));
+  pointer-events: none;
+}
+
+.header::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: 0;
+  width: 25%;
+  height: 1px;
+  background: linear-gradient(to right, #1e1e1e, rgba(13, 12, 12, 0));
+  pointer-events: none;
+}
+
+.horizontalBorder {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-image: linear-gradient(
+    to right,
+    #1e1e1e 70%,
+    rgba(30, 30, 30, 0.5) 70%,
+    rgba(30, 30, 30, 0.5) 75%,
+    rgba(30, 30, 30, 0) 75%
+  );
+  background-size: 16px 1px;
+  background-repeat: repeat-x;
+  z-index: 10;
+}
+
+.grid > *:nth-child(3n) .horizontalBorder {
+  background-image: linear-gradient(
+    to right,
+    #1e1e1e 50%,
+    rgba(30, 30, 30, 0.5) 50%,
+    rgba(30, 30, 30, 0.5) 60%,
+    rgba(30, 30, 30, 0) 60%
+  );
+  background-size: 16px 1px;
+  background-repeat: repeat-x;
+}
+
+.rightBorder {
+  display: none;
+}
+
+/* Improve card content spacing */
+.cardContent {
+  z-index: 3; /* Ensure content is above both matrix rain and spotlight */
+  width: 100%;
+  color: rgb(140, 135, 125);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 16px;
+  line-height: 1.5;
+  height: 100%;
+}
+
+.cardContentWrapper {
+  position: relative;
+  z-index: 2;
+  /* Removed background-color: rgba(13, 12, 12, 0.7); */
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.cardTitle {
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 600;
+  margin: 0;
+}
+
+.tag {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.tagNew {
+  background-color: rgba(78, 152, 21, 0.15);
+  color: #4e9815;
+  border: 1px solid rgba(78, 152, 21, 0.2);
+}
+
+.tagSoon {
+  background-color: rgba(30, 30, 30, 0.6);
+  color: #8c877d;
+  border: 1px solid rgba(45, 45, 45, 0.6);
+}
+
+.cardDescription {
+  margin-bottom: 24px;
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 90%;
+  opacity: 0.85;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover .cardDescription {
+  opacity: 1;
+}
+
+/* Update the arrow hover effect to not use transform */
+.arrow {
+  width: 20px;
+  height: 20px;
+  color: rgb(140, 135, 125);
+  margin-top: 16px;
+  transition: color 0.3s ease;
+}
+
+.card:hover .arrow {
+  /* Remove transform: translateX(4px); */
+  color: #4e9815;
+}
+
+.largeBorders {
+  border-top: 1px dashed #1e1e1e !important;
+  border-left: 1px dashed #1e1e1e !important;
+  margin-top: -1px; /* Compensate for the border */
+  margin-left: -1px; /* Compensate for the border */
+}
+
+.platformCard {
+  grid-column: span 3;
+  padding: 107px 34px 0;
+  min-height: 314px;
+  border-bottom: none;
+  position: relative;
+}
+
+.platformImage {
+  display: none;
+  width: 100%;
+  height: 223px;
+  object-fit: contain;
+  object-position: 50% 100%;
+  margin-top: 20px;
+  position: relative;
+  z-index: 5;
+}
+
+.platformGradient {
+  position: absolute;
+  bottom: 1.5px;
+  left: 1px;
+  right: 1px;
+  height: 193px;
+  background-image: linear-gradient(rgba(13, 12, 12, 0), rgba(13, 12, 12, 0.6));
+  z-index: 6;
+}
+
+.platformSideGradient {
+  position: absolute;
+  top: 0;
+  bottom: 10px;
+  left: -5px;
+  width: 10px;
+  background-image: linear-gradient(rgb(13, 12, 12), rgba(13, 12, 12, 0));
+  z-index: 5;
+}
+
+.skeletonLoader {
+  width: 100%;
+  height: 223px;
+  background: linear-gradient(to right, #1a1a1a 8%, #2a2a2a 18%, #1a1a1a 33%);
+  background-size: 2000px 100%;
+  animation: shimmer 2s infinite linear;
+  margin-top: 0;
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* Adjust responsive behavior */
+@media screen and (max-width: 991px) {
+  .wrapper {
+    flex-direction: column;
+    gap: 60px;
+  }
+
+  .header {
+    position: relative; /* Remove sticky positioning on mobile */
+    top: 0;
+    width: 100%;
+  }
+
+  .grid {
+    width: 100%;
+  }
+
+  .platformCard {
+    padding: 32px 24px 24px;
+    min-height: 237px;
+  }
+
+  .platformImage {
+    height: 20vw;
+  }
+  .skeletonLoader {
+    height: 20vw;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .container {
+    padding: 0 20px 48px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .platformCard {
+    grid-column: span 1;
+  }
+
+  .platformGradient,
+  .platformSideGradient {
+    display: none;
+  }
+  .skeletonLoader {
+    height: 193px;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .title {
+    font-size: 2rem;
+  }
+}
+
+/* Refined spotlight effect */
+.cardSpotlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Background will be set dynamically via JS */
+  opacity: 0;
+  transition: opacity 0.3s ease, background 0.3s ease;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+  z-index: 2; /* Ensure it's above the matrix rain */
+}
+
+.card:hover .cardSpotlight {
+  opacity: 1;
+}
+
+/* Enhance the matrix rain effect for better visibility with spotlight */
+.matrixRain {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease, mask-image 0.3s ease, -webkit-mask-image 0.3s ease;
+  pointer-events: none;
+  z-index: 1; /* Ensure it's above the background but below content */
+}
+
+/* Remove this rule to allow the JS to control the opacity */
+.card:hover .matrixRain {
+  opacity: 0.4; /* Increased from default to 0.4 */
+}
+
+/* Add animation for matrix rain spotlight */
+@keyframes matrix-spotlight-pulse {
+  0% {
+    opacity: 0.15; /* Increased from 0.1 to 0.15 */
+  }
+  50% {
+    opacity: 0.3; /* Increased from 0.2 to 0.3 */
+  }
+  100% {
+    opacity: 0.15; /* Increased from 0.1 to 0.15 */
+  }
+}
+
+.matrix-spotlight {
+  animation: matrix-spotlight-pulse 2s infinite ease-in-out;
+}
+
+.matrixRain canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.noTopBorder {
+  border-top: none;
+}
+
+/* Add styles to control animation visibility */
+.card-hover-only {
+  opacity: 0;
+  animation: none;
+}
+
+.card:hover .card-hover-only {
+  opacity: 1;
+  animation-play-state: running;
+}
+

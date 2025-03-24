@@ -28,7 +28,7 @@ body {
 }
 
 .token.keyword {
-  color: #cf9c2; /* Light gold for keywords */
+  color: #cf9c2c; /* Light gold for keywords */
 }
 
 .token.string {
@@ -56,7 +56,7 @@ body {
 }
 
 .token.operator {
-  color: #cf9c2; /* Light gold for operators */
+  color: #cf9c2c; /* Light gold for operators */
 }
 
 .token.boolean {
@@ -94,5 +94,121 @@ pre *::selection {
 
 .copy-success {
   animation: success-pulse 0.5s ease;
+}
+
+/* Fix scrollbar styles to ensure they don't interfere with layout */
+/* Custom scrollbar for the matrix theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e1e1e;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2d2d2d;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1e1e1e #0a0a0a;
+}
+
+/* Ensure code wraps properly */
+.whitespace-pre-wrap {
+  white-space: pre-wrap;
+}
+
+.break-words {
+  word-break: break-word;
+}
+
+/* Ensure popovers are never clipped */
+.popover-container {
+  position: relative;
+  overflow: visible !important;
+}
+
+body,
+html,
+#__next,
+main,
+div {
+  overflow-x: hidden;
+}
+
+/* Special z-index for popovers */
+.popover {
+  z-index: 9999 !important;
+  position: relative;
+}
+
+/* Fix for any parent containers that might clip popovers */
+.relative {
+  overflow: visible !important;
+}
+
+/* Code block container styles */
+.code-block-wrapper {
+  position: relative;
+  z-index: 10;
+}
+
+.code-block-container {
+  position: sticky;
+  top: 100px;
+  z-index: 10;
+}
+
+/* Ensure the container for the matrix grid section has proper overflow handling */
+#matrix-grid-section {
+  overflow: visible;
+  position: relative;
+}
+
+/* Only apply overflow auto to elements that need scrolling */
+.overflow-y-auto {
+  overflow-y: auto;
+}
+
+/* Ensure the main content area scrolls properly */
+body {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Add these styles to fix header scrollbar issues */
+header {
+  height: 64px; /* Set a fixed height for the header */
+  overflow: visible !important;
+}
+
+header > div {
+  height: 100%;
+  overflow: visible !important;
+}
+
+header nav {
+  overflow: visible !important;
+}
+
+/* Ensure dropdown menus aren't cut off */
+.dropdown-menu {
+  overflow: visible !important;
+}
+
+/* Ensure the header's inner container doesn't scroll */
+.header-inner-container {
+  height: 100%;
+  overflow: visible !important;
 }
 

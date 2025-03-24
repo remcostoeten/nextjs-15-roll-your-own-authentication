@@ -1,23 +1,34 @@
-import { NextResponse } from 'next/server'
-import { fetchLatestCommits } from '@/app/actions/github'
+import { NextResponse } from "next/server"
+import { fetchLatestCommit } from "@/modules/github/api/queries/fetch-latest-commit"
 
+// Update the API route to handle errors more gracefully
 export async function GET() {
-	try {
-		const result = await fetchLatestCommits(
-			'remcostoeten/nextjs-15-roll-your-own-authentication',
-			'main',
-			1
-		)
-		return NextResponse.json(result)
-	} catch (error) {
-		return NextResponse.json(
-			{
-				error:
-					error instanceof Error
-						? error.message
-						: 'Failed to fetch commit',
-			},
-			{ status: 500 }
-		)
-	}
+  try {
+    const { commit, error } = await fetchLatestCommit()
+
+    // Always return the commit, even if there's an error
+    // This ensures the UI always has data to display
+    return NextResponse.json({ commit, error })
+  } catch (error) {
+    console.error("Error in GitHub API route:", error)
+
+    // Return a fallback response
+    return NextResponse.json({
+      commit: {
+        sha: "fallback-sha",
+        html_url: "#",
+        commit: {
+          message: "Fallback commit message",
+          author: {
+            name: "Fallback Author",
+            email: "fallback@example.com",
+            date: new Date().toISOString(),
+          },
+        },
+        author: null,
+      },
+      error: "Failed to fetch commit data",
+    })
+  }
 }
+

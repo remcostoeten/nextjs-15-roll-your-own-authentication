@@ -8,5 +8,5 @@ export async function comparePasswords(
 }
 
 export async function hashPassword(password: string): Promise<string> {
-	return hash(password, 10)
+	return hash(password, 12)
 }
