@@ -13,10 +13,7 @@ const logActivitySchema = z.object({
 
 export const logActivity = async (data: z.infer<typeof logActivitySchema>) => {
 	try {
-		console.log(
-			'[logActivity] Function called with data:',
-			JSON.stringify(data)
-		)
+		console.log('[logActivity] Function called with data:', JSON.stringify(data))
 
 		// Validate the input data
 		const { userId, action, details } = logActivitySchema.parse(data)
@@ -28,15 +25,11 @@ export const logActivity = async (data: z.infer<typeof logActivitySchema>) => {
 		})
 
 		if (!userExists) {
-			console.error(
-				`[logActivity] Error: User with ID ${userId} not found in database`
-			)
+			console.error(`[logActivity] Error: User with ID ${userId} not found in database`)
 			throw new Error(`User with ID ${userId} not found`)
 		}
 
-		console.log(
-			'[logActivity] User exists, attempting to insert activity log'
-		)
+		console.log('[logActivity] User exists, attempting to insert activity log')
 
 		// Insert activity log
 		const result = await db
@@ -48,10 +41,7 @@ export const logActivity = async (data: z.infer<typeof logActivitySchema>) => {
 			})
 			.returning()
 
-		console.log(
-			'[logActivity] Successfully inserted activity log:',
-			JSON.stringify(result[0])
-		)
+		console.log('[logActivity] Successfully inserted activity log:', JSON.stringify(result[0]))
 		return result[0]
 	} catch (error) {
 		console.error('[logActivity] Failed to log activity:', error)

@@ -1,12 +1,4 @@
-import {
-	Home,
-	Users,
-	Bookmark,
-	MessagesSquare,
-	Bell,
-	Settings,
-	type LucideIcon,
-} from 'lucide-react'
+import { Home, Users, Bookmark, MessagesSquare, Bell, Settings, type LucideIcon } from 'lucide-react'
 
 export interface NavItem {
 	label: string

@@ -15,13 +15,7 @@ type TProps = {
 	onMouseLeave: () => void
 }
 
-export function NavDropdown({
-	item,
-	isActive,
-	isOpen,
-	onMouseEnter,
-	onMouseLeave,
-}: TProps) {
+export function NavDropdown({ item, isActive, isOpen, onMouseEnter, onMouseLeave }: TProps) {
 	return (
 		<div
 			className={navStyles.item.wrapper}
@@ -34,9 +28,7 @@ export function NavDropdown({
 					text={item.name}
 					isActive={isActive}
 				/>
-				<ChevronDown
-					className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-				/>
+				<ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
 			</div>
 
 			<AnimatePresence>
@@ -64,9 +56,7 @@ export function NavDropdown({
 						</ul>
 
 						<div className={navStyles.dropdown.footer}>
-							<span className="text-xs font-mono">
-								Press / to search
-							</span>
+							<span className="text-xs font-mono">Press / to search</span>
 							<div className={navStyles.dropdown.pulse} />
 						</div>
 					</motion.div>

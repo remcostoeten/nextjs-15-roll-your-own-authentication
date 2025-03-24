@@ -48,16 +48,12 @@ export default async function AdminPage() {
 	const userList: User[] = await db.query.users.findMany()
 	const userMetricsList: UserMetrics[] = await db.query.userMetrics.findMany()
 
-	const userListWithMetrics = await Promise.all(
-		userList.map((user) => pairUserWithMetrics(user, userMetricsList))
-	)
+	const userListWithMetrics = await Promise.all(userList.map((user) => pairUserWithMetrics(user, userMetricsList)))
 
 	return (
 		<div className="flex flex-col items-center justify-center min-h-screen bg-neutral-900 p-6">
 			<AdminBanner />
-			<h1 className="text-3xl font-bold text-white mb-8">
-				Admin Dashboard
-			</h1>
+			<h1 className="text-3xl font-bold text-white mb-8">Admin Dashboard</h1>
 			<div className="w-full max-w-7xl">
 				<UserTable users={userListWithMetrics} />
 			</div>

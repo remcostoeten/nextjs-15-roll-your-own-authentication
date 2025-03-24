@@ -4,13 +4,7 @@ import { useState } from 'react'
 import { Tag, Filter, SortAsc } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/shared/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select'
 import { type Todo } from '@/server/db/schemas/widget-todos'
 import { deleteTodoMutation } from '../api/mutations/delete-todo'
 import { updateTodoMutation } from '../api/mutations/update-todo'
@@ -32,9 +26,7 @@ export function TodoList({ todos }: TodoListProps) {
 	const [selectedTags, setSelectedTags] = useState<string[]>([])
 
 	// Extract unique tags from all todos
-	const allTags = Array.from(
-		new Set(todos.flatMap((todo) => JSON.parse(todo.tags)))
-	)
+	const allTags = Array.from(new Set(todos.flatMap((todo) => JSON.parse(todo.tags))))
 
 	// Filter and sort todos
 	const filteredAndSortedTodos = todos
@@ -51,10 +43,7 @@ export function TodoList({ todos }: TodoListProps) {
 		.sort((a, b) => {
 			if (sortBy === 'priority') return b.priority - a.priority
 			if (sortBy === 'title') return a.title.localeCompare(b.title)
-			return (
-				new Date(b.createdAt).getTime() -
-				new Date(a.createdAt).getTime()
-			)
+			return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
 		})
 
 	const handleDelete = async (id: string) => {
@@ -82,9 +71,7 @@ export function TodoList({ todos }: TodoListProps) {
 			formData.append('title', editValue)
 			await updateTodoMutation(id, formData)
 			// Optimistically update the todo title
-			todos = todos.map((todo) =>
-				todo.id === id ? { ...todo, title: editValue } : todo
-			)
+			todos = todos.map((todo) => (todo.id === id ? { ...todo, title: editValue } : todo))
 		} catch (error) {
 			console.error('Failed to update todo:', error)
 		} finally {
@@ -129,16 +116,10 @@ export function TodoList({ todos }: TodoListProps) {
 						<Button
 							key={tag}
 							size="sm"
-							variant={
-								selectedTags.includes(tag)
-									? 'default'
-									: 'outline'
-							}
+							variant={selectedTags.includes(tag) ? 'default' : 'outline'}
 							onClick={() =>
 								setSelectedTags((prev) =>
-									prev.includes(tag)
-										? prev.filter((t) => t !== tag)
-										: [...prev, tag]
+									prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
 								)
 							}
 						>
@@ -165,9 +146,7 @@ export function TodoList({ todos }: TodoListProps) {
 							<Input
 								value={editValue}
 								onChange={(e) => setEditValue(e.target.value)}
-								onKeyDown={(e) =>
-									e.key === 'Enter' && handleUpdate(todo.id)
-								}
+								onKeyDown={(e) => e.key === 'Enter' && handleUpdate(todo.id)}
 								onBlur={() => handleUpdate(todo.id)}
 								autoFocus
 							/>
@@ -193,9 +172,7 @@ export function TodoList({ todos }: TodoListProps) {
 								onClick={() => handleDelete(todo.id)}
 								disabled={deleteLoading === todo.id}
 							>
-								{deleteLoading === todo.id
-									? 'Deleting...'
-									: 'Delete'}
+								{deleteLoading === todo.id ? 'Deleting...' : 'Delete'}
 							</Button>
 						</div>
 					</li>

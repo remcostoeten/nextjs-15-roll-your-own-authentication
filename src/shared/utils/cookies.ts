@@ -29,24 +29,12 @@ export function getCookie(name: string): string | undefined {
 /**
  * Set a cookie
  */
-export function setCookie(
-	name: string,
-	value: string,
-	options: CookieOptions = {}
-): void {
+export function setCookie(name: string, value: string, options: CookieOptions = {}): void {
 	if (typeof window === 'undefined') {
 		return // Server-side, no cookies
 	}
 
-	const {
-		maxAge,
-		expires,
-		path = '/',
-		domain,
-		secure,
-		sameSite = 'lax',
-		httpOnly = false,
-	} = options
+	const { maxAge, expires, path = '/', domain, secure, sameSite = 'lax', httpOnly = false } = options
 
 	let cookieString = `${encodeURIComponent(name)}=${encodeURIComponent(value)}`
 
@@ -80,13 +68,11 @@ export function getAllCookies(): Record<string, string> {
 		return {} // Server-side, no cookies
 	}
 
-	return document.cookie
-		.split('; ')
-		.reduce((acc: Record<string, string>, cookie) => {
-			if (cookie) {
-				const [name, value] = cookie.split('=')
-				acc[decodeURIComponent(name)] = decodeURIComponent(value)
-			}
-			return acc
-		}, {})
+	return document.cookie.split('; ').reduce((acc: Record<string, string>, cookie) => {
+		if (cookie) {
+			const [name, value] = cookie.split('=')
+			acc[decodeURIComponent(name)] = decodeURIComponent(value)
+		}
+		return acc
+	}, {})
 }

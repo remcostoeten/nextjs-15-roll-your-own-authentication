@@ -15,18 +15,12 @@ export type UpdateTodoFormState = {
 	message: string | null
 }
 
-export async function updateTodoMutation(
-	id: string,
-	formData: FormData
-): Promise<UpdateTodoFormState> {
+export async function updateTodoMutation(id: string, formData: FormData): Promise<UpdateTodoFormState> {
 	try {
 		const rawData = Object.fromEntries(formData.entries())
 		const validatedData = updateTodoSchema.parse(rawData)
 
-		await db
-			.update(widgetTodos)
-			.set({ title: validatedData.title })
-			.where(eq(widgetTodos.id, id))
+		await db.update(widgetTodos).set({ title: validatedData.title }).where(eq(widgetTodos.id, id))
 
 		revalidatePath('/')
 
@@ -38,10 +32,7 @@ export async function updateTodoMutation(
 		console.error('Update todo error:', error)
 		return {
 			success: false,
-			message:
-				error instanceof Error
-					? error.message
-					: 'Failed to update todo',
+			message: error instanceof Error ? error.message : 'Failed to update todo',
 		}
 	}
 }

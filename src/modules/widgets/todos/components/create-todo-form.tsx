@@ -7,13 +7,7 @@ import { Input } from '@/shared/components/ui/input'
 import { Textarea } from '@/shared/components/ui/textarea'
 import { Label } from '@/shared/components/ui/label'
 import { Loader2 } from 'lucide-react'
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/shared/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select'
 
 function SubmitButton() {
 	const { pending } = useFormStatus()
@@ -87,9 +81,7 @@ export function CreateTodoForm() {
 				</Select>
 			</div>
 
-			{state.message && !state.success && (
-				<p className="text-sm text-destructive">{state.message}</p>
-			)}
+			{state.message && !state.success && <p className="text-sm text-destructive">{state.message}</p>}
 
 			<div className="flex justify-end">
 				<SubmitButton />

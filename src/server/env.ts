@@ -8,18 +8,12 @@ export const env = createEnv({
 	 */
 	client: {
 		// Example: NEXT_PUBLIC_API_URL: z.string().min(1)
-		NEXT_PUBLIC_BASE_URL: z
-			.string()
-			.url()
-			.optional()
-			.default('http://localhost:3000'),
+		NEXT_PUBLIC_BASE_URL: z.string().url().optional().default('http://localhost:3000'),
 	},
 
 	server: {
 		// Node environment
-		NODE_ENV: z
-			.enum(['development', 'production', 'test'])
-			.default('development'),
+		NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 
 		// Database configuration
 		DATABASE_TYPE: z.enum(['sqlite', 'none']).default('sqlite'),

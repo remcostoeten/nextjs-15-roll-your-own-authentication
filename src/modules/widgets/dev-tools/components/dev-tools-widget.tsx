@@ -25,31 +25,15 @@ import {
 	CornerRightUp,
 	CheckSquare,
 } from 'lucide-react'
-import {
-	Tabs,
-	TabsContent,
-	TabsList,
-	TabsTrigger,
-} from '@/shared/components/ui/tabs'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/ui/tabs'
 import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
 import { ScrollArea } from '@/shared/components/ui/scroll-area'
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '@/shared/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/shared/components/ui/tooltip'
 import { Slider as UISlider } from '@/shared/components/ui/slider'
 import { createDevToolsStore } from '../store/dev-tools-store'
 import { JSONViewer } from '@/shared/components/json-viewer'
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-} from '@/shared/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/shared/components/ui/dialog'
 import FloatingTodo from '@/components/theme/floating-notes'
 
 type DevToolsWidgetProps = {
@@ -116,32 +100,15 @@ type DevAction = {
 	icon: React.ReactNode
 }
 
-type WidgetPosition =
-	| 'TOP_LEFT'
-	| 'TOP_RIGHT'
-	| 'BOTTOM_LEFT'
-	| 'BOTTOM_RIGHT'
-	| 'CUSTOM'
+type WidgetPosition = 'TOP_LEFT' | 'TOP_RIGHT' | 'BOTTOM_LEFT' | 'BOTTOM_RIGHT' | 'CUSTOM'
 type WidgetSize = 'SMALL' | 'NORMAL' | 'LARGE'
 
 // Add new type for panel position
-type PanelPlacement =
-	| 'top'
-	| 'right'
-	| 'bottom'
-	| 'left'
-	| 'top-right'
-	| 'top-left'
-	| 'bottom-right'
-	| 'bottom-left'
+type PanelPlacement = 'top' | 'right' | 'bottom' | 'left' | 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
 
 const useDevToolsStore = createDevToolsStore()
 
-export function DevToolsWidget({
-	allowDrag = true,
-	showInProduction = false,
-	authInfo,
-}: DevToolsWidgetProps) {
+export function DevToolsWidget({ allowDrag = true, showInProduction = false, authInfo }: DevToolsWidgetProps) {
 	// Get values from the store first
 	const {
 		position,
@@ -181,12 +148,8 @@ export function DevToolsWidget({
 	const [newValue, setNewValue] = useState('')
 
 	// Local storage state
-	const [localStorageItems, setLocalStorageItems] = useState<
-		{ key: string; value: string }[]
-	>([])
-	const [sessionStorageItems, setSessionStorageItems] = useState<
-		{ key: string; value: string }[]
-	>([])
+	const [localStorageItems, setLocalStorageItems] = useState<{ key: string; value: string }[]>([])
+	const [sessionStorageItems, setSessionStorageItems] = useState<{ key: string; value: string }[]>([])
 
 	// JWT state
 	const [jwtParts, setJwtParts] = useState<{
@@ -310,9 +273,7 @@ export function DevToolsWidget({
 	])
 
 	// Performance metrics state
-	const [performanceMetrics, setPerformanceMetrics] = useState<
-		PerformanceMetric[]
-	>([
+	const [performanceMetrics, setPerformanceMetrics] = useState<PerformanceMetric[]>([
 		{ name: 'First Contentful Paint', value: 1.2, unit: 's' },
 		{ name: 'Largest Contentful Paint', value: 2.5, unit: 's' },
 		{ name: 'First Input Delay', value: 120, unit: 'ms' },
@@ -331,18 +292,13 @@ export function DevToolsWidget({
 
 	// Update the state initialization to use store values
 	const [widgetOpacity, setWidgetOpacity] = useState(storedOpacity || 1)
-	const [widgetPosition, setWidgetPosition] = useState<WidgetPosition>(
-		storedWidgetPosition || 'CUSTOM'
-	)
+	const [widgetPosition, setWidgetPosition] = useState<WidgetPosition>(storedWidgetPosition || 'CUSTOM')
 	const [isPinned, setIsPinned] = useState(storedIsPinned || false)
-	const [widgetSize, setWidgetSize] = useState<WidgetSize>(
-		storedWidgetSize || 'NORMAL'
-	)
+	const [widgetSize, setWidgetSize] = useState<WidgetSize>(storedWidgetSize || 'NORMAL')
 	const [isDarkTheme, setIsDarkTheme] = useState(storedTheme === 'dark')
 	const [startDragPos, setStartDragPos] = useState({ x: 0, y: 0 })
 
-	const [panelPlacement, setPanelPlacement] =
-		useState<PanelPlacement>('bottom-left')
+	const [panelPlacement, setPanelPlacement] = useState<PanelPlacement>('bottom-left')
 	const [spaceData, setSpaceData] = useState({
 		top: 0,
 		right: 0,
@@ -351,9 +307,7 @@ export function DevToolsWidget({
 	})
 
 	// Fix the typed state declaration
-	const [showDebugInfo, setShowDebugInfo] = useState<boolean>(
-		process.env.NODE_ENV === 'development' && false
-	)
+	const [showDebugInfo, setShowDebugInfo] = useState<boolean>(process.env.NODE_ENV === 'development' && false)
 
 	// Add adaptive panel size state
 	const [panelSize, setPanelSize] = useState({ width: 385, height: 400 })
@@ -434,20 +388,13 @@ export function DevToolsWidget({
 		}
 	}, [])
 
-	const deleteStorageItem = (
-		key: string,
-		storageType: 'local' | 'session'
-	) => {
+	const deleteStorageItem = (key: string, storageType: 'local' | 'session') => {
 		if (storageType === 'local') {
 			localStorage.removeItem(key)
-			setLocalStorageItems(
-				localStorageItems.filter((item) => item.key !== key)
-			)
+			setLocalStorageItems(localStorageItems.filter((item) => item.key !== key))
 		} else {
 			sessionStorage.removeItem(key)
-			setSessionStorageItems(
-				sessionStorageItems.filter((item) => item.key !== key)
-			)
+			setSessionStorageItems(sessionStorageItems.filter((item) => item.key !== key))
 		}
 	}
 
@@ -462,16 +409,12 @@ export function DevToolsWidget({
 		if (storageType === 'local') {
 			localStorage.setItem(key, editValue)
 			setLocalStorageItems(
-				localStorageItems.map((item) =>
-					item.key === key ? { ...item, value: editValue } : item
-				)
+				localStorageItems.map((item) => (item.key === key ? { ...item, value: editValue } : item))
 			)
 		} else {
 			sessionStorage.setItem(key, editValue)
 			setSessionStorageItems(
-				sessionStorageItems.map((item) =>
-					item.key === key ? { ...item, value: editValue } : item
-				)
+				sessionStorageItems.map((item) => (item.key === key ? { ...item, value: editValue } : item))
 			)
 		}
 		setEditingKey(null)
@@ -483,16 +426,10 @@ export function DevToolsWidget({
 
 		if (storageType === 'local') {
 			localStorage.setItem(newKey, newValue)
-			setLocalStorageItems([
-				...localStorageItems,
-				{ key: newKey, value: newValue },
-			])
+			setLocalStorageItems([...localStorageItems, { key: newKey, value: newValue }])
 		} else {
 			sessionStorage.setItem(newKey, newValue)
-			setSessionStorageItems([
-				...sessionStorageItems,
-				{ key: newKey, value: newValue },
-			])
+			setSessionStorageItems([...sessionStorageItems, { key: newKey, value: newValue }])
 		}
 
 		setNewKey('')
@@ -525,19 +462,12 @@ export function DevToolsWidget({
 
 		const windowWidth = window.innerWidth
 		const windowHeight = window.innerHeight
-		const WIDGET_SIZE =
-			widgetSize === 'SMALL' ? 24 : widgetSize === 'LARGE' ? 40 : 32
+		const WIDGET_SIZE = widgetSize === 'SMALL' ? 24 : widgetSize === 'LARGE' ? 40 : 32
 		const SAFETY_MARGIN = 16 // Keep at least this amount visible
 
 		// Make sure at least part of the widget is visible
-		const safeX = Math.max(
-			-WIDGET_SIZE + SAFETY_MARGIN,
-			Math.min(windowWidth - SAFETY_MARGIN, x)
-		)
-		const safeY = Math.max(
-			-WIDGET_SIZE + SAFETY_MARGIN,
-			Math.min(windowHeight - SAFETY_MARGIN, y)
-		)
+		const safeX = Math.max(-WIDGET_SIZE + SAFETY_MARGIN, Math.min(windowWidth - SAFETY_MARGIN, x))
+		const safeY = Math.max(-WIDGET_SIZE + SAFETY_MARGIN, Math.min(windowHeight - SAFETY_MARGIN, y))
 
 		return { x: safeX, y: safeY }
 	}
@@ -556,10 +486,7 @@ export function DevToolsWidget({
 		function handleDrag(e: MouseEvent) {
 			hasMovedRef.current = true
 			// Constrain the position to keep widget visible
-			const newPosition = constrainPosition(
-				e.clientX - startPos.x,
-				e.clientY - startPos.y
-			)
+			const newPosition = constrainPosition(e.clientX - startPos.x, e.clientY - startPos.y)
 			setDragPosition(newPosition)
 		}
 
@@ -608,16 +535,10 @@ export function DevToolsWidget({
 			if (typeof window === 'undefined') return
 
 			// Constrain current position and update if needed
-			const safePosition = constrainPosition(
-				dragPosition.x,
-				dragPosition.y
-			)
+			const safePosition = constrainPosition(dragPosition.x, dragPosition.y)
 
 			// Only update if position actually changed
-			if (
-				safePosition.x !== dragPosition.x ||
-				safePosition.y !== dragPosition.y
-			) {
+			if (safePosition.x !== dragPosition.x || safePosition.y !== dragPosition.y) {
 				setDragPosition(safePosition)
 				// Also update stored position if widget is now in a different position
 				setPosition(safePosition)
@@ -659,10 +580,7 @@ export function DevToolsWidget({
 
 			// Adaptive sizing for small screens - never use more than 85% of viewport
 			const adaptiveWidth = Math.min(idealPanelWidth, windowWidth * 0.85)
-			const adaptiveHeight = Math.min(
-				idealPanelHeight,
-				windowHeight * 0.85
-			)
+			const adaptiveHeight = Math.min(idealPanelHeight, windowHeight * 0.85)
 
 			setPanelSize({
 				width: adaptiveWidth,
@@ -694,32 +612,16 @@ export function DevToolsWidget({
 			const wouldExceedBottom = rect.top + adaptiveHeight > windowHeight
 
 			// Primary direction logic - check each direction in priority order
-			if (
-				spaceAvailable.right >= adaptiveWidth &&
-				!isTooCloseToTopEdge &&
-				!isTooCloseToBottomEdge
-			) {
+			if (spaceAvailable.right >= adaptiveWidth && !isTooCloseToTopEdge && !isTooCloseToBottomEdge) {
 				// If there's enough space to the right and not too close to top/bottom edges
 				bestPlacement = 'right'
-			} else if (
-				spaceAvailable.left >= adaptiveWidth &&
-				!isTooCloseToTopEdge &&
-				!isTooCloseToBottomEdge
-			) {
+			} else if (spaceAvailable.left >= adaptiveWidth && !isTooCloseToTopEdge && !isTooCloseToBottomEdge) {
 				// If there's enough space to the left and not too close to top/bottom edges
 				bestPlacement = 'left'
-			} else if (
-				spaceAvailable.bottom >= adaptiveHeight &&
-				!wouldExceedRight &&
-				!wouldExceedLeft
-			) {
+			} else if (spaceAvailable.bottom >= adaptiveHeight && !wouldExceedRight && !wouldExceedLeft) {
 				// If there's enough space below and won't exceed left/right bounds
 				bestPlacement = 'bottom'
-			} else if (
-				spaceAvailable.top >= adaptiveHeight &&
-				!wouldExceedRight &&
-				!wouldExceedLeft
-			) {
+			} else if (spaceAvailable.top >= adaptiveHeight && !wouldExceedRight && !wouldExceedLeft) {
 				// If there's enough space above and won't exceed left/right bounds
 				bestPlacement = 'top'
 			}
@@ -727,31 +629,19 @@ export function DevToolsWidget({
 			else {
 				// Near right edge of viewport - use left side placements
 				if (wouldExceedRight || isTooCloseToRightEdge) {
-					bestPlacement =
-						wouldExceedBottom || isTooCloseToBottomEdge
-							? 'top-left'
-							: 'bottom-left'
+					bestPlacement = wouldExceedBottom || isTooCloseToBottomEdge ? 'top-left' : 'bottom-left'
 				}
 				// Near left edge of viewport - use right side placements
 				else if (wouldExceedLeft || isTooCloseToLeftEdge) {
-					bestPlacement =
-						wouldExceedBottom || isTooCloseToBottomEdge
-							? 'top-right'
-							: 'bottom-right'
+					bestPlacement = wouldExceedBottom || isTooCloseToBottomEdge ? 'top-right' : 'bottom-right'
 				}
 				// Near bottom edge - use top placements
 				else if (wouldExceedBottom || isTooCloseToBottomEdge) {
-					bestPlacement =
-						wouldExceedRight || rect.left > windowWidth / 2
-							? 'top-left'
-							: 'top-right'
+					bestPlacement = wouldExceedRight || rect.left > windowWidth / 2 ? 'top-left' : 'top-right'
 				}
 				// Near top edge - use bottom placements
 				else if (wouldExceedTop || isTooCloseToTopEdge) {
-					bestPlacement =
-						wouldExceedRight || rect.left > windowWidth / 2
-							? 'bottom-left'
-							: 'bottom-right'
+					bestPlacement = wouldExceedRight || rect.left > windowWidth / 2 ? 'bottom-left' : 'bottom-right'
 				}
 				// Default corner placement based on quadrant position
 				else {
@@ -794,10 +684,7 @@ export function DevToolsWidget({
 
 				// If even the best direction has very limited space,
 				// force center positioning for small viewports
-				if (
-					allDirections[0].space <
-					Math.min(adaptiveWidth, adaptiveHeight) * 0.8
-				) {
+				if (allDirections[0].space < Math.min(adaptiveWidth, adaptiveHeight) * 0.8) {
 					// Special handling for absolute center positioning (rare case)
 					bestPlacement = 'bottom' // Will be centered in the calculations below
 
@@ -819,8 +706,7 @@ export function DevToolsWidget({
 
 		// Helper to center the panel on very small screens
 		const centerOffset = (dir: 'horizontal' | 'vertical') => {
-			if (typeof window === 'undefined' || !containerRef.current)
-				return '0px'
+			if (typeof window === 'undefined' || !containerRef.current) return '0px'
 
 			const rect = containerRef.current.getBoundingClientRect()
 			const windowWidth = window.innerWidth
@@ -828,24 +714,20 @@ export function DevToolsWidget({
 
 			if (dir === 'horizontal') {
 				// Ensure panel is centered horizontally but doesn't go off-screen
-				const leftPosition =
-					rect.left - panelSize.width / 2 + rect.width / 2
+				const leftPosition = rect.left - panelSize.width / 2 + rect.width / 2
 				const rightEdge = leftPosition + panelSize.width
 
 				if (leftPosition < 10) return '10px' // Prevent going off left edge
-				if (rightEdge > windowWidth - 10)
-					return `${windowWidth - panelSize.width - 10}px` // Prevent going off right edge
+				if (rightEdge > windowWidth - 10) return `${windowWidth - panelSize.width - 10}px` // Prevent going off right edge
 
 				return `${leftPosition}px`
 			} else {
 				// Ensure panel is centered vertically but doesn't go off-screen
-				const topPosition =
-					rect.top - panelSize.height / 2 + rect.height / 2
+				const topPosition = rect.top - panelSize.height / 2 + rect.height / 2
 				const bottomEdge = topPosition + panelSize.height
 
 				if (topPosition < 10) return '10px' // Prevent going off top edge
-				if (bottomEdge > windowHeight - 10)
-					return `${windowHeight - panelSize.height - 10}px` // Prevent going off bottom edge
+				if (bottomEdge > windowHeight - 10) return `${windowHeight - panelSize.height - 10}px` // Prevent going off bottom edge
 
 				return `${topPosition}px`
 			}
@@ -1199,11 +1081,7 @@ export function DevToolsWidget({
 			name: 'Toggle Theme',
 			description: 'Toggles between light and dark theme.',
 			action: toggleTheme,
-			icon: isDarkTheme ? (
-				<Sun className="w-3.5 h-3.5" />
-			) : (
-				<Moon className="w-3.5 h-3.5" />
-			),
+			icon: isDarkTheme ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />,
 		},
 		{
 			id: 'toggle-visibility',
@@ -1227,16 +1105,10 @@ export function DevToolsWidget({
 					setWidgetOpacity(storedOpacity || 1)
 				}
 
-				setActionResult(
-					`Widget ${newVisibility ? 'visible' : 'dimmed'}`
-				)
+				setActionResult(`Widget ${newVisibility ? 'visible' : 'dimmed'}`)
 				setTimeout(() => setActionResult(null), 3000)
 			},
-			icon: isVisible ? (
-				<EyeOff className="w-3.5 h-3.5" />
-			) : (
-				<Eye className="w-3.5 h-3.5" />
-			),
+			icon: isVisible ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />,
 		},
 		{
 			id: 'reset-position',
@@ -1251,9 +1123,7 @@ export function DevToolsWidget({
 			description: 'Shows or hides positioning debug information',
 			action: () => {
 				setShowDebugInfo(!showDebugInfo)
-				setActionResult(
-					`Debug info ${!showDebugInfo ? 'shown' : 'hidden'}`
-				)
+				setActionResult(`Debug info ${!showDebugInfo ? 'shown' : 'hidden'}`)
 				setTimeout(() => setActionResult(null), 3000)
 			},
 			icon: <Slider className="w-3.5 h-3.5" />,
@@ -1263,8 +1133,7 @@ export function DevToolsWidget({
 	// Modify the handleViewAllItems function
 	const handleViewAllItems = (storageType: 'local' | 'session') => {
 		// Create a simplified view of all items as a single JSON object
-		const items =
-			storageType === 'local' ? localStorageItems : sessionStorageItems
+		const items = storageType === 'local' ? localStorageItems : sessionStorageItems
 		const combinedData = items.reduce(
 			(acc, item) => {
 				try {
@@ -1298,18 +1167,8 @@ export function DevToolsWidget({
 	const themeClass = isDarkTheme ? 'dark' : 'light'
 
 	// First, update the button size based on widgetSize
-	const buttonSize =
-		widgetSize === 'SMALL'
-			? 'w-6 h-6'
-			: widgetSize === 'LARGE'
-				? 'w-10 h-10'
-				: 'w-8 h-8'
-	const iconSize =
-		widgetSize === 'SMALL'
-			? 'w-3 h-3'
-			: widgetSize === 'LARGE'
-				? 'w-5 h-5'
-				: 'w-4 h-4'
+	const buttonSize = widgetSize === 'SMALL' ? 'w-6 h-6' : widgetSize === 'LARGE' ? 'w-10 h-10' : 'w-8 h-8'
+	const iconSize = widgetSize === 'SMALL' ? 'w-3 h-3' : widgetSize === 'LARGE' ? 'w-5 h-5' : 'w-4 h-4'
 
 	return (
 		<div className={themeClass}>
@@ -1326,9 +1185,8 @@ export function DevToolsWidget({
 				{/* Display the debug info if enabled */}
 				{showDebugInfo && (
 					<div className="absolute -top-12 -left-1 bg-black/90 text-white text-[10px] px-2 py-1 rounded-sm whitespace-nowrap z-[10000]">
-						Pos: {Math.round(dragPosition.x)},
-						{Math.round(dragPosition.y)} | Placement:{' '}
-						{panelPlacement} | Space: T:
+						Pos: {Math.round(dragPosition.x)},{Math.round(dragPosition.y)} | Placement: {panelPlacement} |
+						Space: T:
 						{Math.round(spaceData.top)} R:
 						{Math.round(spaceData.right)} B:
 						{Math.round(spaceData.bottom)} L:
@@ -1366,9 +1224,7 @@ export function DevToolsWidget({
 
 								<div className="bg-bg border border-[#222] rounded-lg shadow-xl p-4 w-full text-sm relative z-10">
 									<div className="flex items-center justify-between mb-4">
-										<h3 className="font-semibold text-title-light">
-											Developer Tools
-										</h3>
+										<h3 className="font-semibold text-title-light">Developer Tools</h3>
 										<Button
 											variant="ghost"
 											size="icon"
@@ -1388,21 +1244,15 @@ export function DevToolsWidget({
 														<Button
 															variant="outline"
 															size="sm"
-															onClick={
-																action.action
-															}
+															onClick={action.action}
 															className="h-8 gap-1.5 bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-800"
 														>
 															{action.icon}
-															<span className="text-xs">
-																{action.name}
-															</span>
+															<span className="text-xs">{action.name}</span>
 														</Button>
 													</TooltipTrigger>
 													<TooltipContent>
-														<p>
-															{action.description}
-														</p>
+														<p>{action.description}</p>
 													</TooltipContent>
 												</Tooltip>
 											))}
@@ -1422,24 +1272,15 @@ export function DevToolsWidget({
 													Opacity
 												</span>
 												<span className="text-xs font-mono text-gray-600 dark:text-zinc-400">
-													{Math.round(
-														widgetOpacity * 100
-													)}
-													%
+													{Math.round(widgetOpacity * 100)}%
 												</span>
 											</div>
 											<UISlider
-												defaultValue={[
-													widgetOpacity * 100,
-												]}
+												defaultValue={[widgetOpacity * 100]}
 												max={100}
 												min={20}
 												step={5}
-												onValueChange={(values) =>
-													updateOpacity(
-														values[0] / 100
-													)
-												}
+												onValueChange={(values) => updateOpacity(values[0] / 100)}
 												className="py-1"
 											/>
 										</div>
@@ -1455,54 +1296,34 @@ export function DevToolsWidget({
 												<Button
 													variant="outline"
 													size="sm"
-													onClick={() =>
-														setPresetPosition(
-															'TOP_LEFT'
-														)
-													}
+													onClick={() => setPresetPosition('TOP_LEFT')}
 													className={`h-8 text-xs ${widgetPosition === 'TOP_LEFT' ? 'bg-gray-200 dark:bg-zinc-800' : ''}`}
 												>
-													<CornerLeftUp className="h-3.5 w-3.5 mr-1.5" />{' '}
-													Top Left
+													<CornerLeftUp className="h-3.5 w-3.5 mr-1.5" /> Top Left
 												</Button>
 												<Button
 													variant="outline"
 													size="sm"
-													onClick={() =>
-														setPresetPosition(
-															'TOP_RIGHT'
-														)
-													}
+													onClick={() => setPresetPosition('TOP_RIGHT')}
 													className={`h-8 text-xs ${widgetPosition === 'TOP_RIGHT' ? 'bg-gray-200 dark:bg-zinc-800' : ''}`}
 												>
-													<CornerRightUp className="h-3.5 w-3.5 mr-1.5" />{' '}
-													Top Right
+													<CornerRightUp className="h-3.5 w-3.5 mr-1.5" /> Top Right
 												</Button>
 												<Button
 													variant="outline"
 													size="sm"
-													onClick={() =>
-														setPresetPosition(
-															'BOTTOM_LEFT'
-														)
-													}
+													onClick={() => setPresetPosition('BOTTOM_LEFT')}
 													className={`h-8 text-xs ${widgetPosition === 'BOTTOM_LEFT' ? 'bg-gray-200 dark:bg-zinc-800' : ''}`}
 												>
-													<CornerLeftDown className="h-3.5 w-3.5 mr-1.5" />{' '}
-													Bottom Left
+													<CornerLeftDown className="h-3.5 w-3.5 mr-1.5" /> Bottom Left
 												</Button>
 												<Button
 													variant="outline"
 													size="sm"
-													onClick={() =>
-														setPresetPosition(
-															'BOTTOM_RIGHT'
-														)
-													}
+													onClick={() => setPresetPosition('BOTTOM_RIGHT')}
 													className={`h-8 text-xs ${widgetPosition === 'BOTTOM_RIGHT' ? 'bg-gray-200 dark:bg-zinc-800' : ''}`}
 												>
-													<CornerRightDown className="h-3.5 w-3.5 mr-1.5" />{' '}
-													Bottom Right
+													<CornerRightDown className="h-3.5 w-3.5 mr-1.5" /> Bottom Right
 												</Button>
 											</div>
 										</div>
@@ -1561,53 +1382,32 @@ export function DevToolsWidget({
 													<Input
 														placeholder="Key"
 														value={newKey}
-														onChange={(e) =>
-															setNewKey(
-																e.target.value
-															)
-														}
+														onChange={(e) => setNewKey(e.target.value)}
 														className="text-xs h-7 bg-gray-50 dark:bg-zinc-900/80"
 													/>
 													<Input
 														placeholder="Value"
 														value={newValue}
-														onChange={(e) =>
-															setNewValue(
-																e.target.value
-															)
-														}
+														onChange={(e) => setNewValue(e.target.value)}
 														className="text-xs h-7 bg-gray-50 dark:bg-zinc-900/80"
 													/>
 													<Button
 														size="sm"
-														onClick={() =>
-															addNewItem('local')
-														}
+														onClick={() => addNewItem('local')}
 														className="h-7 w-7 p-0"
 													>
 														<Plus className="h-3 w-3" />
 													</Button>
 												</div>
-												{localStorageItems.length >
-													0 && (
+												{localStorageItems.length > 0 && (
 													<Button
 														size="sm"
 														variant="secondary"
 														onClick={() => {
 															localStorage.clear()
-															refreshStorageData(
-																'localStorage'
-															)
-															setActionResult(
-																'Local Storage Cleared'
-															)
-															setTimeout(
-																() =>
-																	setActionResult(
-																		null
-																	),
-																3000
-															)
+															refreshStorageData('localStorage')
+															setActionResult('Local Storage Cleared')
+															setTimeout(() => setActionResult(null), 3000)
 														}}
 														className="h-7"
 													>
@@ -1617,98 +1417,75 @@ export function DevToolsWidget({
 											</div>
 
 											<div className="max-h-40 overflow-y-auto space-y-1 pr-1">
-												{localStorageItems.length ===
-												0 ? (
+												{localStorageItems.length === 0 ? (
 													<p className="text-gray-500 dark:text-zinc-300 text-xs text-center py-2">
 														No items in localStorage
 													</p>
 												) : (
-													localStorageItems.map(
-														(item) => (
-															<div
-																key={item.key}
-																className="border border-gray-200 dark:border-zinc-800 rounded-md p-1 bg-gray-50 dark:bg-zinc-900/30"
-															>
-																{editingKey ===
-																item.key ? (
-																	<div className="flex gap-1">
-																		<Input
-																			value={
-																				editValue
-																			}
-																			onChange={(
-																				e
-																			) =>
-																				setEditValue(
-																					e
-																						.target
-																						.value
-																				)
-																			}
-																			className="text-xs flex-1 h-6"
-																		/>
-																		<Button
-																			size="sm"
-																			onClick={() =>
-																				saveEdit(
-																					item.key,
-																					'local'
-																				)
-																			}
-																			className="h-6 px-1.5"
-																		>
-																			<Save className="h-3 w-3" />
-																		</Button>
-																	</div>
-																) : (
-																	<div className="flex items-center justify-between gap-1">
-																		<div className="flex-1 min-w-0">
-																			<div className="flex items-center justify-between">
-																				<span className="font-medium text-xs text-gray-800 dark:text-zinc-200 truncate">
-																					{
-																						item.key
+													localStorageItems.map((item) => (
+														<div
+															key={item.key}
+															className="border border-gray-200 dark:border-zinc-800 rounded-md p-1 bg-gray-50 dark:bg-zinc-900/30"
+														>
+															{editingKey === item.key ? (
+																<div className="flex gap-1">
+																	<Input
+																		value={editValue}
+																		onChange={(e) => setEditValue(e.target.value)}
+																		className="text-xs flex-1 h-6"
+																	/>
+																	<Button
+																		size="sm"
+																		onClick={() => saveEdit(item.key, 'local')}
+																		className="h-6 px-1.5"
+																	>
+																		<Save className="h-3 w-3" />
+																	</Button>
+																</div>
+															) : (
+																<div className="flex items-center justify-between gap-1">
+																	<div className="flex-1 min-w-0">
+																		<div className="flex items-center justify-between">
+																			<span className="font-medium text-xs text-gray-800 dark:text-zinc-200 truncate">
+																				{item.key}
+																			</span>
+																			<div className="flex items-center gap-0.5 ml-1">
+																				<Button
+																					size="sm"
+																					variant="ghost"
+																					onClick={() =>
+																						startEditing(
+																							item.key,
+																							item.value
+																						)
 																					}
-																				</span>
-																				<div className="flex items-center gap-0.5 ml-1">
-																					<Button
-																						size="sm"
-																						variant="ghost"
-																						onClick={() =>
-																							startEditing(
-																								item.key,
-																								item.value
-																							)
-																						}
-																						className="h-5 w-5 p-0"
-																					>
-																						<Edit className="h-2.5 w-2.5" />
-																					</Button>
-																					<Button
-																						size="sm"
-																						variant="ghost"
-																						onClick={() =>
-																							deleteStorageItem(
-																								item.key,
-																								'local'
-																							)
-																						}
-																						className="h-5 w-5 p-0 text-red-500"
-																					>
-																						<Trash2 className="h-2.5 w-2.5" />
-																					</Button>
-																				</div>
-																			</div>
-																			<div className="text-[10px] font-mono truncate text-gray-600 dark:text-zinc-400">
-																				{
-																					item.value
-																				}
+																					className="h-5 w-5 p-0"
+																				>
+																					<Edit className="h-2.5 w-2.5" />
+																				</Button>
+																				<Button
+																					size="sm"
+																					variant="ghost"
+																					onClick={() =>
+																						deleteStorageItem(
+																							item.key,
+																							'local'
+																						)
+																					}
+																					className="h-5 w-5 p-0 text-red-500"
+																				>
+																					<Trash2 className="h-2.5 w-2.5" />
+																				</Button>
 																			</div>
 																		</div>
+																		<div className="text-[10px] font-mono truncate text-gray-600 dark:text-zinc-400">
+																			{item.value}
+																		</div>
 																	</div>
-																)}
-															</div>
-														)
-													)
+																</div>
+															)}
+														</div>
+													))
 												)}
 											</div>
 										</TabsContent>
@@ -1722,55 +1499,32 @@ export function DevToolsWidget({
 													<Input
 														placeholder="Key"
 														value={newKey}
-														onChange={(e) =>
-															setNewKey(
-																e.target.value
-															)
-														}
+														onChange={(e) => setNewKey(e.target.value)}
 														className="text-xs h-7 bg-gray-50 dark:bg-zinc-900/80"
 													/>
 													<Input
 														placeholder="Value"
 														value={newValue}
-														onChange={(e) =>
-															setNewValue(
-																e.target.value
-															)
-														}
+														onChange={(e) => setNewValue(e.target.value)}
 														className="text-xs h-7 bg-gray-50 dark:bg-zinc-900/80"
 													/>
 													<Button
 														size="sm"
-														onClick={() =>
-															addNewItem(
-																'session'
-															)
-														}
+														onClick={() => addNewItem('session')}
 														className="h-7 w-7 p-0"
 													>
 														<Plus className="h-3 w-3" />
 													</Button>
 												</div>
-												{sessionStorageItems.length >
-													0 && (
+												{sessionStorageItems.length > 0 && (
 													<Button
 														size="sm"
 														variant="destructive"
 														onClick={() => {
 															sessionStorage.clear()
-															refreshStorageData(
-																'sessionStorage'
-															)
-															setActionResult(
-																'Session Storage Cleared'
-															)
-															setTimeout(
-																() =>
-																	setActionResult(
-																		null
-																	),
-																3000
-															)
+															refreshStorageData('sessionStorage')
+															setActionResult('Session Storage Cleared')
+															setTimeout(() => setActionResult(null), 3000)
 														}}
 														className="h-7"
 													>
@@ -1780,99 +1534,75 @@ export function DevToolsWidget({
 											</div>
 
 											<div className="max-h-40 overflow-y-auto space-y-1 pr-1">
-												{sessionStorageItems.length ===
-												0 ? (
+												{sessionStorageItems.length === 0 ? (
 													<p className="text-gray-500 dark:text-zinc-300 text-xs text-center py-2">
-														No items in
-														sessionStorage
+														No items in sessionStorage
 													</p>
 												) : (
-													sessionStorageItems.map(
-														(item) => (
-															<div
-																key={item.key}
-																className="border border-gray-200 dark:border-zinc-800 rounded-md p-1 bg-gray-50 dark:bg-zinc-900/30"
-															>
-																{editingKey ===
-																item.key ? (
-																	<div className="flex gap-1">
-																		<Input
-																			value={
-																				editValue
-																			}
-																			onChange={(
-																				e
-																			) =>
-																				setEditValue(
-																					e
-																						.target
-																						.value
-																				)
-																			}
-																			className="text-xs flex-1 h-6"
-																		/>
-																		<Button
-																			size="sm"
-																			onClick={() =>
-																				saveEdit(
-																					item.key,
-																					'session'
-																				)
-																			}
-																			className="h-6 px-1.5"
-																		>
-																			<Save className="h-3 w-3" />
-																		</Button>
-																	</div>
-																) : (
-																	<div className="flex items-center justify-between gap-1">
-																		<div className="flex-1 min-w-0">
-																			<div className="flex items-center justify-between">
-																				<span className="font-medium text-xs text-gray-800 dark:text-zinc-200 truncate">
-																					{
-																						item.key
+													sessionStorageItems.map((item) => (
+														<div
+															key={item.key}
+															className="border border-gray-200 dark:border-zinc-800 rounded-md p-1 bg-gray-50 dark:bg-zinc-900/30"
+														>
+															{editingKey === item.key ? (
+																<div className="flex gap-1">
+																	<Input
+																		value={editValue}
+																		onChange={(e) => setEditValue(e.target.value)}
+																		className="text-xs flex-1 h-6"
+																	/>
+																	<Button
+																		size="sm"
+																		onClick={() => saveEdit(item.key, 'session')}
+																		className="h-6 px-1.5"
+																	>
+																		<Save className="h-3 w-3" />
+																	</Button>
+																</div>
+															) : (
+																<div className="flex items-center justify-between gap-1">
+																	<div className="flex-1 min-w-0">
+																		<div className="flex items-center justify-between">
+																			<span className="font-medium text-xs text-gray-800 dark:text-zinc-200 truncate">
+																				{item.key}
+																			</span>
+																			<div className="flex items-center gap-0.5 ml-1">
+																				<Button
+																					size="sm"
+																					variant="ghost"
+																					onClick={() =>
+																						startEditing(
+																							item.key,
+																							item.value
+																						)
 																					}
-																				</span>
-																				<div className="flex items-center gap-0.5 ml-1">
-																					<Button
-																						size="sm"
-																						variant="ghost"
-																						onClick={() =>
-																							startEditing(
-																								item.key,
-																								item.value
-																							)
-																						}
-																						className="h-5 w-5 p-0"
-																					>
-																						<Edit className="h-2.5 w-2.5" />
-																					</Button>
-																					<Button
-																						size="sm"
-																						variant="ghost"
-																						onClick={() =>
-																							deleteStorageItem(
-																								item.key,
-																								'session'
-																							)
-																						}
-																						className="h-5 w-5 p-0 text-red-500"
-																					>
-																						<Trash2 className="h-2.5 w-2.5" />
-																					</Button>
-																				</div>
-																			</div>
-																			<div className="text-[10px] font-mono truncate text-gray-600 dark:text-zinc-400">
-																				{
-																					item.value
-																				}
+																					className="h-5 w-5 p-0"
+																				>
+																					<Edit className="h-2.5 w-2.5" />
+																				</Button>
+																				<Button
+																					size="sm"
+																					variant="ghost"
+																					onClick={() =>
+																						deleteStorageItem(
+																							item.key,
+																							'session'
+																						)
+																					}
+																					className="h-5 w-5 p-0 text-red-500"
+																				>
+																					<Trash2 className="h-2.5 w-2.5" />
+																				</Button>
 																			</div>
 																		</div>
+																		<div className="text-[10px] font-mono truncate text-gray-600 dark:text-zinc-400">
+																			{item.value}
+																		</div>
 																	</div>
-																)}
-															</div>
-														)
-													)
+																</div>
+															)}
+														</div>
+													))
 												)}
 											</div>
 										</TabsContent>
@@ -1899,11 +1629,7 @@ export function DevToolsWidget({
 																	Header
 																</span>
 																<div className="bg-gray-100 dark:bg-black/50 p-2 rounded-md text-xs font-mono break-all max-h-20 overflow-y-auto">
-																	{JSON.stringify(
-																		jwtParts.header,
-																		null,
-																		2
-																	)}
+																	{JSON.stringify(jwtParts.header, null, 2)}
 																</div>
 															</div>
 
@@ -1912,43 +1638,32 @@ export function DevToolsWidget({
 																	Payload
 																</span>
 																<div className="bg-gray-100 dark:bg-black/50 p-2 rounded-md text-xs font-mono break-all max-h-40 overflow-y-auto">
-																	{JSON.stringify(
-																		jwtParts.payload,
-																		null,
-																		2
-																	)}
+																	{JSON.stringify(jwtParts.payload, null, 2)}
 																</div>
 															</div>
 
 															<div className="flex flex-col gap-1">
 																<span className="text-xs text-gray-500 dark:text-zinc-500">
-																	Signature
-																	(encoded)
+																	Signature (encoded)
 																</span>
 																<div className="bg-gray-100 dark:bg-black/50 p-2 rounded-md text-xs font-mono break-all max-h-20 overflow-y-auto">
-																	{
-																		jwtParts.signature
-																	}
+																	{jwtParts.signature}
 																</div>
 															</div>
 
 															{authInfo.onTokenRefresh && (
 																<Button
-																	onClick={
-																		authInfo.onTokenRefresh
-																	}
+																	onClick={authInfo.onTokenRefresh}
 																	className="w-full mt-2 text-xs"
 																	size="sm"
 																>
-																	Refresh
-																	Token
+																	Refresh Token
 																</Button>
 															)}
 														</>
 													) : (
 														<p className="text-red-400 text-xs">
-															Failed to decode JWT
-															token
+															Failed to decode JWT token
 														</p>
 													)}
 												</div>
@@ -1958,8 +1673,7 @@ export function DevToolsWidget({
 														No JWT token available
 													</p>
 													<p className="text-gray-500 dark:text-zinc-300 text-xs mt-1">
-														User is not
-														authenticated
+														User is not authenticated
 													</p>
 												</div>
 											)}
@@ -1969,26 +1683,18 @@ export function DevToolsWidget({
 											value="devTasks"
 											className="mt-4"
 										>
-											{isOpen &&
-												activeTab === 'devTasks' && (
-													<div className="w-full bg-zinc-900/30 rounded-lg border border-zinc-800">
-														<div className="p-4">
-															<div className="flex items-center justify-between mb-4">
-																<h3 className="text-sm font-medium">
-																	Development
-																	Tasks
-																</h3>
-															</div>
-															<div className="w-full">
-																<FloatingTodo
-																	inDevTools={
-																		true
-																	}
-																/>
-															</div>
+											{isOpen && activeTab === 'devTasks' && (
+												<div className="w-full bg-zinc-900/30 rounded-lg border border-zinc-800">
+													<div className="p-4">
+														<div className="flex items-center justify-between mb-4">
+															<h3 className="text-sm font-medium">Development Tasks</h3>
+														</div>
+														<div className="w-full">
+															<FloatingTodo inDevTools={true} />
 														</div>
 													</div>
-												)}
+												</div>
+											)}
 										</TabsContent>
 									</Tabs>
 								</div>
@@ -2006,9 +1712,7 @@ export function DevToolsWidget({
 				<DialogContent className="sm:max-w-[600px] max-h-[85vh] overflow-hidden flex flex-col">
 					<DialogHeader>
 						<DialogTitle>{viewAllData?.title}</DialogTitle>
-						<DialogDescription>
-							Complete overview of all stored items.
-						</DialogDescription>
+						<DialogDescription>Complete overview of all stored items.</DialogDescription>
 					</DialogHeader>
 					<div className="overflow-auto flex-grow">
 						{viewAllData && (

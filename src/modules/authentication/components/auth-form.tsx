@@ -78,10 +78,7 @@ function SubmitButton() {
 
 export function AuthForm() {
 	const [email, setEmail] = React.useState<string>(() => {
-		if (
-			typeof window !== 'undefined' &&
-			localStorage.getItem('rememberMe') === 'true'
-		) {
+		if (typeof window !== 'undefined' && localStorage.getItem('rememberMe') === 'true') {
 			return localStorage.getItem('rememberedEmail') || ''
 		}
 		return ''
@@ -132,12 +129,8 @@ export function AuthForm() {
 			animate="show"
 		>
 			<motion.div variants={item}>
-				<motion.h1 className="text-2xl font-bold text-white mb-2">
-					Welcome back
-				</motion.h1>
-				<motion.p className="text-neutral-400 text-sm">
-					Sign in to your account to continue
-				</motion.p>
+				<motion.h1 className="text-2xl font-bold text-white mb-2">Welcome back</motion.h1>
+				<motion.p className="text-neutral-400 text-sm">Sign in to your account to continue</motion.p>
 			</motion.div>
 
 			<form

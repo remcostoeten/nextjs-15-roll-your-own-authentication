@@ -5,11 +5,7 @@ import { forumLayoutMetadata } from '@/core/config/metadata/forum-metadata'
 
 export const metadata = forumLayoutMetadata
 
-export default function ForumLayout({
-	children,
-}: {
-	children: React.ReactNode
-}) {
+export default function ForumLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<div className="min-h-screen bg-[#0D0C0C]">
 			<Header />

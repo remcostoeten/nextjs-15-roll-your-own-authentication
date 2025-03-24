@@ -25,10 +25,10 @@ export async function voteRoadmapItem(data: unknown): Promise<VoteResult> {
 		// Get user identifiers
 		const fingerprint = await generateFingerprint()
 		const ipAddress = await getIpAddress()
-		
+
 		// Create a composite key for vote tracking
 		const voteKey = `vote:${roadmapId}:${fingerprint}:${ipAddress}`
-		
+
 		// Get cookies instance
 		const cookieStore = await cookies()
 		const votedItemsCookie = cookieStore.get('roadmap_votes')
@@ -49,7 +49,7 @@ export async function voteRoadmapItem(data: unknown): Promise<VoteResult> {
 
 		const now = Math.floor(Date.now() / 1000)
 		const lastVote = votedItems[voteKey]?.timestamp || 0
-		
+
 		// Check if the vote has expired
 		const hasVoteExpired = now - lastVote > VOTE_EXPIRY
 
@@ -67,7 +67,7 @@ export async function voteRoadmapItem(data: unknown): Promise<VoteResult> {
 		} else {
 			return {
 				success: false,
-				message: hasVoteExpired 
+				message: hasVoteExpired
 					? 'Your previous vote has expired. You can vote again.'
 					: 'You have already voted on this item',
 			}

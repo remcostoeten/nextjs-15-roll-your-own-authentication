@@ -160,16 +160,9 @@ export function useUserMetrics(): UserMetricsData {
 			}))
 		}
 
-		window.addEventListener(
-			'error',
-			handleError as unknown as EventListener
-		)
+		window.addEventListener('error', handleError as unknown as EventListener)
 
-		return () =>
-			window.removeEventListener(
-				'error',
-				handleError as unknown as EventListener
-			)
+		return () => window.removeEventListener('error', handleError as unknown as EventListener)
 	}, [user, isAuthenticated])
 
 	// Get device info
@@ -239,10 +232,7 @@ export function useUserMetrics(): UserMetricsData {
 				setMetrics((prev) => ({
 					...prev,
 					isLoading: false,
-					error:
-						error instanceof Error
-							? error.message
-							: 'Failed to fetch metrics',
+					error: error instanceof Error ? error.message : 'Failed to fetch metrics',
 				}))
 			}
 		}

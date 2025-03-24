@@ -12,10 +12,7 @@ export interface GetUserPostsOptions {
 	onlyPublished?: boolean
 }
 
-export async function getUserPosts(
-	options: GetUserPostsOptions,
-	ctx: PostRequestContext
-) {
+export async function getUserPosts(options: GetUserPostsOptions, ctx: PostRequestContext) {
 	try {
 		const { userId, page = 1, limit = 10, onlyPublished = true } = options
 

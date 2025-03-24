@@ -82,9 +82,7 @@ export async function getPaginatedUsers({
 }: PaginationParams) {
 	const offset = (page - 1) * limit
 
-	const [totalCount] = await db
-		.select({ count: sql<number>`count(*)` })
-		.from(users)
+	const [totalCount] = await db.select({ count: sql<number>`count(*)` }).from(users)
 
 	const results = await db.query.users.findMany({
 		limit,

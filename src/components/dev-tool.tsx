@@ -25,9 +25,7 @@ export const DevTool: React.FC = () => {
 					<h3 className="font-semibold">Authentication</h3>
 					<div className="grid grid-cols-2 gap-2">
 						<div>Debug Auth:</div>
-						<div>
-							{process.env.DEBUG_AUTH ? 'Enabled' : 'Disabled'}
-						</div>
+						<div>{process.env.DEBUG_AUTH ? 'Enabled' : 'Disabled'}</div>
 					</div>
 				</div>
 
@@ -35,11 +33,7 @@ export const DevTool: React.FC = () => {
 					<h3 className="font-semibold">Features</h3>
 					<div className="grid grid-cols-2 gap-2">
 						<div>Floating Todo:</div>
-						<div>
-							{process.env.NEXT_PUBLIC_ENABLE_FLOATING_TODO
-								? 'Enabled'
-								: 'Disabled'}
-						</div>
+						<div>{process.env.NEXT_PUBLIC_ENABLE_FLOATING_TODO ? 'Enabled' : 'Disabled'}</div>
 					</div>
 				</div>
 			</div>

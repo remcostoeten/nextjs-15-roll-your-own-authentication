@@ -28,17 +28,11 @@ export async function POST(request: NextRequest) {
 				},
 			})
 
-			return NextResponse.json(
-				{ message: 'Invalid email or password' },
-				{ status: 401 }
-			)
+			return NextResponse.json({ message: 'Invalid email or password' }, { status: 401 })
 		}
 
 		// Verify password
-		const isValidPassword = await comparePasswords(
-			validatedData.password,
-			user.passwordHash
-		)
+		const isValidPassword = await comparePasswords(validatedData.password, user.passwordHash)
 
 		if (!isValidPassword) {
 			await logUserActivity({
@@ -50,10 +44,7 @@ export async function POST(request: NextRequest) {
 				},
 			})
 
-			return NextResponse.json(
-				{ message: 'Invalid email or password' },
-				{ status: 401 }
-			)
+			return NextResponse.json({ message: 'Invalid email or password' }, { status: 401 })
 		}
 
 		// Generate tokens
@@ -108,9 +99,6 @@ export async function POST(request: NextRequest) {
 		})
 	} catch (error) {
 		console.error('Login error:', error)
-		return NextResponse.json(
-			{ message: 'Internal server error' },
-			{ status: 500 }
-		)
+		return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
 	}
 }

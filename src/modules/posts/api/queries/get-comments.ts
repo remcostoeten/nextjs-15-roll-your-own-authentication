@@ -57,11 +57,7 @@ export async function getComments(options: GetCommentsOptions) {
 				...comment,
 				replies: allComments
 					.filter((reply) => reply.parentId === comment.id)
-					.sort(
-						(a, b) =>
-							new Date(b.createdAt).getTime() -
-							new Date(a.createdAt).getTime()
-					),
+					.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
 			}
 		})
 

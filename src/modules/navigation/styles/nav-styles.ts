@@ -3,8 +3,7 @@ export const navStyles = {
 	list: 'flex items-center gap-4',
 	item: {
 		base: 'relative group',
-		wrapper:
-			'flex items-center justify-center relative hover:text-[#4e9815] transition-colors duration-300',
+		wrapper: 'flex items-center justify-center relative hover:text-[#4e9815] transition-colors duration-300',
 		icon: 'hidden lg:inline-block opacity-0 group-hover:opacity-100 transition-opacity duration-300',
 	},
 	actions: 'flex items-center gap-4',
@@ -19,8 +18,7 @@ export const navStyles = {
 	},
 	github: {
 		button: 'relative overflow-hidden rounded-full p-2 hover:bg-[#4e9815]/10 transition-colors duration-200 group',
-		highlight:
-			'absolute inset-0 bg-[#4e9815]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200',
+		highlight: 'absolute inset-0 bg-[#4e9815]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200',
 		icon: 'w-5 h-5 group-hover:text-[#4e9815] transition-colors duration-200',
 	},
 	login: {

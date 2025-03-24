@@ -1,12 +1,5 @@
 import { TextScrambler } from '@/shared/components/effects'
-import {
-	Github,
-	Twitter,
-	Terminal,
-	Code,
-	Shield,
-	ExternalLink,
-} from 'lucide-react'
+import { Github, Twitter, Terminal, Code, Shield, ExternalLink } from 'lucide-react'
 
 export function Footer() {
 	const currentYear = new Date().getFullYear()
@@ -32,8 +25,8 @@ export function Footer() {
 						</div>
 
 						<p className="text-[#8C877D] text-sm mb-4">
-							Because real developers don't need training wheels.
-							Pure Next.js 15 authentication implementations.
+							Because real developers don't need training wheels. Pure Next.js 15 authentication
+							implementations.
 						</p>
 
 						<div className="flex items-center text-xs text-[#4e9815] font-mono">
@@ -80,9 +73,8 @@ export function Footer() {
 						</h3>
 
 						<p className="text-[#8C877D] text-sm mb-4">
-							This project demonstrates authentication concepts
-							for educational purposes. Always follow security
-							best practices in production environments.
+							This project demonstrates authentication concepts for educational purposes. Always follow
+							security best practices in production environments.
 						</p>
 
 						<div className="flex items-center gap-4 mt-6">
@@ -111,8 +103,8 @@ export function Footer() {
 				{/* Bottom section with copyright */}
 				<div className="mt-12 pt-6 border-t border-[#1E1E1E] flex flex-col md:flex-row justify-between items-center">
 					<div className="text-[#8C877D] text-xs mb-4 md:mb-0 font-mono">
-						<span className="text-[#4e9815]">/* </span>©{' '}
-						{currentYear} RollYourOwnAuth. All rights reserved.
+						<span className="text-[#4e9815]">/* </span>© {currentYear} RollYourOwnAuth. All rights
+						reserved.
 						<span className="text-[#4e9815]"> */</span>
 					</div>
 

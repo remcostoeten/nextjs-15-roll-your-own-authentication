@@ -37,7 +37,7 @@ export default function RoadmapPage() {
 		fetchRoadmap()
 	}, [])
 
-	const quarters = Array.from(new Set(items.map(item => item.quarter))).sort()
+	const quarters = Array.from(new Set(items.map((item) => item.quarter))).sort()
 
 	const getStatusColor = (status: RoadmapItem['status']) => {
 		switch (status) {
@@ -57,8 +57,11 @@ export default function RoadmapPage() {
 			<div className="min-h-screen bg-background p-6">
 				<div className="max-w-7xl mx-auto">
 					<div className="animate-pulse space-y-8">
-						{[1, 2, 3].map(i => (
-							<div key={i} className="h-48 bg-muted rounded-lg" />
+						{[1, 2, 3].map((i) => (
+							<div
+								key={i}
+								className="h-48 bg-muted rounded-lg"
+							/>
 						))}
 					</div>
 				</div>
@@ -71,9 +74,7 @@ export default function RoadmapPage() {
 			<div className="max-w-7xl mx-auto space-y-8">
 				<div>
 					<h1 className="text-4xl font-bold mb-2">Product Roadmap</h1>
-					<p className="text-muted-foreground">
-						Track the development progress and upcoming features
-					</p>
+					<p className="text-muted-foreground">Track the development progress and upcoming features</p>
 				</div>
 
 				<Separator />
@@ -92,10 +93,13 @@ export default function RoadmapPage() {
 
 						<div className="grid gap-4">
 							{items
-								.filter(item => item.quarter === quarter)
+								.filter((item) => item.quarter === quarter)
 								.sort((a, b) => a.priority - b.priority)
-								.map(item => (
-									<Card key={item.id} className="p-6">
+								.map((item) => (
+									<Card
+										key={item.id}
+										className="p-6"
+									>
 										<div className="flex items-start justify-between">
 											<div>
 												<div className="flex items-center gap-3 mb-2">

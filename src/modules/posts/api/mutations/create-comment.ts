@@ -9,10 +9,7 @@ import { logUserActivity } from '@/shared/utils/activity-logger'
 import { z } from 'zod'
 import { type PostRequestContext } from '@/modules/posts/models/z.post'
 
-export async function createComment(
-	data: CommentInput,
-	ctx: PostRequestContext
-) {
+export async function createComment(data: CommentInput, ctx: PostRequestContext) {
 	try {
 		const validatedData = commentSchema.parse(data)
 

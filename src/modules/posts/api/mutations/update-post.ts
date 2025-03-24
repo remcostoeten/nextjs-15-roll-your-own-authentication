@@ -4,10 +4,7 @@ import { db } from '@/server/db'
 import { posts } from '@/server/db/schemas/posts'
 import { eq } from 'drizzle-orm'
 import { logUserActivity } from '@/shared/utils/activity-logger'
-import {
-	postSchema,
-	type PostRequestContext,
-} from '@/modules/posts/models/z.post'
+import { postSchema, type PostRequestContext } from '@/modules/posts/models/z.post'
 
 export async function updatePost(
 	postId: string,
@@ -73,8 +70,7 @@ export async function updatePost(
 			metadata: {
 				updatedFields: Object.keys(validatedData),
 				publishStatusChanged:
-					validatedData.published !== undefined &&
-					validatedData.published !== existingPost.published,
+					validatedData.published !== undefined && validatedData.published !== existingPost.published,
 			},
 		})
 

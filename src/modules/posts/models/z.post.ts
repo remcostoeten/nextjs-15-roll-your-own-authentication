@@ -6,12 +6,9 @@ export const postSchema = z.object({
 		.string()
 		.min(3, { message: 'Title must be at least 3 characters long' })
 		.max(200, { message: 'Title must be at most 200 characters long' }),
-	content: z
-		.string()
-		.min(10, { message: 'Content must be at least 10 characters long' })
-		.max(10000, {
-			message: 'Content must be at most 10000 characters long',
-		}),
+	content: z.string().min(10, { message: 'Content must be at least 10 characters long' }).max(10000, {
+		message: 'Content must be at most 10000 characters long',
+	}),
 	published: z.boolean().default(true),
 	sensitive: z.boolean().default(false),
 })

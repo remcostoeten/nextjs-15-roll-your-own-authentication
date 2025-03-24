@@ -7,11 +7,7 @@ import { User } from '@/server/db/schemas/users'
 
 export const metadata = forumMetadata
 
-export default async function ForumPage({
-	searchParams,
-}: {
-	searchParams: { page?: string; tab?: string }
-}) {
+export default async function ForumPage({ searchParams }: { searchParams: { page?: string; tab?: string } }) {
 	// Get current user (if logged in)
 	const userResponse = await getCurrentUser()
 	const user = userResponse.success ? userResponse.user : null

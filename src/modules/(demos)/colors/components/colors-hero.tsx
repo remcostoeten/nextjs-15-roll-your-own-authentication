@@ -19,9 +19,8 @@ export function Hero() {
 				transition={{ duration: 0.5, delay: 0.2 }}
 				className="text-lg md:text-xl text-button max-w-2xl mx-auto"
 			>
-				A comprehensive showcase of all color utility classes defined in
-				your CSS variables. This page automatically updates when changes
-				are made to the colors.css file.
+				A comprehensive showcase of all color utility classes defined in your CSS variables. This page
+				automatically updates when changes are made to the colors.css file.
 			</motion.p>
 		</div>
 	)

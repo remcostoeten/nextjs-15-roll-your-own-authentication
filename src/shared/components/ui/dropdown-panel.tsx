@@ -11,21 +11,13 @@ interface DropdownPanelProps {
 	className?: string
 }
 
-export function DropdownPanel({
-	trigger,
-	children,
-	align = 'end',
-	className,
-}: DropdownPanelProps) {
+export function DropdownPanel({ trigger, children, align = 'end', className }: DropdownPanelProps) {
 	return (
 		<Popover>
 			<PopoverTrigger asChild>{trigger}</PopoverTrigger>
 			<PopoverContent
 				align={align}
-				className={cn(
-					'w-80 p-0 bg-neutral-900 border border-neutral-800 shadow-lg rounded-md',
-					className
-				)}
+				className={cn('w-80 p-0 bg-neutral-900 border border-neutral-800 shadow-lg rounded-md', className)}
 			>
 				{children}
 			</PopoverContent>
@@ -33,23 +25,8 @@ export function DropdownPanel({
 	)
 }
 
-export function DropdownHeader({
-	children,
-	className,
-}: {
-	children: ReactNode
-	className?: string
-}) {
-	return (
-		<div
-			className={cn(
-				'px-4 py-3 font-medium text-sm border-b border-neutral-800',
-				className
-			)}
-		>
-			{children}
-		</div>
-	)
+export function DropdownHeader({ children, className }: { children: ReactNode; className?: string }) {
+	return <div className={cn('px-4 py-3 font-medium text-sm border-b border-neutral-800', className)}>{children}</div>
 }
 
 export function DropdownItem({

@@ -162,11 +162,7 @@ PASSWORD_HASH_ROUNDS=12
 ```typescript
 import { SignJWT } from 'jose'
 
-const generateToken = async (
-	payload: any,
-	secret: string,
-	expiration: string
-) => {
+const generateToken = async (payload: any, secret: string, expiration: string) => {
 	const secretKey = new TextEncoder().encode(secret)
 
 	return new SignJWT(payload)
@@ -187,10 +183,7 @@ const hashPassword = async (password: string): Promise<string> => {
 	return bcrypt.hash(password, saltRounds)
 }
 
-const verifyPassword = async (
-	password: string,
-	hash: string
-): Promise<boolean> => {
+const verifyPassword = async (password: string, hash: string): Promise<boolean> => {
 	return bcrypt.compare(password, hash)
 }
 ```
@@ -202,11 +195,7 @@ import { db } from 'db'
 import { sessions } from '@/server/db/schema'
 import { eq } from 'drizzle-orm'
 
-const createSession = async (
-	userId: string,
-	token: string,
-	expiresAt: Date
-) => {
+const createSession = async (userId: string, token: string, expiresAt: Date) => {
 	return db
 		.insert(sessions)
 		.values({

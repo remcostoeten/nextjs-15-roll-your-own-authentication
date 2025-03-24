@@ -15,10 +15,10 @@ export async function loginUser(
 		ipAddress?: string
 	}
 ) {
-	console.log(
-		'[loginUser] Function called with credentials and requestInfo:',
-		{ hasCredentials: !!credentials, hasRequestInfo: !!requestInfo }
-	)
+	console.log('[loginUser] Function called with credentials and requestInfo:', {
+		hasCredentials: !!credentials,
+		hasRequestInfo: !!requestInfo,
+	})
 
 	// Store user information for activity logging
 	let userId: string | undefined
@@ -52,10 +52,7 @@ export async function loginUser(
 		}
 
 		// Verify password
-		const isPasswordValid = await verifyPassword(
-			validatedData.password,
-			user.passwordHash
-		)
+		const isPasswordValid = await verifyPassword(validatedData.password, user.passwordHash)
 
 		if (!isPasswordValid) {
 			console.log('[loginUser] Password validation failed')
@@ -118,9 +115,7 @@ export async function loginUser(
 		}
 
 		// Return user data (excluding password) and tokens
-		console.log(
-			'[loginUser] Login successful, returning user data and tokens'
-		)
+		console.log('[loginUser] Login successful, returning user data and tokens')
 		return {
 			user: {
 				id: user.id,
@@ -148,10 +143,7 @@ export async function loginUser(
 				})
 				console.log('[loginUser] Failed login activity logged')
 			} catch (logError) {
-				console.error(
-					'[loginUser] Error logging failed login activity:',
-					logError
-				)
+				console.error('[loginUser] Error logging failed login activity:', logError)
 			}
 		}
 

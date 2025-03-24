@@ -29,9 +29,8 @@ export function DemoSection({ colors }: DemoSectionProps) {
 					variant="muted"
 					className="max-w-2xl mx-auto"
 				>
-					Explore our application's color system. Click on any color
-					to copy its hex value. The showcase demonstrates how colors
-					are organized and used throughout the interface.
+					Explore our application's color system. Click on any color to copy its hex value. The showcase
+					demonstrates how colors are organized and used throughout the interface.
 				</Text>
 			</motion.div>
 

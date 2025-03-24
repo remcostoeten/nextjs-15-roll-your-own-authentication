@@ -1,10 +1,5 @@
 import { Button } from '@/shared/components/ui/button'
-import {
-	CornerLeftUp,
-	CornerRightUp,
-	CornerLeftDown,
-	CornerRightDown,
-} from 'lucide-react'
+import { CornerLeftUp, CornerRightUp, CornerLeftDown, CornerRightDown } from 'lucide-react'
 import type { WidgetPosition } from '../../types'
 
 interface PositionControlProps {
@@ -12,16 +7,11 @@ interface PositionControlProps {
 	setPresetPosition: (position: WidgetPosition) => void
 }
 
-export function PositionControl({
-	widgetPosition,
-	setPresetPosition,
-}: PositionControlProps) {
+export function PositionControl({ widgetPosition, setPresetPosition }: PositionControlProps) {
 	return (
 		<div className="mb-3">
 			<div className="flex justify-between items-center mb-1">
-				<span className="text-xs text-gray-600 dark:text-zinc-400">
-					Position
-				</span>
+				<span className="text-xs text-gray-600 dark:text-zinc-400">Position</span>
 			</div>
 			<div className="grid grid-cols-2 gap-2">
 				<Button
@@ -46,8 +36,7 @@ export function PositionControl({
 					onClick={() => setPresetPosition('bottom-left')}
 					className={`h-8 text-xs ${widgetPosition === 'bottom-left' ? 'bg-gray-200 dark:bg-zinc-800' : ''}`}
 				>
-					<CornerLeftDown className="h-3.5 w-3.5 mr-1.5" /> Bottom
-					Left
+					<CornerLeftDown className="h-3.5 w-3.5 mr-1.5" /> Bottom Left
 				</Button>
 				<Button
 					variant="outline"
@@ -55,8 +44,7 @@ export function PositionControl({
 					onClick={() => setPresetPosition('bottom-right')}
 					className={`h-8 text-xs ${widgetPosition === 'bottom-right' ? 'bg-gray-200 dark:bg-zinc-800' : ''}`}
 				>
-					<CornerRightDown className="h-3.5 w-3.5 mr-1.5" /> Bottom
-					Right
+					<CornerRightDown className="h-3.5 w-3.5 mr-1.5" /> Bottom Right
 				</Button>
 			</div>
 		</div>

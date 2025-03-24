@@ -5,17 +5,8 @@ import { motion } from 'framer-motion'
 import { Palette, Copy, Check, Sun, Moon, ChevronRight } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/shared/components/ui/tabs'
-import {
-	HoverCard,
-	HoverCardContent,
-	HoverCardTrigger,
-} from '@/shared/components/ui/hover-card'
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '@/shared/components/ui/tooltip'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/shared/components/ui/hover-card'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/shared/components/ui/tooltip'
 import { Text, Heading, Flex } from '@/shared/components/core'
 import type { ColorVariable } from '@/modules/(demos)/colors/types'
 
@@ -57,12 +48,7 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
 		}
 
 		// Add text class
-		if (
-			name.includes('text') ||
-			name.includes('title') ||
-			name === 'offwhite' ||
-			name === 'offblack'
-		) {
+		if (name.includes('text') || name.includes('title') || name === 'offwhite' || name === 'offblack') {
 			tailwindClasses.push(`text-${name.replace('--', '')}`)
 		}
 
@@ -85,8 +71,7 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
 				? 'backgrounds'
 				: color.name.includes('button')
 					? 'buttons'
-					: color.name.includes('title') ||
-						  color.name.includes('text')
+					: color.name.includes('title') || color.name.includes('text')
 						? 'text'
 						: 'others'
 
@@ -177,9 +162,7 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
 			<div className="p-6">
 				<Tabs
 					value={activeTab}
-					onValueChange={(value) =>
-						setActiveTab(value as 'colors' | 'usage')
-					}
+					onValueChange={(value) => setActiveTab(value as 'colors' | 'usage')}
 				>
 					<TabsList className="bg-button mb-6 border border-button-border">
 						<TabsTrigger
@@ -198,484 +181,361 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
 
 					{activeTab === 'colors' && (
 						<div className="space-y-8">
-							{Object.entries(colorsByCategory).map(
-								([category, colorList]) => (
-									<div
-										key={category}
-										className="space-y-3"
+							{Object.entries(colorsByCategory).map(([category, colorList]) => (
+								<div
+									key={category}
+									className="space-y-3"
+								>
+									<Heading
+										level="h3"
+										variant="default"
+										hasMargin={false}
+										className="capitalize"
 									>
-										<Heading
-											level="h3"
-											variant="default"
-											hasMargin={false}
-											className="capitalize"
-										>
-											{category}
-										</Heading>
-										<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-											{colorList.map((color) => (
-												<HoverCard key={color.name}>
-													<HoverCardTrigger asChild>
+										{category}
+									</Heading>
+									<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+										{colorList.map((color) => (
+											<HoverCard key={color.name}>
+												<HoverCardTrigger asChild>
+													<div
+														className="group border border-button-border p-4 rounded-lg flex items-center gap-4 bg-background-lighter cursor-pointer hover:border-title-light/20 hover:bg-background-lighter/95 transition-all"
+														onClick={() => handleCopyColor(color.value)}
+													>
 														<div
-															className="group border border-button-border p-4 rounded-lg flex items-center gap-4 bg-background-lighter cursor-pointer hover:border-title-light/20 hover:bg-background-lighter/95 transition-all"
-															onClick={() =>
-																handleCopyColor(
-																	color.value
-																)
-															}
-														>
-															<div
-																className="h-12 w-12 rounded-md border border-button-border shadow-sm group-hover:scale-[1.02] transition-all"
-																style={{
-																	backgroundColor:
-																		color.value,
-																}}
-															/>
-															<Flex
-																direction="col"
-																className="flex-1"
-															>
-																<Text size="sm">
-																	--
-																	{color.name}
-																</Text>
-																<Text
-																	variant="muted"
-																	size="xs"
-																>
-																	{
-																		color.value
-																	}
-																</Text>
-															</Flex>
-															<div className="opacity-0 group-hover:opacity-100 transition-opacity">
-																{copiedColor ===
-																color.value ? (
-																	<Check className="h-4 w-4 text-title-light" />
-																) : (
-																	<Copy className="h-4 w-4 text-button" />
-																)}
-															</div>
-														</div>
-													</HoverCardTrigger>
-													<HoverCardContent className="w-96 bg-background-lighter border border-button-border">
+															className="h-12 w-12 rounded-md border border-button-border shadow-sm group-hover:scale-[1.02] transition-all"
+															style={{
+																backgroundColor: color.value,
+															}}
+														/>
 														<Flex
 															direction="col"
-															gap={4}
+															className="flex-1"
 														>
-															<div>
-																<Heading
-																	level="h4"
-																	className="text-sm font-medium"
-																	hasMargin={
-																		false
-																	}
-																>
-																	CSS Variable
-																</Heading>
-																<Flex
-																	items="center"
-																	gap={2}
-																	className="mt-1"
-																>
-																	<code className="flex-1 text-xs bg-background px-1 py-0.5 rounded text-button">
-																		var(--
-																		{
-																			color.name
-																		}
-																		)
-																	</code>
-																	<Button
-																		size="sm"
-																		variant="ghost"
-																		className="h-6 w-6 p-0 hover:bg-background/30 hover:text-title-light transition-colors"
-																		onClick={(
-																			e
-																		) => {
-																			e.stopPropagation()
-																			handleCopyColor(
-																				`var(--${color.name})`
-																			)
-																		}}
-																	>
-																		{copiedColor ===
-																		`var(--${color.name})` ? (
-																			<Check className="h-3 w-3 text-title-light" />
-																		) : (
-																			<Copy className="h-3 w-3 text-button" />
-																		)}
-																	</Button>
-																</Flex>
-															</div>
-
-															<div>
-																<Heading
-																	level="h4"
-																	className="text-sm font-medium"
-																	hasMargin={
-																		false
-																	}
-																>
-																	Hex Value
-																</Heading>
-																<Flex
-																	items="center"
-																	gap={2}
-																	className="mt-1"
-																>
-																	<code className="flex-1 text-xs bg-background px-1 py-0.5 rounded text-button">
-																		{
-																			color.value
-																		}
-																	</code>
-																	<Button
-																		size="sm"
-																		variant="ghost"
-																		className="h-6 w-6 p-0 hover:bg-background/30 hover:text-title-light transition-colors"
-																		onClick={(
-																			e
-																		) => {
-																			e.stopPropagation()
-																			handleCopyColor(
-																				color.value
-																			)
-																		}}
-																	>
-																		{copiedColor ===
-																		color.value ? (
-																			<Check className="h-3 w-3 text-title-light" />
-																		) : (
-																			<Copy className="h-3 w-3 text-button" />
-																		)}
-																	</Button>
-																</Flex>
-															</div>
-
-															{/* Tailwind Classes */}
-															<div>
-																<Heading
-																	level="h4"
-																	className="text-sm font-medium mb-2"
-																	hasMargin={
-																		false
-																	}
-																>
-																	Tailwind
-																	Classes
-																</Heading>
-																<Flex
-																	direction="col"
-																	gap={2}
-																>
-																	{color.tailwindClasses.filter(
-																		(cls) =>
-																			cls.startsWith(
-																				'bg-'
-																			)
-																	).length >
-																		0 && (
-																		<Flex
-																			items="center"
-																			gap={
-																				2
-																			}
-																		>
-																			<Text
-																				variant="muted"
-																				size="xs"
-																				className="flex-shrink-0 w-20"
-																			>
-																				Background:
-																			</Text>
-																			<Flex
-																				wrap="wrap"
-																				gap={
-																					1
-																				}
-																				className="flex-1"
-																			>
-																				{color.tailwindClasses
-																					.filter(
-																						(
-																							cls
-																						) =>
-																							cls.startsWith(
-																								'bg-'
-																							)
-																					)
-																					.map(
-																						(
-																							className
-																						) => (
-																							<Flex
-																								key={
-																									className
-																								}
-																								items="center"
-																								className="bg-background rounded"
-																							>
-																								<code className="text-xs px-1 py-0.5 text-button">
-																									{
-																										className
-																									}
-																								</code>
-																								<Button
-																									size="sm"
-																									variant="ghost"
-																									className="h-6 w-6 p-0 ml-1 hover:bg-background/30 hover:text-title-light transition-colors"
-																									onClick={(
-																										e
-																									) => {
-																										e.stopPropagation()
-																										handleCopyClass(
-																											className
-																										)
-																									}}
-																								>
-																									{copiedClass ===
-																									className ? (
-																										<Check className="h-3 w-3 text-title-light" />
-																									) : (
-																										<Copy className="h-3 w-3 text-button" />
-																									)}
-																								</Button>
-																							</Flex>
-																						)
-																					)}
-																			</Flex>
-																		</Flex>
-																	)}
-
-																	{color.tailwindClasses.filter(
-																		(cls) =>
-																			cls.startsWith(
-																				'text-'
-																			)
-																	).length >
-																		0 && (
-																		<Flex
-																			items="center"
-																			gap={
-																				2
-																			}
-																		>
-																			<Text
-																				variant="muted"
-																				size="xs"
-																				className="flex-shrink-0 w-20"
-																			>
-																				Text:
-																			</Text>
-																			<Flex
-																				wrap="wrap"
-																				gap={
-																					1
-																				}
-																				className="flex-1"
-																			>
-																				{color.tailwindClasses
-																					.filter(
-																						(
-																							cls
-																						) =>
-																							cls.startsWith(
-																								'text-'
-																							)
-																					)
-																					.map(
-																						(
-																							className
-																						) => (
-																							<Flex
-																								key={
-																									className
-																								}
-																								items="center"
-																								className="bg-background rounded"
-																							>
-																								<code className="text-xs px-1 py-0.5 text-button">
-																									{
-																										className
-																									}
-																								</code>
-																								<Button
-																									size="sm"
-																									variant="ghost"
-																									className="h-6 w-6 p-0 ml-1 hover:bg-background/30 hover:text-title-light transition-colors"
-																									onClick={(
-																										e
-																									) => {
-																										e.stopPropagation()
-																										handleCopyClass(
-																											className
-																										)
-																									}}
-																								>
-																									{copiedClass ===
-																									className ? (
-																										<Check className="h-3 w-3 text-title-light" />
-																									) : (
-																										<Copy className="h-3 w-3 text-button" />
-																									)}
-																								</Button>
-																							</Flex>
-																						)
-																					)}
-																			</Flex>
-																		</Flex>
-																	)}
-
-																	{color.tailwindClasses.filter(
-																		(cls) =>
-																			cls.startsWith(
-																				'border-'
-																			)
-																	).length >
-																		0 && (
-																		<Flex
-																			items="center"
-																			gap={
-																				2
-																			}
-																		>
-																			<Text
-																				variant="muted"
-																				size="xs"
-																				className="flex-shrink-0 w-20"
-																			>
-																				Border:
-																			</Text>
-																			<Flex
-																				wrap="wrap"
-																				gap={
-																					1
-																				}
-																				className="flex-1"
-																			>
-																				{color.tailwindClasses
-																					.filter(
-																						(
-																							cls
-																						) =>
-																							cls.startsWith(
-																								'border-'
-																							)
-																					)
-																					.map(
-																						(
-																							className
-																						) => (
-																							<Flex
-																								key={
-																									className
-																								}
-																								items="center"
-																								className="bg-background rounded"
-																							>
-																								<code className="text-xs px-1 py-0.5 text-button">
-																									{
-																										className
-																									}
-																								</code>
-																								<Button
-																									size="sm"
-																									variant="ghost"
-																									className="h-6 w-6 p-0 ml-1 hover:bg-background/30 hover:text-title-light transition-colors"
-																									onClick={(
-																										e
-																									) => {
-																										e.stopPropagation()
-																										handleCopyClass(
-																											className
-																										)
-																									}}
-																								>
-																									{copiedClass ===
-																									className ? (
-																										<Check className="h-3 w-3 text-title-light" />
-																									) : (
-																										<Copy className="h-3 w-3 text-button" />
-																									)}
-																								</Button>
-																							</Flex>
-																						)
-																					)}
-																			</Flex>
-																		</Flex>
-																	)}
-																</Flex>
-															</div>
-
-															{/* Available Classes */}
-															<div>
-																<Heading
-																	level="h4"
-																	className="text-sm font-medium"
-																	hasMargin={
-																		false
-																	}
-																>
-																	Available
-																	CSS Classes
-																</Heading>
-																<Flex
-																	wrap="wrap"
-																	gap={1}
-																	className="mt-1"
-																>
-																	{color.classes.map(
-																		(
-																			className
-																		) => (
-																			<Flex
-																				key={
-																					className
-																				}
-																				items="center"
-																				className="bg-background rounded"
-																			>
-																				<code className="text-xs px-1 py-0.5 text-button">
-																					{
-																						className
-																					}
-																				</code>
-																				<Button
-																					size="sm"
-																					variant="ghost"
-																					className="h-6 w-6 p-0 ml-1 hover:bg-background/30 hover:text-title-light transition-colors"
-																					onClick={(
-																						e
-																					) => {
-																						e.stopPropagation()
-																						handleCopyClass(
-																							className.substring(
-																								1
-																							)
-																						) // Remove the dot
-																					}}
-																				>
-																					{copiedClass ===
-																					className.substring(
-																						1
-																					) ? (
-																						<Check className="h-3 w-3 text-title-light" />
-																					) : (
-																						<Copy className="h-3 w-3 text-button" />
-																					)}
-																				</Button>
-																			</Flex>
-																		)
-																	)}
-																</Flex>
-															</div>
+															<Text size="sm">
+																--
+																{color.name}
+															</Text>
+															<Text
+																variant="muted"
+																size="xs"
+															>
+																{color.value}
+															</Text>
 														</Flex>
-													</HoverCardContent>
-												</HoverCard>
-											))}
-										</div>
+														<div className="opacity-0 group-hover:opacity-100 transition-opacity">
+															{copiedColor === color.value ? (
+																<Check className="h-4 w-4 text-title-light" />
+															) : (
+																<Copy className="h-4 w-4 text-button" />
+															)}
+														</div>
+													</div>
+												</HoverCardTrigger>
+												<HoverCardContent className="w-96 bg-background-lighter border border-button-border">
+													<Flex
+														direction="col"
+														gap={4}
+													>
+														<div>
+															<Heading
+																level="h4"
+																className="text-sm font-medium"
+																hasMargin={false}
+															>
+																CSS Variable
+															</Heading>
+															<Flex
+																items="center"
+																gap={2}
+																className="mt-1"
+															>
+																<code className="flex-1 text-xs bg-background px-1 py-0.5 rounded text-button">
+																	var(--
+																	{color.name})
+																</code>
+																<Button
+																	size="sm"
+																	variant="ghost"
+																	className="h-6 w-6 p-0 hover:bg-background/30 hover:text-title-light transition-colors"
+																	onClick={(e) => {
+																		e.stopPropagation()
+																		handleCopyColor(`var(--${color.name})`)
+																	}}
+																>
+																	{copiedColor === `var(--${color.name})` ? (
+																		<Check className="h-3 w-3 text-title-light" />
+																	) : (
+																		<Copy className="h-3 w-3 text-button" />
+																	)}
+																</Button>
+															</Flex>
+														</div>
+
+														<div>
+															<Heading
+																level="h4"
+																className="text-sm font-medium"
+																hasMargin={false}
+															>
+																Hex Value
+															</Heading>
+															<Flex
+																items="center"
+																gap={2}
+																className="mt-1"
+															>
+																<code className="flex-1 text-xs bg-background px-1 py-0.5 rounded text-button">
+																	{color.value}
+																</code>
+																<Button
+																	size="sm"
+																	variant="ghost"
+																	className="h-6 w-6 p-0 hover:bg-background/30 hover:text-title-light transition-colors"
+																	onClick={(e) => {
+																		e.stopPropagation()
+																		handleCopyColor(color.value)
+																	}}
+																>
+																	{copiedColor === color.value ? (
+																		<Check className="h-3 w-3 text-title-light" />
+																	) : (
+																		<Copy className="h-3 w-3 text-button" />
+																	)}
+																</Button>
+															</Flex>
+														</div>
+
+														{/* Tailwind Classes */}
+														<div>
+															<Heading
+																level="h4"
+																className="text-sm font-medium mb-2"
+																hasMargin={false}
+															>
+																Tailwind Classes
+															</Heading>
+															<Flex
+																direction="col"
+																gap={2}
+															>
+																{color.tailwindClasses.filter((cls) =>
+																	cls.startsWith('bg-')
+																).length > 0 && (
+																	<Flex
+																		items="center"
+																		gap={2}
+																	>
+																		<Text
+																			variant="muted"
+																			size="xs"
+																			className="flex-shrink-0 w-20"
+																		>
+																			Background:
+																		</Text>
+																		<Flex
+																			wrap="wrap"
+																			gap={1}
+																			className="flex-1"
+																		>
+																			{color.tailwindClasses
+																				.filter((cls) => cls.startsWith('bg-'))
+																				.map((className) => (
+																					<Flex
+																						key={className}
+																						items="center"
+																						className="bg-background rounded"
+																					>
+																						<code className="text-xs px-1 py-0.5 text-button">
+																							{className}
+																						</code>
+																						<Button
+																							size="sm"
+																							variant="ghost"
+																							className="h-6 w-6 p-0 ml-1 hover:bg-background/30 hover:text-title-light transition-colors"
+																							onClick={(e) => {
+																								e.stopPropagation()
+																								handleCopyClass(
+																									className
+																								)
+																							}}
+																						>
+																							{copiedClass ===
+																							className ? (
+																								<Check className="h-3 w-3 text-title-light" />
+																							) : (
+																								<Copy className="h-3 w-3 text-button" />
+																							)}
+																						</Button>
+																					</Flex>
+																				))}
+																		</Flex>
+																	</Flex>
+																)}
+
+																{color.tailwindClasses.filter((cls) =>
+																	cls.startsWith('text-')
+																).length > 0 && (
+																	<Flex
+																		items="center"
+																		gap={2}
+																	>
+																		<Text
+																			variant="muted"
+																			size="xs"
+																			className="flex-shrink-0 w-20"
+																		>
+																			Text:
+																		</Text>
+																		<Flex
+																			wrap="wrap"
+																			gap={1}
+																			className="flex-1"
+																		>
+																			{color.tailwindClasses
+																				.filter((cls) =>
+																					cls.startsWith('text-')
+																				)
+																				.map((className) => (
+																					<Flex
+																						key={className}
+																						items="center"
+																						className="bg-background rounded"
+																					>
+																						<code className="text-xs px-1 py-0.5 text-button">
+																							{className}
+																						</code>
+																						<Button
+																							size="sm"
+																							variant="ghost"
+																							className="h-6 w-6 p-0 ml-1 hover:bg-background/30 hover:text-title-light transition-colors"
+																							onClick={(e) => {
+																								e.stopPropagation()
+																								handleCopyClass(
+																									className
+																								)
+																							}}
+																						>
+																							{copiedClass ===
+																							className ? (
+																								<Check className="h-3 w-3 text-title-light" />
+																							) : (
+																								<Copy className="h-3 w-3 text-button" />
+																							)}
+																						</Button>
+																					</Flex>
+																				))}
+																		</Flex>
+																	</Flex>
+																)}
+
+																{color.tailwindClasses.filter((cls) =>
+																	cls.startsWith('border-')
+																).length > 0 && (
+																	<Flex
+																		items="center"
+																		gap={2}
+																	>
+																		<Text
+																			variant="muted"
+																			size="xs"
+																			className="flex-shrink-0 w-20"
+																		>
+																			Border:
+																		</Text>
+																		<Flex
+																			wrap="wrap"
+																			gap={1}
+																			className="flex-1"
+																		>
+																			{color.tailwindClasses
+																				.filter((cls) =>
+																					cls.startsWith('border-')
+																				)
+																				.map((className) => (
+																					<Flex
+																						key={className}
+																						items="center"
+																						className="bg-background rounded"
+																					>
+																						<code className="text-xs px-1 py-0.5 text-button">
+																							{className}
+																						</code>
+																						<Button
+																							size="sm"
+																							variant="ghost"
+																							className="h-6 w-6 p-0 ml-1 hover:bg-background/30 hover:text-title-light transition-colors"
+																							onClick={(e) => {
+																								e.stopPropagation()
+																								handleCopyClass(
+																									className
+																								)
+																							}}
+																						>
+																							{copiedClass ===
+																							className ? (
+																								<Check className="h-3 w-3 text-title-light" />
+																							) : (
+																								<Copy className="h-3 w-3 text-button" />
+																							)}
+																						</Button>
+																					</Flex>
+																				))}
+																		</Flex>
+																	</Flex>
+																)}
+															</Flex>
+														</div>
+
+														{/* Available Classes */}
+														<div>
+															<Heading
+																level="h4"
+																className="text-sm font-medium"
+																hasMargin={false}
+															>
+																Available CSS Classes
+															</Heading>
+															<Flex
+																wrap="wrap"
+																gap={1}
+																className="mt-1"
+															>
+																{color.classes.map((className) => (
+																	<Flex
+																		key={className}
+																		items="center"
+																		className="bg-background rounded"
+																	>
+																		<code className="text-xs px-1 py-0.5 text-button">
+																			{className}
+																		</code>
+																		<Button
+																			size="sm"
+																			variant="ghost"
+																			className="h-6 w-6 p-0 ml-1 hover:bg-background/30 hover:text-title-light transition-colors"
+																			onClick={(e) => {
+																				e.stopPropagation()
+																				handleCopyClass(className.substring(1)) // Remove the dot
+																			}}
+																		>
+																			{copiedClass === className.substring(1) ? (
+																				<Check className="h-3 w-3 text-title-light" />
+																			) : (
+																				<Copy className="h-3 w-3 text-button" />
+																			)}
+																		</Button>
+																	</Flex>
+																))}
+															</Flex>
+														</div>
+													</Flex>
+												</HoverCardContent>
+											</HoverCard>
+										))}
 									</div>
-								)
-							)}
+								</div>
+							))}
 						</div>
 					)}
 
@@ -695,12 +555,8 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
 									direction="col"
 									gap={2}
 								>
-									<Text size="lg">
-										Primary Text (--title-light)
-									</Text>
-									<Text variant="muted">
-										Secondary Text (--text-button)
-									</Text>
+									<Text size="lg">Primary Text (--title-light)</Text>
+									<Text variant="muted">Secondary Text (--text-button)</Text>
 								</Flex>
 							</div>
 
@@ -742,15 +598,10 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
 								</Heading>
 								<div className="grid grid-cols-2 gap-3">
 									<div className="h-24 rounded-lg border border-button-border bg-background p-4">
-										<Text size="sm">
-											Background (--background)
-										</Text>
+										<Text size="sm">Background (--background)</Text>
 									</div>
 									<div className="h-24 rounded-lg border border-button-border bg-background-lighter p-4">
-										<Text size="sm">
-											Background Lighter
-											(--background-lighter)
-										</Text>
+										<Text size="sm">Background Lighter (--background-lighter)</Text>
 									</div>
 								</div>
 							</div>
@@ -774,8 +625,7 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
 								</Flex>
 								<div className="p-4 border-t border-button-border">
 									<Text variant="muted">
-										This demonstrates the expandable item
-										with a chevron indicator that has
+										This demonstrates the expandable item with a chevron indicator that has
 										bg-background.
 									</Text>
 								</div>
@@ -855,24 +705,12 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
 											direction="col"
 											gap={2}
 										>
-											<Text variant="default">
-												Default Text
-											</Text>
-											<Text variant="muted">
-												Muted Text
-											</Text>
-											<Text variant="lead">
-												Lead Text
-											</Text>
-											<Text variant="large">
-												Large Text
-											</Text>
-											<Text variant="small">
-												Small Text
-											</Text>
-											<Text variant="subtle">
-												Subtle Text
-											</Text>
+											<Text variant="default">Default Text</Text>
+											<Text variant="muted">Muted Text</Text>
+											<Text variant="lead">Lead Text</Text>
+											<Text variant="large">Large Text</Text>
+											<Text variant="small">Small Text</Text>
+											<Text variant="subtle">Subtle Text</Text>
 										</Flex>
 									</div>
 
@@ -927,18 +765,14 @@ export function ColorShowcase({ colors }: ColorShowcaseProps) {
 										>
 											<Heading
 												level="h4"
-												iconBefore={
-													<Palette className="h-4 w-4" />
-												}
+												iconBefore={<Palette className="h-4 w-4" />}
 												hasMargin={false}
 											>
 												Icon Before
 											</Heading>
 											<Heading
 												level="h4"
-												iconAfter={
-													<Copy className="h-4 w-4" />
-												}
+												iconAfter={<Copy className="h-4 w-4" />}
 												hasMargin={false}
 											>
 												Icon After

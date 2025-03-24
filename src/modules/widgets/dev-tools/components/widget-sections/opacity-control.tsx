@@ -5,16 +5,11 @@ interface OpacityControlProps {
 	updateOpacity: (value: number) => void
 }
 
-export function OpacityControl({
-	widgetOpacity,
-	updateOpacity,
-}: OpacityControlProps) {
+export function OpacityControl({ widgetOpacity, updateOpacity }: OpacityControlProps) {
 	return (
 		<div className="mb-3">
 			<div className="flex justify-between items-center mb-1">
-				<span className="text-xs text-gray-600 dark:text-zinc-400">
-					Opacity
-				</span>
+				<span className="text-xs text-gray-600 dark:text-zinc-400">Opacity</span>
 				<span className="text-xs font-mono text-gray-600 dark:text-zinc-400">
 					{Math.round(widgetOpacity * 100)}%
 				</span>

@@ -8,9 +8,7 @@ import { getToken } from 'next-auth/jwt'
 export async function middleware(request: NextRequest) {
 	// Check if the route is login or register - prevent authenticated access
 	const url = request.nextUrl.pathname
-	if (
-		['/login', '/register', '/auth/login', '/auth/register'].includes(url)
-	) {
+	if (['/login', '/register', '/auth/login', '/auth/register'].includes(url)) {
 		// Check for access token
 		const accessToken = request.cookies.get('access_token')?.value
 		if (accessToken) {
@@ -42,9 +40,7 @@ export async function middleware(request: NextRequest) {
 	const protectedRoutes = ['/dashboard', '/profile', '/settings']
 
 	// Check if the current path starts with any of the protected routes
-	const isProtectedRoute = protectedRoutes.some(
-		(route) => url === route || url.startsWith(`${route}/`)
-	)
+	const isProtectedRoute = protectedRoutes.some((route) => url === route || url.startsWith(`${route}/`))
 
 	if (!isProtectedRoute) {
 		return NextResponse.next() // Not a protected route, continue

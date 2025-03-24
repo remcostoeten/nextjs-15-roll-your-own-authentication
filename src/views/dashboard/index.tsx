@@ -9,7 +9,15 @@ import { Skeleton } from 'ui'
 import type { User } from '@/modules/authentication/state/use-auth-state'
 import { usePermissions } from '@/modules/authentication/hooks/use-permissions'
 import Link from 'next/link'
-import { IconBuildingBank, IconCalendarTime, IconId, IconLocation, IconMail, IconUserCircle, IconUserShield } from '@tabler/icons-react'
+import {
+	IconBuildingBank,
+	IconCalendarTime,
+	IconId,
+	IconLocation,
+	IconMail,
+	IconUserCircle,
+	IconUserShield,
+} from '@tabler/icons-react'
 import { Avatar, AvatarImage, AvatarFallback } from '@/shared/components/ui/avatar'
 
 interface DashboardProps {
@@ -69,11 +77,15 @@ export default function DashboardView({ user }: DashboardProps) {
 					<div className="flex items-center space-x-6">
 						<Avatar className="w-24 h-24 rounded-full border-4 border-primary/10">
 							<AvatarImage
-								src={user.avatarUrl || `https://api.dicebear.com/7.x/initials/svg?seed=${user.firstName} ${user.lastName}`}
+								src={
+									user.avatarUrl ||
+									`https://api.dicebear.com/7.x/initials/svg?seed=${user.firstName} ${user.lastName}`
+								}
 								alt={`${user.firstName}'s avatar`}
 							/>
 							<AvatarFallback>
-								{user.firstName?.[0]}{user.lastName?.[0]}
+								{user.firstName?.[0]}
+								{user.lastName?.[0]}
 							</AvatarFallback>
 						</Avatar>
 						<div>
@@ -86,7 +98,7 @@ export default function DashboardView({ user }: DashboardProps) {
 							</div>
 						</div>
 					</div>
-					
+
 					{isAdmin && (
 						<Card className="p-4">
 							<h3 className="font-semibold mb-3 text-foreground">Admin Quick Access</h3>
@@ -164,12 +176,12 @@ export default function DashboardView({ user }: DashboardProps) {
 						<p className="text-sm text-muted-foreground">
 							{user.lastLogin
 								? new Date(user.lastLogin).toLocaleDateString('en-US', {
-									year: 'numeric',
-									month: 'long',
-									day: 'numeric',
-									hour: '2-digit',
-									minute: '2-digit',
-								})
+										year: 'numeric',
+										month: 'long',
+										day: 'numeric',
+										hour: '2-digit',
+										minute: '2-digit',
+									})
 								: 'Never'}
 						</p>
 					</Card>

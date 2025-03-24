@@ -5,9 +5,7 @@
 /**
  * Combines multiple class names into a single string, filtering out falsy values
  */
-export function cn(
-	...classes: (string | boolean | undefined | null)[]
-): string {
+export function cn(...classes: (string | boolean | undefined | null)[]): string {
 	return classes.filter(Boolean).join(' ')
 }
 
@@ -15,10 +13,7 @@ export function cn(
  * Creates a debounced function that delays invoking the provided function
  * until after the specified wait time has elapsed since the last time it was invoked.
  */
-export function debounce<T extends (...args: any[]) => any>(
-	func: T,
-	wait: number
-): (...args: Parameters<T>) => void {
+export function debounce<T extends (...args: any[]) => any>(func: T, wait: number): (...args: Parameters<T>) => void {
 	let timeout: ReturnType<typeof setTimeout> | null = null
 
 	return function (this: any, ...args: Parameters<T>) {
@@ -44,8 +39,7 @@ export function formatDate(
 		day: 'numeric',
 	}
 ): string {
-	const date =
-		typeof dateString === 'string' ? new Date(dateString) : dateString
+	const date = typeof dateString === 'string' ? new Date(dateString) : dateString
 	return new Intl.DateTimeFormat('en-US', options).format(date)
 }
 

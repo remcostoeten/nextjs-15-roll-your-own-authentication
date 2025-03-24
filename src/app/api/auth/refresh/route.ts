@@ -9,10 +9,7 @@ export async function POST(request: NextRequest) {
 
 		if (!token) {
 			// Clear cookies since we have no refresh token
-			const response = NextResponse.json(
-				{ error: 'Refresh token is required' },
-				{ status: 400 }
-			)
+			const response = NextResponse.json({ error: 'Refresh token is required' }, { status: 400 })
 
 			response.cookies.delete('access_token')
 			response.cookies.delete('refresh_token')
@@ -22,10 +19,7 @@ export async function POST(request: NextRequest) {
 
 		// Get request info (optional)
 		const userAgent = request.headers.get('user-agent') || undefined
-		const ipAddress =
-			request.headers.get('x-forwarded-for') ||
-			request.headers.get('x-real-ip') ||
-			undefined
+		const ipAddress = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || undefined
 
 		// Call the refresh function
 		const result = await refreshToken(token, { userAgent, ipAddress })
@@ -35,9 +29,7 @@ export async function POST(request: NextRequest) {
 
 		// Create a response - either JSON or redirect
 		const response = callbackUrl
-			? NextResponse.redirect(
-					new URL(decodeURI(callbackUrl), request.url)
-				)
+			? NextResponse.redirect(new URL(decodeURI(callbackUrl), request.url))
 			: NextResponse.json(result, { status: 200 })
 
 		// Set new cookies
@@ -71,10 +63,7 @@ export async function POST(request: NextRequest) {
 			? NextResponse.redirect(new URL('/login', request.url))
 			: NextResponse.json(
 					{
-						error:
-							error instanceof Error
-								? error.message
-								: 'An error occurred during token refresh',
+						error: error instanceof Error ? error.message : 'An error occurred during token refresh',
 					},
 					{ status: 401 }
 				)
@@ -84,11 +73,7 @@ export async function POST(request: NextRequest) {
 		response.cookies.delete('refresh_token')
 
 		// Add callbackUrl to redirect if available
-		if (
-			callbackUrl &&
-			response instanceof NextResponse &&
-			response.headers.get('Location')
-		) {
+		if (callbackUrl && response instanceof NextResponse && response.headers.get('Location')) {
 			const redirectUrl = new URL(response.headers.get('Location') || '')
 			redirectUrl.searchParams.set('callbackUrl', callbackUrl)
 			return NextResponse.redirect(redirectUrl)

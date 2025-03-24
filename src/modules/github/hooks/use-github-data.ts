@@ -64,13 +64,8 @@ export function useGithubData({
 				const cachedData = localStorage.getItem(cacheKey)
 				const cacheExpiry = localStorage.getItem(cacheExpiryKey)
 
-				if (
-					cachedData &&
-					cacheExpiry &&
-					Date.now() < Number(cacheExpiry)
-				) {
-					const { commits: cachedCommits, repoData: cachedRepoData } =
-						JSON.parse(cachedData)
+				if (cachedData && cacheExpiry && Date.now() < Number(cacheExpiry)) {
+					const { commits: cachedCommits, repoData: cachedRepoData } = JSON.parse(cachedData)
 					setCommits(cachedCommits)
 					setRepoData(cachedRepoData)
 					setIsLoading(false)
@@ -97,18 +92,11 @@ export function useGithubData({
 							repoData: repoResult.data,
 						})
 					)
-					localStorage.setItem(
-						cacheExpiryKey,
-						String(Date.now() + CACHE_DURATION)
-					)
+					localStorage.setItem(cacheExpiryKey, String(Date.now() + CACHE_DURATION))
 				}
 			}
 		} catch (err) {
-			setError(
-				err instanceof Error
-					? err.message
-					: 'Failed to fetch GitHub data'
-			)
+			setError(err instanceof Error ? err.message : 'Failed to fetch GitHub data')
 			console.error('Error fetching GitHub data:', err)
 		} finally {
 			setIsLoading(false)

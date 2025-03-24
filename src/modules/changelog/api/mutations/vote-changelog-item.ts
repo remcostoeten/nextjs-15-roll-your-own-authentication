@@ -28,9 +28,7 @@ export async function voteChangelogItem(data: unknown): Promise<VoteResult> {
 		// Check if user already voted on this item
 		const cookieStore = cookies()
 		const votedItemsCookie = cookieStore.get('changelog_votes')
-		const votedItems: Record<string, boolean> = votedItemsCookie
-			? JSON.parse(votedItemsCookie.value)
-			: {}
+		const votedItems: Record<string, boolean> = votedItemsCookie ? JSON.parse(votedItemsCookie.value) : {}
 
 		// Get current item
 		const item = await db.query.changelogItems.findFirst({

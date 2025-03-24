@@ -14,18 +14,14 @@ function RegisterView() {
 			toast.success('Registration successful!')
 			router.push('/dashboard')
 		} catch (error) {
-			toast.error(
-				error instanceof Error ? error.message : 'Registration failed'
-			)
+			toast.error(error instanceof Error ? error.message : 'Registration failed')
 		}
 	}
 
 	return (
 		<div className="flex min-h-screen flex-col items-center justify-center p-4">
 			<div className="w-full max-w-md">
-				<h1 className="mb-8 text-center text-3xl font-bold">
-					Create an account
-				</h1>
+				<h1 className="mb-8 text-center text-3xl font-bold">Create an account</h1>
 				<RegisterForm onSubmit={handleRegister} />
 			</div>
 		</div>

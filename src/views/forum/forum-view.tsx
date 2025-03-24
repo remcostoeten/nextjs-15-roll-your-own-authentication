@@ -18,12 +18,7 @@ interface ForumViewProps {
 
 type Tab = 'following' | 'featured' | 'rising'
 
-export function ForumView({
-	posts,
-	currentPage,
-	totalPages,
-	currentUser,
-}: ForumViewProps) {
+export function ForumView({ posts, currentPage, totalPages, currentUser }: ForumViewProps) {
 	const [activeTab, setActiveTab] = useState<Tab>('featured')
 
 	const handleTabChange = useCallback((tab: Tab) => {

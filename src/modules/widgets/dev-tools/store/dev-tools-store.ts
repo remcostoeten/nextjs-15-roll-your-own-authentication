@@ -12,22 +12,13 @@ import type { DevToolsState, Position } from '@/shared/types/widget-types'
 
 function validatePosition(position: Position): Position {
 	return {
-		x:
-			typeof position.x === 'number' && !isNaN(position.x)
-				? position.x
-				: WIDGET_CONSTANTS.DEFAULT_POSITION.x,
-		y:
-			typeof position.y === 'number' && !isNaN(position.y)
-				? position.y
-				: WIDGET_CONSTANTS.DEFAULT_POSITION.y,
+		x: typeof position.x === 'number' && !isNaN(position.x) ? position.x : WIDGET_CONSTANTS.DEFAULT_POSITION.x,
+		y: typeof position.y === 'number' && !isNaN(position.y) ? position.y : WIDGET_CONSTANTS.DEFAULT_POSITION.y,
 	}
 }
 
 function validateOpacity(opacity: number): number {
-	return Math.max(
-		WIDGET_CONSTANTS.MIN_OPACITY,
-		Math.min(WIDGET_CONSTANTS.MAX_OPACITY, opacity)
-	)
+	return Math.max(WIDGET_CONSTANTS.MIN_OPACITY, Math.min(WIDGET_CONSTANTS.MAX_OPACITY, opacity))
 }
 
 export function createDevToolsStore() {

@@ -10,11 +10,7 @@ interface PaginationControlsProps {
 	basePath: string
 }
 
-export function PaginationControls({
-	currentPage,
-	totalPages,
-	basePath,
-}: PaginationControlsProps) {
+export function PaginationControls({ currentPage, totalPages, basePath }: PaginationControlsProps) {
 	// Generate array of page numbers to display
 	const getPageNumbers = () => {
 		const pageNumbers = []
@@ -69,11 +65,7 @@ export function PaginationControls({
 			<div className="flex items-center gap-1 border border-button-border rounded-md overflow-hidden">
 				{/* Previous button */}
 				<Link
-					href={
-						currentPage > 1
-							? `${basePath}?page=${currentPage - 1}`
-							: '#'
-					}
+					href={currentPage > 1 ? `${basePath}?page=${currentPage - 1}` : '#'}
 					aria-disabled={currentPage === 1}
 					className={cn(
 						'flex items-center justify-center h-10 w-10 transition-colors',
@@ -116,11 +108,7 @@ export function PaginationControls({
 
 				{/* Next button */}
 				<Link
-					href={
-						currentPage < totalPages
-							? `${basePath}?page=${currentPage + 1}`
-							: '#'
-					}
+					href={currentPage < totalPages ? `${basePath}?page=${currentPage + 1}` : '#'}
 					aria-disabled={currentPage === totalPages}
 					className={cn(
 						'flex items-center justify-center h-10 w-10 transition-colors',

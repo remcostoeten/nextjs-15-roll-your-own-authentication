@@ -3,21 +3,8 @@
 import { useState, useMemo, ChangeEvent } from 'react'
 import { User } from '@/server/db/schemas/users'
 import { userMetrics } from '@/server/db/schemas/user-metrics'
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from '@/shared/components/ui/table'
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '@/shared/components/ui/card'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/components/ui/table'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/ui/card'
 import {
 	DropdownMenu,
 	DropdownMenuCheckboxItem,
@@ -67,11 +54,7 @@ export function UserTable({ users }: { users: UserWithMetrics[] }) {
 				id: 'id',
 				label: 'ID',
 				sortable: true,
-				render: (user) => (
-					<span className="font-mono text-xs">
-						{user.id.substring(0, 8)}...
-					</span>
-				),
+				render: (user) => <span className="font-mono text-xs">{user.id.substring(0, 8)}...</span>,
 			},
 			{
 				id: 'email',
@@ -119,10 +102,7 @@ export function UserTable({ users }: { users: UserWithMetrics[] }) {
 				id: 'lastLogin',
 				label: 'Last Login',
 				sortable: true,
-				render: (user) =>
-					user.lastLogin
-						? new Date(user.lastLogin).toLocaleDateString()
-						: 'Never',
+				render: (user) => (user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Never'),
 			},
 			{
 				id: 'actions',
@@ -153,9 +133,7 @@ export function UserTable({ users }: { users: UserWithMetrics[] }) {
 	// Toggle column visibility
 	const toggleColumnVisibility = (columnId: string) => {
 		setVisibleColumns((prev) =>
-			prev.includes(columnId)
-				? prev.filter((id) => id !== columnId)
-				: [...prev, columnId]
+			prev.includes(columnId) ? prev.filter((id) => id !== columnId) : [...prev, columnId]
 		)
 	}
 
@@ -199,26 +177,16 @@ export function UserTable({ users }: { users: UserWithMetrics[] }) {
 
 				// Compare based on type
 				if (aValue === null && bValue === null) return 0
-				if (aValue === null)
-					return sortConfig.direction === 'asc' ? -1 : 1
-				if (bValue === null)
-					return sortConfig.direction === 'asc' ? 1 : -1
+				if (aValue === null) return sortConfig.direction === 'asc' ? -1 : 1
+				if (bValue === null) return sortConfig.direction === 'asc' ? 1 : -1
 
 				// String comparison
 				if (typeof aValue === 'string' && typeof bValue === 'string') {
-					return sortConfig.direction === 'asc'
-						? aValue.localeCompare(bValue)
-						: bValue.localeCompare(aValue)
+					return sortConfig.direction === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue)
 				}
 
 				// Number or Date comparison
-				return sortConfig.direction === 'asc'
-					? aValue > bValue
-						? 1
-						: -1
-					: aValue < bValue
-						? 1
-						: -1
+				return sortConfig.direction === 'asc' ? (aValue > bValue ? 1 : -1) : aValue < bValue ? 1 : -1
 			})
 		}
 
@@ -236,9 +204,7 @@ export function UserTable({ users }: { users: UserWithMetrics[] }) {
 			<CardHeader className="flex flex-row items-center justify-between">
 				<div>
 					<CardTitle>User Management</CardTitle>
-					<CardDescription>
-						View and manage all users in the system
-					</CardDescription>
+					<CardDescription>View and manage all users in the system</CardDescription>
 				</div>
 				<div className="flex items-center gap-4">
 					<div className="relative">
@@ -248,9 +214,7 @@ export function UserTable({ users }: { users: UserWithMetrics[] }) {
 							placeholder="Search users..."
 							className="pl-8 w-[250px]"
 							value={searchTerm}
-							onChange={(e: ChangeEvent<HTMLInputElement>) =>
-								setSearchTerm(e.target.value)
-							}
+							onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
 						/>
 					</div>
 					<DropdownMenu>
@@ -271,9 +235,7 @@ export function UserTable({ users }: { users: UserWithMetrics[] }) {
 								<DropdownMenuCheckboxItem
 									key={column.id}
 									checked={visibleColumns.includes(column.id)}
-									onCheckedChange={() =>
-										toggleColumnVisibility(column.id)
-									}
+									onCheckedChange={() => toggleColumnVisibility(column.id)}
 								>
 									{column.label}
 								</DropdownMenuCheckboxItem>
@@ -292,16 +254,11 @@ export function UserTable({ users }: { users: UserWithMetrics[] }) {
 										{column.sortable ? (
 											<Button
 												variant="ghost"
-												onClick={() =>
-													handleSort(column.id)
-												}
+												onClick={() => handleSort(column.id)}
 												className="flex items-center gap-1 p-0 font-medium"
 											>
 												{column.label}
-												{sortConfig?.key ===
-													column.id && (
-													<ArrowUpDown className="h-4 w-4" />
-												)}
+												{sortConfig?.key === column.id && <ArrowUpDown className="h-4 w-4" />}
 											</Button>
 										) : (
 											column.label
@@ -324,11 +281,7 @@ export function UserTable({ users }: { users: UserWithMetrics[] }) {
 								filteredAndSortedUsers.map((user) => (
 									<TableRow key={user.id}>
 										{visibleColumnsData.map((column) => (
-											<TableCell
-												key={`${user.id}-${column.id}`}
-											>
-												{column.render(user)}
-											</TableCell>
+											<TableCell key={`${user.id}-${column.id}`}>{column.render(user)}</TableCell>
 										))}
 									</TableRow>
 								))
@@ -337,8 +290,7 @@ export function UserTable({ users }: { users: UserWithMetrics[] }) {
 					</Table>
 				</div>
 				<div className="mt-4 text-sm text-muted-foreground">
-					Showing {filteredAndSortedUsers.length} of {users.length}{' '}
-					users
+					Showing {filteredAndSortedUsers.length} of {users.length} users
 				</div>
 			</CardContent>
 		</Card>

@@ -18,10 +18,7 @@ export interface Tokens {
  */
 export async function verifyAccessToken(token: string): Promise<TokenPayload> {
 	try {
-		const { payload } = await jwtVerify(
-			token,
-			new TextEncoder().encode(env.JWT_SECRET)
-		)
+		const { payload } = await jwtVerify(token, new TextEncoder().encode(env.JWT_SECRET))
 		return payload as TokenPayload
 	} catch {
 		throw new Error('Invalid access token')
@@ -33,10 +30,7 @@ export async function verifyAccessToken(token: string): Promise<TokenPayload> {
  */
 export async function verifyRefreshToken(token: string): Promise<TokenPayload> {
 	try {
-		const { payload } = await jwtVerify(
-			token,
-			new TextEncoder().encode(env.JWT_REFRESH_SECRET)
-		)
+		const { payload } = await jwtVerify(token, new TextEncoder().encode(env.JWT_REFRESH_SECRET))
 		return payload as TokenPayload
 	} catch {
 		throw new Error('Invalid refresh token')

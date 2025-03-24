@@ -160,38 +160,24 @@ export function Header() {
 							{item.isDropdown ? (
 								<DropdownMenu
 									open={openDropdown === item.name}
-									onOpenChange={(open) =>
-										setOpenDropdown(open ? item.name : null)
-									}
+									onOpenChange={(open) => setOpenDropdown(open ? item.name : null)}
 								>
 									<div
-										onMouseEnter={() =>
-											setOpenDropdown(item.name)
-										}
-										onMouseLeave={() =>
-											setOpenDropdown(null)
-										}
+										onMouseEnter={() => setOpenDropdown(item.name)}
+										onMouseLeave={() => setOpenDropdown(null)}
 										className="relative inline-block"
 									>
 										<DropdownMenuTrigger className="flex items-center gap-2 text-[#8C877D] hover:text-white transition-colors">
-											<span className="font-mono">
-												{item.name}
-											</span>
+											<span className="font-mono">{item.name}</span>
 											<ChevronDown
 												className={`h-4 w-4 transform transition-transform duration-200 ${
-													openDropdown === item.name
-														? 'rotate-180'
-														: ''
+													openDropdown === item.name ? 'rotate-180' : ''
 												}`}
 											/>
 										</DropdownMenuTrigger>
 										<DropdownMenuContent
-											onMouseEnter={() =>
-												setOpenDropdown(item.name)
-											}
-											onMouseLeave={() =>
-												setOpenDropdown(null)
-											}
+											onMouseEnter={() => setOpenDropdown(item.name)}
+											onMouseLeave={() => setOpenDropdown(null)}
 											sideOffset={8}
 											className="z-50 bg-[#0D0C0C] border border-[#4e9815]/30 rounded-md p-2 min-w-[240px] absolute"
 											style={{
@@ -208,14 +194,10 @@ export function Header() {
 														href={subItem.href}
 														className="flex flex-col gap-1 px-3 py-2 rounded-md hover:bg-[#4e9815]/10 transition-colors"
 													>
-														<span className="text-white font-mono">
-															{subItem.name}
-														</span>
+														<span className="text-white font-mono">{subItem.name}</span>
 														{subItem.description && (
 															<span className="text-xs text-[#8C877D]">
-																{
-																	subItem.description
-																}
+																{subItem.description}
 															</span>
 														)}
 													</Link>
@@ -329,39 +311,25 @@ export function Header() {
 									>
 										{item.isDropdown ? (
 											<div className="flex flex-col items-center">
-												<div className="text-[#4e9815] mb-2 font-mono">
-													{item.name}
-												</div>
+												<div className="text-[#4e9815] mb-2 font-mono">{item.name}</div>
 												<div className="flex flex-col gap-2">
-													{item.items?.map(
-														(subItem) => (
-															<Link
-																key={
-																	subItem.name
-																}
-																href={
-																	subItem.href
-																}
-																className="text-[#8C877D] hover:text-white transition-colors text-sm text-center"
-																onClick={() =>
-																	setIsMenuOpen(
-																		false
-																	)
-																}
-															>
-																{subItem.name}
-															</Link>
-														)
-													)}
+													{item.items?.map((subItem) => (
+														<Link
+															key={subItem.name}
+															href={subItem.href}
+															className="text-[#8C877D] hover:text-white transition-colors text-sm text-center"
+															onClick={() => setIsMenuOpen(false)}
+														>
+															{subItem.name}
+														</Link>
+													))}
 												</div>
 											</div>
 										) : (
 											<TextScrambler
 												href={item.href}
 												text={item.name}
-												isActive={
-													pathname === item.href
-												}
+												isActive={pathname === item.href}
 											/>
 										)}
 									</motion.div>

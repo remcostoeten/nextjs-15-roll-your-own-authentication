@@ -19,15 +19,11 @@ const CACHE_DURATION = 60 * 60 * 1000 // 1 hour in milliseconds
 
 export function GitHubCommits() {
 	const [activeSquare, setActiveSquare] = useState<number | null>(null)
-	const [tooltipPosition, setTooltipPosition] = useState<'top' | 'bottom'>(
-		'top'
-	) // Default to top
+	const [tooltipPosition, setTooltipPosition] = useState<'top' | 'bottom'>('top') // Default to top
 	const [commits, setCommits] = useState<Commit[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
-	const [dataSource, setDataSource] = useState<
-		'api' | 'cache' | 'fallback' | null
-	>(null)
+	const [dataSource, setDataSource] = useState<'api' | 'cache' | 'fallback' | null>(null)
 
 	// Fix the ref type declaration
 	const squareRefs = useRef<Array<HTMLDivElement | null>>([])
@@ -150,39 +146,23 @@ export function GitHubCommits() {
 								/>
 
 								{isLoading ? (
-									<p className="text-[#8C877D]">
-										Loading commits...
-									</p>
+									<p className="text-[#8C877D]">Loading commits...</p>
 								) : error && dataSource !== 'fallback' ? (
 									<p className="text-red-500">{error}</p>
-								) : commits.length > 0 &&
-								  index < commits.length ? (
+								) : commits.length > 0 && index < commits.length ? (
 									<>
-										<p className="mb-1 text-[#8C877D]">
-											{commits[index].sha.substring(0, 7)}
-										</p>
-										<p className="mb-2 text-[#F2F0ED]">
-											{formatMessage(
-												commits[index].message
-											)}
-										</p>
+										<p className="mb-1 text-[#8C877D]">{commits[index].sha.substring(0, 7)}</p>
+										<p className="mb-2 text-[#F2F0ED]">{formatMessage(commits[index].message)}</p>
 										<div className="flex items-center gap-2 text-[#8C877D]">
 											{commits[index].authorAvatar && (
 												<img
-													src={
-														commits[index]
-															.authorAvatar ||
-														'/placeholder.svg'
-													}
+													src={commits[index].authorAvatar || '/placeholder.svg'}
 													alt={commits[index].author}
 													className="h-4 w-4 rounded-full"
 												/>
 											)}
 											<span>
-												{commits[index].author} •{' '}
-												{formatDate(
-													commits[index].date
-												)}
+												{commits[index].author} • {formatDate(commits[index].date)}
 											</span>
 										</div>
 										<a
@@ -196,21 +176,16 @@ export function GitHubCommits() {
 
 										{dataSource === 'fallback' && (
 											<p className="mt-2 text-[10px] text-[#8C877D] italic">
-												Using sample data (GitHub API
-												unavailable)
+												Using sample data (GitHub API unavailable)
 											</p>
 										)}
 
 										{dataSource === 'cache' && (
-											<p className="mt-2 text-[10px] text-[#8C877D] italic">
-												Using cached data
-											</p>
+											<p className="mt-2 text-[10px] text-[#8C877D] italic">Using cached data</p>
 										)}
 									</>
 								) : (
-									<p className="text-[#8C877D]">
-										No commit data available
-									</p>
+									<p className="text-[#8C877D]">No commit data available</p>
 								)}
 							</motion.div>
 						)}

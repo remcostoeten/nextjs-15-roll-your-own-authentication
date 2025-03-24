@@ -5,10 +5,7 @@ import { useRouter } from 'next/navigation'
 import { SocialAuthButton } from '@/modules/authentication/components/social-auth-button'
 import { Divider } from '@/shared/components/ui/divider'
 import { AuthForm } from '@/modules/authentication/components/auth-form'
-import {
-	GitHubIcon,
-	DiscordIcon,
-} from '@/modules/authentication/components/icons'
+import { GitHubIcon, DiscordIcon } from '@/modules/authentication/components/icons'
 import { toast } from 'sonner'
 export default function LoginView() {
 	const router = useRouter()
@@ -36,12 +33,8 @@ export default function LoginView() {
 					transition={{ duration: 0.5 }}
 					className="flex flex-col mb-0 max-w-full w-[401px] max-md:mb-2.5"
 				>
-					<h1 className="self-start text-3xl font-medium text-white">
-						Welcome back
-					</h1>
-					<p className="self-start mt-3 text-zinc-500">
-						Sign in to your account to continue
-					</p>
+					<h1 className="self-start text-3xl font-medium text-white">Welcome back</h1>
+					<p className="self-start mt-3 text-zinc-500">Sign in to your account to continue</p>
 
 					<div className="space-y-3 mt-8">
 						<SocialAuthButton
@@ -52,9 +45,7 @@ export default function LoginView() {
 						</SocialAuthButton>
 
 						<SocialAuthButton
-							icon={
-								<DiscordIcon className="w-6 h-4 text-red-400" />
-							}
+							icon={<DiscordIcon className="w-6 h-4 text-red-400" />}
 							onClick={handleDiscordLogin}
 						>
 							Continue with Discord
@@ -66,9 +57,7 @@ export default function LoginView() {
 					<AuthForm />
 
 					<div className="flex gap-1.5 self-center mt-8 max-w-full w-[210px]">
-						<span className="text-stone-500">
-							Don&apos;t have an account?
-						</span>
+						<span className="text-stone-500">Don&apos;t have an account?</span>
 						<motion.button
 							className="text-offwhite underline"
 							onClick={handleSignUp}

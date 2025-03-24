@@ -2,14 +2,7 @@
 
 import { useState, useRef } from 'react'
 import Link from 'next/link'
-import {
-	Plus,
-	GitCommit,
-	User,
-	Calendar,
-	ExternalLink,
-	Loader2,
-} from 'lucide-react'
+import { Plus, GitCommit, User, Calendar, ExternalLink, Loader2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { GitHubCommits } from './github-commits'
 import { ProjectMetrics } from './project-metrics'
@@ -84,19 +77,13 @@ const getRelativeTime = (dateString: string) => {
 }
 
 // Mock hook for GitHub commit data
-const useGithubCommit = ({
-	initialCommit,
-}: {
-	initialCommit?: CommitData | null
-}) => {
+const useGithubCommit = ({ initialCommit }: { initialCommit?: CommitData | null }) => {
 	return {
 		commit: initialCommit || {
 			sha: 'abcd1234efgh5678',
-			html_url:
-				'https://github.com/remcostoeten/nextjs-15-roll-your-own-authentication/commit/abcd1234efgh5678',
+			html_url: 'https://github.com/remcostoeten/nextjs-15-roll-your-own-authentication/commit/abcd1234efgh5678',
 			commit: {
-				message:
-					'Implement JWT authentication\n\nAdded secure token generation and validation',
+				message: 'Implement JWT authentication\n\nAdded secure token generation and validation',
 				author: {
 					name: 'Developer',
 					email: 'dev@example.com',
@@ -115,11 +102,7 @@ const useGithubCommit = ({
 
 export function Hero({ initialCommit = null }: HeroProps) {
 	const [showTooltip, setShowTooltip] = useState(false)
-	const {
-		commit: latestCommit,
-		isLoading,
-		error,
-	} = useGithubCommit({ initialCommit })
+	const { commit: latestCommit, isLoading, error } = useGithubCommit({ initialCommit })
 	const commitLinkRef = useRef<HTMLAnchorElement>(null)
 	const tooltipRef = useRef<HTMLDivElement>(null)
 
@@ -176,8 +159,7 @@ export function Hero({ initialCommit = null }: HeroProps) {
 	}
 
 	// Split the title into words for staggered animation
-	const titleWords =
-		'Build secure authentication without the vendor lock-in.'.split(' ')
+	const titleWords = 'Build secure authentication without the vendor lock-in.'.split(' ')
 
 	// Get formatted commit message
 	const commitMessage = latestCommit
@@ -264,9 +246,7 @@ export function Hero({ initialCommit = null }: HeroProps) {
 				) : error && !latestCommit ? (
 					<div className="flex items-center">
 						<span className="mr-2 font-mono">$</span>
-						<span className="text-red-400">
-							Error fetching commit: {error}
-						</span>
+						<span className="text-red-400">Error fetching commit: {error}</span>
 					</div>
 				) : (
 					latestCommit && (
@@ -289,9 +269,7 @@ export function Hero({ initialCommit = null }: HeroProps) {
 							<span className="ml-2 text-[#8C877D]">—</span>
 							<span className="ml-2 text-[#8C877D] italic">
 								{latestCommit.commit.author.date
-									? getRelativeTime(
-											latestCommit.commit.author.date
-										)
+									? getRelativeTime(latestCommit.commit.author.date)
 									: ''}
 							</span>
 
@@ -306,8 +284,7 @@ export function Hero({ initialCommit = null }: HeroProps) {
 										exit={{ opacity: 0, y: 10 }}
 										transition={{ duration: 0.2 }}
 										style={{
-											boxShadow:
-												'0 4px 20px rgba(0, 0, 0, 0.5)',
+											boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
 										}}
 									>
 										{/* Arrow pointing DOWN */}
@@ -315,9 +292,7 @@ export function Hero({ initialCommit = null }: HeroProps) {
 
 										{/* Commit header */}
 										<div className="mb-3 border-b border-[#1E1E1E] pb-2">
-											<h4 className="text-sm font-medium text-[#F2F0ED]">
-												Commit Details
-											</h4>
+											<h4 className="text-sm font-medium text-[#F2F0ED]">Commit Details</h4>
 										</div>
 
 										{/* Commit info */}
@@ -325,14 +300,9 @@ export function Hero({ initialCommit = null }: HeroProps) {
 											<div className="flex items-start gap-2">
 												<GitCommit className="mt-0.5 h-3.5 w-3.5 text-[#4e9815]" />
 												<div>
-													<div className="text-[#8C877D]">
-														Hash
-													</div>
+													<div className="text-[#8C877D]">Hash</div>
 													<div className="font-mono text-[#F2F0ED]">
-														{latestCommit.sha.substring(
-															0,
-															10
-														)}
+														{latestCommit.sha.substring(0, 10)}
 													</div>
 												</div>
 											</div>
@@ -340,16 +310,10 @@ export function Hero({ initialCommit = null }: HeroProps) {
 											<div className="flex items-start gap-2">
 												<User className="mt-0.5 h-3.5 w-3.5 text-[#4e9815]" />
 												<div>
-													<div className="text-[#8C877D]">
-														Author
-													</div>
+													<div className="text-[#8C877D]">Author</div>
 													<div className="text-[#F2F0ED]">
-														{latestCommit.author
-															?.login ||
-															latestCommit.commit
-																.author.name}
-														{latestCommit.commit
-															.author.email &&
+														{latestCommit.author?.login || latestCommit.commit.author.name}
+														{latestCommit.commit.author.email &&
 															` <${latestCommit.commit.author.email}>`}
 													</div>
 												</div>
@@ -358,43 +322,28 @@ export function Hero({ initialCommit = null }: HeroProps) {
 											<div className="flex items-start gap-2">
 												<Calendar className="mt-0.5 h-3.5 w-3.5 text-[#4e9815]" />
 												<div>
-													<div className="text-[#8C877D]">
-														Date
-													</div>
+													<div className="text-[#8C877D]">Date</div>
 													<div className="text-[#F2F0ED]">
-														{formatDate(
-															latestCommit.commit
-																.author.date
-														)}
+														{formatDate(latestCommit.commit.author.date)}
 													</div>
 												</div>
 											</div>
 
 											<div className="pt-1">
-												<div className="text-[#8C877D] mb-1">
-													Message
-												</div>
+												<div className="text-[#8C877D] mb-1">Message</div>
 												<div className="rounded-md bg-[#1E1E1E]/50 p-2 font-mono text-[#F2F0ED]">
 													{commitMessage.title}
 
-													{commitMessage.description
-														.length > 0 && (
+													{commitMessage.description.length > 0 && (
 														<div className="mt-2">
-															{commitMessage.description.map(
-																(
-																	line,
-																	index
-																) => (
-																	<div
-																		key={
-																			index
-																		}
-																		className="text-[#8C877D]"
-																	>
-																		{line}
-																	</div>
-																)
-															)}
+															{commitMessage.description.map((line, index) => (
+																<div
+																	key={index}
+																	className="text-[#8C877D]"
+																>
+																	{line}
+																</div>
+															))}
 														</div>
 													)}
 												</div>
@@ -408,8 +357,7 @@ export function Hero({ initialCommit = null }: HeroProps) {
 											rel="noopener noreferrer"
 											className="mt-3 flex items-center justify-center gap-1 rounded-md border border-[#1E1E1E] px-3 py-1.5 text-xs text-[#4e9815] transition-colors hover:bg-[#1E1E1E]/50"
 										>
-											View on GitHub{' '}
-											<ExternalLink className="h-3 w-3" />
+											View on GitHub <ExternalLink className="h-3 w-3" />
 										</a>
 									</motion.div>
 								)}

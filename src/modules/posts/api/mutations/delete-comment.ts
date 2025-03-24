@@ -6,10 +6,7 @@ import { eq } from 'drizzle-orm'
 import { logUserActivity } from '@/shared/utils/activity-logger'
 import { type PostRequestContext } from '@/modules/posts/models/z.post'
 
-export async function deleteComment(
-	commentId: string,
-	ctx: PostRequestContext
-) {
+export async function deleteComment(commentId: string, ctx: PostRequestContext) {
 	try {
 		// Check if the comment exists
 		const comment = await db.query.comments.findFirst({

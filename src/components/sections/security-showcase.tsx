@@ -176,10 +176,7 @@ return \`\${encodedHeader}.\${encodedPayload}.\${encodedSignature}\`;
 
 				if (displayedCode.length < code.length) {
 					const timeout = setTimeout(() => {
-						const nextLength = Math.min(
-							displayedCode.length + charsPerFrame,
-							code.length
-						)
+						const nextLength = Math.min(displayedCode.length + charsPerFrame, code.length)
 						setDisplayedCode(code.substring(0, nextLength))
 					}, 5)
 
@@ -194,9 +191,7 @@ return \`\${encodedHeader}.\${encodedPayload}.\${encodedSignature}\`;
 					<div className="h-2 w-2 rounded-full bg-red-500/50"></div>
 					<div className="h-2 w-2 rounded-full bg-yellow-500/50"></div>
 					<div className="h-2 w-2 rounded-full bg-green-500/50"></div>
-					<span className="text-xs text-[#8C877D] ml-2 font-mono">
-						drizzle-auth.ts
-					</span>
+					<span className="text-xs text-[#8C877D] ml-2 font-mono">drizzle-auth.ts</span>
 				</div>
 
 				{/* Add a min-height to prevent layout shifts */}
@@ -212,11 +207,7 @@ return \`\${encodedHeader}.\${encodedPayload}.\${encodedSignature}\`;
 						>
 							{line.split(' ').map((word, j) => {
 								// Keywords
-								if (
-									/^(import|from|export|const|function|async|await|return)$/.test(
-										word
-									)
-								) {
+								if (/^(import|from|export|const|function|async|await|return)$/.test(word)) {
 									return (
 										<span
 											key={j}
@@ -227,9 +218,7 @@ return \`\${encodedHeader}.\${encodedPayload}.\${encodedSignature}\`;
 									)
 								}
 								// Drizzle functions
-								if (
-									/^(select|from|where|eq|limit)$/.test(word)
-								) {
+								if (/^(select|from|where|eq|limit)$/.test(word)) {
 									return (
 										<span
 											key={j}
@@ -313,9 +302,8 @@ return \`\${encodedHeader}.\${encodedPayload}.\${encodedSignature}\`;
 							</h2>
 						</div>
 						<p className="text-[#8C877D] max-w-2xl mx-auto">
-							Stop fighting with bad docs, missing adapters, and
-							constant deprecations. Authentication isn't that
-							hard. Take control and build exactly what you need.
+							Stop fighting with bad docs, missing adapters, and constant deprecations. Authentication
+							isn't that hard. Take control and build exactly what you need.
 						</p>
 					</motion.div>
 
@@ -401,24 +389,17 @@ return \`\${encodedHeader}.\${encodedPayload}.\${encodedSignature}\`;
 									{independencePrinciples[activeTab].title}
 								</h3>
 							</div>
-							<p className="text-[#8C877D] mb-6">
-								{independencePrinciples[activeTab].subtitle}
-							</p>
+							<p className="text-[#8C877D] mb-6">{independencePrinciples[activeTab].subtitle}</p>
 
 							<div className="flex items-center gap-2 text-xs text-[#4e9815] font-mono mt-auto">
 								<Terminal className="h-3 w-3" />
-								<span>
-									$ cat auth-utils.ts &gt;
-									your-project/auth-utils.ts
-								</span>
+								<span>$ cat auth-utils.ts &gt; your-project/auth-utils.ts</span>
 							</div>
 						</div>
 
 						{/* Right column: Code example - wider than left column */}
 						<div className="lg:col-span-2">
-							<TerminalCode
-								code={independencePrinciples[activeTab].code}
-							/>
+							<TerminalCode code={independencePrinciples[activeTab].code} />
 						</div>
 					</motion.div>
 				</motion.div>

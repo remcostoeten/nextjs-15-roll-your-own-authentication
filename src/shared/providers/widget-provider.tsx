@@ -1,12 +1,6 @@
 'use client'
 
-import React, {
-	createContext,
-	ReactNode,
-	useContext,
-	useState,
-	useEffect,
-} from 'react'
+import React, { createContext, ReactNode, useContext, useState, useEffect } from 'react'
 import DevToolsWidget from '@/modules/widgets/dev-tools/components/dev-tools-widget'
 
 type WidgetContextType = {

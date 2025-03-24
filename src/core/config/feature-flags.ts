@@ -16,17 +16,13 @@ const MATRIX_GRID_FLAGS: MatrixGridFeatures = {
 	ANIMATIONS: true,
 } as const
 
-export const isMatrixGridAnimationEnabled = (
-	feature: keyof MatrixGridFeatures
-): boolean => {
+export const isMatrixGridAnimationEnabled = (feature: keyof MatrixGridFeatures): boolean => {
 	return MATRIX_GRID_FLAGS[feature]
 }
 
 /**
  * Check if a specific Matrix Grid accessibility feature is enabled
  */
-export function isMatrixGridAccessibilityFeatureEnabled(
-	featureKey: keyof MatrixGridFeatures
-): boolean {
+export function isMatrixGridAccessibilityFeatureEnabled(featureKey: keyof MatrixGridFeatures): boolean {
 	return MATRIX_GRID_FLAGS[featureKey]
 }

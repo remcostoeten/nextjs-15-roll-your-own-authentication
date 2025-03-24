@@ -140,9 +140,7 @@ const flexVariants = cva('flex', {
 	},
 })
 
-interface TextProps
-	extends React.HTMLAttributes<HTMLParagraphElement>,
-		VariantProps<typeof textVariants> {
+interface TextProps extends React.HTMLAttributes<HTMLParagraphElement>, VariantProps<typeof textVariants> {
 	asChild?: boolean
 	as?: React.ElementType
 	hasLink?: boolean
@@ -212,9 +210,7 @@ const Text = React.forwardRef<HTMLParagraphElement, TextProps>(
 )
 Text.displayName = 'Text'
 
-interface HeadingProps
-	extends React.HTMLAttributes<HTMLHeadingElement>,
-		VariantProps<typeof headingVariants> {
+interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement>, VariantProps<typeof headingVariants> {
 	asChild?: boolean
 	hasLink?: boolean
 	linkHref?: string
@@ -249,9 +245,7 @@ const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(
 
 		const content = (
 			<>
-				{iconBefore && (
-					<span className="inline-flex mr-2">{iconBefore}</span>
-				)}
+				{iconBefore && <span className="inline-flex mr-2">{iconBefore}</span>}
 				{hasLink ? (
 					<Link
 						href={linkHref}
@@ -268,9 +262,7 @@ const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(
 				) : (
 					children
 				)}
-				{iconAfter && (
-					<span className="inline-flex ml-2">{iconAfter}</span>
-				)}
+				{iconAfter && <span className="inline-flex ml-2">{iconAfter}</span>}
 			</>
 		)
 
@@ -296,27 +288,12 @@ const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(
 )
 Heading.displayName = 'Heading'
 
-interface FlexProps
-	extends React.HTMLAttributes<HTMLDivElement>,
-		VariantProps<typeof flexVariants> {
+interface FlexProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof flexVariants> {
 	as?: React.ElementType
 }
 
 const Flex = React.forwardRef<HTMLDivElement, FlexProps>(
-	(
-		{
-			className,
-			direction,
-			items,
-			justify,
-			wrap,
-			gap,
-			as: Component = 'div',
-			children,
-			...props
-		},
-		ref
-	) => {
+	({ className, direction, items, justify, wrap, gap, as: Component = 'div', children, ...props }, ref) => {
 		return (
 			<Component
 				ref={ref}

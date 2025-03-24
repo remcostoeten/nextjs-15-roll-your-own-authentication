@@ -12,23 +12,23 @@ import { verifyAccessToken } from '@/shared/utils/jwt/jwt'
 
 export async function POST(req: NextRequest) {
 	try {
-		const accessToken = req.cookies.get('access_token')?.value;
+		const accessToken = req.cookies.get('access_token')?.value
 		if (!accessToken) {
-			return new NextResponse('Unauthorized', { status: 401 });
+			return new NextResponse('Unauthorized', { status: 401 })
 		}
 
 		try {
-			const payload = await verifyAccessToken(accessToken);
+			const payload = await verifyAccessToken(accessToken)
 			const user = await db.query.users.findFirst({
 				where: eq(users.id, payload.sub),
-			});
+			})
 
 			if (!user || user.role !== 'admin') {
-				return new NextResponse('Unauthorized', { status: 401 });
+				return new NextResponse('Unauthorized', { status: 401 })
 			}
 
-			const body = await req.json();
-			const validatedData = roadmapItemSchema.parse(body);
+			const body = await req.json()
+			const validatedData = roadmapItemSchema.parse(body)
 
 			const newItem = await db
 				.insert(roadmapItems)
@@ -36,18 +36,18 @@ export async function POST(req: NextRequest) {
 					...validatedData,
 					votes: 0,
 				})
-				.returning();
+				.returning()
 
-			return NextResponse.json(newItem[0]);
+			return NextResponse.json(newItem[0])
 		} catch (error) {
 			if (error instanceof z.ZodError) {
-				return new NextResponse(JSON.stringify(error.errors), { status: 400 });
+				return new NextResponse(JSON.stringify(error.errors), { status: 400 })
 			}
-			throw error;
+			throw error
 		}
 	} catch (error) {
-		console.error('Error in roadmap POST:', error);
-		return new NextResponse('Internal Server Error', { status: 500 });
+		console.error('Error in roadmap POST:', error)
+		return new NextResponse('Internal Server Error', { status: 500 })
 	}
 }
 
@@ -80,12 +80,9 @@ export async function PUT(req: Request) {
 		return NextResponse.json(updatedItem[0])
 	} catch (error) {
 		console.error('Error updating roadmap item:', error)
-		return new NextResponse(
-			error instanceof z.ZodError
-				? JSON.stringify(error.errors)
-				: 'Internal Server Error',
-			{ status: error instanceof z.ZodError ? 400 : 500 }
-		)
+		return new NextResponse(error instanceof z.ZodError ? JSON.stringify(error.errors) : 'Internal Server Error', {
+			status: error instanceof z.ZodError ? 400 : 500,
+		})
 	}
 }
 

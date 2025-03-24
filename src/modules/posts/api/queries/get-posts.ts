@@ -11,10 +11,7 @@ export interface GetPostsOptions {
 	includeDrafts?: boolean
 }
 
-export async function getPosts(
-	options: GetPostsOptions = {},
-	ctx: PostRequestContext
-) {
+export async function getPosts(options: GetPostsOptions = {}, ctx: PostRequestContext) {
 	try {
 		const { page = 1, limit = 10, includeDrafts = false } = options
 
@@ -29,13 +26,7 @@ export async function getPosts(
 		} else if (includeDrafts && ctx.userId) {
 			// If drafts are included, only show the user's own drafts
 			conditions.push(
-				or(
-					eq(posts.published, true),
-					and(
-						eq(posts.authorId, ctx.userId),
-						eq(posts.published, false)
-					)
-				)
+				or(eq(posts.published, true), and(eq(posts.authorId, ctx.userId), eq(posts.published, false)))
 			)
 		}
 

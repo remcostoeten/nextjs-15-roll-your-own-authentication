@@ -32,9 +32,7 @@ export async function getChangelogItems(): Promise<ChangelogItem[]> {
 			description: item.description,
 			date: new Date(item.date),
 			features: item.features ? JSON.parse(item.features) : [],
-			improvements: item.improvements
-				? JSON.parse(item.improvements)
-				: [],
+			improvements: item.improvements ? JSON.parse(item.improvements) : [],
 			bugfixes: item.bugfixes ? JSON.parse(item.bugfixes) : [],
 			votes: item.votes || 0,
 		}))

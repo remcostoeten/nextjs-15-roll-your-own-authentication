@@ -43,10 +43,7 @@ export function Logo() {
 				ctx.fillText(char, i * fontSize, drops[i] * fontSize)
 
 				// Reset drop when it reaches bottom or randomly
-				if (
-					drops[i] * fontSize > canvas.height &&
-					Math.random() > 0.95
-				) {
+				if (drops[i] * fontSize > canvas.height && Math.random() > 0.95) {
 					drops[i] = 0
 				}
 

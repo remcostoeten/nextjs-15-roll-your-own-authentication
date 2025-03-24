@@ -1,40 +1,20 @@
 'use client'
 
 import { Button } from '@/shared/components/ui/button'
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '@/shared/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/ui/card'
 import {
 	DropdownMenu,
 	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
 	DropdownMenuTrigger,
 } from '@/shared/components/ui/dropdown-menu'
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from '@/shared/components/ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/components/ui/table'
 import { Eye, Pencil, Trash2 } from 'lucide-react'
 import { useCallback, useMemo, useState, useEffect } from 'react'
 import { usePermissions } from '@/modules/authentication/hooks/use-permissions'
 import { useRouter } from 'next/navigation'
 
-const initialColumns = [
-	'username',
-	'bookmarks',
-	'folders',
-	'tags',
-	'joined',
-	'actions',
-]
+const initialColumns = ['username', 'bookmarks', 'folders', 'tags', 'joined', 'actions']
 
 const usersData = [
 	{
@@ -109,16 +89,11 @@ export function WithVisibility() {
 
 	const handleColumnToggle = useCallback((column: string) => {
 		setSelectedColumns((prevColumns) =>
-			prevColumns.includes(column)
-				? prevColumns.filter((col) => col !== column)
-				: [...prevColumns, column]
+			prevColumns.includes(column) ? prevColumns.filter((col) => col !== column) : [...prevColumns, column]
 		)
 	}, [])
 
-	const columns = useMemo(
-		() => ['username', 'bookmarks', 'folders', 'tags', 'joined', 'actions'],
-		[]
-	)
+	const columns = useMemo(() => ['username', 'bookmarks', 'folders', 'tags', 'joined', 'actions'], [])
 
 	return (
 		<Card className="mx-auto my-6 w-full max-w-6xl">
@@ -126,8 +101,7 @@ export function WithVisibility() {
 				<div className="space-y-2">
 					<CardTitle>User Profile Data</CardTitle>
 					<CardDescription>
-						View and manage user profile data, including bookmarks,
-						folders, and tags.
+						View and manage user profile data, including bookmarks, folders, and tags.
 					</CardDescription>
 				</div>
 				<DropdownMenu>
@@ -145,12 +119,9 @@ export function WithVisibility() {
 							<DropdownMenuCheckboxItem
 								key={column}
 								checked={selectedColumns.includes(column)}
-								onCheckedChange={() =>
-									handleColumnToggle(column)
-								}
+								onCheckedChange={() => handleColumnToggle(column)}
 							>
-								{column.charAt(0).toUpperCase() +
-									column.slice(1)}
+								{column.charAt(0).toUpperCase() + column.slice(1)}
 							</DropdownMenuCheckboxItem>
 						))}
 					</DropdownMenuContent>
@@ -161,10 +132,7 @@ export function WithVisibility() {
 					<TableHeader>
 						<TableRow>
 							{selectedColumns.map((column) => (
-								<TableHead key={column}>
-									{column.charAt(0).toUpperCase() +
-										column.slice(1)}
-								</TableHead>
+								<TableHead key={column}>{column.charAt(0).toUpperCase() + column.slice(1)}</TableHead>
 							))}
 						</TableRow>
 					</TableHeader>

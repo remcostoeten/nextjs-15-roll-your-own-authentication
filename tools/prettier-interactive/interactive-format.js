@@ -38,16 +38,7 @@ const configFilePath = path.join(os.homedir(), '.prettier-menu-config.json')
 
 // Default configuration
 let config = {
-	ignoreFolders: [
-		'node_modules',
-		'.git',
-		'dist',
-		'build',
-		'.next',
-		'.vercel',
-		'.turbo',
-		'coverage',
-	],
+	ignoreFolders: ['node_modules', '.git', 'dist', 'build', '.next', '.vercel', '.turbo', 'coverage'],
 	defaultExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'json', 'css', 'scss'],
 }
 
@@ -60,9 +51,7 @@ function checkPrettierInstallation() {
 		})
 		if (localResult.status === 0) {
 			const version = localResult.stdout.toString().trim()
-			console.log(
-				`${colors.green}Found Prettier ${version} (local)${colors.reset}`
-			)
+			console.log(`${colors.green}Found Prettier ${version} (local)${colors.reset}`)
 			return true
 		}
 
@@ -72,27 +61,18 @@ function checkPrettierInstallation() {
 		})
 		if (globalResult.status === 0) {
 			const version = globalResult.stdout.toString().trim()
-			console.log(
-				`${colors.green}Found Prettier ${version} (global)${colors.reset}`
-			)
+			console.log(`${colors.green}Found Prettier ${version} (global)${colors.reset}`)
 			return true
 		}
 
-		console.log(
-			`${colors.bgRed}${colors.white}WARNING: Prettier not found!${colors.reset}`
-		)
-		console.log(
-			`${colors.yellow}Please install Prettier using:${colors.reset}`
-		)
+		console.log(`${colors.bgRed}${colors.white}WARNING: Prettier not found!${colors.reset}`)
+		console.log(`${colors.yellow}Please install Prettier using:${colors.reset}`)
 		console.log(
 			`${colors.cyan}npm install --save-dev prettier${colors.reset} or ${colors.cyan}npm install -g prettier${colors.reset}`
 		)
 		return false
 	} catch (error) {
-		console.error(
-			`${colors.red}Error checking Prettier:${colors.reset}`,
-			error.message
-		)
+		console.error(`${colors.red}Error checking Prettier:${colors.reset}`, error.message)
 		return false
 	}
 }
@@ -104,24 +84,16 @@ try {
 		config = { ...config, ...fileConfig }
 	}
 } catch (error) {
-	console.error(
-		`${colors.red}Error loading config:${colors.reset}`,
-		error.message
-	)
+	console.error(`${colors.red}Error loading config:${colors.reset}`, error.message)
 }
 
 // Save config
 function saveConfig() {
 	try {
 		fs.writeFileSync(configFilePath, JSON.stringify(config, null, 2))
-		console.log(
-			`${colors.green}Configuration saved to ${configFilePath}${colors.reset}`
-		)
+		console.log(`${colors.green}Configuration saved to ${configFilePath}${colors.reset}`)
 	} catch (error) {
-		console.error(
-			`${colors.red}Error saving config:${colors.reset}`,
-			error.message
-		)
+		console.error(`${colors.red}Error saving config:${colors.reset}`, error.message)
 	}
 }
 
@@ -135,10 +107,7 @@ function runPrettier(command, dryRun = false) {
 	// Create explicit ignore file
 	const tempIgnoreFile = path.join(os.tmpdir(), '.prettierignore-temp')
 	try {
-		fs.writeFileSync(
-			tempIgnoreFile,
-			config.ignoreFolders.map((folder) => `**/${folder}/**`).join('\n')
-		)
+		fs.writeFileSync(tempIgnoreFile, config.ignoreFolders.map((folder) => `**/${folder}/**`).join('\n'))
 	} catch {
 		// Silently fail if cleanup fails
 	}
@@ -182,17 +151,13 @@ async function fuzzySearch(searchPath = '.', searchTerm = '') {
 			const fullPath = path.join(searchPath, entry.name)
 
 			// Skip ignored folders
-			if (
-				entry.isDirectory() &&
-				config.ignoreFolders.includes(entry.name)
-			) {
+			if (entry.isDirectory() && config.ignoreFolders.includes(entry.name)) {
 				continue
 			}
 
 			if (
 				(entry.isDirectory() || entry.isFile()) &&
-				(!searchTerm ||
-					entry.name.toLowerCase().includes(searchTerm.toLowerCase()))
+				(!searchTerm || entry.name.toLowerCase().includes(searchTerm.toLowerCase()))
 			) {
 				items.push({
 					name: entry.name,
@@ -212,10 +177,7 @@ async function fuzzySearch(searchPath = '.', searchTerm = '') {
 
 		return items
 	} catch (error) {
-		console.error(
-			`${colors.red}Error searching:${colors.reset}`,
-			error.message
-		)
+		console.error(`${colors.red}Error searching:${colors.reset}`, error.message)
 		return []
 	}
 }
@@ -227,34 +189,27 @@ async function displaySelectionMenu(items, title) {
 		return null
 	}
 
-	console.log(
-		`\n${colors.bright}${colors.cyan}=== ${title} ===${colors.reset}`
-	)
+	console.log(`\n${colors.bright}${colors.cyan}=== ${title} ===${colors.reset}`)
 
 	items.forEach((item, index) => {
 		const icon = item.isDirectory ? '📁' : '📄'
-		console.log(
-			`${colors.green}${index + 1}${colors.reset}: ${icon} ${item.name}${item.isDirectory ? '/' : ''}`
-		)
+		console.log(`${colors.green}${index + 1}${colors.reset}: ${icon} ${item.name}${item.isDirectory ? '/' : ''}`)
 	})
 
 	console.log(`${colors.yellow}0${colors.reset}: Cancel`)
 
 	return new Promise((resolve) => {
-		rl.question(
-			`${colors.cyan}Select an option:${colors.reset} `,
-			(answer) => {
-				const index = parseInt(answer) - 1
-				if (index === -1) {
-					resolve(null)
-				} else if (index >= 0 && index < items.length) {
-					resolve(items[index])
-				} else {
-					console.log(`${colors.red}Invalid selection${colors.reset}`)
-					resolve(null)
-				}
+		rl.question(`${colors.cyan}Select an option:${colors.reset} `, (answer) => {
+			const index = parseInt(answer) - 1
+			if (index === -1) {
+				resolve(null)
+			} else if (index >= 0 && index < items.length) {
+				resolve(items[index])
+			} else {
+				console.log(`${colors.red}Invalid selection${colors.reset}`)
+				resolve(null)
 			}
-		)
+		})
 	})
 }
 
@@ -276,10 +231,7 @@ async function navigateDirectories(startPath = '.', searchTerm = '') {
 			})
 		}
 
-		const selected = await displaySelectionMenu(
-			items,
-			`Browsing: ${currentPath}`
-		)
+		const selected = await displaySelectionMenu(items, `Browsing: ${currentPath}`)
 
 		if (!selected) {
 			return null // User cancelled
@@ -322,26 +274,18 @@ const options = [
 
 // Display menu
 function showMenu() {
-	console.log(
-		`\n${colors.bright}${colors.magenta}=== Prettier Formatting Menu ===${colors.reset}`
-	)
+	console.log(`\n${colors.bright}${colors.magenta}=== Prettier Formatting Menu ===${colors.reset}`)
 	options.forEach((option) => {
-		console.log(
-			`${colors.green}${option.key}${colors.reset}: ${option.label}`
-		)
+		console.log(`${colors.green}${option.key}${colors.reset}: ${option.label}`)
 	})
-	console.log(
-		`${colors.bright}${colors.magenta}==============================${colors.reset}\n`
-	)
+	console.log(`${colors.bright}${colors.magenta}==============================${colors.reset}\n`)
 
 	rl.question(`${colors.cyan}Choose an option:${colors.reset} `, (answer) => {
 		const option = options.find((opt) => opt.key === answer)
 		if (option) {
 			option.action()
 		} else {
-			console.log(
-				`${colors.red}Invalid option, please try again.${colors.reset}`
-			)
+			console.log(`${colors.red}Invalid option, please try again.${colors.reset}`)
 			showMenu()
 		}
 	})
@@ -349,21 +293,14 @@ function showMenu() {
 
 // Format all files with default extensions
 function formatAll() {
-	const extensionPattern = config.defaultExtensions
-		.map((ext) => `**/*.${ext}`)
-		.join(' ')
+	const extensionPattern = config.defaultExtensions.map((ext) => `**/*.${ext}`).join(' ')
 
-	rl.question(
-		`${colors.yellow}Run in dry mode? (y/N):${colors.reset} `,
-		(dryRun) => {
-			const isDryRun = dryRun.toLowerCase() === 'y'
-			console.log(
-				`${colors.cyan}Formatting all files with extensions: ${extensionPattern}...${colors.reset}`
-			)
-			runPrettier(extensionPattern, isDryRun)
-			showMenu()
-		}
-	)
+	rl.question(`${colors.yellow}Run in dry mode? (y/N):${colors.reset} `, (dryRun) => {
+		const isDryRun = dryRun.toLowerCase() === 'y'
+		console.log(`${colors.cyan}Formatting all files with extensions: ${extensionPattern}...${colors.reset}`)
+		runPrettier(extensionPattern, isDryRun)
+		showMenu()
+	})
 }
 
 // Format by extension
@@ -372,122 +309,83 @@ function formatByExtension() {
 		`${colors.cyan}Enter file extension (without dot, e.g. "json" or multiple like "json,yml"):${colors.reset} `,
 		(extensionInput) => {
 			if (!extensionInput) {
-				console.log(
-					`${colors.yellow}No extension provided. Returning to menu.${colors.reset}`
-				)
+				console.log(`${colors.yellow}No extension provided. Returning to menu.${colors.reset}`)
 				showMenu()
 				return
 			}
 
-			const extensions = extensionInput
-				.split(',')
-				.map((ext) => ext.trim())
-			const extensionPattern = extensions
-				.map((ext) => `**/*.${ext}`)
-				.join(' ')
+			const extensions = extensionInput.split(',').map((ext) => ext.trim())
+			const extensionPattern = extensions.map((ext) => `**/*.${ext}`).join(' ')
 
-			rl.question(
-				`${colors.yellow}Run in dry mode? (y/N):${colors.reset} `,
-				(dryRun) => {
-					const isDryRun = dryRun.toLowerCase() === 'y'
-					console.log(
-						`${colors.cyan}Formatting all ${extensionPattern} files...${colors.reset}`
-					)
-					runPrettier(extensionPattern, isDryRun)
-					showMenu()
-				}
-			)
+			rl.question(`${colors.yellow}Run in dry mode? (y/N):${colors.reset} `, (dryRun) => {
+				const isDryRun = dryRun.toLowerCase() === 'y'
+				console.log(`${colors.cyan}Formatting all ${extensionPattern} files...${colors.reset}`)
+				runPrettier(extensionPattern, isDryRun)
+				showMenu()
+			})
 		}
 	)
 }
 
 // Format specific directory with fuzzy search
 async function formatDirectory() {
-	console.log(
-		`${colors.cyan}Starting directory browser. You can type to search for folders.${colors.reset}`
-	)
+	console.log(`${colors.cyan}Starting directory browser. You can type to search for folders.${colors.reset}`)
 
-	rl.question(
-		`${colors.cyan}Enter search term (or press Enter to browse):${colors.reset} `,
-		async (searchTerm) => {
-			const directory = await navigateDirectories('.', searchTerm)
+	rl.question(`${colors.cyan}Enter search term (or press Enter to browse):${colors.reset} `, async (searchTerm) => {
+		const directory = await navigateDirectories('.', searchTerm)
 
-			if (!directory) {
-				console.log(
-					`${colors.yellow}No directory selected. Returning to menu.${colors.reset}`
-				)
-				showMenu()
-				return
-			}
-
-			if (!directory.isDirectory) {
-				console.log(
-					`${colors.yellow}Selected item is not a directory. Returning to menu.${colors.reset}`
-				)
-				showMenu()
-				return
-			}
-
-			rl.question(
-				`${colors.cyan}Enter file extensions to format (comma separated, or Enter for defaults):${colors.reset} `,
-				(extensions) => {
-					const exts = extensions
-						? extensions.split(',').map((ext) => ext.trim())
-						: config.defaultExtensions
-
-					const extensionPattern = exts
-						.map((ext) => `${directory.path}/**/*.${ext}`)
-						.join(' ')
-
-					rl.question(
-						`${colors.yellow}Run in dry mode? (y/N):${colors.reset} `,
-						(dryRun) => {
-							const isDryRun = dryRun.toLowerCase() === 'y'
-							console.log(
-								`${colors.cyan}Formatting ${extensionPattern} files in ${directory.path}...${colors.reset}`
-							)
-							runPrettier(extensionPattern, isDryRun)
-							showMenu()
-						}
-					)
-				}
-			)
+		if (!directory) {
+			console.log(`${colors.yellow}No directory selected. Returning to menu.${colors.reset}`)
+			showMenu()
+			return
 		}
-	)
+
+		if (!directory.isDirectory) {
+			console.log(`${colors.yellow}Selected item is not a directory. Returning to menu.${colors.reset}`)
+			showMenu()
+			return
+		}
+
+		rl.question(
+			`${colors.cyan}Enter file extensions to format (comma separated, or Enter for defaults):${colors.reset} `,
+			(extensions) => {
+				const exts = extensions ? extensions.split(',').map((ext) => ext.trim()) : config.defaultExtensions
+
+				const extensionPattern = exts.map((ext) => `${directory.path}/**/*.${ext}`).join(' ')
+
+				rl.question(`${colors.yellow}Run in dry mode? (y/N):${colors.reset} `, (dryRun) => {
+					const isDryRun = dryRun.toLowerCase() === 'y'
+					console.log(
+						`${colors.cyan}Formatting ${extensionPattern} files in ${directory.path}...${colors.reset}`
+					)
+					runPrettier(extensionPattern, isDryRun)
+					showMenu()
+				})
+			}
+		)
+	})
 }
 
 // Format specific file with fuzzy search
 async function formatFile() {
-	console.log(
-		`${colors.cyan}Starting file browser. You can type to search for files.${colors.reset}`
-	)
+	console.log(`${colors.cyan}Starting file browser. You can type to search for files.${colors.reset}`)
 
-	rl.question(
-		`${colors.cyan}Enter search term (or press Enter to browse):${colors.reset} `,
-		async (searchTerm) => {
-			const file = await navigateDirectories('.', searchTerm)
+	rl.question(`${colors.cyan}Enter search term (or press Enter to browse):${colors.reset} `, async (searchTerm) => {
+		const file = await navigateDirectories('.', searchTerm)
 
-			if (!file || file.isDirectory) {
-				console.log(
-					`${colors.yellow}No file selected. Returning to menu.${colors.reset}`
-				)
-				showMenu()
-				return
-			}
-
-			rl.question(
-				`${colors.yellow}Run in dry mode? (y/N):${colors.reset} `,
-				(dryRun) => {
-					const isDryRun = dryRun.toLowerCase() === 'y'
-					console.log(
-						`${colors.cyan}Formatting ${file.path}...${colors.reset}`
-					)
-					runPrettier(`"${file.path}"`, isDryRun)
-					showMenu()
-				}
-			)
+		if (!file || file.isDirectory) {
+			console.log(`${colors.yellow}No file selected. Returning to menu.${colors.reset}`)
+			showMenu()
+			return
 		}
-	)
+
+		rl.question(`${colors.yellow}Run in dry mode? (y/N):${colors.reset} `, (dryRun) => {
+			const isDryRun = dryRun.toLowerCase() === 'y'
+			console.log(`${colors.cyan}Formatting ${file.path}...${colors.reset}`)
+			runPrettier(`"${file.path}"`, isDryRun)
+			showMenu()
+		})
+	})
 }
 
 // Format recursively from path
@@ -496,117 +394,78 @@ async function formatRecursive() {
 		`${colors.cyan}Starting directory browser for recursive formatting. You can type to search for folders.${colors.reset}`
 	)
 
-	rl.question(
-		`${colors.cyan}Enter search term (or press Enter to browse):${colors.reset} `,
-		async (searchTerm) => {
-			const directory = await navigateDirectories('.', searchTerm)
+	rl.question(`${colors.cyan}Enter search term (or press Enter to browse):${colors.reset} `, async (searchTerm) => {
+		const directory = await navigateDirectories('.', searchTerm)
 
-			if (!directory) {
-				console.log(
-					`${colors.yellow}No directory selected. Returning to menu.${colors.reset}`
-				)
-				showMenu()
-				return
-			}
-
-			if (!directory.isDirectory) {
-				console.log(
-					`${colors.yellow}Selected item is not a directory. Returning to menu.${colors.reset}`
-				)
-				showMenu()
-				return
-			}
-
-			rl.question(
-				`${colors.cyan}Enter file extensions to format (comma separated, or Enter for defaults):${colors.reset} `,
-				(extensions) => {
-					const exts = extensions
-						? extensions.split(',').map((ext) => ext.trim())
-						: config.defaultExtensions
-
-					const extensionPattern = exts
-						.map((ext) => `${directory.path}/**/*.${ext}`)
-						.join(' ')
-
-					rl.question(
-						`${colors.yellow}Run in dry mode? (y/N):${colors.reset} `,
-						(dryRun) => {
-							const isDryRun = dryRun.toLowerCase() === 'y'
-							console.log(
-								`${colors.cyan}Recursively formatting ${extensionPattern} files in ${directory.path}...${colors.reset}`
-							)
-							runPrettier(extensionPattern, isDryRun)
-							showMenu()
-						}
-					)
-				}
-			)
+		if (!directory) {
+			console.log(`${colors.yellow}No directory selected. Returning to menu.${colors.reset}`)
+			showMenu()
+			return
 		}
-	)
+
+		if (!directory.isDirectory) {
+			console.log(`${colors.yellow}Selected item is not a directory. Returning to menu.${colors.reset}`)
+			showMenu()
+			return
+		}
+
+		rl.question(
+			`${colors.cyan}Enter file extensions to format (comma separated, or Enter for defaults):${colors.reset} `,
+			(extensions) => {
+				const exts = extensions ? extensions.split(',').map((ext) => ext.trim()) : config.defaultExtensions
+
+				const extensionPattern = exts.map((ext) => `${directory.path}/**/*.${ext}`).join(' ')
+
+				rl.question(`${colors.yellow}Run in dry mode? (y/N):${colors.reset} `, (dryRun) => {
+					const isDryRun = dryRun.toLowerCase() === 'y'
+					console.log(
+						`${colors.cyan}Recursively formatting ${extensionPattern} files in ${directory.path}...${colors.reset}`
+					)
+					runPrettier(extensionPattern, isDryRun)
+					showMenu()
+				})
+			}
+		)
+	})
 }
 
 // Configure ignore folders
 function configureIgnoreFolders() {
-	console.log(
-		`${colors.cyan}Current ignored folders:${colors.reset} ${config.ignoreFolders.join(', ')}`
-	)
+	console.log(`${colors.cyan}Current ignored folders:${colors.reset} ${config.ignoreFolders.join(', ')}`)
 
-	rl.question(
-		`${colors.cyan}Enter new ignore folders (comma separated):${colors.reset} `,
-		(foldersInput) => {
-			if (foldersInput.trim()) {
-				config.ignoreFolders = foldersInput
-					.split(',')
-					.map((folder) => folder.trim())
-				saveConfig()
-			}
-			showMenu()
+	rl.question(`${colors.cyan}Enter new ignore folders (comma separated):${colors.reset} `, (foldersInput) => {
+		if (foldersInput.trim()) {
+			config.ignoreFolders = foldersInput.split(',').map((folder) => folder.trim())
+			saveConfig()
 		}
-	)
+		showMenu()
+	})
 }
 
 // Configure default extensions
 function configureDefaultExtensions() {
-	console.log(
-		`${colors.cyan}Current default extensions:${colors.reset} ${config.defaultExtensions.join(', ')}`
-	)
+	console.log(`${colors.cyan}Current default extensions:${colors.reset} ${config.defaultExtensions.join(', ')}`)
 
-	rl.question(
-		`${colors.cyan}Enter new default extensions (comma separated):${colors.reset} `,
-		(extensionsInput) => {
-			if (extensionsInput.trim()) {
-				config.defaultExtensions = extensionsInput
-					.split(',')
-					.map((ext) => ext.trim())
-				saveConfig()
-			}
-			showMenu()
+	rl.question(`${colors.cyan}Enter new default extensions (comma separated):${colors.reset} `, (extensionsInput) => {
+		if (extensionsInput.trim()) {
+			config.defaultExtensions = extensionsInput.split(',').map((ext) => ext.trim())
+			saveConfig()
 		}
-	)
+		showMenu()
+	})
 }
 
 // Show current configuration
 function showConfiguration() {
-	console.log(
-		`\n${colors.bright}${colors.cyan}=== Current Configuration ===${colors.reset}`
-	)
-	console.log(
-		`${colors.cyan}Ignored folders:${colors.reset} ${config.ignoreFolders.join(', ')}`
-	)
-	console.log(
-		`${colors.cyan}Default extensions:${colors.reset} ${config.defaultExtensions.join(', ')}`
-	)
+	console.log(`\n${colors.bright}${colors.cyan}=== Current Configuration ===${colors.reset}`)
+	console.log(`${colors.cyan}Ignored folders:${colors.reset} ${config.ignoreFolders.join(', ')}`)
+	console.log(`${colors.cyan}Default extensions:${colors.reset} ${config.defaultExtensions.join(', ')}`)
 	console.log(`${colors.cyan}Config file:${colors.reset} ${configFilePath}`)
-	console.log(
-		`${colors.bright}${colors.cyan}=========================${colors.reset}\n`
-	)
+	console.log(`${colors.bright}${colors.cyan}=========================${colors.reset}\n`)
 
-	rl.question(
-		`${colors.cyan}Press Enter to continue...${colors.reset}`,
-		() => {
-			showMenu()
-		}
-	)
+	rl.question(`${colors.cyan}Press Enter to continue...${colors.reset}`, () => {
+		showMenu()
+	})
 }
 
 // Quit the application
@@ -616,18 +475,12 @@ function quit() {
 }
 
 // Display welcome message
-console.log(
-	`${colors.bright}${colors.cyan}Welcome to the Prettier Formatting Tool!${colors.reset}`
-)
-console.log(
-	`${colors.dim}Configuration loaded from: ${configFilePath}${colors.reset}`
-)
+console.log(`${colors.bright}${colors.cyan}Welcome to the Prettier Formatting Tool!${colors.reset}`)
+console.log(`${colors.dim}Configuration loaded from: ${configFilePath}${colors.reset}`)
 
 // Check Prettier installation before starting
 if (!checkPrettierInstallation()) {
-	console.log(
-		`${colors.red}Please install Prettier before continuing.${colors.reset}`
-	)
+	console.log(`${colors.red}Please install Prettier before continuing.${colors.reset}`)
 	process.exit(1)
 }
 

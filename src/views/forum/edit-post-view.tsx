@@ -5,11 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { User } from '@/server/db/schemas/users'
-import {
-	postSchema,
-	type PostInput,
-	type Post,
-} from '@/modules/posts/models/z.post'
+import { postSchema, type PostInput, type Post } from '@/modules/posts/models/z.post'
 import { updatePost } from '@/modules/posts/api/mutations'
 import { ArrowLeft, Save } from 'lucide-react'
 import Link from 'next/link'
@@ -80,9 +76,7 @@ export function EditPostView({ post, user }: EditPostViewProps) {
 					<ArrowLeft className="h-5 w-5 mr-1" />
 					<span>Back</span>
 				</Link>
-				<h1 className="text-2xl font-bold text-title-light">
-					Edit Post
-				</h1>
+				<h1 className="text-2xl font-bold text-title-light">Edit Post</h1>
 			</div>
 
 			{error && (
@@ -109,11 +103,7 @@ export function EditPostView({ post, user }: EditPostViewProps) {
 						className="w-full px-4 py-2 rounded-md border border-button-border bg-background text-title-light focus:outline-none focus:ring-2 focus:ring-[#4e9815]/50"
 						placeholder="Enter a descriptive title"
 					/>
-					{errors.title && (
-						<p className="text-red-400 text-sm">
-							{errors.title.message}
-						</p>
-					)}
+					{errors.title && <p className="text-red-400 text-sm">{errors.title.message}</p>}
 				</div>
 
 				<div className="space-y-2">
@@ -130,11 +120,7 @@ export function EditPostView({ post, user }: EditPostViewProps) {
 						className="w-full px-4 py-2 rounded-md border border-button-border bg-background text-title-light focus:outline-none focus:ring-2 focus:ring-[#4e9815]/50"
 						placeholder="Share your thoughts..."
 					></textarea>
-					{errors.content && (
-						<p className="text-red-400 text-sm">
-							{errors.content.message}
-						</p>
-					)}
+					{errors.content && <p className="text-red-400 text-sm">{errors.content.message}</p>}
 				</div>
 
 				<div className="flex items-center space-x-6">
@@ -159,9 +145,7 @@ export function EditPostView({ post, user }: EditPostViewProps) {
 						<div className="relative w-11 h-6 bg-background-lighter rounded-full peer peer-checked:bg-[#4e9815]/20 peer-focus:ring-2 peer-focus:ring-[#4e9815]/50">
 							<div className="absolute left-1 top-1 bg-button w-4 h-4 rounded-full transition-all peer-checked:bg-[#4e9815] peer-checked:left-6"></div>
 						</div>
-						<span className="ml-3 text-button">
-							Sensitive content
-						</span>
+						<span className="ml-3 text-button">Sensitive content</span>
 					</label>
 				</div>
 

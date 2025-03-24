@@ -2,14 +2,7 @@
 
 import { cn } from 'helpers'
 import styles from '@/styles/modules/checkbox.module.css'
-import React, {
-	InputHTMLAttributes,
-	forwardRef,
-	useState,
-	CSSProperties,
-	useEffect,
-	useId,
-} from 'react'
+import React, { InputHTMLAttributes, forwardRef, useState, CSSProperties, useEffect, useId } from 'react'
 
 export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
 	label?: string
@@ -51,9 +44,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
 						<span
 							className={cn(
 								styles.checkbox,
-								showError
-									? 'transition-all duration-300 animate-pulse'
-									: 'transition-all duration-300'
+								showError ? 'transition-all duration-300 animate-pulse' : 'transition-all duration-300'
 							)}
 							style={checkboxStyle}
 						>
@@ -94,10 +85,7 @@ c1.7,0,3-1.3,3-3v-13c0-0.4-0.1-0.8-0.3-1.2"
 					{label && (
 						<label
 							htmlFor={inputId}
-							className={cn(
-								'text-zinc-500 cursor-pointer',
-								labelClassName
-							)}
+							className={cn('text-zinc-500 cursor-pointer', labelClassName)}
 						>
 							{label}
 						</label>
@@ -109,9 +97,7 @@ c1.7,0,3-1.3,3-3v-13c0-0.4-0.1-0.8-0.3-1.2"
 						id={errorId}
 						className={cn(
 							'text-red-500 text-sm mt-1 block transition-all duration-500 ease-in-out',
-							showError
-								? 'opacity-100 translate-y-0'
-								: 'opacity-0 -translate-y-1'
+							showError ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1'
 						)}
 						style={{ transitionDelay: '200ms' }}
 					>

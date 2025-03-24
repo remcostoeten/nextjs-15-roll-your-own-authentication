@@ -12,8 +12,7 @@ export function LoginButton() {
 	const requestRef = useRef<number>()
 
 	// Characters for scrambling
-	const chars =
-		'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()_+~`|}{[]\\:;?><,./-='
+	const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()_+~`|}{[]\\:;?><,./-='
 
 	// Text scrambling effect
 	useEffect(() => {
@@ -30,9 +29,7 @@ export function LoginButton() {
 					.split('')
 					.map((char, idx) => {
 						if (Math.random() > iteration / maxIterations) {
-							return chars[
-								Math.floor(Math.random() * chars.length)
-							]
+							return chars[Math.floor(Math.random() * chars.length)]
 						}
 						return char
 					})
@@ -83,10 +80,7 @@ export function LoginButton() {
 				ctx.fillText(char, i * fontSize, drops[i] * fontSize)
 
 				// Reset drop when it reaches bottom or randomly
-				if (
-					drops[i] * fontSize > canvas.height &&
-					Math.random() > 0.95
-				) {
+				if (drops[i] * fontSize > canvas.height && Math.random() > 0.95) {
 					drops[i] = 0
 				}
 
@@ -135,12 +129,8 @@ export function LoginButton() {
 				{/* Button content */}
 				<div className="relative flex items-center justify-center h-full px-4 rounded-md border border-[#4e9815]/30 bg-[#0D0C0C] text-[#4e9815] transition-all duration-200">
 					<Terminal className="h-3.5 w-3.5" />
-					<span className="font-mono mx-2 min-w-[40px] text-center">
-						{scrambledText}
-					</span>
-					<span className="text-xs opacity-70 font-mono">
-						[ctrl+l]
-					</span>
+					<span className="font-mono mx-2 min-w-[40px] text-center">{scrambledText}</span>
+					<span className="text-xs opacity-70 font-mono">[ctrl+l]</span>
 
 					{/* Animated caret */}
 					<motion.span

@@ -1,10 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import {
-	getChangelogItems,
-	ChangelogItem,
-} from '../../modules/changelog/api/queries/get-changelog-items'
+import { getChangelogItems, ChangelogItem } from '../../modules/changelog/api/queries/get-changelog-items'
 import { voteChangelogItem } from '../../modules/changelog/api/mutations/vote-changelog-item'
 import { formatDate } from '@/shared/utils/helpers'
 import { ThumbsUp } from 'lucide-react'
@@ -48,13 +45,7 @@ const ChangelogView = () => {
 
 			if (result.success && result.newVoteCount !== undefined) {
 				// Update items with new vote count
-				setItems(
-					items.map((item) =>
-						item.id === id
-							? { ...item, votes: result.newVoteCount! }
-							: item
-					)
-				)
+				setItems(items.map((item) => (item.id === id ? { ...item, votes: result.newVoteCount! } : item)))
 
 				// Update voted items
 				const newVotedItems = { ...votedItems }
@@ -65,10 +56,7 @@ const ChangelogView = () => {
 				}
 
 				setVotedItems(newVotedItems)
-				localStorage.setItem(
-					'changelog_votes',
-					JSON.stringify(newVotedItems)
-				)
+				localStorage.setItem('changelog_votes', JSON.stringify(newVotedItems))
 			}
 		} catch (err) {
 			console.error('Failed to vote:', err)
@@ -79,9 +67,7 @@ const ChangelogView = () => {
 		return (
 			<div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
 				<div className="max-w-3xl mx-auto">
-					<h1 className="text-4xl font-bold text-white mb-8">
-						Changelog
-					</h1>
+					<h1 className="text-4xl font-bold text-white mb-8">Changelog</h1>
 					<div className="bg-zinc-900/50 animate-pulse h-40 rounded-lg"></div>
 				</div>
 			</div>
@@ -92,12 +78,8 @@ const ChangelogView = () => {
 		return (
 			<div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
 				<div className="max-w-3xl mx-auto">
-					<h1 className="text-4xl font-bold text-white mb-8">
-						Changelog
-					</h1>
-					<div className="bg-red-900/20 border border-red-800 rounded-lg p-6 text-red-400">
-						{error}
-					</div>
+					<h1 className="text-4xl font-bold text-white mb-8">Changelog</h1>
+					<div className="bg-red-900/20 border border-red-800 rounded-lg p-6 text-red-400">{error}</div>
 				</div>
 			</div>
 		)
@@ -106,16 +88,12 @@ const ChangelogView = () => {
 	return (
 		<div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
 			<div className="max-w-3xl mx-auto">
-				<h1 className="text-4xl font-bold text-white mb-8">
-					Changelog
-				</h1>
+				<h1 className="text-4xl font-bold text-white mb-8">Changelog</h1>
 
 				<div className="space-y-12">
 					{items.length === 0 ? (
 						<div className="bg-zinc-900/50 border border-zinc-800   rounded-lg p-6 text-center">
-							<p className="text-zinc-400">
-								No changelog items available yet.
-							</p>
+							<p className="text-zinc-400">No changelog items available yet.</p>
 						</div>
 					) : (
 						items.map((item) => (
@@ -127,13 +105,9 @@ const ChangelogView = () => {
 									<div>
 										<h2 className="text-xl font-semibold text-white flex items-center gap-2">
 											{item.title}
-											<span className="text-sm text-zinc-500 font-normal">
-												v{item.version}
-											</span>
+											<span className="text-sm text-zinc-500 font-normal">v{item.version}</span>
 										</h2>
-										<p className="text-sm text-zinc-400">
-											{formatDate(item.date)}
-										</p>
+										<p className="text-sm text-zinc-400">{formatDate(item.date)}</p>
 									</div>
 
 									<button
@@ -149,64 +123,41 @@ const ChangelogView = () => {
 									</button>
 								</div>
 
-								<p className="text-zinc-300 mb-6">
-									{item.description}
-								</p>
+								<p className="text-zinc-300 mb-6">{item.description}</p>
 
 								<div className="space-y-4">
-									{item.features &&
-										item.features.length > 0 && (
-											<div>
-												<h3 className="text-md font-medium text-zinc-300 mb-2">
-													Features
-												</h3>
-												<ul className="list-disc pl-5 space-y-1 text-zinc-400">
-													{item.features.map(
-														(feature, i) => (
-															<li key={i}>
-																{feature}
-															</li>
-														)
-													)}
-												</ul>
-											</div>
-										)}
+									{item.features && item.features.length > 0 && (
+										<div>
+											<h3 className="text-md font-medium text-zinc-300 mb-2">Features</h3>
+											<ul className="list-disc pl-5 space-y-1 text-zinc-400">
+												{item.features.map((feature, i) => (
+													<li key={i}>{feature}</li>
+												))}
+											</ul>
+										</div>
+									)}
 
-									{item.improvements &&
-										item.improvements.length > 0 && (
-											<div>
-												<h3 className="text-md font-medium text-zinc-300 mb-2">
-													Improvements
-												</h3>
-												<ul className="list-disc pl-5 space-y-1 text-zinc-400">
-													{item.improvements.map(
-														(improvement, i) => (
-															<li key={i}>
-																{improvement}
-															</li>
-														)
-													)}
-												</ul>
-											</div>
-										)}
+									{item.improvements && item.improvements.length > 0 && (
+										<div>
+											<h3 className="text-md font-medium text-zinc-300 mb-2">Improvements</h3>
+											<ul className="list-disc pl-5 space-y-1 text-zinc-400">
+												{item.improvements.map((improvement, i) => (
+													<li key={i}>{improvement}</li>
+												))}
+											</ul>
+										</div>
+									)}
 
-									{item.bugfixes &&
-										item.bugfixes.length > 0 && (
-											<div>
-												<h3 className="text-md font-medium text-zinc-300 mb-2">
-													Bug Fixes
-												</h3>
-												<ul className="list-disc pl-5 space-y-1 text-zinc-400">
-													{item.bugfixes.map(
-														(bugfix, i) => (
-															<li key={i}>
-																{bugfix}
-															</li>
-														)
-													)}
-												</ul>
-											</div>
-										)}
+									{item.bugfixes && item.bugfixes.length > 0 && (
+										<div>
+											<h3 className="text-md font-medium text-zinc-300 mb-2">Bug Fixes</h3>
+											<ul className="list-disc pl-5 space-y-1 text-zinc-400">
+												{item.bugfixes.map((bugfix, i) => (
+													<li key={i}>{bugfix}</li>
+												))}
+											</ul>
+										</div>
+									)}
 								</div>
 							</div>
 						))

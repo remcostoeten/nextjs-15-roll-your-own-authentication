@@ -52,11 +52,11 @@ export interface ActivityLoggerOptions {
 }
 
 interface ActivityLog {
-	type: ActivityType;
-	userId: string;
-	details: string;
-	metadata?: Record<string, unknown>;
-	timestamp?: Date;
+	type: ActivityType
+	userId: string
+	details: string
+	metadata?: Record<string, unknown>
+	timestamp?: Date
 }
 
 /**
@@ -80,5 +80,5 @@ export async function logUserActivity({
 		details,
 		metadata,
 		timestamp,
-	});
+	})
 }

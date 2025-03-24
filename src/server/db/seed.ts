@@ -26,8 +26,7 @@ async function seed() {
 			{
 				version: '1.1.0',
 				title: 'Enhanced Security Features',
-				description:
-					'Major security enhancements and performance improvements',
+				description: 'Major security enhancements and performance improvements',
 				date: new Date('2024-03-15'),
 				features: JSON.stringify([
 					'Two-factor authentication',
@@ -39,10 +38,7 @@ async function seed() {
 					'Reduced JWT token size',
 					'Improved error handling',
 				]),
-				bugfixes: JSON.stringify([
-					'Fixed session persistence issue',
-					'Resolved token refresh bug',
-				]),
+				bugfixes: JSON.stringify(['Fixed session persistence issue', 'Resolved token refresh bug']),
 				votes: 8,
 			},
 			{
@@ -51,10 +47,7 @@ async function seed() {
 				description: 'Critical bug fixes and performance optimizations',
 				date: new Date('2024-03-20'),
 				features: JSON.stringify([]),
-				improvements: JSON.stringify([
-					'Improved login response time',
-					'Better error messages',
-				]),
+				improvements: JSON.stringify(['Improved login response time', 'Better error messages']),
 				bugfixes: JSON.stringify([
 					'Fixed memory leak in session store',
 					'Resolved race condition in token refresh',
@@ -68,8 +61,7 @@ async function seed() {
 		await db.insert(roadmapItems).values([
 			{
 				title: 'OAuth Integration',
-				description:
-					'Add support for major OAuth providers (Google, GitHub, Discord)',
+				description: 'Add support for major OAuth providers (Google, GitHub, Discord)',
 				status: 'in-progress',
 				priority: 1,
 				quarter: 'Q2 2024',
@@ -79,8 +71,7 @@ async function seed() {
 			},
 			{
 				title: 'Advanced Rate Limiting',
-				description:
-					'Implement adaptive rate limiting with Redis and custom algorithms',
+				description: 'Implement adaptive rate limiting with Redis and custom algorithms',
 				status: 'planned',
 				priority: 2,
 				quarter: 'Q2 2024',
@@ -90,8 +81,7 @@ async function seed() {
 			},
 			{
 				title: 'WebAuthn Support',
-				description:
-					'Add support for passwordless authentication using WebAuthn',
+				description: 'Add support for passwordless authentication using WebAuthn',
 				status: 'planned',
 				priority: 3,
 				quarter: 'Q3 2024',
@@ -101,8 +91,7 @@ async function seed() {
 			},
 			{
 				title: 'Enhanced Session Management',
-				description:
-					'Implement advanced session tracking and device management',
+				description: 'Implement advanced session tracking and device management',
 				status: 'planned',
 				priority: 4,
 				quarter: 'Q3 2024',
@@ -112,8 +101,7 @@ async function seed() {
 			},
 			{
 				title: 'Security Dashboard',
-				description:
-					'Add a comprehensive security dashboard for monitoring auth events',
+				description: 'Add a comprehensive security dashboard for monitoring auth events',
 				status: 'planned',
 				priority: 5,
 				quarter: 'Q4 2024',

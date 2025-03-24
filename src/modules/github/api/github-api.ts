@@ -22,9 +22,7 @@ export class GitHubApi {
 	private constructor() {
 		this.token = process.env.GITHUB_TOKEN || ''
 		if (!this.token) {
-			console.warn(
-				'GITHUB_TOKEN is not set. GitHub API calls may be rate limited.'
-			)
+			console.warn('GITHUB_TOKEN is not set. GitHub API calls may be rate limited.')
 		}
 	}
 
@@ -35,10 +33,7 @@ export class GitHubApi {
 		return GitHubApi.instance
 	}
 
-	private async fetch<T>(
-		endpoint: string,
-		options: RequestInit = {}
-	): Promise<T> {
+	private async fetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
 		const url = `https://api.github.com${endpoint}`
 		const headers = {
 			Accept: 'application/vnd.github.v3+json',
@@ -55,9 +50,7 @@ export class GitHubApi {
 		if (!response.ok) {
 			const error = await response.json()
 			const parsed = githubErrorSchema.safeParse(error)
-			const message = parsed.success
-				? parsed.data.message
-				: 'Unknown GitHub API error'
+			const message = parsed.success ? parsed.data.message : 'Unknown GitHub API error'
 			throw new GitHubApiError(message, response.status)
 		}
 
@@ -79,21 +72,15 @@ export class GitHubApi {
 	}
 
 	async getLanguages(owner: string, repo: string) {
-		return this.fetch<Record<string, number>>(
-			`/repos/${owner}/${repo}/languages`
-		)
+		return this.fetch<Record<string, number>>(`/repos/${owner}/${repo}/languages`)
 	}
 
 	async getBranches(owner: string, repo: string) {
-		return this.fetch<Array<{ name: string }>>(
-			`/repos/${owner}/${repo}/branches`
-		)
+		return this.fetch<Array<{ name: string }>>(`/repos/${owner}/${repo}/branches`)
 	}
 
 	async getContributors(owner: string, repo: string) {
-		return this.fetch<Array<{ login: string }>>(
-			`/repos/${owner}/${repo}/contributors`
-		)
+		return this.fetch<Array<{ login: string }>>(`/repos/${owner}/${repo}/contributors`)
 	}
 
 	async getCommits(owner: string, repo: string, branch = 'main', count = 5) {

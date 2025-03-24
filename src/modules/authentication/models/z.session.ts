@@ -9,10 +9,10 @@ export const sessionSchema = z.object({
 	updatedAt: z.date(),
 })
 
-export const createSessionSchema = sessionSchema.omit({ 
-	id: true, 
-	createdAt: true, 
-	updatedAt: true 
+export const createSessionSchema = sessionSchema.omit({
+	id: true,
+	createdAt: true,
+	updatedAt: true,
 })
 
 export type Session = z.infer<typeof sessionSchema>

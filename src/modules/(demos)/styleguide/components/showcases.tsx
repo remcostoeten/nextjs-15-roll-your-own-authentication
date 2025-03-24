@@ -33,8 +33,7 @@ export function HeadingShowcase() {
 							{level === 1 && 'Used for main page titles'}
 							{level === 2 && 'Used for section titles'}
 							{level === 3 && 'Used for subsection titles'}
-							{level === 4 &&
-								'Used for card titles and smaller sections'}
+							{level === 4 && 'Used for card titles and smaller sections'}
 							{level === 5 && 'Used for smaller titles'}
 							{level === 6 && 'Used for the smallest titles'}
 						</Text>
@@ -78,15 +77,9 @@ export function TextVariantsShowcase() {
 						key={variant.name}
 						direction="col"
 						gap={1}
-						className={`pb-4 ${
-							index !== variants.length - 1
-								? 'border-b border-button-border'
-								: ''
-						}`}
+						className={`pb-4 ${index !== variants.length - 1 ? 'border-b border-button-border' : ''}`}
 					>
-						<Text variant={variant.name as any}>
-							{variant.name} Text
-						</Text>
+						<Text variant={variant.name as any}>{variant.name} Text</Text>
 						<Text variant="muted">{variant.description}</Text>
 						<code className="mt-2 text-xs bg-background px-2 py-1 rounded text-button">
 							{`<Text variant="${variant.name}">${variant.name} Text</Text>`}
@@ -126,9 +119,7 @@ export function SpecialTypographyShowcase() {
 					</Heading>
 					<Text variant="muted">Headings with links</Text>
 					<code className="mt-2 text-xs bg-background px-2 py-1 rounded text-button">
-						{
-							'<Heading level="h4" hasLink linkHref="#">Linked Heading</Heading>'
-						}
+						{'<Heading level="h4" hasLink linkHref="#">Linked Heading</Heading>'}
 					</code>
 				</Flex>
 
@@ -161,13 +152,9 @@ export function SpecialTypographyShowcase() {
 					>
 						Icon Before Text
 					</Heading>
-					<Text variant="muted">
-						Headings with icons before the text
-					</Text>
+					<Text variant="muted">Headings with icons before the text</Text>
 					<code className="mt-2 text-xs bg-background px-2 py-1 rounded text-button">
-						{
-							'<Heading level="h4" iconBefore={<Palette />}>Icon Before Text</Heading>'
-						}
+						{'<Heading level="h4" iconBefore={<Palette />}>Icon Before Text</Heading>'}
 					</code>
 				</Flex>
 
@@ -182,13 +169,9 @@ export function SpecialTypographyShowcase() {
 					>
 						Icon After Text
 					</Heading>
-					<Text variant="muted">
-						Headings with icons after the text
-					</Text>
+					<Text variant="muted">Headings with icons after the text</Text>
 					<code className="mt-2 text-xs bg-background px-2 py-1 rounded text-button">
-						{
-							'<Heading level="h4" iconAfter={<ChevronRight />}>Icon After Text</Heading>'
-						}
+						{'<Heading level="h4" iconAfter={<ChevronRight />}>Icon After Text</Heading>'}
 					</code>
 				</Flex>
 			</Flex>
@@ -359,9 +342,7 @@ export function GridShowcase() {
 						))}
 					</div>
 					<code className="mt-2 text-xs bg-background px-2 py-1 rounded text-button">
-						{
-							'<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">...</div>'
-						}
+						{'<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">...</div>'}
 					</code>
 				</Flex>
 
@@ -428,9 +409,7 @@ export function ButtonShowcase() {
 				</Flex>
 
 				<code className="text-xs bg-background px-2 py-1 rounded text-button">
-					{
-						'<button className="bg-button border border-button-border text-button">Default Button</button>'
-					}
+					{'<button className="bg-button border border-button-border text-button">Default Button</button>'}
 				</code>
 			</Flex>
 		</div>
@@ -448,9 +427,7 @@ export function CardShowcase() {
 			</Heading>
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 				<div className="bg-background-lighter border border-button-border rounded-lg overflow-hidden">
-					<div className="h-32 bg-background flex items-center justify-center">
-						Image Placeholder
-					</div>
+					<div className="h-32 bg-background flex items-center justify-center">Image Placeholder</div>
 					<div className="p-4">
 						<Heading
 							level="h4"
@@ -458,18 +435,13 @@ export function CardShowcase() {
 						>
 							Card Title
 						</Heading>
-						<Text variant="muted">
-							Card description text that explains the content of
-							the card.
-						</Text>
+						<Text variant="muted">Card description text that explains the content of the card.</Text>
 						<Flex
 							items="center"
 							justify="end"
 							className="mt-4"
 						>
-							<button className="text-button hover:text-title-light text-sm">
-								View More
-							</button>
+							<button className="text-button hover:text-title-light text-sm">View More</button>
 						</Flex>
 					</div>
 				</div>
@@ -481,18 +453,14 @@ export function CardShowcase() {
 					>
 						Simple Card
 					</Heading>
-					<Text variant="muted">
-						A simple card without an image for displaying content.
-					</Text>
+					<Text variant="muted">A simple card without an image for displaying content.</Text>
 					<div className="mt-4 pt-4 border-t border-button-border">
 						<Flex
 							items="center"
 							justify="between"
 						>
 							<Text variant="small">Footer Info</Text>
-							<button className="text-button hover:text-title-light text-sm">
-								Action
-							</button>
+							<button className="text-button hover:text-title-light text-sm">Action</button>
 						</Flex>
 					</div>
 				</div>
@@ -504,9 +472,7 @@ export function CardShowcase() {
 							gap={3}
 							className="mb-3"
 						>
-							<div className="h-10 w-10 rounded-full bg-button flex items-center justify-center">
-								UA
-							</div>
+							<div className="h-10 w-10 rounded-full bg-button flex items-center justify-center">UA</div>
 							<div>
 								<Text
 									size="sm"
@@ -517,9 +483,7 @@ export function CardShowcase() {
 								<Text variant="subtle">Position</Text>
 							</div>
 						</Flex>
-						<Text variant="muted">
-							A user card showing profile information and actions.
-						</Text>
+						<Text variant="muted">A user card showing profile information and actions.</Text>
 					</div>
 					<div className="px-4 py-2 bg-background border-t border-button-border">
 						<Flex
@@ -527,12 +491,8 @@ export function CardShowcase() {
 							justify="end"
 							gap={2}
 						>
-							<button className="text-button hover:text-title-light text-sm">
-								Message
-							</button>
-							<button className="text-button hover:text-title-light text-sm">
-								Profile
-							</button>
+							<button className="text-button hover:text-title-light text-sm">Message</button>
+							<button className="text-button hover:text-title-light text-sm">Profile</button>
 						</Flex>
 					</div>
 				</div>

@@ -2,22 +2,8 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import {
-	Trash2,
-	Sun,
-	Eye,
-	RotateCcw,
-	FileText,
-	ChevronRight,
-	MoreHorizontal,
-	Database,
-	Key,
-} from 'lucide-react'
-import {
-	HoverCard,
-	HoverCardContent,
-	HoverCardTrigger,
-} from '@/shared/components/ui/hover-card'
+import { Trash2, Sun, Eye, RotateCcw, FileText, ChevronRight, MoreHorizontal, Database, Key } from 'lucide-react'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/shared/components/ui/hover-card'
 import { Slider } from '@/shared/components/ui/slider'
 import { Tabs, TabsList, TabsTrigger } from '@/shared/components/ui/tabs'
 import { Button } from '@/shared/components/ui/button'
@@ -51,16 +37,12 @@ export function ThemeDemoPanel({ colors }: ThemeDemoPanelProps) {
 	const ColorElement = ({ element, cssVar, value }: ColorInfo) => (
 		<HoverCard>
 			<HoverCardTrigger asChild>
-				<div className={element}>
-					{element.includes('text') ? null : element}
-				</div>
+				<div className={element}>{element.includes('text') ? null : element}</div>
 			</HoverCardTrigger>
 			<HoverCardContent className="w-80 bg-background-lighter border light-border">
 				<div className="flex justify-between">
 					<div>
-						<h4 className="text-sm font-semibold text-title-light">
-							CSS Variable
-						</h4>
+						<h4 className="text-sm font-semibold text-title-light">CSS Variable</h4>
 						<p className="text-xs text-button">var({cssVar})</p>
 					</div>
 					<div
@@ -69,15 +51,11 @@ export function ThemeDemoPanel({ colors }: ThemeDemoPanelProps) {
 					/>
 				</div>
 				<div className="mt-2">
-					<h4 className="text-sm font-semibold text-title-light">
-						Hex Value
-					</h4>
+					<h4 className="text-sm font-semibold text-title-light">Hex Value</h4>
 					<p className="text-xs text-button">{value}</p>
 				</div>
 				<div className="mt-2">
-					<h4 className="text-sm font-semibold text-title-light">
-						Applied to
-					</h4>
+					<h4 className="text-sm font-semibold text-title-light">Applied to</h4>
 					<p className="text-xs text-button">{element}</p>
 				</div>
 			</HoverCardContent>
@@ -166,9 +144,7 @@ export function ThemeDemoPanel({ colors }: ThemeDemoPanelProps) {
 				cssVar="--panel"
 				value={colorMap['--panel'] || '#19191b'}
 			>
-				<h3 className="text-title-light text-lg font-medium mb-4">
-					Widget Settings
-				</h3>
+				<h3 className="text-title-light text-lg font-medium mb-4">Widget Settings</h3>
 
 				<div className="flex items-center justify-between mb-4">
 					<span className="text-button">Opacity</span>
@@ -273,28 +249,24 @@ export function ThemeDemoPanel({ colors }: ThemeDemoPanelProps) {
 					placeholder="Value"
 					className="col-span-2 bg-button border-button-border text-button placeholder:text-button/50"
 				/>
-				<Button className="bg-button border border-button-border text-button hover:text-title-light">
-					+
-				</Button>
+				<Button className="bg-button border border-button-border text-button hover:text-title-light">+</Button>
 			</div>
 
 			<div className="px-4 pb-4 space-y-2 max-h-60 overflow-y-auto">
-				{['theme', 'dev-tools-settings', 'floating-todo-storage'].map(
-					(item) => (
-						<ColorElement
-							key={item}
-							element="bg-button border border-button-border rounded p-3 flex items-center justify-between text-button"
-							cssVar="--button"
-							value={colorMap['--button'] || '#19191b'}
-						>
-							<div className="flex items-center">
-								<ChevronRight className="h-4 w-4 mr-2" />
-								<span>{item}</span>
-							</div>
-							<MoreHorizontal className="h-4 w-4" />
-						</ColorElement>
-					)
-				)}
+				{['theme', 'dev-tools-settings', 'floating-todo-storage'].map((item) => (
+					<ColorElement
+						key={item}
+						element="bg-button border border-button-border rounded p-3 flex items-center justify-between text-button"
+						cssVar="--button"
+						value={colorMap['--button'] || '#19191b'}
+					>
+						<div className="flex items-center">
+							<ChevronRight className="h-4 w-4 mr-2" />
+							<span>{item}</span>
+						</div>
+						<MoreHorizontal className="h-4 w-4" />
+					</ColorElement>
+				))}
 			</div>
 		</motion.div>
 	)

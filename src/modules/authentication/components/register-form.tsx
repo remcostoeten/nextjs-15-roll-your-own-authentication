@@ -42,8 +42,7 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
 				setError(result.message || 'Registration failed')
 			}
 		} catch (error) {
-			const message =
-				error instanceof Error ? error.message : 'Registration failed'
+			const message = error instanceof Error ? error.message : 'Registration failed'
 			toast.error(message)
 			setError(message)
 		} finally {
@@ -62,11 +61,7 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
 				onSubmit={handleFormSubmit}
 				className="flex flex-col w-full"
 			>
-				{error && (
-					<div className="mb-4 p-4 bg-red-500/10 text-red-500 rounded-lg">
-						{error}
-					</div>
-				)}
+				{error && <div className="mb-4 p-4 bg-red-500/10 text-red-500 rounded-lg">{error}</div>}
 
 				<motion.div variants={formAnimations.item}>
 					<div className="grid grid-cols-2 gap-4">

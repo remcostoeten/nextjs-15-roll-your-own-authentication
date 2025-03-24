@@ -69,10 +69,7 @@ export async function createTodoMutation(
 
 		return {
 			success: false,
-			message:
-				error instanceof Error
-					? error.message
-					: 'Failed to create todo',
+			message: error instanceof Error ? error.message : 'Failed to create todo',
 		}
 	}
 }

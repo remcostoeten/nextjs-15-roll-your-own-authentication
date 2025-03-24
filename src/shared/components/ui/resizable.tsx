@@ -14,10 +14,7 @@ interface ResizableProps {
 	style?: React.CSSProperties
 }
 
-const ResizeHandle = ({
-	className,
-	...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
+const ResizeHandle = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
 	<div
 		className={cn(
 			'absolute w-3 h-3 bg-primary/80 rounded-full cursor-pointer border-2 border-background',
@@ -48,10 +45,7 @@ export const Resizable = ({
 	const resizeStartPos = useRef({ x: 0, y: 0 })
 	const originalDimensions = useRef({ width: 0, height: 0 })
 
-	const handleResizeStart = (
-		e: React.MouseEvent | MouseEvent,
-		corner: string
-	) => {
+	const handleResizeStart = (e: React.MouseEvent | MouseEvent, corner: string) => {
 		e.preventDefault()
 		setIsResizing(true)
 		resizeStartPos.current = { x: e.clientX, y: e.clientY }
@@ -66,14 +60,8 @@ export const Resizable = ({
 				if (corner.includes('left')) deltaX *= -1
 				if (corner.includes('top')) deltaY *= -1
 
-				const newWidth = Math.max(
-					originalDimensions.current.width + deltaX,
-					minWidth
-				)
-				const newHeight = Math.max(
-					originalDimensions.current.height + deltaY,
-					minHeight
-				)
+				const newWidth = Math.max(originalDimensions.current.width + deltaX, minWidth)
+				const newHeight = Math.max(originalDimensions.current.height + deltaY, minHeight)
 
 				setDimensions({ width: newWidth, height: newHeight })
 				onResize?.(newWidth, newHeight)
@@ -93,17 +81,11 @@ export const Resizable = ({
 	return (
 		<div
 			ref={containerRef}
-			className={cn(
-				'relative transition-[border] duration-200',
-				isResizing && 'select-none',
-				className
-			)}
+			className={cn('relative transition-[border] duration-200', isResizing && 'select-none', className)}
 			style={{
 				width: dimensions.width,
 				height: dimensions.height,
-				transition: isResizing
-					? 'none'
-					: 'width 0.2s ease-out, height 0.2s ease-out',
+				transition: isResizing ? 'none' : 'width 0.2s ease-out, height 0.2s ease-out',
 			}}
 			{...props}
 		>

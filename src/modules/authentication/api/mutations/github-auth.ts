@@ -23,9 +23,7 @@ export type GitHubAuthResponse = {
 	}
 }
 
-export async function githubAuthMutation(
-	code: string
-): Promise<GitHubAuthResponse> {
+export async function githubAuthMutation(code: string): Promise<GitHubAuthResponse> {
 	try {
 		if (!GITHUB_CLIENT_ID || !GITHUB_CLIENT_SECRET) {
 			return {
@@ -35,21 +33,18 @@ export async function githubAuthMutation(
 		}
 
 		// Exchange code for access token
-		const tokenResponse = await fetch(
-			'https://github.com/login/oauth/access_token',
-			{
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Accept: 'application/json',
-				},
-				body: JSON.stringify({
-					client_id: GITHUB_CLIENT_ID,
-					client_secret: GITHUB_CLIENT_SECRET,
-					code,
-				}),
-			}
-		)
+		const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json',
+			},
+			body: JSON.stringify({
+				client_id: GITHUB_CLIENT_ID,
+				client_secret: GITHUB_CLIENT_SECRET,
+				code,
+			}),
+		})
 
 		const tokenData = await tokenResponse.json()
 
@@ -71,14 +66,11 @@ export async function githubAuthMutation(
 		const githubUser = await userResponse.json()
 
 		// Get user email from GitHub
-		const emailsResponse = await fetch(
-			'https://api.github.com/user/emails',
-			{
-				headers: {
-					Authorization: `Bearer ${tokenData.access_token}`,
-				},
-			}
-		)
+		const emailsResponse = await fetch('https://api.github.com/user/emails', {
+			headers: {
+				Authorization: `Bearer ${tokenData.access_token}`,
+			},
+		})
 
 		const emails = await emailsResponse.json()
 		const primaryEmail = emails.find((email: any) => email.primary)?.email
@@ -102,17 +94,9 @@ export async function githubAuthMutation(
 				.values({
 					id: nanoid(),
 					email: primaryEmail.toLowerCase(),
-					firstName: githubUser.name
-						? githubUser.name.split(' ')[0]
-						: null,
-					lastName: githubUser.name
-						? githubUser.name.split(' ').slice(1).join(' ')
-						: null,
-					role:
-						primaryEmail.toLowerCase() ===
-						env.ADMIN_EMAIL?.toLowerCase()
-							? 'admin'
-							: 'user',
+					firstName: githubUser.name ? githubUser.name.split(' ')[0] : null,
+					lastName: githubUser.name ? githubUser.name.split(' ').slice(1).join(' ') : null,
+					role: primaryEmail.toLowerCase() === env.ADMIN_EMAIL?.toLowerCase() ? 'admin' : 'user',
 					githubId: githubUser.id.toString(),
 					githubAccessToken: tokenData.access_token,
 				})
@@ -165,10 +149,7 @@ export async function githubAuthMutation(
 		console.error('GitHub auth error:', error)
 		return {
 			success: false,
-			message:
-				error instanceof Error
-					? error.message
-					: 'Failed to authenticate with GitHub',
+			message: error instanceof Error ? error.message : 'Failed to authenticate with GitHub',
 		}
 	}
 }

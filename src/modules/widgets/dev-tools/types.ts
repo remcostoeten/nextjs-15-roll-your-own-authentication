@@ -1,8 +1,4 @@
-export type CornerPosition =
-	| 'bottom-left'
-	| 'bottom-right'
-	| 'top-left'
-	| 'top-right'
+export type CornerPosition = 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right'
 
 export type PositionConfig = {
 	corner: CornerPosition
@@ -10,12 +6,7 @@ export type PositionConfig = {
 	offsetY: number
 }
 
-export type WidgetPosition =
-	| 'top-left'
-	| 'top-right'
-	| 'bottom-left'
-	| 'bottom-right'
-	| 'custom'
+export type WidgetPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'custom'
 export type WidgetSize = 'small' | 'normal' | 'large'
 
 export type NetworkRequest = {

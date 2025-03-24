@@ -1,11 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import {
-	type Todo,
-	type TodoPosition,
-	type TodoSize,
-	type TodoStore,
-} from '../types'
+import { type Todo, type TodoPosition, type TodoSize, type TodoStore } from '../types'
 
 export const useTodoStore = create<TodoStore>()(
 	persist(
@@ -34,9 +29,7 @@ export const useTodoStore = create<TodoStore>()(
 
 			updateTodo: (id, updates) =>
 				set((state) => ({
-					todos: state.todos.map((todo) =>
-						todo.id === id ? { ...todo, ...updates } : todo
-					),
+					todos: state.todos.map((todo) => (todo.id === id ? { ...todo, ...updates } : todo)),
 				})),
 
 			deleteTodo: (id) =>
@@ -46,22 +39,16 @@ export const useTodoStore = create<TodoStore>()(
 
 			toggleTodoCompletion: (id) =>
 				set((state) => ({
-					todos: state.todos.map((todo) =>
-						todo.id === id
-							? { ...todo, completed: !todo.completed }
-							: todo
-					),
+					todos: state.todos.map((todo) => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)),
 				})),
 
 			setPosition: (position) => set(() => ({ position })),
 
 			setSize: (size) => set(() => ({ size })),
 
-			toggleCollapse: () =>
-				set((state) => ({ isCollapsed: !state.isCollapsed })),
+			toggleCollapse: () => set((state) => ({ isCollapsed: !state.isCollapsed })),
 
-			toggleVisibility: () =>
-				set((state) => ({ isVisible: !state.isVisible })),
+			toggleVisibility: () => set((state) => ({ isVisible: !state.isVisible })),
 
 			toggleLock: () => set((state) => ({ isLocked: !state.isLocked })),
 
@@ -107,13 +94,8 @@ export const useTodoStore = create<TodoStore>()(
 							if (typeof result === 'string') {
 								const importedData = JSON.parse(result)
 
-								if (
-									!importedData.todos ||
-									!Array.isArray(importedData.todos)
-								) {
-									throw new Error(
-										'Invalid JSON format: missing todos array'
-									)
+								if (!importedData.todos || !Array.isArray(importedData.todos)) {
+									throw new Error('Invalid JSON format: missing todos array')
 								}
 
 								set({
@@ -126,10 +108,8 @@ export const useTodoStore = create<TodoStore>()(
 										width: 320,
 										height: 400,
 									},
-									title:
-										importedData.title || 'Dev Todo List',
-									isCollapsed:
-										importedData.isCollapsed ?? false,
+									title: importedData.title || 'Dev Todo List',
+									isCollapsed: importedData.isCollapsed ?? false,
 									isVisible: importedData.isVisible ?? true,
 									isLocked: importedData.isLocked ?? false,
 									opacity: importedData.opacity ?? 1,

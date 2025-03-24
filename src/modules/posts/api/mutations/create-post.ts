@@ -3,11 +3,7 @@
 import { db } from '@/server/db'
 import { posts } from '@/server/db/schemas/posts'
 import { logUserActivity } from '@/shared/utils/activity-logger'
-import {
-	postSchema,
-	type PostInput,
-	type PostRequestContext,
-} from '@/modules/posts/models/z.post'
+import { postSchema, type PostInput, type PostRequestContext } from '@/modules/posts/models/z.post'
 
 export async function createPost(data: PostInput, ctx: PostRequestContext) {
 	try {

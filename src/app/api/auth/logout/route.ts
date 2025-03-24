@@ -10,7 +10,5 @@ export async function GET() {
 	await cookieStore.delete('session')
 
 	// Redirect to login
-	return NextResponse.redirect(
-		new URL('/login', process.env.NEXT_PUBLIC_BASE_URL)
-	)
+	return NextResponse.redirect(new URL('/login', process.env.NEXT_PUBLIC_BASE_URL))
 }

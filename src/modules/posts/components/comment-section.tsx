@@ -129,13 +129,7 @@ export function CommentSection({ postId, currentUser }: CommentSectionProps) {
 	}
 
 	// Render a single comment
-	const CommentItem = ({
-		comment,
-		isReply = false,
-	}: {
-		comment: unknown
-		isReply?: boolean
-	}) => {
+	const CommentItem = ({ comment, isReply = false }: { comment: unknown; isReply?: boolean }) => {
 		const formattedDate = formatDistanceToNow(new Date(comment.createdAt), {
 			addSuffix: true,
 		})
@@ -146,26 +140,18 @@ export function CommentSection({ postId, currentUser }: CommentSectionProps) {
 			: 'Anonymous'
 
 		return (
-			<div
-				className={`${isReply ? 'ml-8 border-l border-button-border pl-4' : ''} mb-4`}
-			>
+			<div className={`${isReply ? 'ml-8 border-l border-button-border pl-4' : ''} mb-4`}>
 				<div className="flex items-start gap-3">
 					<div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#3a6d10] to-[#4e9815]"></div>
 
 					<div className="flex-1">
 						<div className="flex items-center gap-2">
-							<span className="font-medium text-button-hover">
-								{userName}
-							</span>
+							<span className="font-medium text-button-hover">{userName}</span>
 							<span className="text-xs text-button">•</span>
-							<time className="text-xs text-button">
-								{formattedDate}
-							</time>
+							<time className="text-xs text-button">{formattedDate}</time>
 						</div>
 
-						<div className="mt-1 text-button-hover">
-							{comment.content}
-						</div>
+						<div className="mt-1 text-button-hover">{comment.content}</div>
 
 						<div className="mt-2 flex items-center gap-4">
 							<button className="flex items-center gap-1 text-xs text-button hover:text-title-light">
@@ -185,9 +171,7 @@ export function CommentSection({ postId, currentUser }: CommentSectionProps) {
 
 							{isAuthor && (
 								<button
-									onClick={() =>
-										handleDeleteComment(comment.id)
-									}
+									onClick={() => handleDeleteComment(comment.id)}
 									className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300"
 								>
 									<Trash2 className="h-3 w-3" />
@@ -215,9 +199,7 @@ export function CommentSection({ postId, currentUser }: CommentSectionProps) {
 
 	return (
 		<div className="mt-8">
-			<h2 className="text-xl font-semibold text-title-light mb-4">
-				Comments
-			</h2>
+			<h2 className="text-xl font-semibold text-title-light mb-4">Comments</h2>
 
 			{error && (
 				<div className="bg-red-900/20 border border-red-900/50 text-red-400 px-4 py-3 rounded-md mb-6">
@@ -258,14 +240,10 @@ export function CommentSection({ postId, currentUser }: CommentSectionProps) {
 							<div className="mt-2 flex justify-end">
 								<button
 									type="submit"
-									disabled={
-										isSubmitting || !newComment.trim()
-									}
+									disabled={isSubmitting || !newComment.trim()}
 									className="px-3 py-1 rounded-md bg-[#4e9815]/10 border border-[#4e9815]/30 text-[#4e9815] hover:bg-[#4e9815]/20 transition-colors disabled:opacity-50"
 								>
-									{isSubmitting
-										? 'Posting...'
-										: 'Post Comment'}
+									{isSubmitting ? 'Posting...' : 'Post Comment'}
 								</button>
 							</div>
 						</div>
@@ -286,13 +264,9 @@ export function CommentSection({ postId, currentUser }: CommentSectionProps) {
 			)}
 
 			{isLoading ? (
-				<div className="text-center py-6 text-button">
-					Loading comments...
-				</div>
+				<div className="text-center py-6 text-button">Loading comments...</div>
 			) : comments.length === 0 ? (
-				<div className="text-center py-6 text-button">
-					No comments yet. Be the first to comment!
-				</div>
+				<div className="text-center py-6 text-button">No comments yet. Be the first to comment!</div>
 			) : (
 				<div className="space-y-6">
 					{comments.map((comment) => (

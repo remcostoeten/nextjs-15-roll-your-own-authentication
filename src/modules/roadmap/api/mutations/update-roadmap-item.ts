@@ -1,49 +1,51 @@
-import { mockRoadmapItems, mockRoadmapLanes } from "../mock-data"
-import type { RoadmapItem } from "../../types"
+import { mockRoadmapItems, mockRoadmapLanes } from '../mock-data'
+import type { RoadmapItem } from '../../types'
 
 // Mock implementation
 export async function updateRoadmapItem(id: string, data: Partial<RoadmapItem>): Promise<RoadmapItem> {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 500))
+	// Simulate network delay
+	await new Promise((resolve) => setTimeout(resolve, 500))
 
-  // Find the item in our mock data
-  const itemIndex = mockRoadmapItems.findIndex((item) => item.id === id)
-  if (itemIndex === -1) {
-    throw new Error(`Roadmap item with id ${id} not found`)
-  }
+	// Find the item in our mock data
+	const itemIndex = mockRoadmapItems.findIndex((item) => item.id === id)
+	if (itemIndex === -1) {
+		throw new Error(`Roadmap item with id ${id} not found`)
+	}
 
-  // Update the item
-  const updatedItem = {
-    ...mockRoadmapItems[itemIndex],
-    ...data,
-    updatedAt: new Date().toISOString(),
-  }
+	// Update the item
+	const updatedItem = {
+		...mockRoadmapItems[itemIndex],
+		...data,
+		updatedAt: new Date().toISOString(),
+	}
 
-  // Update our mock data
-  mockRoadmapItems[itemIndex] = updatedItem
+	// Update our mock data
+	mockRoadmapItems[itemIndex] = updatedItem
 
-  // Update the lanes
-  const laneIndex = mockRoadmapLanes.findIndex((lane) => lane.id === updatedItem.status)
-  if (laneIndex !== -1) {
-    // Remove from old lane if status changed
-    if (data.status && data.status !== mockRoadmapItems[itemIndex].status) {
-      const oldLaneIndex = mockRoadmapLanes.findIndex((lane) => lane.id === mockRoadmapItems[itemIndex].status)
-      if (oldLaneIndex !== -1) {
-        mockRoadmapLanes[oldLaneIndex].items = mockRoadmapLanes[oldLaneIndex].items.filter((item) => item.id !== id)
-      }
+	// Update the lanes
+	const laneIndex = mockRoadmapLanes.findIndex((lane) => lane.id === updatedItem.status)
+	if (laneIndex !== -1) {
+		// Remove from old lane if status changed
+		if (data.status && data.status !== mockRoadmapItems[itemIndex].status) {
+			const oldLaneIndex = mockRoadmapLanes.findIndex((lane) => lane.id === mockRoadmapItems[itemIndex].status)
+			if (oldLaneIndex !== -1) {
+				mockRoadmapLanes[oldLaneIndex].items = mockRoadmapLanes[oldLaneIndex].items.filter(
+					(item) => item.id !== id
+				)
+			}
 
-      // Add to new lane
-      mockRoadmapLanes[laneIndex].items.push(updatedItem)
-    } else {
-      // Update in current lane
-      const itemLaneIndex = mockRoadmapLanes[laneIndex].items.findIndex((item) => item.id === id)
-      if (itemLaneIndex !== -1) {
-        mockRoadmapLanes[laneIndex].items[itemLaneIndex] = updatedItem
-      }
-    }
-  }
+			// Add to new lane
+			mockRoadmapLanes[laneIndex].items.push(updatedItem)
+		} else {
+			// Update in current lane
+			const itemLaneIndex = mockRoadmapLanes[laneIndex].items.findIndex((item) => item.id === id)
+			if (itemLaneIndex !== -1) {
+				mockRoadmapLanes[laneIndex].items[itemLaneIndex] = updatedItem
+			}
+		}
+	}
 
-  return updatedItem
+	return updatedItem
 }
 
 /*
@@ -174,4 +176,3 @@ export async function updateRoadmapItem(id: string, data: Partial<RoadmapItem>):
   })
 }
 */
-

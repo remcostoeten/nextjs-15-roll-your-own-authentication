@@ -4,14 +4,7 @@ import type React from 'react'
 
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import {
-	Calendar,
-	GitBranch,
-	GitCommit,
-	GitFork,
-	Star,
-	Users,
-} from 'lucide-react'
+import { Calendar, GitBranch, GitCommit, GitFork, Star, Users } from 'lucide-react'
 
 interface ProjectMetricsProps {
 	children: React.ReactNode
@@ -25,8 +18,7 @@ export function ProjectMetrics({ children }: ProjectMetricsProps) {
 	const projectData = {
 		name: 'nextjs-15-roll-your-own-authentication',
 		owner: 'remcostoeten',
-		description:
-			'Showcasing how to roll your own JWT auth without external services',
+		description: 'Showcasing how to roll your own JWT auth without external services',
 		created: 'November 10, 2023',
 		lastUpdated: 'March 9, 2024',
 		stars: 3,
@@ -58,12 +50,8 @@ export function ProjectMetrics({ children }: ProjectMetricsProps) {
 						{/* Arrow */}
 						<div className="absolute -bottom-1 left-4 h-2 w-2 rotate-45 border border-[#1E1E1E] border-l-0 border-t-0 bg-[#0D0C0C]" />
 
-						<h3 className="mb-2 text-sm font-medium text-[#F2F0ED]">
-							{projectData.name}
-						</h3>
-						<p className="mb-3 text-[#8C877D]">
-							{projectData.description}
-						</p>
+						<h3 className="mb-2 text-sm font-medium text-[#F2F0ED]">{projectData.name}</h3>
+						<p className="mb-3 text-[#8C877D]">{projectData.description}</p>
 
 						<div className="grid grid-cols-2 gap-3">
 							<div className="flex items-center gap-2 text-[#8C877D]">
@@ -93,17 +81,13 @@ export function ProjectMetrics({ children }: ProjectMetricsProps) {
 
 							<div className="flex items-center gap-2 text-[#8C877D]">
 								<Users className="h-3.5 w-3.5" />
-								<span>
-									Contributors: {projectData.contributors}
-								</span>
+								<span>Contributors: {projectData.contributors}</span>
 							</div>
 						</div>
 
 						<div className="mt-3 space-y-1">
 							<div className="flex items-center justify-between">
-								<span className="text-[#8C877D]">
-									TypeScript
-								</span>
+								<span className="text-[#8C877D]">TypeScript</span>
 								<span className="text-[#8C877D]">72.4%</span>
 							</div>
 							<div className="h-1.5 w-full overflow-hidden rounded-full bg-[#1E1E1E]">

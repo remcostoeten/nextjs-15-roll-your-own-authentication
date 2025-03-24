@@ -4,12 +4,7 @@ import { useState } from 'react'
 import { Copy, ChevronRight, MoreHorizontal, Pencil, Trash } from 'lucide-react'
 import { cn } from '@/shared/utils/helpers'
 import { Button } from './ui/button'
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from './ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
 
 interface JSONViewerProps {
 	data: string
@@ -105,9 +100,7 @@ export function JSONViewer({
 			},
 		]
 
-		let result = [
-			{ text: line, className: 'text-gray-800 dark:text-gray-200' },
-		]
+		let result = [{ text: line, className: 'text-gray-800 dark:text-gray-200' }]
 
 		// Apply each pattern
 		patterns.forEach(({ pattern, className }) => {
@@ -123,10 +116,7 @@ export function JSONViewer({
 					// Text before the match
 					if (match.index > lastIndex) {
 						parts.push({
-							text: segment.text.substring(
-								lastIndex,
-								match.index
-							),
+							text: segment.text.substring(lastIndex, match.index),
 							className: segment.className,
 						})
 					}

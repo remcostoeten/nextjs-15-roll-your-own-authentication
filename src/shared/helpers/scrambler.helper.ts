@@ -19,10 +19,7 @@ function getRandomChar(charSet: CharacterSets = CharacterSets.FULL): string {
 	return charSet.charAt(Math.floor(Math.random() * charSet.length))
 }
 
-function scrambleText(
-	length: number,
-	charSet: CharacterSets = CharacterSets.FULL
-): string {
+function scrambleText(length: number, charSet: CharacterSets = CharacterSets.FULL): string {
 	let result = ''
 	for (let i = 0; i < length; i++) {
 		result += getRandomChar(charSet)

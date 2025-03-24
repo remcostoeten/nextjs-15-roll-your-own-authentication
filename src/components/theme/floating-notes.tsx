@@ -283,16 +283,12 @@ const FloatingTodo: React.FC<FloatingTodoProps> = ({ inDevTools = false }) => {
 			await importFromJson(file)
 			toast({
 				title: 'Import Successful',
-				description:
-					'Your todo list has been imported from the JSON file.',
+				description: 'Your todo list has been imported from the JSON file.',
 			})
 		} catch (error) {
 			toast({
 				title: 'Import Failed',
-				description:
-					error instanceof Error
-						? error.message
-						: 'Failed to import data',
+				description: error instanceof Error ? error.message : 'Failed to import data',
 				variant: 'destructive',
 			})
 		} finally {
@@ -329,11 +325,7 @@ const FloatingTodo: React.FC<FloatingTodoProps> = ({ inDevTools = false }) => {
 	}
 
 	// ... handle toast notifications properly
-	const showToast = (
-		title: string,
-		description: string,
-		type: 'success' | 'error' = 'success'
-	) => {
+	const showToast = (title: string, description: string, type: 'success' | 'error' = 'success') => {
 		toast({
 			title,
 			description,
@@ -523,28 +515,20 @@ const FloatingTodo: React.FC<FloatingTodoProps> = ({ inDevTools = false }) => {
 
 			{showSettings && !isCollapsed && (
 				<div className="bg-black bg-opacity-95 border-x border-b border-gray-800 p-3 settings-panel">
-					<h4 className="text-xs font-medium text-gray-400 mb-2 animate-fade-in">
-						Settings
-					</h4>
+					<h4 className="text-xs font-medium text-gray-400 mb-2 animate-fade-in">Settings</h4>
 					<div className="space-y-3 animate-slide-right">
 						<div>
-							<label className="text-xs text-gray-400 mb-1 block">
-								Opacity
-							</label>
+							<label className="text-xs text-gray-400 mb-1 block">Opacity</label>
 							<div className="flex items-center gap-2">
 								<Slider
 									value={[opacity * 100]}
 									min={20}
 									max={100}
 									step={5}
-									onValueChange={(val) =>
-										setOpacity(val[0] / 100)
-									}
+									onValueChange={(val) => setOpacity(val[0] / 100)}
 									className="flex-grow"
 								/>
-								<span className="text-xs text-white">
-									{Math.round(opacity * 100)}%
-								</span>
+								<span className="text-xs text-white">{Math.round(opacity * 100)}%</span>
 							</div>
 						</div>
 					</div>
@@ -555,9 +539,7 @@ const FloatingTodo: React.FC<FloatingTodoProps> = ({ inDevTools = false }) => {
 				<div
 					className={`bg-black bg-opacity-95 border-x border-b border-gray-800 rounded-b-lg overflow-hidden ${isCollapsed ? 'animate-contract' : 'animate-expand'}`}
 					style={{
-						height: showSettings
-							? `${size.height - 100}px`
-							: `${size.height - 50}px`,
+						height: showSettings ? `${size.height - 100}px` : `${size.height - 50}px`,
 						maxHeight: '80vh',
 					}}
 				>
@@ -571,9 +553,7 @@ const FloatingTodo: React.FC<FloatingTodoProps> = ({ inDevTools = false }) => {
 								ref={inputRef}
 								type="text"
 								value={newTodoTitle}
-								onChange={(e) =>
-									setNewTodoTitle(e.target.value)
-								}
+								onChange={(e) => setNewTodoTitle(e.target.value)}
 								placeholder="Add new todo..."
 								className="neo-input w-full py-1.5 px-3 text-sm text-white placeholder:text-gray-500 outline-none"
 								autoComplete="off"
@@ -582,9 +562,7 @@ const FloatingTodo: React.FC<FloatingTodoProps> = ({ inDevTools = false }) => {
 								type="submit"
 								disabled={!newTodoTitle.trim()}
 								className={`flex-shrink-0 p-1.5 rounded-md btn-hover ${
-									newTodoTitle.trim()
-										? 'bg-blue-600 hover:bg-blue-700'
-										: 'bg-gray-800 text-gray-500'
+									newTodoTitle.trim() ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-800 text-gray-500'
 								} transition-colors`}
 							>
 								<Plus
@@ -622,30 +600,20 @@ const FloatingTodo: React.FC<FloatingTodoProps> = ({ inDevTools = false }) => {
 													ref={editInputRef}
 													type="text"
 													value={editingTitle}
-													onChange={(e) =>
-														setEditingTitle(
-															e.target.value
-														)
-													}
+													onChange={(e) => setEditingTitle(e.target.value)}
 													onKeyDown={handleKeyDown}
 													className="neo-input w-full py-1.5 px-3 text-sm text-white outline-none"
 												/>
 
 												<RichTextEditor
 													content={editingRichContent}
-													onChange={
-														setEditingRichContent
-													}
+													onChange={setEditingRichContent}
 													placeholder="Add notes (optional)"
 												/>
 
 												<div className="flex justify-end gap-2 pt-1">
 													<button
-														onClick={() =>
-															setEditingTodoId(
-																null
-															)
-														}
+														onClick={() => setEditingTodoId(null)}
 														className="px-2 py-1 text-xs rounded bg-gray-800 text-gray-400 hover:text-white transition-colors btn-hover"
 													>
 														Cancel
@@ -661,11 +629,7 @@ const FloatingTodo: React.FC<FloatingTodoProps> = ({ inDevTools = false }) => {
 										) : (
 											<div className="flex items-start gap-2 todo-item-enter">
 												<button
-													onClick={() =>
-														toggleTodoCompletion(
-															todo.id
-														)
-													}
+													onClick={() => toggleTodoCompletion(todo.id)}
 													className="mt-0.5 flex-shrink-0 text-blue-500 hover:text-blue-400 transition-colors btn-hover"
 												>
 													{todo.completed ? (
@@ -691,37 +655,24 @@ const FloatingTodo: React.FC<FloatingTodoProps> = ({ inDevTools = false }) => {
 														</span>
 
 														<div className="flex items-center gap-1 mt-0.5 flex-shrink-0">
-															{todo.richContent &&
-																todo.richContent !==
-																	'<p></p>' && (
-																	<button
-																		onClick={() =>
-																			toggleNotes(
-																				todo.id
-																			)
-																		}
-																		className={`p-1 rounded action-icon ${
-																			showNotes ===
-																			todo.id
-																				? 'text-blue-500 bg-gray-800'
-																				: 'text-gray-400 hover:text-white hover:bg-gray-800'
-																		} transition-colors`}
-																	>
-																		<MessageSquare
-																			size={
-																				14
-																			}
-																			className="btn-icon"
-																		/>
-																	</button>
-																)}
+															{todo.richContent && todo.richContent !== '<p></p>' && (
+																<button
+																	onClick={() => toggleNotes(todo.id)}
+																	className={`p-1 rounded action-icon ${
+																		showNotes === todo.id
+																			? 'text-blue-500 bg-gray-800'
+																			: 'text-gray-400 hover:text-white hover:bg-gray-800'
+																	} transition-colors`}
+																>
+																	<MessageSquare
+																		size={14}
+																		className="btn-icon"
+																	/>
+																</button>
+															)}
 															<button
 																onClick={() =>
-																	startEditing(
-																		todo.id,
-																		todo.title,
-																		todo.richContent
-																	)
+																	startEditing(todo.id, todo.title, todo.richContent)
 																}
 																className="p-1 rounded text-gray-400 hover:text-white hover:bg-gray-800 transition-colors action-icon"
 															>
@@ -731,11 +682,7 @@ const FloatingTodo: React.FC<FloatingTodoProps> = ({ inDevTools = false }) => {
 																/>
 															</button>
 															<button
-																onClick={() =>
-																	deleteTodo(
-																		todo.id
-																	)
-																}
+																onClick={() => deleteTodo(todo.id)}
 																className="p-1 rounded text-gray-400 hover:text-red-500 hover:bg-gray-800 transition-colors action-icon"
 															>
 																<Trash2
@@ -748,8 +695,7 @@ const FloatingTodo: React.FC<FloatingTodoProps> = ({ inDevTools = false }) => {
 
 													{showNotes === todo.id &&
 														todo.richContent &&
-														todo.richContent !==
-															'<p></p>' && (
+														todo.richContent !== '<p></p>' && (
 															<div className="mt-2 px-3 py-2.5 text-gray-300 bg-gray-800/90 border border-gray-700 rounded-md animate-fade-in rich-content">
 																<div
 																	className="prose prose-sm prose-invert max-w-none"

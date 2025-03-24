@@ -58,11 +58,7 @@ const MenuBar = ({ editor }: MenuBarProps) => {
 	)
 }
 
-const RichTextEditor: React.FC<RichTextEditorProps> = ({
-	content,
-	onChange,
-	placeholder = 'Add notes...',
-}) => {
+const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, placeholder = 'Add notes...' }) => {
 	const editor = useEditor({
 		extensions: [
 			StarterKit,

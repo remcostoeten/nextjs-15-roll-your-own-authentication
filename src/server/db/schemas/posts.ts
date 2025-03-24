@@ -9,12 +9,8 @@ export const posts = sqliteTable('posts', {
 		.$defaultFn(() => createId()),
 	title: text('title').notNull(),
 	content: text('content').notNull(),
-	published: integer('published', { mode: 'boolean' })
-		.notNull()
-		.default(false),
-	sensitive: integer('sensitive', { mode: 'boolean' })
-		.notNull()
-		.default(false),
+	published: integer('published', { mode: 'boolean' }).notNull().default(false),
+	sensitive: integer('sensitive', { mode: 'boolean' }).notNull().default(false),
 	authorId: text('author_id')
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade' }),

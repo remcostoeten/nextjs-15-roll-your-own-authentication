@@ -1,2 +1,1 @@
-export * from "./github-repo"
-
+export * from './github-repo'

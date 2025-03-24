@@ -13,26 +13,11 @@ interface FileItem {
 }
 
 // Config
-const IGNORE_PATTERNS = [
-	'node_modules',
-	'.next',
-	'dist',
-	'.git',
-	'.cache',
-	'public',
-]
+const IGNORE_PATTERNS = ['node_modules', '.next', 'dist', '.git', '.cache', 'public']
 
 const EXPORT_EXTENSIONS = ['.tsx', '.ts', '.jsx', '.js']
-const IGNORED_FILES = [
-	'index.ts',
-	'index.tsx',
-	'index.js',
-	'index.jsx',
-	'.d.ts',
-]
-const TARGET_DIRS = process.argv.slice(2).length
-	? process.argv.slice(2)
-	: ['src']
+const IGNORED_FILES = ['index.ts', 'index.tsx', 'index.js', 'index.jsx', '.d.ts']
+const TARGET_DIRS = process.argv.slice(2).length ? process.argv.slice(2) : ['src']
 
 // Helper functions
 const isDirectory = async (filePath: string): Promise<boolean> => {
@@ -50,8 +35,7 @@ const getFilesInDir = async (dir: string): Promise<FileItem[]> => {
 		const results: FileItem[] = []
 
 		for (const item of items) {
-			if (IGNORE_PATTERNS.some((pattern) => item.includes(pattern)))
-				continue
+			if (IGNORE_PATTERNS.some((pattern) => item.includes(pattern))) continue
 
 			const fullPath = path.join(dir, item)
 			const isDir = await isDirectory(fullPath)
@@ -60,9 +44,7 @@ const getFilesInDir = async (dir: string): Promise<FileItem[]> => {
 				// Check if directory has files that should be exported
 				const dirFiles = await readdir(fullPath)
 				const hasExportableFiles = dirFiles.some(
-					(file) =>
-						EXPORT_EXTENSIONS.includes(path.extname(file)) &&
-						!IGNORED_FILES.includes(file)
+					(file) => EXPORT_EXTENSIONS.includes(path.extname(file)) && !IGNORED_FILES.includes(file)
 				)
 
 				if (hasExportableFiles) {
@@ -72,10 +54,7 @@ const getFilesInDir = async (dir: string): Promise<FileItem[]> => {
 				// Recursively check subdirectories
 				const subResults = await getFilesInDir(fullPath)
 				results.push(...subResults)
-			} else if (
-				EXPORT_EXTENSIONS.includes(path.extname(item)) &&
-				!IGNORED_FILES.includes(item)
-			) {
+			} else if (EXPORT_EXTENSIONS.includes(path.extname(item)) && !IGNORED_FILES.includes(item)) {
 				results.push({ path: fullPath, isDirectory: false })
 			}
 		}
@@ -92,9 +71,7 @@ const generateBarrelFile = async (dir: string): Promise<void> => {
 		console.log(`Processing directory: ${dir}`)
 		const items = await readdir(dir)
 		const exportableItems = items.filter(
-			(item) =>
-				EXPORT_EXTENSIONS.includes(path.extname(item)) &&
-				!IGNORED_FILES.includes(item)
+			(item) => EXPORT_EXTENSIONS.includes(path.extname(item)) && !IGNORED_FILES.includes(item)
 		)
 
 		if (exportableItems.length === 0) {
@@ -112,10 +89,7 @@ const generateBarrelFile = async (dir: string): Promise<void> => {
 					// Convert kebab-case to PascalCase for the component name
 					const componentName = fileName
 						.split('-')
-						.map(
-							(part) =>
-								part.charAt(0).toUpperCase() + part.slice(1)
-						)
+						.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
 						.join('')
 
 					return `export { ${componentName} } from './${fileName}'`
@@ -150,9 +124,7 @@ const processDirectory = async (baseDir: string): Promise<void> => {
 	console.log(`Scanning ${baseDir} for directories...`)
 	const files = await getFilesInDir(baseDir)
 
-	const directories = files
-		.filter((item) => item.isDirectory)
-		.map((item) => item.path)
+	const directories = files.filter((item) => item.isDirectory).map((item) => item.path)
 
 	console.log(`Found ${directories.length} directories to process`)
 

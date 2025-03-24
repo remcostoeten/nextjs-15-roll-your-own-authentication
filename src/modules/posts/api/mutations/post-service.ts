@@ -72,11 +72,7 @@ export async function createPost(data: PostInput, ctx: RequestContext) {
 /**
  * Update an existing post with activity logging
  */
-export async function updatePost(
-	postId: string,
-	data: Partial<PostInput>,
-	ctx: RequestContext
-) {
+export async function updatePost(postId: string, data: Partial<PostInput>, ctx: RequestContext) {
 	try {
 		// Retrieve the post to check ownership and log changes
 		const existingPost = await db.query.posts.findFirst({
@@ -127,9 +123,7 @@ export async function updatePost(
 			userAgent: ctx.userAgent,
 			metadata: {
 				updatedFields: Object.keys(data),
-				publishStatusChanged:
-					data.published !== undefined &&
-					data.published !== existingPost.published,
+				publishStatusChanged: data.published !== undefined && data.published !== existingPost.published,
 			},
 		})
 

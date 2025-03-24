@@ -5,12 +5,7 @@ import { Copy } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/shared/components/ui/button'
-import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-} from '@/shared/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card'
 
 type ColorCardProps = {
 	name: string
@@ -41,9 +36,7 @@ export function ColorCard({ name, value, classes }: ColorCardProps) {
 			<Card className="bg-panel border border-button-border overflow-hidden">
 				<CardHeader className="pb-2">
 					<div className="flex items-center justify-between">
-						<CardTitle className="text-title-light text-lg font-medium">
-							{name}
-						</CardTitle>
+						<CardTitle className="text-title-light text-lg font-medium">{name}</CardTitle>
 						<Button
 							variant="outline"
 							size="sm"
@@ -62,15 +55,10 @@ export function ColorCard({ name, value, classes }: ColorCardProps) {
 					/>
 					<div>
 						<p className="text-sm text-title-light mb-2">
-							Value:{' '}
-							<code className="bg-button px-1.5 py-0.5 rounded text-xs">
-								{value}
-							</code>
+							Value: <code className="bg-button px-1.5 py-0.5 rounded text-xs">{value}</code>
 						</p>
 						<div className="space-y-1.5">
-							<p className="text-sm text-title-light">
-								Utility Classes:
-							</p>
+							<p className="text-sm text-title-light">Utility Classes:</p>
 							<div className="flex flex-wrap gap-2">
 								{classes.map((cls) => (
 									<div

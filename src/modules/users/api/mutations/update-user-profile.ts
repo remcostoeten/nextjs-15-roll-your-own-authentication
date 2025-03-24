@@ -13,16 +13,14 @@ export async function updateUserProfile(userData: unknown) {
 		const validatedData = userUpdateSchema.parse(userData)
 
 		// Destructure validated data
-		const { id, firstName, lastName, avatarUrl, avatarDeleted, email } =
-			validatedData
+		const { id, firstName, lastName, avatarUrl, avatarDeleted, email } = validatedData
 
 		let avatar: string | null | undefined = avatarUrl
 		let initials: string | null = null
 
 		if (avatarDeleted) {
 			// Avatar was deleted, generate initials
-			initials =
-				`${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase()
+			initials = `${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase()
 			avatar = null // Set avatar to null to remove the existing avatar
 		}
 
@@ -46,17 +44,13 @@ export async function updateUserProfile(userData: unknown) {
 		}
 
 		// Update the user in the database
-		const updatedUsers = await db
-			.update(users)
-			.set(updateValues)
-			.where(eq(users.id, id))
-			.returning({
-				id: users.id,
-				email: users.email,
-				firstName: users.firstName,
-				lastName: users.lastName,
-				avatar: users.avatar,
-			})
+		const updatedUsers = await db.update(users).set(updateValues).where(eq(users.id, id)).returning({
+			id: users.id,
+			email: users.email,
+			firstName: users.firstName,
+			lastName: users.lastName,
+			avatar: users.avatar,
+		})
 
 		if (updatedUsers.length === 0) {
 			throw new Error('User not found or update failed')

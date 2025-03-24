@@ -70,9 +70,7 @@ export function NewPostView({ user }: NewPostViewProps) {
 					<ArrowLeft className="h-5 w-5 mr-1" />
 					<span>Back</span>
 				</Link>
-				<h1 className="text-2xl font-bold text-title-light">
-					Create New Post
-				</h1>
+				<h1 className="text-2xl font-bold text-title-light">Create New Post</h1>
 			</div>
 
 			{error && (
@@ -99,11 +97,7 @@ export function NewPostView({ user }: NewPostViewProps) {
 						className="w-full px-4 py-2 rounded-md border border-button-border bg-background text-title-light focus:outline-none focus:ring-2 focus:ring-[#4e9815]/50"
 						placeholder="Enter a descriptive title"
 					/>
-					{errors.title && (
-						<p className="text-red-400 text-sm">
-							{errors.title.message}
-						</p>
-					)}
+					{errors.title && <p className="text-red-400 text-sm">{errors.title.message}</p>}
 				</div>
 
 				<div className="space-y-2">
@@ -120,11 +114,7 @@ export function NewPostView({ user }: NewPostViewProps) {
 						className="w-full px-4 py-2 rounded-md border border-button-border bg-background text-title-light focus:outline-none focus:ring-2 focus:ring-[#4e9815]/50"
 						placeholder="Share your thoughts..."
 					></textarea>
-					{errors.content && (
-						<p className="text-red-400 text-sm">
-							{errors.content.message}
-						</p>
-					)}
+					{errors.content && <p className="text-red-400 text-sm">{errors.content.message}</p>}
 				</div>
 
 				<div className="flex items-center space-x-6">
@@ -137,9 +127,7 @@ export function NewPostView({ user }: NewPostViewProps) {
 						<div className="relative w-11 h-6 bg-background-lighter rounded-full peer peer-checked:bg-[#4e9815]/20 peer-focus:ring-2 peer-focus:ring-[#4e9815]/50">
 							<div className="absolute left-1 top-1 bg-button w-4 h-4 rounded-full transition-all peer-checked:bg-[#4e9815] peer-checked:left-6"></div>
 						</div>
-						<span className="ml-3 text-button">
-							Publish immediately
-						</span>
+						<span className="ml-3 text-button">Publish immediately</span>
 					</label>
 
 					<label className="inline-flex items-center cursor-pointer">
@@ -151,9 +139,7 @@ export function NewPostView({ user }: NewPostViewProps) {
 						<div className="relative w-11 h-6 bg-background-lighter rounded-full peer peer-checked:bg-[#4e9815]/20 peer-focus:ring-2 peer-focus:ring-[#4e9815]/50">
 							<div className="absolute left-1 top-1 bg-button w-4 h-4 rounded-full transition-all peer-checked:bg-[#4e9815] peer-checked:left-6"></div>
 						</div>
-						<span className="ml-3 text-button">
-							Sensitive content
-						</span>
+						<span className="ml-3 text-button">Sensitive content</span>
 					</label>
 				</div>
 

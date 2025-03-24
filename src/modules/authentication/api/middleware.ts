@@ -7,14 +7,10 @@ import { eq } from 'drizzle-orm'
 /**
  * This middleware prevents authenticated users from accessing login/register pages
  */
-export async function preventAuthenticatedAccess(
-	request: NextRequest
-): Promise<NextResponse | undefined> {
+export async function preventAuthenticatedAccess(request: NextRequest): Promise<NextResponse | undefined> {
 	// Check if the route is login or register
 	const url = request.nextUrl.pathname
-	if (
-		!['/login', '/register', '/auth/login', '/auth/register'].includes(url)
-	) {
+	if (!['/login', '/register', '/auth/login', '/auth/register'].includes(url)) {
 		return undefined // Not a protected route, continue
 	}
 
@@ -118,23 +114,17 @@ export async function withRefreshToken(request: NextRequest) {
 	const token = request.cookies.get('refreshToken')?.value
 
 	if (!token) {
-		return new Response(
-			JSON.stringify({ message: 'No refresh token provided' }),
-			{
-				status: 401,
-			}
-		)
+		return new Response(JSON.stringify({ message: 'No refresh token provided' }), {
+			status: 401,
+		})
 	}
 
 	try {
 		await verifyRefreshToken(token)
 		return null
 	} catch {
-		return new Response(
-			JSON.stringify({ message: 'Invalid refresh token' }),
-			{
-				status: 401,
-			}
-		)
+		return new Response(JSON.stringify({ message: 'Invalid refresh token' }), {
+			status: 401,
+		})
 	}
 }

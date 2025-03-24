@@ -82,10 +82,7 @@ export async function getCurrentUser(): Promise<GetCurrentUserResponse> {
 		console.error('Get current user error:', error)
 		return {
 			success: false,
-			error:
-				error instanceof Error
-					? error.message
-					: 'An unexpected error occurred',
+			error: error instanceof Error ? error.message : 'An unexpected error occurred',
 			user: null,
 		}
 	}

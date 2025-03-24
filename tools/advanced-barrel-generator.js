@@ -9,26 +9,11 @@ const stat = promisify(fs.stat)
 const writeFile = promisify(fs.writeFile)
 const readFile = promisify(fs.readFile)
 
-const IGNORE_PATTERNS = [
-	'node_modules',
-	'.next',
-	'dist',
-	'.git',
-	'.cache',
-	'public',
-]
+const IGNORE_PATTERNS = ['node_modules', '.next', 'dist', '.git', '.cache', 'public']
 
 const EXPORT_EXTENSIONS = ['.tsx', '.ts', '.jsx', '.js']
-const IGNORED_FILES = [
-	'index.ts',
-	'index.tsx',
-	'index.js',
-	'index.jsx',
-	'.d.ts',
-]
-const TARGET_DIRS = process.argv.slice(2).length
-	? process.argv.slice(2)
-	: ['src']
+const IGNORED_FILES = ['index.ts', 'index.tsx', 'index.js', 'index.jsx', '.d.ts']
+const TARGET_DIRS = process.argv.slice(2).length ? process.argv.slice(2) : ['src']
 
 const EXCLUDE_PATTERNS = [
 	/Props$/, // Skip component props interfaces
@@ -55,9 +40,7 @@ const extractComponentExports = async (filePath) => {
 		const exportNames = new Set()
 
 		// Match export function declarations
-		const exportFunctions = content.match(
-			/export\s+function\s+([A-Za-z0-9_]+)/g
-		)
+		const exportFunctions = content.match(/export\s+function\s+([A-Za-z0-9_]+)/g)
 		if (exportFunctions) {
 			exportFunctions.forEach((match) => {
 				const parts = match.split(/\s+/)
@@ -72,9 +55,7 @@ const extractComponentExports = async (filePath) => {
 		}
 
 		// Match export const/let/var declarations
-		const exportVariables = content.match(
-			/export\s+(?:const|let|var)\s+([A-Za-z0-9_]+)/g
-		)
+		const exportVariables = content.match(/export\s+(?:const|let|var)\s+([A-Za-z0-9_]+)/g)
 		if (exportVariables) {
 			exportVariables.forEach((match) => {
 				const parts = match.split(/\s+/)
@@ -89,9 +70,7 @@ const extractComponentExports = async (filePath) => {
 		}
 
 		// Match export class/interface/type declarations
-		const exportTypes = content.match(
-			/export\s+(?:class|interface|type|enum)\s+([A-Za-z0-9_]+)/g
-		)
+		const exportTypes = content.match(/export\s+(?:class|interface|type|enum)\s+([A-Za-z0-9_]+)/g)
 		if (exportTypes) {
 			exportTypes.forEach((match) => {
 				const parts = match.split(/\s+/)
@@ -124,9 +103,7 @@ const extractComponentExports = async (filePath) => {
 
 				exports.forEach((exp) => {
 					// Handle 'as' syntax: export { X as Y }
-					const asMatch = exp.match(
-						/([A-Za-z0-9_]+)(?:\s+as\s+([A-Za-z0-9_]+))?/
-					)
+					const asMatch = exp.match(/([A-Za-z0-9_]+)(?:\s+as\s+([A-Za-z0-9_]+))?/)
 					if (asMatch) {
 						// If there's an alias (X as Y), use Y, otherwise use X
 						const exportName = asMatch[2] || asMatch[1]
@@ -151,8 +128,7 @@ const getFilesInDir = async (dir) => {
 		const results = []
 
 		for (const item of items) {
-			if (IGNORE_PATTERNS.some((pattern) => item.includes(pattern)))
-				continue
+			if (IGNORE_PATTERNS.some((pattern) => item.includes(pattern))) continue
 
 			const fullPath = path.join(dir, item)
 			const isDir = await isDirectory(fullPath)
@@ -161,9 +137,7 @@ const getFilesInDir = async (dir) => {
 				// Check if directory has files that should be exported
 				const dirFiles = await readdir(fullPath)
 				const hasExportableFiles = dirFiles.some(
-					(file) =>
-						EXPORT_EXTENSIONS.includes(path.extname(file)) &&
-						!IGNORED_FILES.includes(file)
+					(file) => EXPORT_EXTENSIONS.includes(path.extname(file)) && !IGNORED_FILES.includes(file)
 				)
 
 				if (hasExportableFiles) {
@@ -173,10 +147,7 @@ const getFilesInDir = async (dir) => {
 				// Recursively check subdirectories
 				const subResults = await getFilesInDir(fullPath)
 				results.push(...subResults)
-			} else if (
-				EXPORT_EXTENSIONS.includes(path.extname(item)) &&
-				!IGNORED_FILES.includes(item)
-			) {
+			} else if (EXPORT_EXTENSIONS.includes(path.extname(item)) && !IGNORED_FILES.includes(item)) {
 				results.push({ path: fullPath, isDirectory: false })
 			}
 		}
@@ -193,9 +164,7 @@ const generateBarrelFile = async (dir) => {
 		console.log(`Processing directory: ${dir}`)
 		const items = await readdir(dir)
 		const exportableItems = items.filter(
-			(item) =>
-				EXPORT_EXTENSIONS.includes(path.extname(item)) &&
-				!IGNORED_FILES.includes(item)
+			(item) => EXPORT_EXTENSIONS.includes(path.extname(item)) && !IGNORED_FILES.includes(item)
 		)
 
 		if (exportableItems.length === 0) {
@@ -221,9 +190,7 @@ const generateBarrelFile = async (dir) => {
 			if (componentExports.length > 0) {
 				// Use the actual exports from the file
 				componentExports.forEach((exportName) => {
-					exports.push(
-						`export { ${exportName} } from './${fileName}';`
-					)
+					exports.push(`export { ${exportName} } from './${fileName}';`)
 				})
 			} else {
 				// Fallback to file name based export if no exports found
@@ -232,34 +199,22 @@ const generateBarrelFile = async (dir) => {
 				if (fileName.includes('-')) {
 					const componentName = fileName
 						.split('-')
-						.map(
-							(part) =>
-								part.charAt(0).toUpperCase() + part.slice(1)
-						)
+						.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
 						.join('')
 
 					// Special case for UI components that typically use PascalCase
 					if (dir.includes('/ui/')) {
-						exports.push(
-							`export { ${componentName} } from './${fileName}';`
-						)
+						exports.push(`export { ${componentName} } from './${fileName}';`)
 					} else {
-						exports.push(
-							`export { ${componentName} } from './${fileName}';`
-						)
+						exports.push(`export { ${componentName} } from './${fileName}';`)
 					}
 				} else {
 					// For non-kebab files, just capitalize the first letter for components
 					if (dir.includes('/components/')) {
-						const componentName =
-							fileName.charAt(0).toUpperCase() + fileName.slice(1)
-						exports.push(
-							`export { ${componentName} } from './${fileName}';`
-						)
+						const componentName = fileName.charAt(0).toUpperCase() + fileName.slice(1)
+						exports.push(`export { ${componentName} } from './${fileName}';`)
 					} else {
-						exports.push(
-							`export { ${fileName} } from './${fileName}';`
-						)
+						exports.push(`export { ${fileName} } from './${fileName}';`)
 					}
 				}
 			}
@@ -292,9 +247,7 @@ const processDirectory = async (baseDir) => {
 	console.log(`Scanning ${baseDir} for directories...`)
 	const files = await getFilesInDir(baseDir)
 
-	const directories = files
-		.filter((item) => item.isDirectory)
-		.map((item) => item.path)
+	const directories = files.filter((item) => item.isDirectory).map((item) => item.path)
 
 	console.log(`Found ${directories.length} directories to process`)
 

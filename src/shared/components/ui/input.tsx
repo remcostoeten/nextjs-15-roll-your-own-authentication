@@ -5,8 +5,7 @@ import * as React from 'react'
 import { cn } from '@/shared/utils/helpers'
 import { EyeIcon, EyeOffIcon } from 'lucide-react'
 
-export interface InputProps
-	extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 	error?: string
 	showPasswordToggle?: boolean
 	label?: string
@@ -15,19 +14,7 @@ export interface InputProps
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-	(
-		{
-			className,
-			type,
-			error,
-			showPasswordToggle,
-			label,
-			labelClassName,
-			optional,
-			...props
-		},
-		ref
-	) => {
+	({ className, type, error, showPasswordToggle, label, labelClassName, optional, ...props }, ref) => {
 		const [showPassword, setShowPassword] = React.useState(false)
 		const [showError, setShowError] = React.useState(false)
 		const [isFocused, setIsFocused] = React.useState(false)
@@ -62,11 +49,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 							)}
 						>
 							{label}
-							{optional && (
-								<span className="text-zinc-400 text-sm ml-1">
-									(optional)
-								</span>
-							)}
+							{optional && <span className="text-zinc-400 text-sm ml-1">(optional)</span>}
 						</label>
 					</div>
 				)}
@@ -79,12 +62,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 							'transition-all duration-200 ease-out',
 							'focus:outline-none focus:border-white/30 focus:bg-white/[0.03]',
 							'hover:border-neutral-700 hover:bg-white/[0.02]',
-							showError
-								? 'border-red-700 border-2 animate-pulse'
-								: '',
-							showPasswordToggle &&
-								type === 'password' &&
-								'pr-10',
+							showError ? 'border-red-700 border-2 animate-pulse' : '',
+							showPasswordToggle && type === 'password' && 'pr-10',
 							className
 						)}
 						ref={ref}
@@ -106,26 +85,20 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 								'focus-visible:ring-2 focus-visible:ring-white/30',
 								'focus:text-white'
 							)}
-							aria-label={
-								showPassword ? 'Hide password' : 'Show password'
-							}
+							aria-label={showPassword ? 'Hide password' : 'Show password'}
 						>
 							<div className="relative w-5 h-5">
 								<EyeIcon
 									className={cn(
 										'h-4 w-4 absolute transition-all duration-300 ease-in-out',
-										showPassword
-											? 'opacity-0 rotate-90 scale-75'
-											: 'opacity-100 rotate-0 scale-100'
+										showPassword ? 'opacity-0 rotate-90 scale-75' : 'opacity-100 rotate-0 scale-100'
 									)}
 									color="currentColor"
 								/>
 								<EyeOffIcon
 									className={cn(
 										'h-4 w-4 absolute transition-all duration-300 ease-in-out',
-										showPassword
-											? 'opacity-100 rotate-0 scale-100'
-											: 'opacity-0 rotate-90 scale-75'
+										showPassword ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 rotate-90 scale-75'
 									)}
 									color="currentColor"
 								/>
@@ -138,9 +111,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 							id={errorId}
 							className={cn(
 								'text-red-500 text-sm mt-1 block transition-all duration-500 ease-in-out',
-								showError
-									? 'opacity-100 translate-y-0'
-									: 'opacity-0 -translate-y-1'
+								showError ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1'
 							)}
 							style={{ transitionDelay: '150ms' }}
 						>

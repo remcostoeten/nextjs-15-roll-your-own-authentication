@@ -9,11 +9,7 @@ interface SocialAuthButtonProps {
 	children: React.ReactNode
 }
 
-export function SocialAuthButton({
-	icon,
-	onClick,
-	children,
-}: SocialAuthButtonProps) {
+export function SocialAuthButton({ icon, onClick, children }: SocialAuthButtonProps) {
 	return (
 		<CoreButton
 			variant="sso"

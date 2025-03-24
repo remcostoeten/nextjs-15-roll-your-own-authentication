@@ -2,10 +2,7 @@
 
 import { logoutMutation } from '../api/mutations/logout'
 import { type User } from '@/modules/authentication/models/z.user'
-import {
-	registerMutation,
-	type RegisterFormState,
-} from '../api/mutations/register'
+import { registerMutation, type RegisterFormState } from '../api/mutations/register'
 
 type RegisterResponse = RegisterFormState
 
@@ -135,9 +132,7 @@ export const useAuthApi = () => {
 
 		if (!response.ok) {
 			const errorData = await response.json()
-			throw new Error(
-				errorData.error || 'Failed to refresh authentication'
-			)
+			throw new Error(errorData.error || 'Failed to refresh authentication')
 		}
 
 		return response.json()

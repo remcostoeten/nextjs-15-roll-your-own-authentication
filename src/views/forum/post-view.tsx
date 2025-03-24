@@ -4,14 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { formatDistanceToNow } from 'date-fns'
-import {
-	ArrowLeft,
-	Edit,
-	Heart,
-	MessageCircle,
-	Share2,
-	Trash2,
-} from 'lucide-react'
+import { ArrowLeft, Edit, Heart, MessageCircle, Share2, Trash2 } from 'lucide-react'
 import { User } from '@/server/db/schemas/users'
 import { deletePost } from '@/modules/posts/api/mutations'
 import { Post } from '@/modules/posts/models/z.post'
@@ -83,16 +76,13 @@ export function PostView({ post, currentUser }: PostViewProps) {
 			<article className="bg-background-lighter border border-button-border rounded-lg overflow-hidden mb-8">
 				<div className="p-6">
 					<header className="mb-4">
-						<h1 className="text-2xl font-bold text-title-light mb-2">
-							{post.title}
-						</h1>
+						<h1 className="text-2xl font-bold text-title-light mb-2">{post.title}</h1>
 
 						<div className="flex items-center text-sm text-button">
 							<div className="flex items-center">
 								<div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#3a6d10] to-[#4e9815] mr-2"></div>
 								<span className="font-medium text-button-hover">
-									{post.author.firstName}{' '}
-									{post.author.lastName}
+									{post.author.firstName} {post.author.lastName}
 								</span>
 							</div>
 							<span className="mx-2">•</span>

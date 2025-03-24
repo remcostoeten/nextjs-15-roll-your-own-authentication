@@ -28,16 +28,12 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
 				className="block p-6"
 			>
 				<header className="mb-3">
-					<h2 className="text-xl font-semibold text-title-light mb-2 line-clamp-2">
-						{post.title}
-					</h2>
+					<h2 className="text-xl font-semibold text-title-light mb-2 line-clamp-2">{post.title}</h2>
 
 					<div className="flex items-center text-sm text-button">
 						<div className="flex items-center">
 							<div className="h-6 w-6 rounded-full bg-gradient-to-br from-[#3a6d10] to-[#4e9815] mr-2"></div>
-							<span className="font-medium text-button-hover">
-								{authorName}
-							</span>
+							<span className="font-medium text-button-hover">{authorName}</span>
 						</div>
 						<span className="mx-2">•</span>
 						<time>{formattedDate}</time>
@@ -45,17 +41,13 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
 						{post.sensitive && (
 							<>
 								<span className="mx-2">•</span>
-								<span className="text-orange-400 text-xs uppercase font-semibold">
-									Sensitive
-								</span>
+								<span className="text-orange-400 text-xs uppercase font-semibold">Sensitive</span>
 							</>
 						)}
 					</div>
 				</header>
 
-				<div className="text-button-hover line-clamp-3 mb-4">
-					{post.content}
-				</div>
+				<div className="text-button-hover line-clamp-3 mb-4">{post.content}</div>
 			</Link>
 
 			<div className="flex items-center px-6 py-3 border-t border-button-border">

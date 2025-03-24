@@ -112,18 +112,13 @@ const MatrixSpotlight = ({ mouseX = 50, mouseY = 50 }) => {
 			// Drawing the characters
 			for (let i = 0; i < drops.length; i++) {
 				// Random character
-				const text = String.fromCharCode(
-					Math.floor(Math.random() * 94) + 33
-				)
+				const text = String.fromCharCode(Math.floor(Math.random() * 94) + 33)
 
 				// x = i * fontSize, y = drops[i] * fontSize
 				ctx.fillText(text, i * fontSize, drops[i] * fontSize)
 
 				// Sending the drop back to the top randomly after it has crossed the screen
-				if (
-					drops[i] * fontSize > canvas.height &&
-					Math.random() > 0.975
-				) {
+				if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
 					drops[i] = 0
 				}
 
@@ -167,9 +162,7 @@ const getRandomInRange = (min: number, max: number) => {
 // Helper function to get a slightly randomized color
 const getRandomizedColor = (baseColor: string, variance = 0.1) => {
 	// Parse the rgba color
-	const rgbaMatch = baseColor.match(
-		/rgba$$(\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)$$/
-	)
+	const rgbaMatch = baseColor.match(/rgba$$(\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)$$/)
 	if (!rgbaMatch) return baseColor
 
 	const r = Number.parseInt(rgbaMatch[1], 10)
@@ -179,14 +172,8 @@ const getRandomizedColor = (baseColor: string, variance = 0.1) => {
 
 	// Add slight randomization to the green and alpha channels
 	// Keep the green high since it's matrix-themed
-	const newG = Math.min(
-		255,
-		Math.max(0, g + getRandomInRange(-g * variance, g * variance))
-	)
-	const newA = Math.min(
-		1,
-		Math.max(0, a + getRandomInRange(-a * variance, a * variance))
-	)
+	const newG = Math.min(255, Math.max(0, g + getRandomInRange(-g * variance, g * variance)))
+	const newA = Math.min(1, Math.max(0, a + getRandomInRange(-a * variance, a * variance)))
 
 	return `rgba(${r}, ${newG}, ${b}, ${newA.toFixed(2)})`
 }
@@ -202,9 +189,7 @@ export default function MatrixGrid() {
 	const gridRef = useRef<HTMLDivElement>(null)
 
 	// Add this state to track which card is being hovered
-	const [hoveredCardIndex, setHoveredCardIndex] = useState<number | null>(
-		null
-	)
+	const [hoveredCardIndex, setHoveredCardIndex] = useState<number | null>(null)
 	// Add state to track mouse position within each card
 	const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 })
 
@@ -213,11 +198,7 @@ export default function MatrixGrid() {
 	}, [])
 
 	useEffect(() => {
-		const handleMouseMove = (
-			e: MouseEvent,
-			card: HTMLElement,
-			index: number
-		) => {
+		const handleMouseMove = (e: MouseEvent, card: HTMLElement, index: number) => {
 			const rect = card.getBoundingClientRect()
 			const x = e.clientX - rect.left
 			const y = e.clientY - rect.top
@@ -246,10 +227,7 @@ export default function MatrixGrid() {
 			const randomizedRadius = baseRadius * getRandomInRange(0.95, 1.05)
 
 			card.style.setProperty('--spotlight-color', randomizedColor)
-			card.style.setProperty(
-				'--spotlight-strength',
-				randomizedStrength.toString()
-			)
+			card.style.setProperty('--spotlight-strength', randomizedStrength.toString())
 			card.style.setProperty('--spotlight-radius', `${randomizedRadius}%`)
 
 			// Set the hovered card index
@@ -258,30 +236,18 @@ export default function MatrixGrid() {
 
 		cardRefs.current.forEach((card, index) => {
 			if (card) {
-				card.addEventListener('mousemove', (e) =>
-					handleMouseMove(e, card, index)
-				)
-				card.addEventListener('mouseenter', () =>
-					handleMouseEnter(card, index)
-				)
-				card.addEventListener('mouseleave', () =>
-					setHoveredCardIndex(null)
-				)
+				card.addEventListener('mousemove', (e) => handleMouseMove(e, card, index))
+				card.addEventListener('mouseenter', () => handleMouseEnter(card, index))
+				card.addEventListener('mouseleave', () => setHoveredCardIndex(null))
 			}
 		})
 
 		return () => {
 			cardRefs.current.forEach((card, index) => {
 				if (card) {
-					card.removeEventListener('mousemove', (e) =>
-						handleMouseMove(e, card, index)
-					)
-					card.removeEventListener('mouseenter', () =>
-						handleMouseEnter(card, index)
-					)
-					card.removeEventListener('mouseleave', () =>
-						setHoveredCardIndex(null)
-					)
+					card.removeEventListener('mousemove', (e) => handleMouseMove(e, card, index))
+					card.removeEventListener('mouseenter', () => handleMouseEnter(card, index))
+					card.removeEventListener('mouseleave', () => setHoveredCardIndex(null))
 				}
 			})
 		}
@@ -348,17 +314,13 @@ export default function MatrixGrid() {
 								<div className="relative z-10">
 									<div className="flex items-center mb-2">
 										<div className="h-2 w-2 rounded-full bg-[#4e9815] mr-2"></div>
-										<span className="text-xs text-[#8C877D] font-mono">
-											system.auth.module
-										</span>
+										<span className="text-xs text-[#8C877D] font-mono">system.auth.module</span>
 									</div>
 
 									<h2 className="text-xl font-mono text-[#F2F0ED] mb-2">
 										<TextScrambler
 											href="#"
-											text={
-												matrixGridContent.header.title
-											}
+											text={matrixGridContent.header.title}
 											isActive={true}
 											className="!w-auto inline-block"
 										/>
@@ -368,10 +330,7 @@ export default function MatrixGrid() {
 									<p className="text-[#8C877D] text-sm font-mono border-l-2 border-[#1E1E1E] pl-3">
 										<TextScrambler
 											href="#"
-											text={
-												matrixGridContent.header
-													.subtitle
-											}
+											text={matrixGridContent.header.subtitle}
 											isActive={true}
 											className="!w-auto inline-block"
 										/>
@@ -398,9 +357,7 @@ export default function MatrixGrid() {
 										key={tool.title}
 										href={tool.href}
 										className={`${styles.card} ${tool.isLarge ? styles.platformCard : ''} ${
-											index < 3
-												? styles.noTopRightBottomBorder
-												: ''
+											index < 3 ? styles.noTopRightBottomBorder : ''
 										} ${tool.isLarge ? styles.largeBorders : ''} relative group`}
 										variants={itemVariants}
 										ref={(el) => {
@@ -414,12 +371,8 @@ export default function MatrixGrid() {
 													rel: 'noopener noreferrer',
 												}
 											: {})}
-										onMouseEnter={() =>
-											setHoveredCardIndex(index)
-										}
-										onMouseLeave={() =>
-											setHoveredCardIndex(null)
-										}
+										onMouseEnter={() => setHoveredCardIndex(index)}
+										onMouseLeave={() => setHoveredCardIndex(null)}
 									>
 										{hoveredCardIndex === index && (
 											<MatrixSpotlight
@@ -443,18 +396,13 @@ export default function MatrixGrid() {
 														<TextScrambler
 															href={tool.href}
 															text={tool.title}
-															isActive={
-																hoveredCardIndex ===
-																index
-															}
+															isActive={hoveredCardIndex === index}
 															className="!w-auto inline-block text-[#F2F0ED] text-xl font-semibold uppercase"
 														/>
 														{tool.tag && (
 															<motion.div
 																className={`${styles.tag} ${tool.tag.type === 'new' ? styles.tagNew : styles.tagSoon} ml-2`}
-																variants={
-																	textVariants
-																}
+																variants={textVariants}
 															>
 																{tool.tag.text}
 															</motion.div>
@@ -480,24 +428,18 @@ export default function MatrixGrid() {
 										{tool.isLarge && (
 											<>
 												<motion.div
-													className={
-														styles.skeletonLoader
-													}
+													className={styles.skeletonLoader}
 													aria-hidden="true"
 													variants={itemVariants}
 													style={{ opacity: 0.4 }}
 												/>
 												<motion.div
-													className={
-														styles.platformGradient
-													}
+													className={styles.platformGradient}
 													variants={itemVariants}
 													style={{ opacity: 0.3 }}
 												/>
 												<motion.div
-													className={
-														styles.platformSideGradient
-													}
+													className={styles.platformSideGradient}
 													variants={itemVariants}
 													style={{ opacity: 0.3 }}
 												/>

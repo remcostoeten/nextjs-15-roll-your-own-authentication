@@ -3,12 +3,7 @@
 import { db } from '@/server/db'
 import { userMetrics, users } from '@/server/db/schemas'
 import { eq } from 'drizzle-orm'
-import {
-	formatDistanceToNow,
-	differenceInDays,
-	isToday,
-	isYesterday,
-} from 'date-fns'
+import { formatDistanceToNow, differenceInDays, isToday, isYesterday } from 'date-fns'
 
 export const getUserMetrics = async (userId: string) => {
 	// Get the user metrics
@@ -59,9 +54,7 @@ export const getUserMetrics = async (userId: string) => {
 	const accountAge = differenceInDays(new Date(), user.createdAt)
 
 	// Format the last login date
-	const lastLoginFormatted = metrics.lastLogin
-		? formatLastLogin(metrics.lastLogin)
-		: 'Never'
+	const lastLoginFormatted = metrics.lastLogin ? formatLastLogin(metrics.lastLogin) : 'Never'
 
 	return {
 		...metrics,

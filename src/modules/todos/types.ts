@@ -29,10 +29,7 @@ export interface TodoStore {
 
 	// CRUD operations
 	addTodo: (title: string) => void
-	updateTodo: (
-		id: string,
-		updates: Partial<Omit<Todo, 'id' | 'createdAt'>>
-	) => void
+	updateTodo: (id: string, updates: Partial<Omit<Todo, 'id' | 'createdAt'>>) => void
 	deleteTodo: (id: string) => void
 	toggleTodoCompletion: (id: string) => void
 

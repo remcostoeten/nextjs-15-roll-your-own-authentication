@@ -13,20 +13,18 @@ export async function runtime() {
 
 export async function logoutMutation() {
 	console.log('Server: Starting logout mutation')
-	
+
 	try {
 		// Get the cookie store
 		const cookieStore = cookies()
 		const refreshToken = cookieStore.get('refresh_token')
-		
+
 		console.log('Server: Got refresh token:', !!refreshToken?.value)
 
 		// Clear the session from database if refresh token exists
 		if (refreshToken?.value) {
 			try {
-				await db
-					.delete(sessions)
-					.where(eq(sessions.refreshToken, refreshToken.value))
+				await db.delete(sessions).where(eq(sessions.refreshToken, refreshToken.value))
 				console.log('Server: Deleted session from database')
 			} catch (error) {
 				console.error('Server: Error deleting session:', error)
@@ -47,12 +45,12 @@ export async function logoutMutation() {
 		cookieStore.set('access_token', '', cookieOptions)
 		cookieStore.set('refresh_token', '', cookieOptions)
 		cookieStore.set('session', '', cookieOptions)
-		
+
 		console.log('Server: Cleared all cookies')
 
 		// Revalidate the layout to update the auth state
 		revalidatePath('/', 'layout')
-		
+
 		console.log('Server: Revalidated paths')
 
 		return { success: true, message: 'Logged out successfully' }

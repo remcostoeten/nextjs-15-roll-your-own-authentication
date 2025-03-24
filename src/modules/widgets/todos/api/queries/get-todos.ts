@@ -38,10 +38,7 @@ export async function getTodos(): Promise<GetTodosResponse> {
 		console.error('Get todos error:', error)
 		return {
 			success: false,
-			message:
-				error instanceof Error
-					? error.message
-					: 'Failed to fetch todos',
+			message: error instanceof Error ? error.message : 'Failed to fetch todos',
 			todos: [],
 		}
 	}

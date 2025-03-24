@@ -68,18 +68,12 @@ export function Features() {
 					whileHover={{ y: -3, transition: { duration: 0.2 } }}
 				>
 					<Plus className="absolute right-4 top-4 h-4 w-4 text-[#1E1E1E]" />
-					<div className="mb-2 text-sm text-[#8C877D]">
-						{feature.title}
-					</div>
+					<div className="mb-2 text-sm text-[#8C877D]">{feature.title}</div>
 					<h3 className="mb-4 text-xl font-normal">
 						{feature.subtitle.split(' ').slice(0, -1).join(' ')}{' '}
-						<span className="font-medium">
-							{feature.subtitle.split(' ').pop()}
-						</span>
+						<span className="font-medium">{feature.subtitle.split(' ').pop()}</span>
 					</h3>
-					<p className="mb-4 text-sm text-[#8C877D]">
-						{feature.description}
-					</p>
+					<p className="mb-4 text-sm text-[#8C877D]">{feature.description}</p>
 					<Link
 						href={feature.link}
 						className="text-sm text-[#CF9C2] hover:underline transition-colors duration-200"

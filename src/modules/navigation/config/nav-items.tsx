@@ -1,15 +1,5 @@
 import React, { ReactNode } from 'react'
-import {
-	BookOpen,
-	Code,
-	FileCode,
-	Icon,
-	Layers,
-	Settings,
-	Shield,
-	Terminal,
-	Zap,
-} from 'lucide-react'
+import { BookOpen, Code, FileCode, Icon, Layers, Settings, Shield, Terminal, Zap } from 'lucide-react'
 import { NavIcon } from '../components/nav-icon'
 
 export type NavItem = {

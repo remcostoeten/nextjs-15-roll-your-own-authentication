@@ -8,9 +8,7 @@ export async function logoutUser(refreshToken?: string) {
 		try {
 			const payload = await verifyRefreshToken(refreshToken)
 
-			await db
-				.delete(sessions)
-				.where(eq(sessions.refreshToken, refreshToken))
+			await db.delete(sessions).where(eq(sessions.refreshToken, refreshToken))
 		} catch (error) {
 			// Continue even if token verification fails
 			// We still want to acknowledge the logout

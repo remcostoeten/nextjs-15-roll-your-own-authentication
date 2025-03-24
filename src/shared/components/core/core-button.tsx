@@ -16,8 +16,7 @@ export type ButtonVariant =
 
 export type ButtonSize = 'sm' | 'md' | 'lg'
 
-export interface CoreButtonProps
-	extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface CoreButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	variant?: ButtonVariant
 	size?: ButtonSize
 	isLoading?: boolean
@@ -79,13 +78,7 @@ export const CoreButton = React.forwardRef<HTMLButtonElement, CoreButtonProps>(
 				{isLoading ? (
 					<span className="flex items-center justify-center">
 						<Spinner
-							size={
-								size === 'sm'
-									? 'sm'
-									: size === 'lg'
-										? 'lg'
-										: 'md'
-							}
+							size={size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'md'}
 							color={variant === 'primary' ? 'black' : 'white'}
 							className="mr-2"
 						/>
@@ -93,13 +86,9 @@ export const CoreButton = React.forwardRef<HTMLButtonElement, CoreButtonProps>(
 					</span>
 				) : (
 					<span className="flex items-center justify-center">
-						{icon && iconPosition === 'left' && (
-							<span className="mr-2">{icon}</span>
-						)}
+						{icon && iconPosition === 'left' && <span className="mr-2">{icon}</span>}
 						<span>{children}</span>
-						{icon && iconPosition === 'right' && (
-							<span className="ml-2">{icon}</span>
-						)}
+						{icon && iconPosition === 'right' && <span className="ml-2">{icon}</span>}
 					</span>
 				)}
 			</>

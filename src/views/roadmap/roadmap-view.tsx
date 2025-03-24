@@ -81,7 +81,7 @@ const RoadmapView = () => {
 					.map(([name, items]) => ({ name, items }))
 
 				setQuarters(sortedQuarters)
-				
+
 				// Get voted items from localStorage
 				const storedVotes = localStorage.getItem('roadmap_votes')
 				if (storedVotes) {
@@ -109,9 +109,7 @@ const RoadmapView = () => {
 			})
 
 			if (result.success && result.newVoteCount !== undefined) {
-				setItems(items.map(item => 
-					item.id === id ? { ...item, votes: result.newVoteCount! } : item
-				))
+				setItems(items.map((item) => (item.id === id ? { ...item, votes: result.newVoteCount! } : item)))
 
 				const newVotedItems = { ...votedItems }
 				if (operation === 'upvote') {
@@ -129,8 +127,12 @@ const RoadmapView = () => {
 	}
 
 	const renderTimelineView = () => {
-		const timelineStart = new Date(Math.min(...items.map(item => item.startDate ? new Date(item.startDate).getTime() : Date.now())))
-		const timelineEnd = new Date(Math.max(...items.map(item => item.endDate ? new Date(item.endDate).getTime() : Date.now())))
+		const timelineStart = new Date(
+			Math.min(...items.map((item) => (item.startDate ? new Date(item.startDate).getTime() : Date.now())))
+		)
+		const timelineEnd = new Date(
+			Math.max(...items.map((item) => (item.endDate ? new Date(item.endDate).getTime() : Date.now())))
+		)
 
 		return (
 			<div className="relative">
@@ -188,7 +190,10 @@ const RoadmapView = () => {
 							const date = new Date(currentDate)
 							date.setMonth(currentDate.getMonth() + i)
 							return (
-								<div key={i} className="text-xs text-muted-foreground text-center">
+								<div
+									key={i}
+									className="text-xs text-muted-foreground text-center"
+								>
 									{format(date, timelineScale === 'months' ? 'MMM yyyy' : 'Q[Q] yyyy')}
 								</div>
 							)
@@ -200,9 +205,13 @@ const RoadmapView = () => {
 						{items.map((item) => {
 							const startDate = item.startDate ? parseISO(item.startDate) : new Date()
 							const endDate = item.endDate ? parseISO(item.endDate) : new Date()
-							const duration = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 30))
-							const startOffset = Math.floor((startDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24 * 30))
-							
+							const duration = Math.ceil(
+								(endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 30)
+							)
+							const startOffset = Math.floor(
+								(startDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24 * 30)
+							)
+
 							return (
 								<motion.div
 									key={item.id}
@@ -210,15 +219,15 @@ const RoadmapView = () => {
 									animate={{ opacity: 1, y: 0 }}
 									className="relative"
 								>
-									<div 
+									<div
 										className={cn(
-											"absolute h-8 rounded-full cursor-pointer transition-all duration-300",
+											'absolute h-8 rounded-full cursor-pointer transition-all duration-300',
 											getStatusColor(item.status)
 										)}
 										style={{
 											left: `${(startOffset / 12) * 100}%`,
 											width: `${(duration / 12) * 100}%`,
-											minWidth: '100px'
+											minWidth: '100px',
 										}}
 									>
 										<Tooltip>
@@ -243,10 +252,17 @@ const RoadmapView = () => {
 											<TooltipContent>
 												<div className="p-2">
 													<div className="font-medium">{item.title}</div>
-													<div className="text-sm text-muted-foreground">{item.description}</div>
+													<div className="text-sm text-muted-foreground">
+														{item.description}
+													</div>
 													<div className="mt-2 flex gap-2">
-														{item.tags?.split(',').map(tag => (
-															<Badge key={tag} variant="secondary">{tag}</Badge>
+														{item.tags?.split(',').map((tag) => (
+															<Badge
+																key={tag}
+																variant="secondary"
+															>
+																{tag}
+															</Badge>
 														))}
 													</div>
 												</div>
@@ -266,8 +282,14 @@ const RoadmapView = () => {
 		return (
 			<div className="space-y-8">
 				{quarters.map((quarter) => (
-					<div key={quarter.name} className="space-y-4">
-						<Heading level="h2" className="text-xl font-semibold border-b border-border pb-2">
+					<div
+						key={quarter.name}
+						className="space-y-4"
+					>
+						<Heading
+							level="h2"
+							className="text-xl font-semibold border-b border-border pb-2"
+						>
 							{quarter.name}
 						</Heading>
 						<div className="grid gap-4">
@@ -281,7 +303,10 @@ const RoadmapView = () => {
 										<div className="flex items-center justify-between mb-2">
 											<div className="flex items-center gap-2">
 												<h3 className="font-medium">{item.title}</h3>
-												<Badge variant="secondary" className={cn(getStatusColor(item.status))}>
+												<Badge
+													variant="secondary"
+													className={cn(getStatusColor(item.status))}
+												>
 													{item.status}
 												</Badge>
 											</div>
@@ -289,17 +314,13 @@ const RoadmapView = () => {
 												variant="ghost"
 												size="sm"
 												onClick={() => handleVote(item.id)}
-												className={cn(
-													votedItems[item.id] && 'bg-primary/20 text-primary'
-												)}
+												className={cn(votedItems[item.id] && 'bg-primary/20 text-primary')}
 											>
 												<ThumbsUp className="h-4 w-4 mr-1" />
 												{item.votes}
 											</Button>
 										</div>
-										<Text className="text-sm text-muted-foreground mb-3">
-											{item.description}
-										</Text>
+										<Text className="text-sm text-muted-foreground mb-3">{item.description}</Text>
 										<div className="flex items-center gap-4 text-sm text-muted-foreground">
 											{item.assignee && (
 												<div className="flex items-center gap-1">
@@ -314,8 +335,12 @@ const RoadmapView = () => {
 											{item.tags && (
 												<div className="flex items-center gap-2">
 													<Tag className="h-4 w-4" />
-													{item.tags.split(',').map(tag => (
-														<Badge key={tag} variant="secondary" className="text-xs">
+													{item.tags.split(',').map((tag) => (
+														<Badge
+															key={tag}
+															variant="secondary"
+															className="text-xs"
+														>
 															{tag}
 														</Badge>
 													))}
@@ -346,21 +371,20 @@ const RoadmapView = () => {
 								<div className="space-y-1">
 									<div className="flex items-center gap-2">
 										<h3 className="font-medium">{item.title}</h3>
-										<Badge variant="secondary" className={cn(getStatusColor(item.status))}>
+										<Badge
+											variant="secondary"
+											className={cn(getStatusColor(item.status))}
+										>
 											{item.status}
 										</Badge>
 									</div>
-									<Text className="text-sm text-muted-foreground">
-										{item.description}
-									</Text>
+									<Text className="text-sm text-muted-foreground">{item.description}</Text>
 								</div>
 								<Button
 									variant="ghost"
 									size="sm"
 									onClick={() => handleVote(item.id)}
-									className={cn(
-										votedItems[item.id] && 'bg-primary/20 text-primary'
-									)}
+									className={cn(votedItems[item.id] && 'bg-primary/20 text-primary')}
 								>
 									<ThumbsUp className="h-4 w-4 mr-1" />
 									{item.votes}
@@ -380,8 +404,12 @@ const RoadmapView = () => {
 								{item.tags && (
 									<div className="flex items-center gap-2">
 										<Tag className="h-4 w-4" />
-										{item.tags.split(',').map(tag => (
-											<Badge key={tag} variant="secondary" className="text-xs">
+										{item.tags.split(',').map((tag) => (
+											<Badge
+												key={tag}
+												variant="secondary"
+												className="text-xs"
+											>
 												{tag}
 											</Badge>
 										))}
@@ -399,8 +427,16 @@ const RoadmapView = () => {
 		return (
 			<div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
 				<div className="max-w-6xl mx-auto">
-					<Heading level="h1" pageTitle>Roadmap</Heading>
-					<Text variant="lead" className="mb-12">
+					<Heading
+						level="h1"
+						pageTitle
+					>
+						Roadmap
+					</Heading>
+					<Text
+						variant="lead"
+						className="mb-12"
+					>
 						Track our development progress and upcoming features.
 					</Text>
 					<div className="space-y-16">
@@ -416,12 +452,25 @@ const RoadmapView = () => {
 		return (
 			<div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
 				<div className="max-w-6xl mx-auto">
-					<Heading level="h1" pageTitle>Roadmap</Heading>
-					<Text variant="lead" className="mb-12">
+					<Heading
+						level="h1"
+						pageTitle
+					>
+						Roadmap
+					</Heading>
+					<Text
+						variant="lead"
+						className="mb-12"
+					>
 						Track our development progress and upcoming features.
 					</Text>
 					<div className="bg-red-900/20 border border-red-800 rounded-lg p-6">
-						<Text variant="muted" className="text-red-400">{error}</Text>
+						<Text
+							variant="muted"
+							className="text-red-400"
+						>
+							{error}
+						</Text>
 					</div>
 				</div>
 			</div>
@@ -433,10 +482,13 @@ const RoadmapView = () => {
 			<div className="max-w-6xl mx-auto">
 				<div className="flex items-center justify-between mb-8">
 					<div>
-						<Heading level="h1" pageTitle>Roadmap</Heading>
-						<Text variant="lead">
-							Track our development progress and upcoming features.
-						</Text>
+						<Heading
+							level="h1"
+							pageTitle
+						>
+							Roadmap
+						</Heading>
+						<Text variant="lead">Track our development progress and upcoming features.</Text>
 					</div>
 					<div className="flex gap-2">
 						<Button

@@ -18,10 +18,7 @@ export async function toggleTodoMutation(id: string) {
 			}
 		}
 
-		await db
-			.update(widgetTodos)
-			.set({ completed: !todo.completed })
-			.where(eq(widgetTodos.id, id))
+		await db.update(widgetTodos).set({ completed: !todo.completed }).where(eq(widgetTodos.id, id))
 
 		revalidatePath('/')
 
@@ -33,10 +30,7 @@ export async function toggleTodoMutation(id: string) {
 		console.error('Failed to toggle todo:', error)
 		return {
 			success: false,
-			message:
-				error instanceof Error
-					? error.message
-					: 'Failed to toggle todo',
+			message: error instanceof Error ? error.message : 'Failed to toggle todo',
 		}
 	}
 }

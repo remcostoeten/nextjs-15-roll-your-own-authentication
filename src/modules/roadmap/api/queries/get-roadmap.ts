@@ -1,11 +1,11 @@
-import { mockRoadmapLanes } from "../mock-data"
-import type { RoadmapLane } from "../../types"
+import { mockRoadmapLanes } from '../mock-data'
+import type { RoadmapLane } from '../../types'
 
 // Mock implementation using the mock data
 export async function getRoadmap(): Promise<RoadmapLane[]> {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 500))
-  return mockRoadmapLanes
+	// Simulate network delay
+	await new Promise((resolve) => setTimeout(resolve, 500))
+	return mockRoadmapLanes
 }
 
 /*
@@ -101,4 +101,3 @@ export async function getRoadmap(): Promise<RoadmapLane[]> {
   return lanes
 }
 */
-

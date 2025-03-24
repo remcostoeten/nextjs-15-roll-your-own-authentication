@@ -32,10 +32,7 @@ export const updateLoginMetrics = async (userId: string) => {
 	let loginStreak = existingMetrics.loginStreak || 0
 
 	if (existingMetrics.lastLogin) {
-		const daysSinceLastLogin = differenceInDays(
-			now,
-			existingMetrics.lastLogin
-		)
+		const daysSinceLastLogin = differenceInDays(now, existingMetrics.lastLogin)
 
 		if (daysSinceLastLogin === 0) {
 			// Already logged in today, don't increment streak

@@ -29,9 +29,7 @@ export default async function DashboardPage() {
 			<div className="flex min-h-screen items-center justify-center">
 				<div className="text-center">
 					<h1 className="text-2xl font-bold text-red-600">Error</h1>
-					<p className="mt-2 text-gray-600">
-						User data not found. Please try logging in again.
-					</p>
+					<p className="mt-2 text-gray-600">User data not found. Please try logging in again.</p>
 				</div>
 			</div>
 		)
@@ -47,24 +45,18 @@ export default async function DashboardPage() {
 		{ label: 'Timezone', value: user.timezone || 'Not set' },
 		{
 			label: 'Last Login',
-			value: user.lastLogin
-				? new Date(user.lastLogin).toLocaleString()
-				: 'Never',
+			value: user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Never',
 		},
 		{ label: 'Login Streak', value: user.loginStreak || 0 },
 		{ label: 'Account Status', value: user.accountStatus || 'active' },
 		{ label: 'GitHub ID', value: user.githubId || 'Not connected' },
 		{
 			label: 'Created At',
-			value: user.createdAt
-				? new Date(Number(user.createdAt)).toLocaleString()
-				: 'Unknown',
+			value: user.createdAt ? new Date(Number(user.createdAt)).toLocaleString() : 'Unknown',
 		},
 		{
 			label: 'Updated At',
-			value: user.updatedAt
-				? new Date(Number(user.updatedAt)).toLocaleString()
-				: 'Unknown',
+			value: user.updatedAt ? new Date(Number(user.updatedAt)).toLocaleString() : 'Unknown',
 		},
 	]
 
@@ -82,10 +74,7 @@ export default async function DashboardPage() {
 						<div className="text-center">
 							<div className="mb-4">
 								<img
-									src={
-										user.avatar ||
-										`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`
-									}
+									src={user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`}
 									alt="Profile Avatar"
 									className="mx-auto h-32 w-32 rounded-full"
 								/>
@@ -93,32 +82,22 @@ export default async function DashboardPage() {
 							<h2 className="text-xl font-semibold">
 								{user.firstName} {user.lastName}
 							</h2>
-							<p className="text-sm text-gray-500">
-								{user.email}
-							</p>
-							<p className="mt-1 text-xs text-gray-500">
-								Role: {user.role}
-							</p>
+							<p className="text-sm text-gray-500">{user.email}</p>
+							<p className="mt-1 text-xs text-gray-500">Role: {user.role}</p>
 						</div>
 					</div>
 
 					{/* User Details Grid */}
 					<div className="rounded-lg bg-white p-6 shadow dark:bg-gray-800">
-						<h2 className="mb-4 text-xl font-semibold">
-							User Details
-						</h2>
+						<h2 className="mb-4 text-xl font-semibold">User Details</h2>
 						<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 							{fields.map(({ label, value }) => (
 								<div
 									key={label}
 									className="rounded border p-4 dark:border-gray-700"
 								>
-									<div className="text-sm text-gray-500 dark:text-gray-400">
-										{label}
-									</div>
-									<div className="mt-1 font-medium">
-										{value}
-									</div>
+									<div className="text-sm text-gray-500 dark:text-gray-400">{label}</div>
+									<div className="mt-1 font-medium">{value}</div>
 								</div>
 							))}
 						</div>

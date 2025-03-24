@@ -21,9 +21,7 @@ export function ForumSidebar() {
 
 				<nav className="space-y-1">
 					{forumNavItems.map((item) => {
-						const isActive = item.exact
-							? pathname === item.href
-							: pathname.startsWith(item.href)
+						const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href)
 
 						return (
 							<Link

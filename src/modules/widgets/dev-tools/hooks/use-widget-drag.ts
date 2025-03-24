@@ -16,11 +16,7 @@ interface UseDragProps {
 	onDragEnd?: () => void
 }
 
-export function useWidgetDrag({
-	allowDrag,
-	onDragStart,
-	onDragEnd,
-}: UseDragProps) {
+export function useWidgetDrag({ allowDrag, onDragStart, onDragEnd }: UseDragProps) {
 	const [dragPosition, setDragPosition] = useState<Position>({ x: 0, y: 0 })
 	const [isDragging, setIsDragging] = useState(false)
 

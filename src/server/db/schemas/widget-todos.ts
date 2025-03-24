@@ -8,9 +8,7 @@ export const widgetTodos = sqliteTable('widget_todos', {
 	id: text('id').primaryKey().notNull(),
 	title: text('title').notNull(),
 	content: text('content'),
-	completed: integer('completed', { mode: 'boolean' })
-		.default(false)
-		.notNull(),
+	completed: integer('completed', { mode: 'boolean' }).default(false).notNull(),
 	userId: text('user_id')
 		.references(() => users.id)
 		.notNull(),

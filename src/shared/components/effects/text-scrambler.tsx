@@ -14,12 +14,7 @@ type TProps = {
 const SCRAMBLE_OPTIONS = CharacterSets
 const SCRAMBLED_VARIANT = SCRAMBLE_OPTIONS.LETTERS
 
-export function TextScrambler({
-	href,
-	text,
-	isActive,
-	className = '',
-}: TProps) {
+export function TextScrambler({ href, text, isActive, className = '' }: TProps) {
 	const [isHovered, setIsHovered] = useState<boolean>(false)
 	const [isTouched, setIsTouched] = useState<boolean>(false)
 	const [scrambledText, setScrambledText] = useState<string>(text)
@@ -38,9 +33,7 @@ export function TextScrambler({
 
 		const updateScrambledText = () => {
 			const iteration = iterationRef.current
-			const correctChars = Math.floor(
-				(iteration / maxIterations) * text.length
-			)
+			const correctChars = Math.floor((iteration / maxIterations) * text.length)
 
 			setScrambledText(
 				text
