@@ -10,9 +10,7 @@ export interface GetCommentsOptions {
 	includeReplies?: boolean
 }
 
-export async function getComments(
-	options: GetCommentsOptions,
-) {
+export async function getComments(options: GetCommentsOptions) {
 	try {
 		const { postId, includeReplies = true } = options
 

@@ -1,1 +1,1 @@
-export { WidgetPosition, WidgetSize, WIDGET_CONSTANTS } from "./widget.const"
+export { WidgetPosition, WidgetSize, WIDGET_CONSTANTS } from './widget.const'

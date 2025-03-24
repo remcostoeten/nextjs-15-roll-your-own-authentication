@@ -1,138 +1,129 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/shared/components/ui/button'
-import { Input } from '@/shared/components/ui/input'
-import { Textarea } from '@/shared/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select'
+import { useEffect, useState } from 'react'
+import { Card, Separator } from 'ui'
+import { motion } from 'framer-motion'
+import { IconCalendar, IconChevronUp, IconThumbUp } from '@tabler/icons-react'
 
-type FormData = {
-    title: string
-    description: string
-    status: 'planned' | 'in-progress' | 'completed'
-    priority: number
-    quarter: string
+interface RoadmapItem {
+	id: string
+	title: string
+	description: string
+	status: 'planned' | 'in-progress' | 'completed'
+	priority: number
+	quarter: string
+	votes: number
+	created_at: string
+	updated_at: string
 }
 
-const initialFormData: FormData = {
-    title: '',
-    description: '',
-    status: 'planned',
-    priority: 0,
-    quarter: ''
+export default function RoadmapPage() {
+	const [items, setItems] = useState<RoadmapItem[]>([])
+	const [loading, setLoading] = useState(true)
+
+	useEffect(() => {
+		async function fetchRoadmap() {
+			try {
+				const response = await fetch('/api/roadmap')
+				const data = await response.json()
+				setItems(data)
+			} catch (error) {
+				console.error('Error fetching roadmap:', error)
+			} finally {
+				setLoading(false)
+			}
+		}
+
+		fetchRoadmap()
+	}, [])
+
+	const quarters = Array.from(new Set(items.map(item => item.quarter))).sort()
+
+	const getStatusColor = (status: RoadmapItem['status']) => {
+		switch (status) {
+			case 'planned':
+				return 'bg-blue-500/10 text-blue-500'
+			case 'in-progress':
+				return 'bg-yellow-500/10 text-yellow-500'
+			case 'completed':
+				return 'bg-green-500/10 text-green-500'
+			default:
+				return 'bg-gray-500/10 text-gray-500'
+		}
+	}
+
+	if (loading) {
+		return (
+			<div className="min-h-screen bg-background p-6">
+				<div className="max-w-7xl mx-auto">
+					<div className="animate-pulse space-y-8">
+						{[1, 2, 3].map(i => (
+							<div key={i} className="h-48 bg-muted rounded-lg" />
+						))}
+					</div>
+				</div>
+			</div>
+		)
+	}
+
+	return (
+		<div className="min-h-screen bg-gradient-to-b from-background to-background/80 p-6">
+			<div className="max-w-7xl mx-auto space-y-8">
+				<div>
+					<h1 className="text-4xl font-bold mb-2">Product Roadmap</h1>
+					<p className="text-muted-foreground">
+						Track the development progress and upcoming features
+					</p>
+				</div>
+
+				<Separator />
+
+				{quarters.map((quarter, index) => (
+					<motion.div
+						key={quarter}
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ delay: index * 0.1 }}
+					>
+						<div className="flex items-center gap-2 mb-4">
+							<IconCalendar className="w-5 h-5 text-primary" />
+							<h2 className="text-2xl font-semibold">{quarter}</h2>
+						</div>
+
+						<div className="grid gap-4">
+							{items
+								.filter(item => item.quarter === quarter)
+								.sort((a, b) => a.priority - b.priority)
+								.map(item => (
+									<Card key={item.id} className="p-6">
+										<div className="flex items-start justify-between">
+											<div>
+												<div className="flex items-center gap-3 mb-2">
+													<h3 className="text-lg font-semibold">{item.title}</h3>
+													<span
+														className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${getStatusColor(
+															item.status
+														)}`}
+													>
+														{item.status}
+													</span>
+												</div>
+												<p className="text-muted-foreground">{item.description}</p>
+											</div>
+											<div className="flex items-center gap-2 text-muted-foreground">
+												<IconThumbUp className="w-4 h-4" />
+												<span>{item.votes}</span>
+												<button className="ml-2 p-1 hover:bg-accent rounded-full transition-colors">
+													<IconChevronUp className="w-4 h-4" />
+												</button>
+											</div>
+										</div>
+									</Card>
+								))}
+						</div>
+					</motion.div>
+				))}
+			</div>
+		</div>
+	)
 }
-
-export default function AdminRoadmapPage() {
-    const router = useRouter()
-    const [formData, setFormData] = useState<FormData>(initialFormData)
-    const [error, setError] = useState<string | null>(null)
-    const [success, setSuccess] = useState<string | null>(null)
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setError(null)
-        setSuccess(null)
-
-        try {
-            const response = await fetch('/api/admin/roadmap', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            })
-
-            if (!response.ok) {
-                const error = await response.text()
-                throw new Error(error)
-            }
-
-            setSuccess('Roadmap item added successfully!')
-            setFormData(initialFormData)
-            router.refresh()
-        } catch (error) {
-            setError(error instanceof Error ? error.message : 'Failed to add roadmap item')
-        }
-    }
-
-    return (
-        <div className="container mx-auto py-8">
-            <h1 className="text-2xl font-bold mb-6">Add Roadmap Item</h1>
-            
-            {error && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                    {error}
-                </div>
-            )}
-            
-            {success && (
-                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                    {success}
-                </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-4 max-w-xl">
-                <div>
-                    <label className="block text-sm font-medium mb-1">Title</label>
-                    <Input
-                        value={formData.title}
-                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium mb-1">Description</label>
-                    <Textarea
-                        value={formData.description}
-                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium mb-1">Status</label>
-                    <Select
-                        value={formData.status}
-                        onValueChange={(value: 'planned' | 'in-progress' | 'completed') => 
-                            setFormData({ ...formData, status: value })
-                        }
-                    >
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="planned">Planned</SelectItem>
-                            <SelectItem value="in-progress">In Progress</SelectItem>
-                            <SelectItem value="completed">Completed</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium mb-1">Priority</label>
-                    <Input
-                        type="number"
-                        min="0"
-                        value={formData.priority}
-                        onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value) })}
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium mb-1">Quarter</label>
-                    <Input
-                        placeholder="e.g., Q2 2024"
-                        value={formData.quarter}
-                        onChange={(e) => setFormData({ ...formData, quarter: e.target.value })}
-                        required
-                    />
-                </div>
-
-                <Button type="submit">Add Roadmap Item</Button>
-            </form>
-        </div>
-    )
-} 

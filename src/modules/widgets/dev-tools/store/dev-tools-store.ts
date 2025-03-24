@@ -7,9 +7,7 @@
 
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import {
-	WIDGET_CONSTANTS,
-} from '@/shared/constants/widget.const'
+import { WIDGET_CONSTANTS } from '@/shared/constants/widget.const'
 import type { DevToolsState, Position } from '@/shared/types/widget-types'
 
 function validatePosition(position: Position): Position {
@@ -46,10 +44,10 @@ export function createDevToolsStore() {
 					set({
 						opacity: validateOpacity(opacity),
 					}),
-				
-					widgetPosition: WIDGET_CONSTANTS.WIDGET_POSITIONS.CUSTOM,
-				
-					setWidgetPosition: (widgetPosition) =>
+
+				widgetPosition: WIDGET_CONSTANTS.WIDGET_POSITIONS.CUSTOM,
+
+				setWidgetPosition: (widgetPosition) =>
 					set({
 						widgetPosition,
 					}),

@@ -1,11 +1,11 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
 	getChangelogItems,
 	ChangelogItem,
-} from './api/queries/get-changelog-items'
-import { voteChangelogItem } from './api/mutations/vote-changelog-item'
+} from '../../modules/changelog/api/queries/get-changelog-items'
+import { voteChangelogItem } from '../../modules/changelog/api/mutations/vote-changelog-item'
 import { formatDate } from '@/shared/utils/helpers'
 import { ThumbsUp } from 'lucide-react'
 
@@ -21,7 +21,6 @@ const ChangelogView = () => {
 				const fetchedItems = await getChangelogItems()
 				setItems(fetchedItems)
 
-				// Get voted items from localStorage
 				const storedVotes = localStorage.getItem('changelog_votes')
 				if (storedVotes) {
 					setVotedItems(JSON.parse(storedVotes))
@@ -113,7 +112,7 @@ const ChangelogView = () => {
 
 				<div className="space-y-12">
 					{items.length === 0 ? (
-						<div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6 text-center">
+						<div className="bg-zinc-900/50 border border-zinc-800   rounded-lg p-6 text-center">
 							<p className="text-zinc-400">
 								No changelog items available yet.
 							</p>

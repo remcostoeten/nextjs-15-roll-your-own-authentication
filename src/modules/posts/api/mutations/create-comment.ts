@@ -9,7 +9,6 @@ import { logUserActivity } from '@/shared/utils/activity-logger'
 import { z } from 'zod'
 import { type PostRequestContext } from '@/modules/posts/models/z.post'
 
-
 export async function createComment(
 	data: CommentInput,
 	ctx: PostRequestContext
@@ -41,7 +40,7 @@ export async function createComment(
 
 		const now = Date.now()
 		const commentId = createId()
-		
+
 		await db.insert(comments).values({
 			id: commentId,
 			content: validatedData.content,

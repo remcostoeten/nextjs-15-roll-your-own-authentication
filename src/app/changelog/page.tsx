@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { Header } from '../../components/layout/header'
-import ChangelogView from '../../modules/changelog/changelog-view'
+import ChangelogView from '../../views/changelog/changelog-view'
 
 export const metadata: Metadata = {
 	title: 'Changelog | Roll Your Own Auth',

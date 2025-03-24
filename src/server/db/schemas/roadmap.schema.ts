@@ -10,9 +10,13 @@ export const roadmapItems = sqliteTable('roadmap_items', {
 	status: text('status', { enum: ['planned', 'in-progress', 'completed'] })
 		.default('planned')
 		.notNull(),
-	priority: integer('priority').default(0),
-	quarter: text('quarter').notNull(), // e.g., "Q2 2024"
-	votes: integer('votes').default(0),
-	createdAt: text('created_at').notNull().$defaultFn(() => new Date().toISOString()),
-	updatedAt: text('updated_at').notNull().$defaultFn(() => new Date().toISOString()),
+	priority: integer('priority').default(0).notNull(),
+	quarter: text('quarter').notNull(),
+	votes: integer('votes').default(0).notNull(),
+	createdAt: text('created_at')
+		.notNull()
+		.$defaultFn(() => new Date().toISOString()),
+	updatedAt: text('updated_at')
+		.notNull()
+		.$defaultFn(() => new Date().toISOString()),
 })

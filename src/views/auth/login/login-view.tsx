@@ -1,6 +1,5 @@
 'use client'
 
-import * as React from 'react'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { SocialAuthButton } from '@/modules/authentication/components/social-auth-button'
@@ -10,16 +9,17 @@ import {
 	GitHubIcon,
 	DiscordIcon,
 } from '@/modules/authentication/components/icons'
-
+import { toast } from 'sonner'
 export default function LoginView() {
 	const router = useRouter()
 
 	const handleGitHubLogin = () => {
-		// Implement GitHub login
+		toast.warning('GitHub login is not available yet')
 		console.log('GitHub login')
 	}
 
 	const handleDiscordLogin = () => {
+		toast.warning('Discord login is not available yet')
 		console.log('Discord login')
 	}
 

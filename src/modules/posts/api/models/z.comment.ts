@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from 'zod'
 
 const commentSchema = z.object({
 	content: z

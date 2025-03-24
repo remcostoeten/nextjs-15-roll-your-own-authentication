@@ -1,15 +1,11 @@
 'use server'
 
-import { db } from '@/server/db'
-import { roadmapItems } from '@/server/db/schemas'
+import { db, roadmapItems } from '@/server/db'
 import { eq } from 'drizzle-orm'
 import { cookies } from 'next/headers'
 import { z } from 'zod'
-
-const voteSchema = z.object({
-	roadmapId: z.string().min(1),
-	operation: z.enum(['upvote', 'downvote', 'remove']),
-})
+import { voteSchema } from '../models/z.votes'
+import { generateFingerprint, getIpAddress } from '@/shared/utils/user-fingerprint'
 
 export type VoteResult = {
 	success: boolean
@@ -17,22 +13,29 @@ export type VoteResult = {
 	newVoteCount?: number
 }
 
+const VOTE_EXPIRY = 60 * 60 * 24 * 7 // 1 week in seconds
+
 /**
- * Vote on a roadmap item
- * @param data Object containing roadmapId and operation (upvote, downvote, or remove)
+ * Vote on a roadmap item with enhanced security
  */
 export async function voteRoadmapItem(data: unknown): Promise<VoteResult> {
 	try {
 		const { roadmapId, operation } = voteSchema.parse(data)
 
-		// Check if user already voted on this item
-		const cookieStore = cookies()
+		// Get user identifiers
+		const fingerprint = await generateFingerprint()
+		const ipAddress = await getIpAddress()
+		
+		// Create a composite key for vote tracking
+		const voteKey = `vote:${roadmapId}:${fingerprint}:${ipAddress}`
+		
+		// Get cookies instance
+		const cookieStore = await cookies()
 		const votedItemsCookie = cookieStore.get('roadmap_votes')
-		const votedItems: Record<string, boolean> = votedItemsCookie
+		const votedItems: Record<string, { timestamp: number }> = votedItemsCookie?.value
 			? JSON.parse(votedItemsCookie.value)
 			: {}
 
-		// Get current item
 		const item = await db.query.roadmapItems.findFirst({
 			where: eq(roadmapItems.id, roadmapId),
 		})
@@ -44,19 +47,30 @@ export async function voteRoadmapItem(data: unknown): Promise<VoteResult> {
 			}
 		}
 
+		const now = Math.floor(Date.now() / 1000)
+		const lastVote = votedItems[voteKey]?.timestamp || 0
+		
+		// Check if the vote has expired
+		const hasVoteExpired = now - lastVote > VOTE_EXPIRY
+
 		let voteChange = 0
 
-		if (operation === 'upvote' && !votedItems[roadmapId]) {
+		if (operation === 'upvote' && (!votedItems[voteKey] || hasVoteExpired)) {
 			voteChange = 1
-			votedItems[roadmapId] = true
-		} else if (operation === 'downvote' && !votedItems[roadmapId]) {
+			votedItems[voteKey] = { timestamp: now }
+		} else if (operation === 'downvote' && (!votedItems[voteKey] || hasVoteExpired)) {
 			voteChange = -1
-			votedItems[roadmapId] = true
-		} else if (operation === 'remove' && votedItems[roadmapId]) {
-			// If removing a vote, first determine if it was an upvote or downvote
-			// For simplicity, we'll assume all votes are upvotes in this example
+			votedItems[voteKey] = { timestamp: now }
+		} else if (operation === 'remove' && votedItems[voteKey] && !hasVoteExpired) {
 			voteChange = -1
-			delete votedItems[roadmapId]
+			delete votedItems[voteKey]
+		} else {
+			return {
+				success: false,
+				message: hasVoteExpired 
+					? 'Your previous vote has expired. You can vote again.'
+					: 'You have already voted on this item',
+			}
 		}
 
 		// Update item votes
@@ -69,11 +83,12 @@ export async function voteRoadmapItem(data: unknown): Promise<VoteResult> {
 				.where(eq(roadmapItems.id, roadmapId))
 		}
 
-		// Save updated voted items to cookie
-		cookieStore.set('roadmap_votes', JSON.stringify(votedItems), {
+		// Set cookie with strict security options
+		await cookieStore.set('roadmap_votes', JSON.stringify(votedItems), {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
-			maxAge: 60 * 60 * 24 * 365, // 1 year
+			sameSite: 'strict',
+			maxAge: VOTE_EXPIRY,
 			path: '/',
 		})
 

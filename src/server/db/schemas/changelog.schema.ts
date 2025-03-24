@@ -8,7 +8,9 @@ export const changelogItems = sqliteTable('changelog_items', {
 	version: text('version').notNull(),
 	title: text('title').notNull(),
 	description: text('description').notNull(),
-	date: text('date').notNull().$defaultFn(() => new Date().toISOString()),
+	date: text('date')
+		.notNull()
+		.$defaultFn(() => new Date().toISOString()),
 	features: text('features'), // JSON string array
 	improvements: text('improvements'), // JSON string array
 	bugfixes: text('bugfixes'), // JSON string array

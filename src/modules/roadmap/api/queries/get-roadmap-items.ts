@@ -1,7 +1,6 @@
 'use server'
 
-import { db } from '@/server/db'
-import { roadmapItems } from '@/server/db/schemas'
+import { db, roadmapItems } from '@/server/db'
 import { asc } from 'drizzle-orm'
 
 export type RoadmapItem = {
@@ -10,8 +9,14 @@ export type RoadmapItem = {
 	description: string
 	status: 'planned' | 'in-progress' | 'completed'
 	priority: number
+	startDate: string | null
+	endDate: string | null
 	quarter: string
 	votes: number
+	assignee: string | null
+	tags: string | null
+	dependencies: string | null
+	progress: number
 }
 
 /**
@@ -29,8 +34,14 @@ export async function getRoadmapItems(): Promise<RoadmapItem[]> {
 			description: item.description,
 			status: item.status as 'planned' | 'in-progress' | 'completed',
 			priority: item.priority || 0,
+			startDate: item.startDate,
+			endDate: item.endDate,
 			quarter: item.quarter,
 			votes: item.votes || 0,
+			assignee: item.assignee,
+			tags: item.tags,
+			dependencies: item.dependencies,
+			progress: item.progress || 0,
 		}))
 	} catch (error) {
 		console.error('Error fetching roadmap items:', error)

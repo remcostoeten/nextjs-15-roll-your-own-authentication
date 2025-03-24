@@ -1,6 +1,11 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { type Todo, type TodoPosition, type TodoSize, type TodoStore } from '../types'
+import {
+	type Todo,
+	type TodoPosition,
+	type TodoSize,
+	type TodoStore,
+} from '../types'
 
 export const useTodoStore = create<TodoStore>()(
 	persist(
@@ -149,4 +154,4 @@ export const useTodoStore = create<TodoStore>()(
 			name: 'floating-todo-storage',
 		}
 	)
-) 
+)

@@ -1561,32 +1561,53 @@ export function DevToolsWidget({
 													<Input
 														placeholder="Key"
 														value={newKey}
-														onChange={(e) => setNewKey(e.target.value)}
+														onChange={(e) =>
+															setNewKey(
+																e.target.value
+															)
+														}
 														className="text-xs h-7 bg-gray-50 dark:bg-zinc-900/80"
 													/>
 													<Input
 														placeholder="Value"
 														value={newValue}
-														onChange={(e) => setNewValue(e.target.value)}
+														onChange={(e) =>
+															setNewValue(
+																e.target.value
+															)
+														}
 														className="text-xs h-7 bg-gray-50 dark:bg-zinc-900/80"
 													/>
 													<Button
 														size="sm"
-														onClick={() => addNewItem('local')}
+														onClick={() =>
+															addNewItem('local')
+														}
 														className="h-7 w-7 p-0"
 													>
 														<Plus className="h-3 w-3" />
 													</Button>
 												</div>
-												{localStorageItems.length > 0 && (
+												{localStorageItems.length >
+													0 && (
 													<Button
 														size="sm"
 														variant="secondary"
 														onClick={() => {
 															localStorage.clear()
-															refreshStorageData('localStorage')
-															setActionResult('Local Storage Cleared')
-															setTimeout(() => setActionResult(null), 3000)
+															refreshStorageData(
+																'localStorage'
+															)
+															setActionResult(
+																'Local Storage Cleared'
+															)
+															setTimeout(
+																() =>
+																	setActionResult(
+																		null
+																	),
+																3000
+															)
 														}}
 														className="h-7"
 													>
@@ -1596,65 +1617,98 @@ export function DevToolsWidget({
 											</div>
 
 											<div className="max-h-40 overflow-y-auto space-y-1 pr-1">
-												{localStorageItems.length === 0 ? (
+												{localStorageItems.length ===
+												0 ? (
 													<p className="text-gray-500 dark:text-zinc-300 text-xs text-center py-2">
 														No items in localStorage
 													</p>
 												) : (
-													localStorageItems.map((item) => (
-														<div
-															key={item.key}
-															className="border border-gray-200 dark:border-zinc-800 rounded-md p-1 bg-gray-50 dark:bg-zinc-900/30"
-														>
-															{editingKey === item.key ? (
-																<div className="flex gap-1">
-																	<Input
-																		value={editValue}
-																		onChange={(e) => setEditValue(e.target.value)}
-																		className="text-xs flex-1 h-6"
-																	/>
-																	<Button
-																		size="sm"
-																		onClick={() => saveEdit(item.key, 'local')}
-																		className="h-6 px-1.5"
-																	>
-																		<Save className="h-3 w-3" />
-																	</Button>
-																</div>
-															) : (
-																<div className="flex items-center justify-between gap-1">
-																	<div className="flex-1 min-w-0">
-																		<div className="flex items-center justify-between">
-																			<span className="font-medium text-xs text-gray-800 dark:text-zinc-200 truncate">
-																				{item.key}
-																			</span>
-																			<div className="flex items-center gap-0.5 ml-1">
-																				<Button
-																					size="sm"
-																					variant="ghost"
-																					onClick={() => startEditing(item.key, item.value)}
-																					className="h-5 w-5 p-0"
-																				>
-																					<Edit className="h-2.5 w-2.5" />
-																				</Button>
-																				<Button
-																					size="sm"
-																					variant="ghost"
-																					onClick={() => deleteStorageItem(item.key, 'local')}
-																					className="h-5 w-5 p-0 text-red-500"
-																				>
-																					<Trash2 className="h-2.5 w-2.5" />
-																				</Button>
+													localStorageItems.map(
+														(item) => (
+															<div
+																key={item.key}
+																className="border border-gray-200 dark:border-zinc-800 rounded-md p-1 bg-gray-50 dark:bg-zinc-900/30"
+															>
+																{editingKey ===
+																item.key ? (
+																	<div className="flex gap-1">
+																		<Input
+																			value={
+																				editValue
+																			}
+																			onChange={(
+																				e
+																			) =>
+																				setEditValue(
+																					e
+																						.target
+																						.value
+																				)
+																			}
+																			className="text-xs flex-1 h-6"
+																		/>
+																		<Button
+																			size="sm"
+																			onClick={() =>
+																				saveEdit(
+																					item.key,
+																					'local'
+																				)
+																			}
+																			className="h-6 px-1.5"
+																		>
+																			<Save className="h-3 w-3" />
+																		</Button>
+																	</div>
+																) : (
+																	<div className="flex items-center justify-between gap-1">
+																		<div className="flex-1 min-w-0">
+																			<div className="flex items-center justify-between">
+																				<span className="font-medium text-xs text-gray-800 dark:text-zinc-200 truncate">
+																					{
+																						item.key
+																					}
+																				</span>
+																				<div className="flex items-center gap-0.5 ml-1">
+																					<Button
+																						size="sm"
+																						variant="ghost"
+																						onClick={() =>
+																							startEditing(
+																								item.key,
+																								item.value
+																							)
+																						}
+																						className="h-5 w-5 p-0"
+																					>
+																						<Edit className="h-2.5 w-2.5" />
+																					</Button>
+																					<Button
+																						size="sm"
+																						variant="ghost"
+																						onClick={() =>
+																							deleteStorageItem(
+																								item.key,
+																								'local'
+																							)
+																						}
+																						className="h-5 w-5 p-0 text-red-500"
+																					>
+																						<Trash2 className="h-2.5 w-2.5" />
+																					</Button>
+																				</div>
+																			</div>
+																			<div className="text-[10px] font-mono truncate text-gray-600 dark:text-zinc-400">
+																				{
+																					item.value
+																				}
 																			</div>
 																		</div>
-																		<div className="text-[10px] font-mono truncate text-gray-600 dark:text-zinc-400">
-																			{item.value}
-																		</div>
 																	</div>
-																</div>
-															)}
-														</div>
-													))
+																)}
+															</div>
+														)
+													)
 												)}
 											</div>
 										</TabsContent>
@@ -1668,32 +1722,55 @@ export function DevToolsWidget({
 													<Input
 														placeholder="Key"
 														value={newKey}
-														onChange={(e) => setNewKey(e.target.value)}
+														onChange={(e) =>
+															setNewKey(
+																e.target.value
+															)
+														}
 														className="text-xs h-7 bg-gray-50 dark:bg-zinc-900/80"
 													/>
 													<Input
 														placeholder="Value"
 														value={newValue}
-														onChange={(e) => setNewValue(e.target.value)}
+														onChange={(e) =>
+															setNewValue(
+																e.target.value
+															)
+														}
 														className="text-xs h-7 bg-gray-50 dark:bg-zinc-900/80"
 													/>
 													<Button
 														size="sm"
-														onClick={() => addNewItem('session')}
+														onClick={() =>
+															addNewItem(
+																'session'
+															)
+														}
 														className="h-7 w-7 p-0"
 													>
 														<Plus className="h-3 w-3" />
 													</Button>
 												</div>
-												{sessionStorageItems.length > 0 && (
+												{sessionStorageItems.length >
+													0 && (
 													<Button
 														size="sm"
 														variant="destructive"
 														onClick={() => {
 															sessionStorage.clear()
-															refreshStorageData('sessionStorage')
-															setActionResult('Session Storage Cleared')
-															setTimeout(() => setActionResult(null), 3000)
+															refreshStorageData(
+																'sessionStorage'
+															)
+															setActionResult(
+																'Session Storage Cleared'
+															)
+															setTimeout(
+																() =>
+																	setActionResult(
+																		null
+																	),
+																3000
+															)
 														}}
 														className="h-7"
 													>
@@ -1703,65 +1780,99 @@ export function DevToolsWidget({
 											</div>
 
 											<div className="max-h-40 overflow-y-auto space-y-1 pr-1">
-												{sessionStorageItems.length === 0 ? (
+												{sessionStorageItems.length ===
+												0 ? (
 													<p className="text-gray-500 dark:text-zinc-300 text-xs text-center py-2">
-														No items in sessionStorage
+														No items in
+														sessionStorage
 													</p>
 												) : (
-													sessionStorageItems.map((item) => (
-														<div
-															key={item.key}
-															className="border border-gray-200 dark:border-zinc-800 rounded-md p-1 bg-gray-50 dark:bg-zinc-900/30"
-														>
-															{editingKey === item.key ? (
-																<div className="flex gap-1">
-																	<Input
-																		value={editValue}
-																		onChange={(e) => setEditValue(e.target.value)}
-																		className="text-xs flex-1 h-6"
-																	/>
-																	<Button
-																		size="sm"
-																		onClick={() => saveEdit(item.key, 'session')}
-																		className="h-6 px-1.5"
-																	>
-																		<Save className="h-3 w-3" />
-																	</Button>
-																</div>
-															) : (
-																<div className="flex items-center justify-between gap-1">
-																	<div className="flex-1 min-w-0">
-																		<div className="flex items-center justify-between">
-																			<span className="font-medium text-xs text-gray-800 dark:text-zinc-200 truncate">
-																				{item.key}
-																			</span>
-																			<div className="flex items-center gap-0.5 ml-1">
-																				<Button
-																					size="sm"
-																					variant="ghost"
-																					onClick={() => startEditing(item.key, item.value)}
-																					className="h-5 w-5 p-0"
-																				>
-																					<Edit className="h-2.5 w-2.5" />
-																				</Button>
-																				<Button
-																					size="sm"
-																					variant="ghost"
-																					onClick={() => deleteStorageItem(item.key, 'session')}
-																					className="h-5 w-5 p-0 text-red-500"
-																				>
-																					<Trash2 className="h-2.5 w-2.5" />
-																				</Button>
+													sessionStorageItems.map(
+														(item) => (
+															<div
+																key={item.key}
+																className="border border-gray-200 dark:border-zinc-800 rounded-md p-1 bg-gray-50 dark:bg-zinc-900/30"
+															>
+																{editingKey ===
+																item.key ? (
+																	<div className="flex gap-1">
+																		<Input
+																			value={
+																				editValue
+																			}
+																			onChange={(
+																				e
+																			) =>
+																				setEditValue(
+																					e
+																						.target
+																						.value
+																				)
+																			}
+																			className="text-xs flex-1 h-6"
+																		/>
+																		<Button
+																			size="sm"
+																			onClick={() =>
+																				saveEdit(
+																					item.key,
+																					'session'
+																				)
+																			}
+																			className="h-6 px-1.5"
+																		>
+																			<Save className="h-3 w-3" />
+																		</Button>
+																	</div>
+																) : (
+																	<div className="flex items-center justify-between gap-1">
+																		<div className="flex-1 min-w-0">
+																			<div className="flex items-center justify-between">
+																				<span className="font-medium text-xs text-gray-800 dark:text-zinc-200 truncate">
+																					{
+																						item.key
+																					}
+																				</span>
+																				<div className="flex items-center gap-0.5 ml-1">
+																					<Button
+																						size="sm"
+																						variant="ghost"
+																						onClick={() =>
+																							startEditing(
+																								item.key,
+																								item.value
+																							)
+																						}
+																						className="h-5 w-5 p-0"
+																					>
+																						<Edit className="h-2.5 w-2.5" />
+																					</Button>
+																					<Button
+																						size="sm"
+																						variant="ghost"
+																						onClick={() =>
+																							deleteStorageItem(
+																								item.key,
+																								'session'
+																							)
+																						}
+																						className="h-5 w-5 p-0 text-red-500"
+																					>
+																						<Trash2 className="h-2.5 w-2.5" />
+																					</Button>
+																				</div>
+																			</div>
+																			<div className="text-[10px] font-mono truncate text-gray-600 dark:text-zinc-400">
+																				{
+																					item.value
+																				}
 																			</div>
 																		</div>
-																		<div className="text-[10px] font-mono truncate text-gray-600 dark:text-zinc-400">
-																			{item.value}
-																		</div>
 																	</div>
-																</div>
-															)}
-														</div>
-													))
+																)}
+															</div>
+														)
+													)
 												)}
 											</div>
 										</TabsContent>

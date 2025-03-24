@@ -11,7 +11,10 @@ import type { User as DbUser } from '@/server/db/schemas/users'
 // recreating it on every state change
 const api = typeof window !== 'undefined' ? useAuthApi() : null
 
-export type User = Pick<DbUser, 'id' | 'email' | 'firstName' | 'lastName' | 'role' | 'githubId'>
+export type User = Pick<
+	DbUser,
+	'id' | 'email' | 'firstName' | 'lastName' | 'role' | 'githubId'
+>
 
 type AuthState = {
 	user: User | null

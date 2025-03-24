@@ -2,10 +2,16 @@
 
 import { cn } from 'helpers'
 import styles from '@/styles/modules/checkbox.module.css'
-import React, { InputHTMLAttributes, forwardRef, useState, CSSProperties, useEffect, useId } from 'react'
+import React, {
+	InputHTMLAttributes,
+	forwardRef,
+	useState,
+	CSSProperties,
+	useEffect,
+	useId,
+} from 'react'
 
-export interface CheckboxProps
-	extends InputHTMLAttributes<HTMLInputElement> {
+export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
 	label?: string
 	labelClassName?: string
 	error?: string

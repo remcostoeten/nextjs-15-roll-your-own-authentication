@@ -71,7 +71,11 @@ const sections: Section[] = [
 ]
 
 // Components
-function StyleguideSection({ title, description, children }: StyleguideSectionProps) {
+function StyleguideSection({
+	title,
+	description,
+	children,
+}: StyleguideSectionProps) {
 	return (
 		<section className="mb-10">
 			<motion.div
@@ -80,10 +84,17 @@ function StyleguideSection({ title, description, children }: StyleguideSectionPr
 				transition={{ duration: 0.5 }}
 				className="mb-6"
 			>
-				<Heading level="h2" hasMargin={true} className="text-3xl">
+				<Heading
+					level="h2"
+					hasMargin={true}
+					className="text-3xl"
+				>
 					{title}
 				</Heading>
-				<Text variant="muted" className="max-w-3xl">
+				<Text
+					variant="muted"
+					className="max-w-3xl"
+				>
 					{description}
 				</Text>
 			</motion.div>
@@ -92,7 +103,11 @@ function StyleguideSection({ title, description, children }: StyleguideSectionPr
 	)
 }
 
-function SidebarNavigation({ activeSection, onSectionChange, isMobileNavOpen }: {
+function SidebarNavigation({
+	activeSection,
+	onSectionChange,
+	isMobileNavOpen,
+}: {
 	activeSection: string
 	onSectionChange: (section: string) => void
 	isMobileNavOpen: boolean
@@ -102,11 +117,16 @@ function SidebarNavigation({ activeSection, onSectionChange, isMobileNavOpen }: 
 			className={cn(
 				'md:w-64 md:sticky md:top-24 md:self-start md:h-[calc(100vh-6rem)] md:overflow-y-auto md:pr-4 transition-all duration-300 ease-in-out',
 				'fixed inset-y-0 left-0 z-20 w-64 bg-background border-r border-button-border md:border-r-0 md:bg-transparent md:translate-x-0 md:opacity-100',
-				isMobileNavOpen ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0 md:opacity-100'
+				isMobileNavOpen
+					? 'translate-x-0 opacity-100'
+					: '-translate-x-full opacity-0 md:opacity-100'
 			)}
 		>
 			<nav className="p-4 md:p-0">
-				<Heading level="h2" className="text-xl mb-4 md:hidden">
+				<Heading
+					level="h2"
+					className="text-xl mb-4 md:hidden"
+				>
 					Navigation
 				</Heading>
 				<ul className="space-y-1">
@@ -163,7 +183,11 @@ function TypographySection() {
 			title="Typography"
 			description="Our typography system provides consistent text styles for various purposes, from headings to body text."
 		>
-			<Flex direction="col" gap={8} className="w-full">
+			<Flex
+				direction="col"
+				gap={8}
+				className="w-full"
+			>
 				<HeadingShowcase />
 				<TextVariantsShowcase />
 				<SpecialTypographyShowcase />
@@ -178,7 +202,11 @@ function LayoutSection() {
 			title="Layout Components"
 			description="Our layout components provide flexible and powerful ways to structure your UI."
 		>
-			<Flex direction="col" gap={8} className="w-full">
+			<Flex
+				direction="col"
+				gap={8}
+				className="w-full"
+			>
 				<FlexShowcase />
 				<GridShowcase />
 			</Flex>
@@ -192,7 +220,11 @@ function ComponentsSection() {
 			title="UI Components"
 			description="Our UI components are designed to be flexible, accessible, and easy to use."
 		>
-			<Flex direction="col" gap={8} className="w-full">
+			<Flex
+				direction="col"
+				gap={8}
+				className="w-full"
+			>
 				<ButtonShowcase />
 				<CardShowcase />
 				<NavigationShowcase />
@@ -205,7 +237,9 @@ function ComponentsSection() {
 function StyleguideContent() {
 	const searchParams = useSearchParams()
 	const router = useRouter()
-	const [activeSection, setActiveSection] = useState(searchParams.get('section') || 'colors')
+	const [activeSection, setActiveSection] = useState(
+		searchParams.get('section') || 'colors'
+	)
 	const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
 
 	const handleSectionChange = (section: string) => {
@@ -222,7 +256,10 @@ function StyleguideContent() {
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.6 }}
 				>
-					<Heading level="h1" className="text-5xl md:text-6xl font-bold mb-4">
+					<Heading
+						level="h1"
+						className="text-5xl md:text-6xl font-bold mb-4"
+					>
 						Design System
 					</Heading>
 				</motion.div>
@@ -243,7 +280,10 @@ function StyleguideContent() {
 				/>
 
 				<div className="flex-1 md:pl-8">
-					{sections.find(section => section.id === activeSection)?.component}
+					{
+						sections.find((section) => section.id === activeSection)
+							?.component
+					}
 				</div>
 			</Flex>
 		</div>

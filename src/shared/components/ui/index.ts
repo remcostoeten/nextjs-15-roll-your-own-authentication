@@ -1,3 +1,5 @@
+import { Progress } from './progress';
+export { Calendar } from './calendar'
 export { Skeleton } from './skeleton'
 export { Accordion } from './accordion'
 export { AccordionItem } from './accordion'
@@ -89,5 +91,10 @@ export { Tooltip } from './tooltip'
 export { TooltipTrigger } from './tooltip'
 export { TooltipContent } from './tooltip'
 export { TooltipProvider } from './tooltip'
-export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor } from './popover'
+export {
+	Popover,
+	PopoverTrigger,
+	PopoverContent,
+	PopoverAnchor,
+} from './popover'
 export { DropdownPanel, DropdownHeader, DropdownItem } from './dropdown-panel'

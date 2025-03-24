@@ -1,16 +1,11 @@
-import fs from 'fs'
-import path from 'path'
-import { promisify } from 'util'
+const fs = require('fs')
+const path = require('path')
+const { promisify } = require('util')
 
 const readdir = promisify(fs.readdir)
 const stat = promisify(fs.stat)
 const writeFile = promisify(fs.writeFile)
 const readFile = promisify(fs.readFile)
-
-interface FileItem {
-	path: string
-	isDirectory: boolean
-}
 
 // Config
 const IGNORE_PATTERNS = [
@@ -22,20 +17,15 @@ const IGNORE_PATTERNS = [
 	'public',
 ]
 
-const EXPORT_EXTENSIONS = ['.tsx', '.ts', '.jsx', '.js']
-const IGNORED_FILES = [
-	'index.ts',
-	'index.tsx',
-	'index.js',
-	'index.jsx',
-	'.d.ts',
-]
+const EXPORT_EXTENSIONS = ['.jsx', '.js']
+const IGNORED_FILES = ['index.js', 'index.jsx', '.d.ts']
+
 const TARGET_DIRS = process.argv.slice(2).length
 	? process.argv.slice(2)
 	: ['src']
 
 // Helper functions
-const isDirectory = async (filePath: string): Promise<boolean> => {
+const isDirectory = async (filePath) => {
 	try {
 		const stats = await stat(filePath)
 		return stats.isDirectory()
@@ -44,10 +34,10 @@ const isDirectory = async (filePath: string): Promise<boolean> => {
 	}
 }
 
-const getFilesInDir = async (dir: string): Promise<FileItem[]> => {
+const getFilesInDir = async (dir) => {
 	try {
 		const items = await readdir(dir)
-		const results: FileItem[] = []
+		const results = []
 
 		for (const item of items) {
 			if (IGNORE_PATTERNS.some((pattern) => item.includes(pattern)))
@@ -87,7 +77,7 @@ const getFilesInDir = async (dir: string): Promise<FileItem[]> => {
 	}
 }
 
-const generateBarrelFile = async (dir: string): Promise<void> => {
+const generateBarrelFile = async (dir) => {
 	try {
 		console.log(`Processing directory: ${dir}`)
 		const items = await readdir(dir)
@@ -124,7 +114,7 @@ const generateBarrelFile = async (dir: string): Promise<void> => {
 			})
 			.join('\n')
 
-		const indexPath = path.join(dir, 'index.ts')
+		const indexPath = path.join(dir, 'index.js')
 
 		// Check if index file already exists
 		let existingContent = ''
@@ -146,7 +136,7 @@ const generateBarrelFile = async (dir: string): Promise<void> => {
 	}
 }
 
-const processDirectory = async (baseDir: string): Promise<void> => {
+const processDirectory = async (baseDir) => {
 	console.log(`Scanning ${baseDir} for directories...`)
 	const files = await getFilesInDir(baseDir)
 

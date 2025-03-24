@@ -1,11 +1,10 @@
 import type { Config } from 'drizzle-kit'
-import { env } from 'env'
 
 export default {
-	schema: './src/server/db/schemas/*.ts',
-	out: './src/server/db/migrations',
+	schema: './src/server/db/schemas/*',
+	out: './drizzle',
 	dialect: 'sqlite',
 	dbCredentials: {
-		url: env.DATABASE_URL,
+		url: process.env.DATABASE_URL || 'file:database.db',
 	},
 } satisfies Config

@@ -36,7 +36,7 @@ export const useAuthApi = () => {
 		}
 
 		const data = await response.json()
-		
+
 		// Store the JWT token in localStorage for devtools
 		if (data.tokens?.accessToken) {
 			localStorage.setItem('jwt_token', data.tokens.accessToken)
@@ -101,15 +101,24 @@ export const useAuthApi = () => {
 	 * Logout the current user using server action
 	 */
 	const logout = async () => {
+		console.log('Client: Starting logout process')
 		try {
-			await logoutMutation()
-			
+			const result = await logoutMutation()
+			console.log('Client: Logout mutation completed:', result)
+
 			// Remove JWT token from localStorage
 			localStorage.removeItem('jwt_token')
-			
-			return { success: true }
+			console.log('Client: Removed JWT from localStorage')
+
+			// Clear any other client-side auth state
+			localStorage.removeItem('user')
+			sessionStorage.clear()
+			console.log('Client: Cleared all client-side storage')
+
+			return result
 		} catch (error) {
-			throw new Error('Failed to logout')
+			console.error('Client: Logout error:', error)
+			throw error
 		}
 	}
 

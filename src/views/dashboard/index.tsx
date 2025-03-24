@@ -4,13 +4,37 @@ import { useEffect } from 'react'
 import { useAuth } from '@/modules/authentication/hooks/use-auth'
 import { useUserMetrics } from '@/modules/user-metrics/hooks'
 import { useRouter } from 'next/navigation'
-import { MapPinIcon, ClockIcon, ComputerIcon, GithubIcon } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from 'ui'
+import { Card, Separator } from 'ui'
 import { Skeleton } from 'ui'
 import type { User } from '@/modules/authentication/state/use-auth-state'
+import { usePermissions } from '@/modules/authentication/hooks/use-permissions'
+import Link from 'next/link'
+import { IconBuildingBank, IconCalendarTime, IconId, IconLocation, IconMail, IconUserCircle, IconUserShield } from '@tabler/icons-react'
+import { Avatar, AvatarImage, AvatarFallback } from '@/shared/components/ui/avatar'
 
-export default function DashboardView() {
-	const { user, isLoading, logout } = useAuth()
+interface DashboardProps {
+	user: {
+		id: string
+		email: string
+		firstName: string
+		lastName: string
+		role: string
+		location: string
+		timezone: string
+		createdAt: string
+		lastLogin: string | null
+		avatarUrl?: string
+	}
+}
+
+const adminRoutes = [
+	{ href: '/dashboard/admin', label: 'Admin Overview', icon: IconBuildingBank },
+	{ href: '/admin/roadmap', label: 'Roadmap Management', icon: IconCalendarTime },
+]
+
+export default function DashboardView({ user }: DashboardProps) {
+	const { isAdmin } = usePermissions()
+	const { isLoading, logout } = useAuth()
 	const metrics = useUserMetrics()
 	const router = useRouter()
 
@@ -38,153 +62,116 @@ export default function DashboardView() {
 	}
 
 	return (
-		<div className="min-h-screen bg-background">
-			<div className="container mx-auto py-8 px-4">
-				<header className="flex justify-between items-center mb-8">
-					<h1 className="text-3xl font-bold">Dashboard</h1>
-					<button
-						onClick={handleLogout}
-						className="text-muted-foreground hover:text-foreground transition-colors"
-					>
-						Sign out →
-					</button>
-				</header>
-
-				<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-					<Card>
-						<CardHeader>
-							<CardTitle>Profile Information</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<div className="space-y-4">
-								<div className="flex items-center space-x-4">
-									<div className="h-12 w-12 rounded-full bg-gradient-to-r from-primary/20 to-primary/10 flex items-center justify-center">
-										<span className="text-primary text-lg font-semibold">
-											{user?.firstName?.[0] ||
-												user?.email?.[0]?.toUpperCase() ||
-												'?'}
-										</span>
-									</div>
-									<div>
-										<h3 className="font-medium">
-											{user?.firstName && user?.lastName
-												? `${user.firstName} ${user.lastName}`
-												: user?.email?.split('@')[0] || 'User'}
-										</h3>
-										<p className="text-sm text-muted-foreground">
-											{user?.email}
-										</p>
-									</div>
-								</div>
-
-								<div className="grid gap-4">
-									<div className="flex justify-between">
-										<span className="text-sm text-muted-foreground">User ID</span>
-										<span className="text-sm font-mono">{user?.id}</span>
-									</div>
-									<div className="flex justify-between">
-										<span className="text-sm text-muted-foreground">Role</span>
-										<span className="text-sm">{user?.role}</span>
-									</div>
-									{user?.githubId && (
-										<div className="flex justify-between items-center">
-											<span className="text-sm text-muted-foreground">GitHub</span>
-											<div className="flex items-center space-x-2">
-												<GithubIcon className="h-4 w-4" />
-												<span className="text-sm">{user.githubId}</span>
-											</div>
-										</div>
-									)}
-								</div>
+		<div className="min-h-screen bg-gradient-to-b from-background to-background/80 p-6">
+			<div className="max-w-7xl mx-auto space-y-8">
+				{/* Header Section */}
+				<div className="flex items-start justify-between">
+					<div className="flex items-center space-x-6">
+						<Avatar className="w-24 h-24 rounded-full border-4 border-primary/10">
+							<AvatarImage
+								src={user.avatarUrl || `https://api.dicebear.com/7.x/initials/svg?seed=${user.firstName} ${user.lastName}`}
+								alt={`${user.firstName}'s avatar`}
+							/>
+							<AvatarFallback>
+								{user.firstName?.[0]}{user.lastName?.[0]}
+							</AvatarFallback>
+						</Avatar>
+						<div>
+							<h1 className="text-4xl font-bold text-foreground">
+								{user.firstName} {user.lastName}
+							</h1>
+							<div className="flex items-center mt-2 text-muted-foreground">
+								<IconUserShield className="w-5 h-5 mr-2" />
+								<span className="capitalize">{user.role}</span>
 							</div>
-						</CardContent>
+						</div>
+					</div>
+					
+					{isAdmin && (
+						<Card className="p-4">
+							<h3 className="font-semibold mb-3 text-foreground">Admin Quick Access</h3>
+							<div className="space-y-2">
+								{adminRoutes.map((route) => (
+									<Link
+										key={route.href}
+										href={route.href}
+										className="flex items-center space-x-2 p-2 rounded-md hover:bg-accent transition-colors"
+									>
+										<route.icon className="w-5 h-5" />
+										<span>{route.label}</span>
+									</Link>
+								))}
+							</div>
+						</Card>
+					)}
+				</div>
+
+				<Separator />
+
+				{/* User Details Grid */}
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+					<Card className="p-6 space-y-4">
+						<div className="flex items-center space-x-3">
+							<IconId className="w-5 h-5 text-primary" />
+							<h3 className="font-semibold">User ID</h3>
+						</div>
+						<p className="text-sm text-muted-foreground font-mono">{user.id}</p>
 					</Card>
 
-					<Card>
-						<CardHeader>
-							<CardTitle>Current Session</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<div className="space-y-4">
-								<div className="flex items-center space-x-3">
-									<MapPinIcon className="h-5 w-5 text-muted-foreground" />
-									<div>
-										<p className="text-sm text-muted-foreground">
-											Location
-										</p>
-										<p className="text-sm">
-											{metrics.currentLocation?.city}, {metrics.currentLocation?.country}
-										</p>
-									</div>
-								</div>
-								<div className="flex items-center space-x-3">
-									<ClockIcon className="h-5 w-5 text-muted-foreground" />
-									<div>
-										<p className="text-sm text-muted-foreground">
-											Timezone
-										</p>
-										<p className="text-sm">
-											{metrics.currentLocation?.timezone}
-										</p>
-									</div>
-								</div>
-								<div className="flex items-center space-x-3">
-									<ComputerIcon className="h-5 w-5 text-muted-foreground" />
-									<div>
-										<p className="text-sm text-muted-foreground">
-											Device
-										</p>
-										<p className="text-sm">
-											{metrics.device?.os} - {metrics.device?.browser}
-										</p>
-									</div>
-								</div>
-							</div>
-						</CardContent>
+					<Card className="p-6 space-y-4">
+						<div className="flex items-center space-x-3">
+							<IconMail className="w-5 h-5 text-primary" />
+							<h3 className="font-semibold">Email</h3>
+						</div>
+						<p className="text-sm text-muted-foreground">{user.email}</p>
 					</Card>
 
-					<Card>
-						<CardHeader>
-							<CardTitle>Account Stats</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<div className="space-y-4">
-								<div>
-									<p className="text-sm text-muted-foreground mb-1">
-										Login Streak
-									</p>
-									<div className="flex items-center justify-between">
-										<span className="text-sm">
-											{metrics.loginStreak} days
-										</span>
-										<div className="w-32 h-2 bg-muted rounded-full overflow-hidden">
-											<div
-												className="h-full bg-primary rounded-full"
-												style={{
-													width: `${Math.min((metrics.loginStreak / 30) * 100, 100)}%`,
-												}}
-											/>
-										</div>
-									</div>
-								</div>
-								<div>
-									<p className="text-sm text-muted-foreground mb-1">
-										Account Age
-									</p>
-									<p className="text-sm">
-										{metrics.accountAge}
-									</p>
-								</div>
-								<div>
-									<p className="text-sm text-muted-foreground mb-1">
-										Last Login
-									</p>
-									<p className="text-sm">
-										{metrics.lastLoginFormatted}
-									</p>
-								</div>
-							</div>
-						</CardContent>
+					<Card className="p-6 space-y-4">
+						<div className="flex items-center space-x-3">
+							<IconLocation className="w-5 h-5 text-primary" />
+							<h3 className="font-semibold">Location</h3>
+						</div>
+						<p className="text-sm text-muted-foreground">{user.location || 'Not specified'}</p>
+					</Card>
+
+					<Card className="p-6 space-y-4">
+						<div className="flex items-center space-x-3">
+							<IconCalendarTime className="w-5 h-5 text-primary" />
+							<h3 className="font-semibold">Timezone</h3>
+						</div>
+						<p className="text-sm text-muted-foreground">{user.timezone}</p>
+					</Card>
+
+					<Card className="p-6 space-y-4">
+						<div className="flex items-center space-x-3">
+							<IconUserCircle className="w-5 h-5 text-primary" />
+							<h3 className="font-semibold">Member Since</h3>
+						</div>
+						<p className="text-sm text-muted-foreground">
+							{new Date(user.createdAt).toLocaleDateString('en-US', {
+								year: 'numeric',
+								month: 'long',
+								day: 'numeric',
+							})}
+						</p>
+					</Card>
+
+					<Card className="p-6 space-y-4">
+						<div className="flex items-center space-x-3">
+							<IconCalendarTime className="w-5 h-5 text-primary" />
+							<h3 className="font-semibold">Last Login</h3>
+						</div>
+						<p className="text-sm text-muted-foreground">
+							{user.lastLogin
+								? new Date(user.lastLogin).toLocaleDateString('en-US', {
+									year: 'numeric',
+									month: 'long',
+									day: 'numeric',
+									hour: '2-digit',
+									minute: '2-digit',
+								})
+								: 'Never'}
+						</p>
 					</Card>
 				</div>
 			</div>

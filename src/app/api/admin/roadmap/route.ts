@@ -1,103 +1,114 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 import { z } from 'zod'
 import { db } from '@/server/db'
 import { roadmapItems } from '@/server/db/schemas/roadmap.schema'
-import { getServerSession } from 'next-auth/next'
 import { eq } from 'drizzle-orm'
+import { auth } from '@/shared/auth'
+import { roadmapItemSchema } from '@/modules/roadmap/models/z.roadmap-item'
+import { useAuth, useAuthApi } from '@/modules/authentication'
+import { cookies } from 'next/headers'
+import { users } from '@/server/db/schemas'
+import { verifyAccessToken } from '@/shared/utils/jwt/jwt'
 
-const roadmapItemSchema = z.object({
-    title: z.string().min(1),
-    description: z.string().min(1),
-    status: z.enum(['planned', 'in-progress', 'completed']),
-    priority: z.number().int().min(0),
-    quarter: z.string().min(1),
-})
+export async function POST(req: NextRequest) {
+	try {
+		const accessToken = req.cookies.get('access_token')?.value;
+		if (!accessToken) {
+			return new NextResponse('Unauthorized', { status: 401 });
+		}
 
-export async function POST(req: Request) {
-    try {
-        const session = await getServerSession()
-        
-        if (!session || session.user?.email !== process.env.ADMIN_EMAIL) {
-            return new NextResponse('Unauthorized', { status: 401 })
-        }
+		try {
+			const payload = await verifyAccessToken(accessToken);
+			const user = await db.query.users.findFirst({
+				where: eq(users.id, payload.sub),
+			});
 
-        const body = await req.json()
-        const validatedData = roadmapItemSchema.parse(body)
+			if (!user || user.role !== 'admin') {
+				return new NextResponse('Unauthorized', { status: 401 });
+			}
 
-        const newItem = await db.insert(roadmapItems).values({
-            ...validatedData,
-            votes: 0,
-        }).returning()
+			const body = await req.json();
+			const validatedData = roadmapItemSchema.parse(body);
 
-        return NextResponse.json(newItem[0])
-    } catch (error) {
-        console.error('Error adding roadmap item:', error)
-        return new NextResponse(
-            error instanceof z.ZodError 
-                ? JSON.stringify(error.errors) 
-                : 'Internal Server Error',
-            { status: error instanceof z.ZodError ? 400 : 500 }
-        )
-    }
+			const newItem = await db
+				.insert(roadmapItems)
+				.values({
+					...validatedData,
+					votes: 0,
+				})
+				.returning();
+
+			return NextResponse.json(newItem[0]);
+		} catch (error) {
+			if (error instanceof z.ZodError) {
+				return new NextResponse(JSON.stringify(error.errors), { status: 400 });
+			}
+			throw error;
+		}
+	} catch (error) {
+		console.error('Error in roadmap POST:', error);
+		return new NextResponse('Internal Server Error', { status: 500 });
+	}
 }
 
 export async function PUT(req: Request) {
-    try {
-        const session = await getServerSession()
-        
-        if (!session || session.user?.email !== process.env.ADMIN_EMAIL) {
-            return new NextResponse('Unauthorized', { status: 401 })
-        }
+	try {
+		const session = await auth()
 
-        const body = await req.json()
-        const { id, ...updateData } = body
-        
-        if (!id) {
-            return new NextResponse('Missing ID', { status: 400 })
-        }
+		if (!session || session.user.role !== 'admin') {
+			return new NextResponse('Unauthorized', { status: 401 })
+		}
 
-        const validatedData = roadmapItemSchema.partial().parse(updateData)
+		const body = await req.json()
+		const { id, ...updateData } = body
 
-        const updatedItem = await db.update(roadmapItems)
-            .set({
-                ...validatedData,
-                updatedAt: new Date().toISOString(),
-            })
-            .where(eq(roadmapItems.id, id))
-            .returning()
+		if (!id) {
+			return new NextResponse('Missing ID', { status: 400 })
+		}
 
-        return NextResponse.json(updatedItem[0])
-    } catch (error) {
-        console.error('Error updating roadmap item:', error)
-        return new NextResponse(
-            error instanceof z.ZodError 
-                ? JSON.stringify(error.errors) 
-                : 'Internal Server Error',
-            { status: error instanceof z.ZodError ? 400 : 500 }
-        )
-    }
+		const validatedData = roadmapItemSchema.partial().parse(updateData)
+
+		const updatedItem = await db
+			.update(roadmapItems)
+			.set({
+				...validatedData,
+				updatedAt: new Date().toISOString(),
+			})
+			.where(eq(roadmapItems.id, id))
+			.returning()
+
+		return NextResponse.json(updatedItem[0])
+	} catch (error) {
+		console.error('Error updating roadmap item:', error)
+		return new NextResponse(
+			error instanceof z.ZodError
+				? JSON.stringify(error.errors)
+				: 'Internal Server Error',
+			{ status: error instanceof z.ZodError ? 400 : 500 }
+		)
+	}
 }
 
 export async function DELETE(req: Request) {
-    try {
-        const session = await getServerSession()
-        
-        if (!session || session.user?.email !== process.env.ADMIN_EMAIL) {
-            return new NextResponse('Unauthorized', { status: 401 })
-        }
+	try {
+		const session = await auth()
 
-        const { searchParams } = new URL(req.url)
-        const id = searchParams.get('id')
+		if (!session || session.user.role !== 'admin') {
+			return new NextResponse('Unauthorized', { status: 401 })
+		}
 
-        if (!id) {
-            return new NextResponse('Missing ID', { status: 400 })
-        }
+		const { searchParams } = new URL(req.url)
+		const id = searchParams.get('id')
 
-        await db.delete(roadmapItems).where(eq(roadmapItems.id, id))
+		if (!id) {
+			return new NextResponse('Missing ID', { status: 400 })
+		}
 
-        return new NextResponse(null, { status: 204 })
-    } catch (error) {
-        console.error('Error deleting roadmap item:', error)
-        return new NextResponse('Internal Server Error', { status: 500 })
-    }
-} 
+		await db.delete(roadmapItems).where(eq(roadmapItems.id, id))
+
+		return new NextResponse(null, { status: 204 })
+	} catch (error) {
+		console.error('Error deleting roadmap item:', error)
+		return new NextResponse('Internal Server Error', { status: 500 })
+	}
+}
