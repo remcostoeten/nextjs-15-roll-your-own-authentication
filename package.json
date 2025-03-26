@@ -24,7 +24,6 @@
 		"barrels:watch": "nodemon --watch src --ext tsx,ts,jsx,js --ignore index.ts --exec 'pnpm barrels'",
 		"barrels:fix": "tsx tools/barrel-generator.ts",
 		"fix-barrel": "tsx tools/fix-barrel.ts",
-		"prepare": "husky",
 		"format:interactive": "tsx tools/prettier-interactive/interactive-format.ts"
 	},
 	"dependencies": {
@@ -68,6 +67,7 @@
 		"nanoid": "^5.1.3",
 		"next": "15.2.1",
 		"next-themes": "^0.4.5",
+		"postgres": "^3.4.5",
 		"react": "^19.0.0",
 		"react-day-picker": "8.10.1",
 		"react-dom": "^19.0.0",
