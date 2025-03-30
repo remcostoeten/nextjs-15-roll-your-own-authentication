@@ -1,10 +1,7 @@
-export * from './users'
-export * from './sessions'
-export * from './posts'
-export * from './comments'
-export * from './activity-logs'
-export * from './user-metrics'
-export * from './widget-todos'
-export * from './widget-categories'
-export * from './changelog.schema'
-export * from './roadmap.schema'
+import { usersSchema } from "./users";
+import { sessionsSchema } from "./sessions";
+import { notificationsSchema } from "./notifications";
+import type { TUser, TSession, TNotification } from "./types";
+
+export type { TUser, TSession, TNotification };
+export { usersSchema, sessionsSchema, notificationsSchema };

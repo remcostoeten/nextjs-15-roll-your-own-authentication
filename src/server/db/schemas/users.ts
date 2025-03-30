@@ -1,46 +1,35 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
-import { sql } from 'drizzle-orm'
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
-import { z } from 'zod'
+import {
+  pgTable,
+  text,
+  timestamp,
+  serial,
+  uniqueIndex,
+  pgEnum,
+} from "drizzle-orm/pg-core";
 
-export const users = sqliteTable('users', {
-	id: text('id').primaryKey().notNull(),
-	email: text('email').unique().notNull(),
-	passwordHash: text('password_hash').notNull(),
-	firstName: text('first_name'),
-	lastName: text('last_name'),
-	role: text('role', { enum: ['admin', 'user'] })
-		.default('user')
-		.notNull(),
-	githubId: text('github_id').unique(),
-	githubAccessToken: text('github_access_token'),
-	avatar: text('avatar').default(''),
-	location: text('location').default(''),
-	timezone: text('timezone').default(''),
-	lastLogin: integer('last_login', { mode: 'timestamp' }),
-	loginStreak: integer('login_streak').default(0),
-	accountStatus: text('account_status', {
-		enum: ['active', 'inactive', 'suspended'],
-	})
-		.notNull()
-		.default('active'),
-	// Timestamps
-	createdAt: integer('created_at', { mode: 'timestamp' })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
-	updatedAt: integer('updated_at', { mode: 'timestamp' })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
-})
+export const userRole = pgEnum("user_role", ["user", "admin"]);
 
-export const insertUserSchema = createInsertSchema(users, {
-	email: z.string().email(),
-	role: z.enum(['admin', 'user']).default('user'),
-	githubId: z.string().optional(),
-	githubAccessToken: z.string().optional(),
-})
-
-export const selectUserSchema = createSelectSchema(users)
-
-export type User = typeof users.$inferSelect
-export type NewUser = typeof users.$inferInsert
+export const usersSchema = pgTable(
+  "users",
+  {
+    id: serial("id").primaryKey(),
+    name: text("name").notNull(),
+    email: text("email").unique().notNull(),
+    password: text("password"),
+    role: userRole("role").default("user").notNull(),
+    avatarUrl: text("avatar_url"),
+    bio: text("bio"),
+    location: text("location"),
+    website: text("website"),
+    twitter: text("twitter"),
+    github: text("github"),
+    githubId: text("github_id").unique(),
+    authProvider: text("auth_provider").default("local").notNull(),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+  },
+  (users) => ({
+    emailIdx: uniqueIndex("email_idx").on(users.email),
+    githubIdIdx: uniqueIndex("github_id_idx").on(users.githubId),
+  })
+); 

@@ -1,15 +1,10 @@
-import { drizzle } from 'drizzle-orm/postgres-js'
-import postgres from 'postgres'
-import * as schema from './schema'
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+import * as schema from "./schema";
+import { env } from "../env";
 
-const connectionString = process.env.DATABASE_URL
+const pool = new Pool({
+  connectionString: env.DATABASE_URL as string,
+});
 
-if (!connectionString) {
-	throw new Error('DATABASE_URL environment variable is not set')
-}
-
-const client = postgres(connectionString)
-export const db = drizzle(client, { schema })
-
-export * from './config'
-export * from './schemas'
+export const db = drizzle(pool, { schema });

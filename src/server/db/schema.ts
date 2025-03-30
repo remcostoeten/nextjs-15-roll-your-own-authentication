@@ -1,24 +1,44 @@
-import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { pgTable, text, timestamp, serial, pgEnum } from 'drizzle-orm/pg-core'
+
+export const userRoleEnum = pgEnum('user_role', ['user', 'admin'])
 
 export const users = pgTable('users', {
-	id: uuid('id').primaryKey().defaultRandom(),
-	email: text('email').unique().notNull(),
-	name: text('name'),
-	passwordHash: text('password_hash').notNull(),
-	role: text('role', { enum: ['USER', 'ADMIN'] })
-		.default('USER')
-		.notNull(),
-	createdAt: timestamp('created_at').defaultNow().notNull(),
-	updatedAt: timestamp('updated_at').defaultNow().notNull(),
+	id: serial('id').primaryKey(),
+	name: text('name').notNull(),
+	email: text('email').notNull().unique(),
+	password: text('password'),
+	role: userRoleEnum('role').default('user').notNull(),
+	avatarUrl: text('avatar_url'),
+	bio: text('bio'),
+	location: text('location'),
+	website: text('website'),
+	twitter: text('twitter'),
+	github: text('github'),
+	githubId: text('github_id').unique(),
+	authProvider: text('auth_provider').default('local').notNull(),
+	createdAt: timestamp('created_at').defaultNow(),
+	updatedAt: timestamp('updated_at').defaultNow(),
 })
 
 export const sessions = pgTable('sessions', {
-	id: uuid('id').primaryKey().defaultRandom(),
-	userId: uuid('user_id')
+	id: serial('id').primaryKey(),
+	userId: serial('user_id')
 		.references(() => users.id)
 		.notNull(),
 	token: text('token').notNull(),
 	expiresAt: timestamp('expires_at').notNull(),
-	createdAt: timestamp('created_at').defaultNow().notNull(),
-	updatedAt: timestamp('updated_at').defaultNow().notNull(),
+	createdAt: timestamp('created_at').defaultNow(),
+	updatedAt: timestamp('updated_at').defaultNow(),
+})
+
+export const notifications = pgTable('notifications', {
+    id: serial('id').primaryKey(),
+    userId: serial('user_id')
+        .references(() => users.id)
+        .notNull(),
+    title: text('title').notNull(),
+    message: text('message').notNull(),
+    read: text('read').default('false').notNull(),
+    createdAt: timestamp('created_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow(),
 })

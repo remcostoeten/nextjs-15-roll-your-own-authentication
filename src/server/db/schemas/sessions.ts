@@ -1,31 +1,18 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
-import { createId } from '@paralleldrive/cuid2'
-import { relations } from 'drizzle-orm'
-import { users } from './users'
+import { pgTable, serial, integer, timestamp, index } from "drizzle-orm/pg-core";
+import { usersSchema } from "./users";
 
-export const sessions = sqliteTable('sessions', {
-	id: text('id')
-		.primaryKey()
-		.$defaultFn(() => createId()),
-	userId: text('user_id')
-		.notNull()
-		.references(() => users.id, { onDelete: 'cascade' }),
-	refreshToken: text('refresh_token').notNull(),
-	expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
-	createdAt: integer('created_at', { mode: 'timestamp' })
-		.$defaultFn(() => new Date())
-		.notNull(),
-	userAgent: text('user_agent'),
-	ipAddress: text('ip_address'),
-})
-
-// Define relationships
-export const sessionsRelations = relations(sessions, ({ one }) => ({
-	user: one(users, {
-		fields: [sessions.userId],
-		references: [users.id],
-	}),
-}))
-
-export type Session = typeof sessions.$inferSelect
-export type NewSession = typeof sessions.$inferInsert
+export const sessionsSchema = pgTable(
+  "sessions",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id")
+      .references(() => usersSchema.id)
+      .notNull(),
+    expiresAt: timestamp("expires_at").notNull(),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (sessions) => ({
+    userIdIdx: index("user_id_idx").on(sessions.userId),
+    expiresAtIdx: index("expires_at_idx").on(sessions.expiresAt),
+  })
+); 

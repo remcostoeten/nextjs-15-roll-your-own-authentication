@@ -12,7 +12,7 @@ import {
 	DropdownMenuItem,
 } from '@/shared/components/ui/dropdown-menu'
 import Link from 'next/link'
-import { navItems } from '../../../core/config/navigation'
+import { navItems } from '../../core/config/navigation'
 import { LoginButton } from '@/modules/authentication/components/login-button'
 import { TextScrambler } from '@/shared/components/effects'
 
