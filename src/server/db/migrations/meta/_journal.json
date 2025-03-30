@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1742413444351,
-      "tag": "0000_hard_captain_cross",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1742496431964,
-      "tag": "0001_premium_colossus",
+      "when": 1743202632023,
+      "tag": "0000_sharp_wilson_fisk",
       "breakpoints": true
     }
   ]

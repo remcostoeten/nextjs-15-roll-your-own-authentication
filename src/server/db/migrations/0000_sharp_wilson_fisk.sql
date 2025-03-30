@@ -7,6 +7,18 @@ CREATE TABLE `activity_logs` (
 	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
+CREATE TABLE `changelog_items` (
+	`id` text PRIMARY KEY NOT NULL,
+	`version` text NOT NULL,
+	`title` text NOT NULL,
+	`description` text NOT NULL,
+	`date` text NOT NULL,
+	`features` text,
+	`improvements` text,
+	`bugfixes` text,
+	`votes` integer DEFAULT 0
+);
+--> statement-breakpoint
 CREATE TABLE `comments` (
 	`id` text PRIMARY KEY NOT NULL,
 	`content` text NOT NULL,
@@ -104,4 +116,16 @@ CREATE TABLE `widget_categories` (
 	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	`updated_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
+);
+--> statement-breakpoint
+CREATE TABLE `roadmap_items` (
+	`id` text PRIMARY KEY NOT NULL,
+	`title` text NOT NULL,
+	`description` text NOT NULL,
+	`status` text DEFAULT 'planned' NOT NULL,
+	`priority` integer DEFAULT 0 NOT NULL,
+	`quarter` text NOT NULL,
+	`votes` integer DEFAULT 0 NOT NULL,
+	`created_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	`updated_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL
 );

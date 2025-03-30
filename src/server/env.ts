@@ -21,7 +21,9 @@ export const env = createEnv({
 
 		// Admin email
 		ADMIN_EMAIL: z.string().min(1),
-
+		GITHUB_TOKEN: z.string().min(1),
+		GITHUB_CLIENT_SECRET: z.string().min(1),
+		GITHUB_CLIENT_ID: z.string().min(1),
 		// Authentication
 		JWT_SECRET: z.string().min(1),
 		REFRESH_TOKEN_SECRET: z.string().min(1),

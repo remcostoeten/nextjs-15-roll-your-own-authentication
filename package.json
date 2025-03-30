@@ -12,19 +12,14 @@
 		"migrate": "./migrate.sh",
 		"dev:with-migrate": "./migrate.sh && next dev",
 		"build:with-migrate": "./migrate.sh && next build",
-		"start:with-migrate": "./migrate.sh && next start",
+		"start:wm": "./migrate.sh && next start",
 		"re": "rm -rf .next && rm -rf node_modules && rm -rf package-lock.json && rm -rf yarn.lock && rm -rf pnpm-lock.yaml && rm -rf .turbo && pnpm i && pnpm dev",
 		"rebuild": "rm -rf .next && rm -rf node_modules && rm -rf package-lock.json && rm -rf yarn.lock && rm -rf pnpm-lock.yaml && rm -rf .turbo && pnpm i && pnpm build",
 		"f": "prettier --write \"**/*.{js,jsx,ts,tsx,md}\"",
 		"gen": "drizzle-kit generate",
 		"push": "drizzle-kit push",
 		"seed": "tsx src/server/db/seed.ts",
-		"barrels": "tsx tools/barrel-generator.ts",
-		"barrels:src": "tsx tools/barrel-generator.ts src",
-		"barrels:watch": "nodemon --watch src --ext tsx,ts,jsx,js --ignore index.ts --exec 'pnpm barrels'",
-		"barrels:fix": "tsx tools/barrel-generator.ts",
-		"fix-barrel": "tsx tools/fix-barrel.ts",
-		"format:interactive": "tsx tools/prettier-interactive/interactive-format.ts"
+		"format:interactive": "tsx scripts/prettier-interactive/interactive-format.ts"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^4.1.3",

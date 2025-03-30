@@ -1,126 +1,156 @@
+'use client'
+
 import { useState, useEffect } from 'react'
-import { fetchLatestCommits, fetchRepoMetadata } from '@/app/actions/github'
+import { 
+	getRepoInfo, 
+	getLatestCommits, 
+	getRepoLanguages, 
+	getRepoContributors, 
+	getRepoBranches 
+} from '../api/queries'
+import type { 
+	GithubRepo, 
+	GithubCommit, 
+	GithubLanguages, 
+	GithubContributor, 
+	GithubBranch 
+} from '../types/github'
 
 interface UseGithubDataOptions {
 	owner: string
 	repo: string
-	branch?: string
 	commitsCount?: number
 }
 
-interface Commit {
-	sha: string
-	message: string
-	author: string
-	authorAvatar: string
-	date: string
-	url: string
-}
-
-interface RepoData {
-	name: string
-	description: string
-	created_at: string
-	updated_at: string
-	stars: number
-	forks: number
-	branches: number
-	contributors: number
-	languages: Array<{ name: string; percentage: string }>
-}
-
 interface UseGithubDataReturn {
-	commits: Commit[]
-	repoData: RepoData | null
+	repo: GithubRepo | null
+	commits: GithubCommit[]
+	languages: GithubLanguages | null
+	contributors: GithubContributor[]
+	branches: GithubBranch[]
 	isLoading: boolean
 	error: string | null
-	refresh: () => Promise<void>
+	source: 'api' | 'cache' | 'fallback'
 }
-
-const CACHE_KEY_PREFIX = 'github-data'
-const CACHE_DURATION = 60 * 60 * 1000 // 1 hour
 
 export function useGithubData({
 	owner,
 	repo,
-	branch = 'main',
-	commitsCount = 5,
+	commitsCount = 5
 }: UseGithubDataOptions): UseGithubDataReturn {
-	const [commits, setCommits] = useState<Commit[]>([])
-	const [repoData, setRepoData] = useState<RepoData | null>(null)
-	const [isLoading, setIsLoading] = useState(true)
-	const [error, setError] = useState<string | null>(null)
-
-	const cacheKey = `${CACHE_KEY_PREFIX}-${owner}-${repo}`
-	const cacheExpiryKey = `${cacheKey}-expiry`
-
-	const fetchData = async () => {
-		try {
-			setIsLoading(true)
-			setError(null)
-
-			// Check cache first
-			if (typeof window !== 'undefined') {
-				const cachedData = localStorage.getItem(cacheKey)
-				const cacheExpiry = localStorage.getItem(cacheExpiryKey)
-
-				if (cachedData && cacheExpiry && Date.now() < Number(cacheExpiry)) {
-					const { commits: cachedCommits, repoData: cachedRepoData } = JSON.parse(cachedData)
-					setCommits(cachedCommits)
-					setRepoData(cachedRepoData)
-					setIsLoading(false)
-					return
-				}
-			}
-
-			// Fetch fresh data
-			const [commitsResult, repoResult] = await Promise.all([
-				fetchLatestCommits(`${owner}/${repo}`, branch, commitsCount),
-				fetchRepoMetadata(`${owner}/${repo}`),
-			])
-
-			if (commitsResult.success && repoResult.success) {
-				setCommits(commitsResult.commits)
-				setRepoData(repoResult.data)
-
-				// Cache the results
-				if (typeof window !== 'undefined') {
-					localStorage.setItem(
-						cacheKey,
-						JSON.stringify({
-							commits: commitsResult.commits,
-							repoData: repoResult.data,
-						})
-					)
-					localStorage.setItem(cacheExpiryKey, String(Date.now() + CACHE_DURATION))
-				}
-			}
-		} catch (err) {
-			setError(err instanceof Error ? err.message : 'Failed to fetch GitHub data')
-			console.error('Error fetching GitHub data:', err)
-		} finally {
-			setIsLoading(false)
-		}
-	}
+	const [data, setData] = useState<UseGithubDataReturn>({
+		repo: null,
+		commits: [],
+		languages: null,
+		contributors: [],
+		branches: [],
+		isLoading: true,
+		error: null,
+		source: 'api'
+	})
 
 	useEffect(() => {
-		fetchData()
-	}, [owner, repo, branch, commitsCount])
+		async function fetchData() {
+			try {
+				setData(prev => ({ ...prev, isLoading: true }))
 
-	const refresh = async () => {
-		// Clear cache
-		if (typeof window !== 'undefined') {
-			localStorage.removeItem(cacheKey)
-			localStorage.removeItem(cacheExpiryKey)
+				const [repoInfo, commits, languages, contributors, branches] = await Promise.all([
+					getRepoInfo(owner, repo),
+					getLatestCommits(owner, repo, commitsCount),
+					getRepoLanguages(owner, repo),
+					getRepoContributors(owner, repo),
+					getRepoBranches(owner, repo)
+				])
+
+				// Determine the overall source (fallback if any data is fallback)
+				const source = [repoInfo, commits, languages, contributors, branches].some(
+					r => r.source === 'fallback'
+				) ? 'fallback' : 'api'
+
+				// Collect all errors
+				const errors = [repoInfo, commits, languages, contributors, branches]
+					.map(r => r.error)
+					.filter(Boolean)
+
+				setData({
+					repo: repoInfo.data,
+					commits: commits.data || [],
+					languages: languages.data,
+					contributors: contributors.data || [],
+					branches: branches.data || [],
+					isLoading: false,
+					error: errors.length > 0 ? errors.join(', ') : null,
+					source
+				})
+			} catch (error) {
+				setData(prev => ({
+					...prev,
+					isLoading: false,
+					error: error instanceof Error ? error.message : 'An error occurred while fetching data',
+					source: 'fallback'
+				}))
+			}
 		}
-		await fetchData()
-	}
 
-	return {
-		commits,
-		repoData,
-		isLoading,
-		error,
-		refresh,
-	}
+		fetchData()
+	}, [owner, repo, commitsCount])
+
+	return data
+}
+
+// Individual hooks for more granular control
+export function useGithubRepo(owner: string, repo: string) {
+	const [data, setData] = useState<GithubRepo | null>(null)
+	const [isLoading, setIsLoading] = useState(true)
+	const [error, setError] = useState<string | null>(null)
+	const [source, setSource] = useState<'api' | 'cache' | 'fallback'>('api')
+
+	useEffect(() => {
+		async function fetchRepo() {
+			try {
+				setIsLoading(true)
+				const response = await getRepoInfo(owner, repo)
+				setData(response.data)
+				setError(response.error)
+				setSource(response.source)
+			} catch (error) {
+				setError(error instanceof Error ? error.message : 'Failed to fetch repository data')
+				setSource('fallback')
+			} finally {
+				setIsLoading(false)
+			}
+		}
+
+		fetchRepo()
+	}, [owner, repo])
+
+	return { data, isLoading, error, source }
+}
+
+export function useGithubCommits(owner: string, repo: string, count: number = 5) {
+	const [data, setData] = useState<GithubCommit[]>([])
+	const [isLoading, setIsLoading] = useState(true)
+	const [error, setError] = useState<string | null>(null)
+	const [source, setSource] = useState<'api' | 'cache' | 'fallback'>('api')
+
+	useEffect(() => {
+		async function fetchCommits() {
+			try {
+				setIsLoading(true)
+				const response = await getLatestCommits(owner, repo, count)
+				setData(response.data || [])
+				setError(response.error)
+				setSource(response.source)
+			} catch (error) {
+				setError(error instanceof Error ? error.message : 'Failed to fetch commits')
+				setSource('fallback')
+			} finally {
+				setIsLoading(false)
+			}
+		}
+
+		fetchCommits()
+	}, [owner, repo, count])
+
+	return { data, isLoading, error, source }
 }
