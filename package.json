@@ -19,7 +19,8 @@
 		"gen": "drizzle-kit generate",
 		"push": "drizzle-kit push",
 		"seed": "tsx src/server/db/seed.ts",
-		"format:interactive": "tsx scripts/prettier-interactive/interactive-format.ts"
+		"format:interactive": "tsx scripts/prettier-interactive/interactive-format.ts",
+		"metadata": "python3 ./scripts/metadata-tool/metadata-tool.py"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^4.1.3",
