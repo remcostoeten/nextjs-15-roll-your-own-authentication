@@ -3,7 +3,7 @@
 import { db } from "@/server/db"
 import { notifications, userNotifications } from "@/server/db/schema"
 import { eq, and, sql } from "drizzle-orm"
-import { getCurrentUser, requireAdmin, logUserActivity } from "@/modules/authentication/utilities/auth"
+import { getCurrentUser, requireAdmin, logUserActivity } from  "@/modules/authentication/utilities/auth"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
@@ -54,6 +54,7 @@ export async function createNotification(formData: FormData) {
     // If not global, create user notifications for targeted users
     if (!validatedData.isGlobal && validatedData.targetUserIds?.length) {
       const userNotificationsData = validatedData.targetUserIds.map((userId) => ({
+        id: crypto.randomUUID(), // Add the required id field
         userId,
         notificationId: newNotification.id,
         isRead: false,
@@ -115,6 +116,7 @@ export async function markNotificationAsRead(notificationId: number) {
       if (notification && notification.isGlobal) {
         // Create user notification for global notification
         await db.insert(userNotifications).values({
+          id: crypto.randomUUID(), // Add the required id field
           userId: user.id,
           notificationId,
           isRead: true,
@@ -170,6 +172,7 @@ export async function markAllNotificationsAsRead() {
     // Create user notification entries for global notifications
     if (globalNotifications.length > 0) {
       const userNotificationsData = globalNotifications.map((notification) => ({
+        id: crypto.randomUUID(), // Add the required id field
         userId: user.id,
         notificationId: notification.id,
         isRead: true,

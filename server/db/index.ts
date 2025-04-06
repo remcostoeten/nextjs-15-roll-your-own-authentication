@@ -2,7 +2,6 @@ import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
 import * as schema from "./schema"
 
-// Check if we have a database URL
 if (!process.env.DATABASE_URL) {
   console.error("DATABASE_URL environment variable is not set")
   console.log(
@@ -12,12 +11,19 @@ if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL environment variable is not set")
 }
 
-// Create a postgres connection
+// Create a postgres connection with proper connection pooling
 const connectionString = process.env.DATABASE_URL
-const client = postgres(connectionString)
+
+// Configure connection pool
+const sql = postgres(connectionString, {
+  max: 10, // Set max pool size to 10
+  idle_timeout: 20, // Close idle connections after 20 seconds
+  connect_timeout: 10, // Connection timeout after 10 seconds
+  prepare: false, // Disable prepared statements for better compatibility
+})
 
 // Create a drizzle client
-export const db = drizzle(client, { schema })
+export const db = drizzle(sql, { schema })
 
 // Export types
 export type User = typeof schema.users.$inferSelect

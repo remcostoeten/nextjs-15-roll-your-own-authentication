@@ -6,6 +6,7 @@ import { db } from "@/server/db"
 import { workspaces, workspaceMembers, tasks } from "@/server/db/schema"
 import { eq, and } from "drizzle-orm"
 import { createId } from "@paralleldrive/cuid2"
+import { slugify } from "../helpers/slugify"
 
 
 // Create workspace validation schema
@@ -192,8 +193,7 @@ export async function deleteWorkspace(workspaceId: string, userId: string) {
   }
 }
 
-// Create task
-export async function createTask(workspaceId: string, userId: string, formData: FormData) {
+export async function createTask(workspaceId: string, formData: FormData) {
   try {
     // Validate form data
     const validatedData = createTaskSchema.parse({
@@ -205,7 +205,9 @@ export async function createTask(workspaceId: string, userId: string, formData: 
 
     // Check if user is a member of the workspace
     const membership = await db.query.workspaceMembers.findFirst({
-      where: and(eq(workspaceMembers.workspaceId, workspaceId), eq(workspaceMembers.userId, userId)),
+      where: and(eq(workspaceMembers.workspaceId, workspaceId), eq(workspaceMembers.userId, 
+      formData.get("userId") as string
+      )),
     })
 
     if (!membership) {

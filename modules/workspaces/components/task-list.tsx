@@ -74,7 +74,6 @@ export function TaskList({ workspaceId, tasks, members }: TaskListProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [dueDate, setDueDate] = useState<Date | undefined>(undefined)
 
-  // Handle create task
   const handleCreateTask = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)

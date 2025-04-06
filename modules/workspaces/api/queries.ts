@@ -32,7 +32,6 @@ export async function getUserWorkspaces() {
   return userWorkspaces
 }
 
-// Get workspace by slug
 export async function getWorkspaceBySlug(slug: string) {
   const user = await getCurrentUser()
 

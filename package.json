@@ -5,8 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "gen:jwt": "chmod +x scripts/generate-jwt; ./scripts/generate-jwt.sh",
+    "gen": "pnpm drizzle-kit generate",
+    "push": "pnpm drizzle-kit push",
+    "check-db": "tsx scripts/check-connection.ts",
+    "kill-db": "tsx scripts/kill-connection.ts"
   },
   "dependencies": {
     "@aws-sdk/client-rds-data": "latest",
@@ -49,6 +53,7 @@
     "@radix-ui/react-toggle": "^1.1.1",
     "@radix-ui/react-toggle-group": "^1.1.1",
     "@radix-ui/react-tooltip": "^1.1.6",
+    "@tanstack/react-table": "^8.21.2",
     "@tidbcloud/serverless": "latest",
     "@types/better-sqlite3": "latest",
     "@types/pg": "latest",

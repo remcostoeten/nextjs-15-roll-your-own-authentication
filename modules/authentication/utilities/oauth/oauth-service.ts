@@ -20,7 +20,9 @@ export class OAuthService {
     const state = uuidv4()
 
     // Store state in a cookie for verification
-    cookies().set("oauth_state", state, {
+    ;(await
+      // Store state in a cookie for verification
+      cookies()).set("oauth_state", state, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 10, // 10 minutes
@@ -37,14 +39,16 @@ export class OAuthService {
     state: string,
   ): Promise<{ token: string; isNewUser: boolean }> {
     // Verify state parameter
-    const storedState = cookies().get("oauth_state")?.value
+    const storedState = (await cookies()).get("oauth_state")?.value
 
     if (!storedState || storedState !== state) {
       throw new Error("Invalid state parameter")
     }
 
     // Clear the state cookie
-    cookies().delete("oauth_state")
+    (await
+      // Clear the state cookie
+      cookies()).delete("oauth_state")
 
     // Get the provider
     const provider = oauthProviderFactory.getProvider(providerId)

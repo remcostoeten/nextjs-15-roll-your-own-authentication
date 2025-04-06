@@ -33,10 +33,8 @@ const cookieOptions = {
   maxAge: 7 * 24 * 60 * 60, // 7 days
 }
 
-// Register a new user
 export async function register(formData: FormData) {
   try {
-    // Validate form data
     const validatedData = registerSchema.parse({
       firstName: formData.get("firstName"),
       lastName: formData.get("lastName"),
@@ -55,7 +53,6 @@ export async function register(formData: FormData) {
       return { error: "Email already in use" }
     }
 
-    // Check if username already exists
     const existingUserByUsername = await db.query.users.findFirst({
       where: eq(users.username, validatedData.username),
     })
@@ -65,10 +62,8 @@ export async function register(formData: FormData) {
       return { error: "Username already in use" }
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(validatedData.password, 10)
 
-    // Check if this is the first user (make them admin)
     const firstUser = await isFirstUser()
     const isAdmin = firstUser || validatedData.email === process.env.ADMIN_EMAIL
 

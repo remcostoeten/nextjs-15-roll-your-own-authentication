@@ -31,14 +31,15 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
   const workspace = await getWorkspaceBySlug(params.slug)
 
   if (!workspace) {
-    return null // This will be handled by the WorkspaceLayout
+    return null
   }
 
-  const members = await getWorkspaceMembers(workspace.id)
-  const tasks = await getWorkspaceTasks(workspace.id)
-
+  const members = await getWorkspaceMembers(Number(workspace.id))
+  const tasks = await getWorkspaceTasks(Number(workspace.id))
+  
   // Count tasks by status
   const todoCount = tasks.filter((task) => task.status === "todo").length
+
   const inProgressCount = tasks.filter((task) => task.status === "in-progress").length
   const doneCount = tasks.filter((task) => task.status === "done").length
 

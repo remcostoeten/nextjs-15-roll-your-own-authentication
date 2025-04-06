@@ -51,7 +51,7 @@ export function WelcomeBanner({ user, stats }: TProps) {
 	})
 
 	return (
-		<Card className="bg-gradient-to-r from-neutral-900 to-neutral-800 text-white border-none">
+		<Card className="bg-gradient-to-r from-neutral-900 to-neutral-800">
 			<CardContent className="p-6">
 				<div className="flex flex-col md:flex-row justify-between items-start md:items-center">
 					<div className="space-y-2">
@@ -71,7 +71,6 @@ export function WelcomeBanner({ user, stats }: TProps) {
 						{stats.unreadNotifications !== undefined && (
 							<Button
 								variant="outline"
-								className="bg-white/10 border-white/20 hover:bg-white/20"
 								onClick={() =>
 									router.push('/dashboard/notifications')
 								}
@@ -83,7 +82,6 @@ export function WelcomeBanner({ user, stats }: TProps) {
 
 						<Button
 							variant="outline"
-							className="bg-white/10 border-white/20 hover:bg-white/20"
 							onClick={() =>
 								router.push('/dashboard/user/profile')
 							}

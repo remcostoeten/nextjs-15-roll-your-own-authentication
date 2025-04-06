@@ -4,7 +4,7 @@ import { z } from "zod"
 import { db } from "@/server/db"
 import { users } from "@/server/db/schema"
 import { eq } from "drizzle-orm"
-import { getCurrentUser, logUserActivity } from "@/modules/authentication/lib/auth"
+import { getCurrentUser, logUserActivity } from "@/modules/authentication/utilities/auth"
 import { revalidatePath } from "next/cache"
 
 const personalInfoSchema = z.object({

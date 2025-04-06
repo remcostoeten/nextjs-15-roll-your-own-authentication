@@ -3,7 +3,7 @@
 import { db } from "@/server/db"
 import { sessions } from "@/server/db/schema"
 import { eq, desc, count } from "drizzle-orm"
-import { getCurrentUser } from "../lib/auth"
+import { getCurrentUser } from "@/modules/authentication/utilities/auth"
 
 // Get user session data
 export async function getUserSessionData() {

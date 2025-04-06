@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation"
 import { getUserWorkspaces } from "@/modules/workspaces/api/queries"
-import { requireAuth } from "@/modules/authentication/lib/auth"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Briefcase, Plus, Clock } from "lucide-react"
@@ -14,7 +13,6 @@ export const metadata: Metadata = {
 }
 
 export default async function WorkspacesPage() {
-  const user = await requireAuth()
   const workspaces = await getUserWorkspaces()
 
   // If user has only one workspace, redirect to it
