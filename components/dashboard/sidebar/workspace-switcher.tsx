@@ -1,9 +1,31 @@
 'use client'
 
-import * as React from 'react'
-import { ChevronsUpDown, Plus, Loader2 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import type React from 'react'
 
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import {
+	Check,
+	ChevronsUpDown,
+	PlusCircle,
+	Briefcase,
+	Loader2,
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import {
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+	CommandSeparator,
+} from '@/components/ui/command'
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from '@/components/ui/popover'
 import {
 	Dialog,
 	DialogContent,
@@ -12,273 +34,261 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog'
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import {
-	SidebarMenu,
-	SidebarMenuButton,
-	SidebarMenuItem,
-	useSidebar,
-} from '@/components/dashboard/sidebar/sidebar'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { getUserWorkspaces } from '@/modules/workspaces/api/queries'
 import { createWorkspace } from '@/modules/workspaces/api/mutations'
 import { useToast } from '@/hooks/use-toast'
-import { WorkspaceSwitcherLoader } from '@/components/loaders/workspace-switcher.loader'
-type Workspace = {
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+
+export type Workspace = {
 	id: string
 	name: string
 	slug: string
 	description: string | null
 	logo: string | null
-	createdAt: Date
 	role: string
 	isActive: boolean
 }
 
-export function WorkspaceSwitcher() {
-	const { isMobile } = useSidebar()
+interface WorkspaceSwitcherProps {
+	currentWorkspace?: Workspace | null
+}
+
+export function WorkspaceSwitcher({
+	currentWorkspace,
+}: WorkspaceSwitcherProps) {
 	const router = useRouter()
 	const { toast } = useToast()
-	const [isLoading, setIsLoading] = React.useState(true)
-	const [workspaces, setWorkspaces] = React.useState<Workspace[]>([])
-	const [activeWorkspace, setActiveWorkspace] =
-		React.useState<Workspace | null>(null)
-	const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false)
-	const [isCreating, setIsCreating] = React.useState(false)
-	const [user, setUser] = React.useState<{ id: string } | null>(null)
+	const [open, setOpen] = useState(false)
+	const [showNewWorkspaceDialog, setShowNewWorkspaceDialog] = useState(false)
+	const [workspaces, setWorkspaces] = useState<Workspace[]>([])
+	const [isLoading, setIsLoading] = useState(true)
+	const [isCreating, setIsCreating] = useState(false)
 
-	// Fetch workspaces on component mount
-	React.useEffect(() => {
-		const fetchData = async () => {
+	// Fetch workspaces
+	useEffect(() => {
+		const fetchWorkspaces = async () => {
+			setIsLoading(true)
 			try {
-				setIsLoading(true)
-				const userData = (window as any).__user || null
-				setUser(userData)
-
-				const workspacesData = await getUserWorkspaces()
-				setWorkspaces(workspacesData)
-
-				// Set active workspace to the first one or null if none exist
-				if (workspacesData.length > 0) {
-					setActiveWorkspace(workspacesData[0])
-				}
+				const data = await getUserWorkspaces()
+				setWorkspaces(data)
 			} catch (error) {
 				console.error('Error fetching workspaces:', error)
-				toast({
-					title: 'Error',
-					description: 'Failed to load workspaces',
-					variant: 'destructive',
-				})
 			} finally {
 				setIsLoading(false)
 			}
 		}
 
-		fetchData()
-	}, [toast])
+		fetchWorkspaces()
+	}, [])
+
+	const handleSelectWorkspace = (workspace: Workspace) => {
+		router.push(`/dashboard/workspaces/${workspace.slug}`)
+		setOpen(false)
+	}
 
 	const handleCreateWorkspace = async (
 		e: React.FormEvent<HTMLFormElement>
 	) => {
 		e.preventDefault()
-		if (!user) return
+		setIsCreating(true)
+
+		const formData = new FormData(e.currentTarget)
 
 		try {
-			setIsCreating(true)
-			const formData = new FormData(e.currentTarget)
-			const result = await createWorkspace(user.id, formData)
+			const result = await createWorkspace(formData)
 
 			if (result.error) {
 				toast({
-					title: 'Error',
-					description: result.error,
 					variant: 'destructive',
+					title: 'Failed to create workspace',
+					description: result.error,
 				})
-				return
-			}
-
-			if (result.success) {
+			} else {
 				toast({
-					title: 'Success',
-					description: 'Workspace created successfully',
+					title: 'Workspace created',
+					description:
+						'Your workspace has been created successfully.',
 				})
-
-				// Refresh workspaces list
-				const workspacesData = await getUserWorkspaces()
-				setWorkspaces(workspacesData)
-
-				// Set the new workspace as active
-				const newWorkspace = workspacesData.find(
-					(w) => w.id === result.workspaceId
-				)
-				if (newWorkspace) {
-					setActiveWorkspace(newWorkspace)
-				}
-
-				setIsCreateModalOpen(false)
-
-				// Navigate to the new workspace
-				if (result.slug) {
-					router.push(`/dashboard/workspaces/${result.slug}`)
-				}
+				setShowNewWorkspaceDialog(false)
+				router.push(`/dashboard/workspaces/${result.slug}`)
 			}
 		} catch (error) {
-			console.error('Error creating workspace:', error)
 			toast({
-				title: 'Error',
-				description: 'Failed to create workspace',
 				variant: 'destructive',
+				title: 'Something went wrong',
+				description: 'Please try again later.',
 			})
 		} finally {
 			setIsCreating(false)
 		}
 	}
 
-	const handleWorkspaceSelect = (workspace: Workspace) => {
-		setActiveWorkspace(workspace)
-		router.push(`/dashboard/workspaces/${workspace.slug}`)
-	}
-
-	// Placeholder icon for workspaces without a logo
-	const WorkspaceIcon = () => (
-		<div className="flex items-center justify-center size-full font-semibold text-xs">
-			{activeWorkspace?.name.charAt(0) || 'W'}
-		</div>
-	)
-
-	if (isLoading) {
-		return <WorkspaceSwitcherLoader />
+	// Get workspace initials for avatar
+	const getWorkspaceInitials = (name: string) => {
+		return name
+			.split(' ')
+			.map((n) => n[0])
+			.join('')
+			.toUpperCase()
+			.substring(0, 2)
 	}
 
 	return (
 		<>
-			<SidebarMenu>
-				<SidebarMenuItem>
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<SidebarMenuButton
-								size="lg"
-								className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-							>
-								<div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-									<WorkspaceIcon />
-								</div>
-								<div className="grid flex-1 text-left text-sm leading-tight">
-									<span className="truncate font-semibold">
-										{activeWorkspace?.name ||
-											'Select Workspace'}
-									</span>
-									<span className="truncate text-xs">
-										{activeWorkspace?.role ||
-											'No workspaces'}
-									</span>
-								</div>
-								<ChevronsUpDown className="ml-auto" />
-							</SidebarMenuButton>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent
-							className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-							align="start"
-							side={isMobile ? 'bottom' : 'right'}
-							sideOffset={4}
-						>
-							<DropdownMenuLabel className="text-xs text-muted-foreground">
-								Workspaces
-							</DropdownMenuLabel>
-							{workspaces.length > 0 ? (
-								workspaces.map((workspace, index) => (
-									<DropdownMenuItem
-										key={workspace.id}
-										onClick={() =>
-											handleWorkspaceSelect(workspace)
-										}
-										className="gap-2 p-2"
-									>
-										<div className="flex size-6 items-center justify-center rounded-sm border bg-sidebar-primary text-sidebar-primary-foreground">
-											{workspace.name.charAt(0)}
-										</div>
-										<span className="flex-1 truncate">
-											{workspace.name}
-										</span>
-										{workspace.role === 'owner' && (
-											<span className="text-xs text-muted-foreground">
-												Owner
-											</span>
+			<Popover
+				open={open}
+				onOpenChange={setOpen}
+			>
+				<PopoverTrigger asChild>
+					<Button
+						variant="outline"
+						role="combobox"
+						aria-expanded={open}
+						aria-label="Select a workspace"
+						className="w-[220px] justify-between"
+					>
+						{currentWorkspace ? (
+							<>
+								<div className="flex items-center">
+									<Avatar className="h-6 w-6 mr-2">
+										{currentWorkspace.logo ? (
+											<img
+												src={
+													currentWorkspace.logo ||
+													'/placeholder.svg'
+												}
+												alt={currentWorkspace.name}
+											/>
+										) : (
+											<AvatarFallback className="bg-primary text-primary-foreground text-xs">
+												{getWorkspaceInitials(
+													currentWorkspace.name
+												)}
+											</AvatarFallback>
 										)}
-									</DropdownMenuItem>
-								))
+									</Avatar>
+									<span className="truncate">
+										{currentWorkspace.name}
+									</span>
+								</div>
+							</>
+						) : (
+							<>
+								<Briefcase className="mr-2 h-4 w-4" />
+								<span>Select workspace</span>
+							</>
+						)}
+						<ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
+					</Button>
+				</PopoverTrigger>
+				<PopoverContent className="w-[220px] p-0">
+					<Command>
+						<CommandList>
+							<CommandInput placeholder="Search workspace..." />
+							<CommandEmpty>
+								{isLoading
+									? 'Loading...'
+									: 'No workspace found.'}
+							</CommandEmpty>
+							{workspaces.length > 0 ? (
+								<CommandGroup heading="Workspaces">
+									{workspaces.map((workspace) => (
+										<CommandItem
+											key={workspace.id}
+											onSelect={() =>
+												handleSelectWorkspace(workspace)
+											}
+											className="text-sm flex items-center"
+										>
+											<Avatar className="h-5 w-5 mr-2">
+												{workspace.logo ? (
+													<img
+														src={
+															workspace.logo ||
+															'/placeholder.svg'
+														}
+														alt={workspace.name}
+													/>
+												) : (
+													<AvatarFallback className="bg-primary text-primary-foreground text-xs">
+														{getWorkspaceInitials(
+															workspace.name
+														)}
+													</AvatarFallback>
+												)}
+											</Avatar>
+											<span className="truncate flex-1">
+												{workspace.name}
+											</span>
+											{currentWorkspace?.id ===
+												workspace.id && (
+												<Check className="ml-auto h-4 w-4" />
+											)}
+										</CommandItem>
+									))}
+								</CommandGroup>
 							) : (
-								<div className="px-2 py-4 text-center text-sm text-muted-foreground">
-									No workspaces found
-								</div>
+								!isLoading && (
+									<div className="py-6 text-center text-sm">
+										No workspaces found
+									</div>
+								)
 							)}
-							<DropdownMenuSeparator />
-							<DropdownMenuItem
-								onClick={() => setIsCreateModalOpen(true)}
-								className="gap-2 p-2 cursor-pointer"
-							>
-								<div className="flex size-6 items-center justify-center rounded-md border bg-background">
-									<Plus className="size-4" />
-								</div>
-								<div className="font-medium">
-									Create workspace
-								</div>
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
-				</SidebarMenuItem>
-			</SidebarMenu>
+						</CommandList>
+						<CommandSeparator />
+						<CommandList>
+							<CommandGroup>
+								<CommandItem
+									onSelect={() => {
+										setOpen(false)
+										setShowNewWorkspaceDialog(true)
+									}}
+								>
+									<PlusCircle className="mr-2 h-4 w-4" />
+									Create Workspace
+								</CommandItem>
+							</CommandGroup>
+						</CommandList>
+					</Command>
+				</PopoverContent>
+			</Popover>
 
 			<Dialog
-				open={isCreateModalOpen}
-				onOpenChange={setIsCreateModalOpen}
+				open={showNewWorkspaceDialog}
+				onOpenChange={setShowNewWorkspaceDialog}
 			>
-				<DialogContent className="sm:max-w-[425px]">
-					<DialogHeader>
-						<DialogTitle>Create new workspace</DialogTitle>
-						<DialogDescription>
-							Create a new workspace for your team to collaborate
-							on projects.
-						</DialogDescription>
-					</DialogHeader>
+				<DialogContent>
 					<form onSubmit={handleCreateWorkspace}>
-						<div className="grid gap-4 py-4">
-							<div className="grid gap-2">
-								<label
-									htmlFor="name"
-									className="text-sm font-medium"
-								>
-									Workspace Name
-								</label>
+						<DialogHeader>
+							<DialogTitle>Create workspace</DialogTitle>
+							<DialogDescription>
+								Add a new workspace to organize your projects
+								and tasks.
+							</DialogDescription>
+						</DialogHeader>
+						<div className="space-y-4 py-4">
+							<div className="space-y-2">
+								<Label htmlFor="name">Name</Label>
 								<Input
 									id="name"
 									name="name"
 									placeholder="Acme Inc."
 									required
-									autoComplete="off"
+									disabled={isCreating}
 								/>
 							</div>
-							<div className="grid gap-2">
-								<label
-									htmlFor="description"
-									className="text-sm font-medium"
-								>
-									Description
-								</label>
+							<div className="space-y-2">
+								<Label htmlFor="description">
+									Description (Optional)
+								</Label>
 								<Textarea
 									id="description"
 									name="description"
-									placeholder="A brief description of your workspace"
-									rows={3}
+									placeholder="Team workspace for Acme Inc."
+									disabled={isCreating}
 								/>
 							</div>
 						</div>
@@ -286,7 +296,7 @@ export function WorkspaceSwitcher() {
 							<Button
 								type="button"
 								variant="outline"
-								onClick={() => setIsCreateModalOpen(false)}
+								onClick={() => setShowNewWorkspaceDialog(false)}
 								disabled={isCreating}
 							>
 								Cancel
@@ -295,10 +305,14 @@ export function WorkspaceSwitcher() {
 								type="submit"
 								disabled={isCreating}
 							>
-								{isCreating && (
-									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+								{isCreating ? (
+									<>
+										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+										Creating...
+									</>
+								) : (
+									'Create Workspace'
 								)}
-								Create Workspace
 							</Button>
 						</DialogFooter>
 					</form>

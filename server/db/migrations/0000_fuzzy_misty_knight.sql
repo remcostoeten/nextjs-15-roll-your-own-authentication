@@ -1,3 +1,19 @@
+CREATE TABLE "categories" (
+	"id" varchar(128) PRIMARY KEY NOT NULL,
+	"name" varchar(256) NOT NULL,
+	"created_by_id" varchar(128),
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "labels" (
+	"id" varchar(128) PRIMARY KEY NOT NULL,
+	"name" varchar(256) NOT NULL,
+	"created_by_id" varchar(128),
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "notifications" (
 	"id" varchar(128) PRIMARY KEY NOT NULL,
 	"title" varchar(255) NOT NULL,
@@ -9,7 +25,7 @@ CREATE TABLE "notifications" (
 	"link" varchar(255),
 	"is_global" boolean DEFAULT false NOT NULL,
 	"metadata" jsonb,
-	"workspace_id" varchar(128)
+	"workspace_id" integer
 );
 --> statement-breakpoint
 CREATE TABLE "oauth_accounts" (
@@ -30,19 +46,36 @@ CREATE TABLE "sessions" (
 	"user_agent" text
 );
 --> statement-breakpoint
-CREATE TABLE "tasks" (
+CREATE TABLE "snippet_labels" (
+	"snippet_id" varchar(128) NOT NULL,
+	"label_id" varchar(128) NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "snippet_labels_snippet_id_label_id_pk" PRIMARY KEY("snippet_id","label_id")
+);
+--> statement-breakpoint
+CREATE TABLE "snippets" (
 	"id" varchar(128) PRIMARY KEY NOT NULL,
-	"workspace_id" varchar(128) NOT NULL,
-	"title" varchar(255) NOT NULL,
+	"title" varchar(256) NOT NULL,
+	"content" text NOT NULL,
+	"category_id" varchar(128),
+	"created_by_id" varchar(128),
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "tasks" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"workspace_id" integer NOT NULL,
+	"title" varchar(256) NOT NULL,
 	"description" text,
 	"status" varchar(50) DEFAULT 'todo' NOT NULL,
-	"priority" varchar(20) DEFAULT 'medium' NOT NULL,
+	"priority" varchar(50) DEFAULT 'medium' NOT NULL,
 	"due_date" timestamp,
 	"assigned_to_id" varchar(128),
 	"created_by_id" varchar(128) NOT NULL,
+	"completed_at" timestamp,
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
-	"completed_at" timestamp
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "user_notifications" (
@@ -62,6 +95,7 @@ CREATE TABLE "users" (
 	"last_name" varchar(255) NOT NULL,
 	"password" varchar(255) NOT NULL,
 	"phone" varchar(20),
+	"avatar" varchar(255),
 	"role" varchar(20),
 	"is_admin" boolean DEFAULT false NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
@@ -70,9 +104,19 @@ CREATE TABLE "users" (
 	CONSTRAINT "users_username_unique" UNIQUE("username")
 );
 --> statement-breakpoint
-CREATE TABLE "workspace_members" (
+CREATE TABLE "workspace_activities" (
 	"id" varchar(128) PRIMARY KEY NOT NULL,
-	"workspace_id" varchar(128) NOT NULL,
+	"workspace_id" integer NOT NULL,
+	"user_id" varchar(128) NOT NULL,
+	"type" varchar(50) NOT NULL,
+	"content" text NOT NULL,
+	"metadata" jsonb,
+	"created_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "workspace_members" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"workspace_id" integer NOT NULL,
 	"user_id" varchar(128) NOT NULL,
 	"role" varchar(20) DEFAULT 'member' NOT NULL,
 	"joined_at" timestamp DEFAULT now() NOT NULL,
@@ -80,15 +124,15 @@ CREATE TABLE "workspace_members" (
 );
 --> statement-breakpoint
 CREATE TABLE "workspaces" (
-	"id" varchar(128) PRIMARY KEY NOT NULL,
-	"name" varchar(255) NOT NULL,
-	"slug" varchar(255) NOT NULL,
+	"id" serial PRIMARY KEY NOT NULL,
+	"name" varchar(256) NOT NULL,
+	"slug" varchar(256) NOT NULL,
 	"description" text,
-	"logo" varchar(255),
+	"logo" varchar(256),
 	"created_by_id" varchar(128) NOT NULL,
+	"is_active" boolean DEFAULT true NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
-	"is_active" boolean DEFAULT true NOT NULL,
 	CONSTRAINT "workspaces_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint
@@ -101,6 +145,8 @@ ALTER TABLE "tasks" ADD CONSTRAINT "tasks_assigned_to_id_users_id_fk" FOREIGN KE
 ALTER TABLE "tasks" ADD CONSTRAINT "tasks_created_by_id_users_id_fk" FOREIGN KEY ("created_by_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_notifications" ADD CONSTRAINT "user_notifications_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_notifications" ADD CONSTRAINT "user_notifications_notification_id_notifications_id_fk" FOREIGN KEY ("notification_id") REFERENCES "public"."notifications"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "workspace_activities" ADD CONSTRAINT "workspace_activities_workspace_id_workspaces_id_fk" FOREIGN KEY ("workspace_id") REFERENCES "public"."workspaces"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "workspace_activities" ADD CONSTRAINT "workspace_activities_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "workspace_members" ADD CONSTRAINT "workspace_members_workspace_id_workspaces_id_fk" FOREIGN KEY ("workspace_id") REFERENCES "public"."workspaces"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "workspace_members" ADD CONSTRAINT "workspace_members_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "workspace_members" ADD CONSTRAINT "workspace_members_invited_by_users_id_fk" FOREIGN KEY ("invited_by") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint

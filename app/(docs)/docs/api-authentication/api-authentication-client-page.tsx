@@ -1,15 +1,10 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { useState } from "react"
-;("use client")
-
-import { CodeBlock, CodeTabs } from "@/components/docs/code-block"
+import { CodeBlock, CodeTabs } from "@/modules/docs/components/code-block"
 
 export default function ApiAuthenticationClientPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="scroll-m-20 text-4xl font-bold tracking-tight">API Authentication</h1>
+    <h1 className="scroll-m-20 text-4xl font-bold tracking-tight">API Authentication</h1>
         <p className="mt-2 text-xl text-muted-foreground">Learn how to authenticate API requests using JWT tokens</p>
       </div>
 
@@ -270,7 +265,7 @@ async function uploadToStorage(file: File) {
   // return { url: blob.url }
   
   // Mock implementation
-  return { url: \`https://storage.example.com/${file.name}` }\
+  return { url: \`https://storage.example.com/\${file.name}\` }
 }`,
               fileName: "app/api/storage/actions.ts"
             },

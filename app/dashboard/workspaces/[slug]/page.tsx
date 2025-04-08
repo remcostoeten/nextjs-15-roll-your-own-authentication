@@ -1,149 +1,173 @@
-import { getWorkspaceBySlug, getWorkspaceMembers, getWorkspaceTasks } from "@/modules/workspaces/api/queries"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Briefcase, Users, CheckSquare, Clock, Plus } from "lucide-react"
-import Link from "next/link"
-import { format } from "date-fns"
-import type { Metadata } from "next"
+import { Suspense } from 'react'
+import { notFound } from 'next/navigation'
+import {
+	getWorkspaceBySlug,
+	getWorkspaceActivities,
+	getWorkspaceStats,
+} from '@/modules/workspaces/api/queries'
+import { requireAuth } from '@/modules/authentication/utilities/auth'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { formatDistanceToNow } from 'date-fns'
+import { Briefcase, CheckSquare, Users, FileCode } from 'lucide-react'
+import {
+	TActivity,
+	WorkspaceActivityFeed,
+} from '@/modules/workspaces/components/workspace-activity-feed'
+import { WorkspaceMessageForm } from '@/modules/workspaces/components/workspace-message-form'
+import { WorkspaceStats } from '@/modules/workspaces/components/workspace-stats'
 
-interface WorkspacePageProps {
-  params: {
-    slug: string
-  }
+type TProps = {
+	params: {
+		slug: string
+	}
 }
 
-export async function generateMetadata({ params }: WorkspacePageProps): Promise<Metadata> {
-  const workspace = await getWorkspaceBySlug(params.slug)
+export default async function WorkspacePage({ params }: TProps) {
+	const user = await requireAuth()
+	const workspace = await getWorkspaceBySlug(params.slug)
 
-  if (!workspace) {
-    return {
-      title: "Workspace Not Found",
-    }
-  }
+	if (!workspace) {
+		notFound()
+	}
 
-  return {
-    title: workspace.name,
-    description: workspace.description || `Workspace: ${workspace.name}`,
-  }
+	const activities = await getWorkspaceActivities(workspace.id)
+	const stats = await getWorkspaceStats(workspace.id.toString())
+
+	return (
+		<div className="container py-6">
+			<div className="grid gap-6 md:grid-cols-7">
+				<div className="md:col-span-5 space-y-6">
+					<Card>
+						<CardHeader className="pb-3">
+							<div className="flex items-center justify-between">
+								<div>
+									<CardTitle className="text-2xl">
+										{workspace.name}
+									</CardTitle>
+									<CardDescription className="mt-1">
+										{workspace.description ||
+											'No description provided'}
+									</CardDescription>
+								</div>
+								{(workspace.role === 'owner' ||
+									workspace.role === 'admin') && (
+									<Button
+										variant="outline"
+										size="sm"
+										asChild
+									>
+										<a
+											href={`/dashboard/workspaces/${workspace.slug}/settings`}
+										>
+											Edit Workspace
+										</a>
+									</Button>
+								)}
+							</div>
+						</CardHeader>
+						<CardContent>
+							<div className="flex items-center text-sm text-muted-foreground">
+								<div className="flex items-center mr-4">
+									<Briefcase className="mr-1 h-4 w-4" />
+									<span>
+										Created{' '}
+										{formatDistanceToNow(
+											new Date(workspace.createdAt),
+											{ addSuffix: true }
+										)}
+									</span>
+								</div>
+								<div className="flex items-center mr-4">
+									<Users className="mr-1 h-4 w-4" />
+									<span>{workspace.memberCount} members</span>
+								</div>
+								<div className="flex items-center">
+									<CheckSquare className="mr-1 h-4 w-4" />
+									<span>{workspace.taskCount} tasks</span>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+
+					<Card>
+						<CardHeader>
+							<CardTitle>Activity Feed</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<WorkspaceMessageForm workspaceId={workspace.id} />
+
+							<div className="mt-6">
+								<Suspense
+									fallback={<div>Loading activities...</div>}
+								>
+									<WorkspaceActivityFeed
+										activities={activities as TActivity[]}
+									/>
+								</Suspense>
+							</div>
+						</CardContent>
+					</Card>
+				</div>
+
+				<div className="md:col-span-2 space-y-6">
+					<Suspense fallback={<div>Loading stats...</div>}>
+						<WorkspaceStats stats={stats as WorkspaceStats} />
+					</Suspense>
+
+					<Card>
+						<CardHeader>
+							<CardTitle>Quick Links</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<div className="space-y-2">
+								<Button
+									variant="outline"
+									className="w-full justify-start"
+									asChild
+								>
+									<a
+										href={`/dashboard/workspaces/${workspace.slug}/tasks`}
+									>
+										<CheckSquare className="mr-2 h-4 w-4" />
+										View Tasks
+									</a>
+								</Button>
+								<Button
+									variant="outline"
+									className="w-full justify-start"
+									asChild
+								>
+									<a
+										href={`/dashboard/workspaces/${workspace.slug}/members`}
+									>
+										<Users className="mr-2 h-4 w-4" />
+										Manage Members
+									</a>
+								</Button>
+								<Button
+									variant="outline"
+									className="w-full justify-start"
+									asChild
+								>
+									<a
+										href={`/dashboard/workspaces/${workspace.slug}/snippets`}
+									>
+										<FileCode className="mr-2 h-4 w-4" />
+										Code Snippets
+									</a>
+								</Button>
+							</div>
+						</CardContent>
+					</Card>
+				</div>
+			</div>
+		</div>
+	)
 }
-
-export default async function WorkspacePage({ params }: WorkspacePageProps) {
-  const workspace = await getWorkspaceBySlug(params.slug)
-
-  if (!workspace) {
-    return null
-  }
-
-  const members = await getWorkspaceMembers(Number(workspace.id))
-  const tasks = await getWorkspaceTasks(Number(workspace.id))
-  
-  // Count tasks by status
-  const todoCount = tasks.filter((task) => task.status === "todo").length
-
-  const inProgressCount = tasks.filter((task) => task.status === "in-progress").length
-  const doneCount = tasks.filter((task) => task.status === "done").length
-
-  return (
-    <div className="container py-8">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold">{workspace.name}</h1>
-          <p className="text-muted-foreground mt-1">{workspace.description}</p>
-        </div>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              Members
-            </CardTitle>
-            <CardDescription>
-              {workspace.memberCount} {workspace.memberCount === 1 ? "member" : "members"} in this workspace
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pb-2">
-            <div className="flex items-center text-sm text-muted-foreground">
-              <Clock className="mr-2 h-4 w-4" />
-              <span>Created {format(new Date(workspace.createdAt), "PPP")}</span>
-            </div>
-          </CardContent>
-          <CardContent className="pt-0">
-            <Button asChild variant="outline" className="w-full">
-              <Link href={`/dashboard/workspaces/${params.slug}/members`}>View Members</Link>
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2">
-              <CheckSquare className="h-5 w-5" />
-              Tasks
-            </CardTitle>
-            <CardDescription>
-              {workspace.taskCount} {workspace.taskCount === 1 ? "task" : "tasks"} in this workspace
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-sm">To Do</span>
-              <span className="text-sm font-medium">{todoCount}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm">In Progress</span>
-              <span className="text-sm font-medium">{inProgressCount}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm">Done</span>
-              <span className="text-sm font-medium">{doneCount}</span>
-            </div>
-          </CardContent>
-          <CardContent className="pt-0">
-            <Button asChild variant="outline" className="w-full">
-              <Link href={`/dashboard/workspaces/${params.slug}/tasks`}>View Tasks</Link>
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2">
-              <Briefcase className="h-5 w-5" />
-              Quick Actions
-            </CardTitle>
-            <CardDescription>Common actions for this workspace</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <Button asChild variant="outline" className="w-full justify-start">
-              <Link href={`/dashboard/workspaces/${params.slug}/tasks`}>
-                <Plus className="mr-2 h-4 w-4" />
-                New Task
-              </Link>
-            </Button>
-
-            {(workspace.role === "owner" || workspace.role === "admin") && (
-              <Button asChild variant="outline" className="w-full justify-start">
-                <Link href={`/dashboard/workspaces/${params.slug}/members`}>
-                  <Users className="mr-2 h-4 w-4" />
-                  Invite Members
-                </Link>
-              </Button>
-            )}
-
-            {(workspace.role === "owner" || workspace.role === "admin") && (
-              <Button asChild variant="outline" className="w-full justify-start">
-                <Link href={`/dashboard/workspaces/${params.slug}/settings`}>
-                  <Briefcase className="mr-2 h-4 w-4" />
-                  Workspace Settings
-                </Link>
-              </Button>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  )
-}
-
