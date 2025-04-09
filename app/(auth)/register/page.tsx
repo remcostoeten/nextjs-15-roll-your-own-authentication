@@ -1,31 +1,11 @@
-import { RegisterForm } from "@/modules/authentication/components/register-form";
-import { getCurrentUser } from "@/modules/authentication/utilities/auth";
-import { redirect } from "next/navigation";
-import { oauthProviderFactory } from "@/modules/authentication/utilities/oauth/provider-factory";
+import type { Metadata } from 'next'
+import RegisterView from '@/views/authentication/register-view'
 
-export default async function RegisterPage() {
-  const user = await getCurrentUser();
+export const metadata: Metadata = {
+	title: 'Register | Modern Auth',
+	description: 'Create a new account',
+}
 
-  if (user) {
-    redirect("/dashboard");
-  }
-
-  // Get OAuth providers
-  const mainProviders = oauthProviderFactory
-    .getMainProviders()
-    .map((p) => p.getProvider());
-  const additionalProviders = oauthProviderFactory
-    .getAdditionalProviders()
-    .map((p) => p.getProvider());
-
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <RegisterForm
-        oauthProviders={{
-          main: mainProviders,
-          additional: additionalProviders,
-        }}
-      />
-    </div>
-  );
+export default function RegisterPage() {
+	return <RegisterView />
 }

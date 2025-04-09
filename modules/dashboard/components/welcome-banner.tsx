@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { getGreeting } from '@/utilities/utils'
 import { Bell, Calendar, Settings } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 
 type TProps = {
 	user: {
@@ -13,6 +14,7 @@ type TProps = {
 		lastName?: string
 		email: string
 		id: string
+		avatar?: string
 	}
 	stats: {
 		totalUsers?: number
@@ -50,21 +52,40 @@ export function WelcomeBanner({ user, stats }: TProps) {
 		day: 'numeric',
 	})
 
+	const initials = `${user.firstName?.[0] || ''}${
+		user.lastName?.[0] || ''
+	}`.toUpperCase()
+
 	return (
 		<Card className="bg-gradient-to-r from-neutral-900 to-neutral-800">
 			<CardContent className="p-6">
 				<div className="flex flex-col md:flex-row justify-between items-start md:items-center">
-					<div className="space-y-2">
-						<h2 className="text-3xl font-bold">{greeting}</h2>
-						<p className="text-neutral-300 flex items-center">
-							<Calendar className="mr-2 h-4 w-4" />
-							{formattedDate}
-						</p>
-						{stats.daysSinceJoined !== undefined && (
-							<p className="text-neutral-300 text-sm">
-								Member for {stats.daysSinceJoined} days
+					<div className="flex items-center gap-4">
+						<Avatar className="h-16 w-16 rounded-lg">
+							{user.avatar ? (
+								<AvatarImage
+									src={user.avatar}
+									alt={`${user.firstName} ${user.lastName}`}
+									className="object-cover"
+								/>
+							) : (
+								<AvatarFallback className="rounded-lg bg-emerald-500 text-emerald-950 text-lg">
+									{initials}
+								</AvatarFallback>
+							)}
+						</Avatar>
+						<div className="space-y-2">
+							<h2 className="text-3xl font-bold">{greeting}</h2>
+							<p className="text-neutral-300 flex items-center">
+								<Calendar className="mr-2 h-4 w-4" />
+								{formattedDate}
 							</p>
-						)}
+							{stats.daysSinceJoined !== undefined && (
+								<p className="text-neutral-300 text-sm">
+									Member for {stats.daysSinceJoined} days
+								</p>
+							)}
+						</div>
 					</div>
 
 					<div className="flex flex-wrap gap-4 mt-4 md:mt-0">

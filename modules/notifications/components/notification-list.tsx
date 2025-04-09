@@ -396,8 +396,7 @@ export function NotificationList({
 										/>
 									</div>
 								)}
-
-								<Avatar className="h-10 w-10 border flex-shrink-0 ring-2 ring-background">
+								<Avatar className="h-10 w-10 border flex-shrink-0">
 									{notification.creator.avatarUrl ? (
 										<AvatarImage
 											src={notification.creator.avatarUrl}
@@ -419,7 +418,6 @@ export function NotificationList({
 										</AvatarFallback>
 									)}
 								</Avatar>
-
 								<div className="flex-1 space-y-1.5 min-w-0">
 									<div className="flex items-start justify-between gap-2">
 										<div className="flex items-center gap-2 flex-wrap">

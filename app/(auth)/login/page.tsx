@@ -1,31 +1,11 @@
-import { LoginForm } from "@/modules/authentication/components/login-form";
-import { getCurrentUser } from "@/modules/authentication/utilities/auth";
-import { redirect } from "next/navigation";
-import { oauthProviderFactory } from "@/modules/authentication/utilities/oauth/provider-factory";
+import type { Metadata } from 'next'
+import LoginView from '@/views/authentication/login-view'
 
-export default async function LoginPage() {
-  const user = await getCurrentUser();
+export const metadata: Metadata = {
+	title: 'Login | Modern Auth',
+	description: 'Login to your account',
+}
 
-  if (user) {
-    redirect("/dashboard");
-  }
-
-  // Get OAuth providers
-  const mainProviders = oauthProviderFactory
-    .getMainProviders()
-    .map((p) => p.getProvider());
-  const additionalProviders = oauthProviderFactory
-    .getAdditionalProviders()
-    .map((p) => p.getProvider());
-
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <LoginForm
-        oauthProviders={{
-          main: mainProviders,
-          additional: additionalProviders,
-        }}
-      />
-    </div>
-  );
+export default function LoginPage() {
+	return <LoginView />
 }

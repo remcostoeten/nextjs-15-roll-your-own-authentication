@@ -52,6 +52,7 @@ type UserData = {
 	firstName: string
 	lastName: string
 	isAdmin: boolean
+	avatar?: string
 }
 
 type SessionData = {
@@ -187,10 +188,18 @@ export function NavUser() {
 						>
 							<div className="relative">
 								<Avatar className="h-8 w-8 rounded-lg">
-									<AvatarImage
-										src={`https://avatar.vercel.sh/${user.username}`}
-										alt={fullName}
-									/>
+									{user.avatar ? (
+										<AvatarImage
+											src={user.avatar}
+											alt={fullName}
+											className="object-cover"
+										/>
+									) : (
+										<AvatarImage
+											src={`https://avatar.vercel.sh/${user.username}`}
+											alt={fullName}
+										/>
+									)}
 									<AvatarFallback className="rounded-lg bg-emerald-500 text-emerald-950">
 										{initials}
 									</AvatarFallback>
@@ -216,10 +225,18 @@ export function NavUser() {
 						<DropdownMenuLabel className="p-0 font-normal">
 							<div className="flex items-center gap-2 px-4 py-3">
 								<Avatar className="h-10 w-10 rounded-lg">
-									<AvatarImage
-										src={`https://avatar.vercel.sh/${user.username}`}
-										alt={fullName}
-									/>
+									{user.avatar ? (
+										<AvatarImage
+											src={user.avatar}
+											alt={fullName}
+											className="object-cover"
+										/>
+									) : (
+										<AvatarImage
+											src={`https://avatar.vercel.sh/${user.username}`}
+											alt={fullName}
+										/>
+									)}
 									<AvatarFallback className="rounded-lg bg-emerald-500 text-emerald-950">
 										{initials}
 									</AvatarFallback>
@@ -351,15 +368,15 @@ export function NavUser() {
 										)}
 
 										<div className="border-t border-border p-2">
-											<a
-												href="/notifications"
+											<Link
+												href="/dashboard/notifications"
 												className="flex items-center justify-center gap-1 w-full text-center text-xs py-2 text-emerald-500 hover:text-emerald-600 font-medium transition-colors"
 											>
 												<span>
 													View all notifications
 												</span>
 												<ExternalLink className="h-3 w-3" />
-											</a>
+											</Link>
 										</div>
 									</div>
 								)}

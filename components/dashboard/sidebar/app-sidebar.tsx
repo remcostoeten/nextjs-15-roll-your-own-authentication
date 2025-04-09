@@ -23,7 +23,6 @@ import {
 	SidebarRail,
 } from '@/components/dashboard/sidebar/sidebar'
 
-// This is sample data.
 const data = {
 	navMain: [
 		{
@@ -34,8 +33,8 @@ const data = {
 			isActive: true,
 			items: [
 				{
-					title: 'History',
-					url: '#',
+					title: 'Checkbox',
+					url: '/dashboard/playground/checkbox',
 				},
 				{
 					title: 'Starred',
