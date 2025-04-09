@@ -1,7 +1,6 @@
 {
     "window.zoomLevel": 4,
     "workbench.iconTheme": "catppuccin-mocha",
-    "workbench.colorTheme": "Nebula",
     "accessibility.voice.speechTimeout": 5000,
     "editor.minimap.enabled": false,
     "editor.fontSize": 16,

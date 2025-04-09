@@ -1,6 +1,6 @@
 'use client'
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
 	Card,
@@ -114,6 +114,13 @@ export function UserProfile({ user, sessionData }: UserProfileProps) {
 						<CardContent className="p-6">
 							<div className="flex flex-col items-center text-center">
 								<Avatar className="h-24 w-24 border-4 border-background">
+									{user.avatar ? (
+										<AvatarImage
+											src={user.avatar}
+											alt={fullName}
+											className="object-cover"
+										/>
+									) : null}
 									<AvatarFallback className="text-xl bg-primary text-primary-foreground">
 										{initials}
 									</AvatarFallback>

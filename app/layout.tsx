@@ -23,7 +23,9 @@ export default function RootLayout({
 			lang="en"
 			suppressHydrationWarning
 		>
-			<body className={inter.className}>
+			<body
+				className={`${inter.className} w-screen h-screen bg-background`}
+			>
 				<Providers>{children}</Providers>
 			</body>
 		</html>

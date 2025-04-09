@@ -1,6 +1,9 @@
-import type { ReactNode } from "react"
+import { Center } from '@/shared/components/Center'
 
-export default function AuthLayout({ children }: { children: ReactNode }) {
-  return children
+export default function AuthLayout({
+	children,
+}: {
+	children: React.ReactNode
+}) {
+	return <Center>{children} </Center>
 }
-

@@ -39,7 +39,7 @@ export function LoginForm() {
 					description: 'You have been logged in successfully.',
 				})
 
-				// Small delay to show the toast before redirecting
+				// Redirect to dashboard
 				setTimeout(() => {
 					router.push('/dashboard')
 					router.refresh()
