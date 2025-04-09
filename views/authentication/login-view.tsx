@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { AuthForm } from '@/modules/authentication/components/auth-form'
 import { AuthContainer } from '../../modules/authentication/components/auth-container'
 import { AuthHeader } from '@/modules/authentication/components/auth-header'
@@ -9,9 +10,11 @@ import { OAuthProviders } from '@/modules/authentication/components/oauth-provid
 import { EmailPasswordForm } from '@/modules/authentication/components/email-password-form'
 import { Separator } from '@/components/ui/separator'
 import { login as loginAction } from '@/modules/authentication/api/mutations'
+import { customToast } from '@/components/ui/custom-toast'
 
 export default function LoginView() {
 	const [showMoreProviders, setShowMoreProviders] = useState(false)
+	const router = useRouter()
 
 	// Wrapper function to handle the login action
 	const handleLogin = async (formData: FormData) => {
@@ -20,8 +23,32 @@ export default function LoginView() {
 		newFormData.append('emailOrUsername', formData.get('email') as string)
 		newFormData.append('password', formData.get('password') as string)
 
+		// Add remember me flag if checked
+		const rememberMe = formData.get('remember') === 'on'
+		if (rememberMe) {
+			newFormData.append('remember', 'true')
+		}
+
 		const result = await loginAction(newFormData)
-		// Handle the result if needed
+		if (result.error) {
+			customToast.error({
+				title: 'Login failed',
+				description: result.error,
+			})
+			return
+		}
+
+		if (result.success) {
+			customToast.success({
+				title: 'Welcome back!',
+				description: 'You have been successfully logged in.',
+			})
+
+			setTimeout(() => {
+				router.push('/dashboard')
+				router.refresh()
+			}, 1000)
+		}
 	}
 
 	return (

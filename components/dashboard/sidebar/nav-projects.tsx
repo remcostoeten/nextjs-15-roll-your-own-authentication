@@ -8,6 +8,7 @@ import {
 	type LucideIcon,
 	Plus,
 } from 'lucide-react'
+import { usePathname } from 'next/navigation'
 
 import {
 	DropdownMenu,
@@ -48,6 +49,13 @@ export function NavProjects({
 	}[]
 }) {
 	const { isMobile } = useSidebar()
+	const pathname = usePathname()
+
+	// Helper function to check if a project link is active
+	const isActive = (url: string) => {
+		if (url === '#' || url === '') return false
+		return pathname.startsWith(url)
+	}
 
 	return (
 		<SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -55,7 +63,10 @@ export function NavProjects({
 			<SidebarMenu>
 				{projects.map((item) => (
 					<SidebarMenuItem key={item.name}>
-						<SidebarMenuButton asChild>
+						<SidebarMenuButton
+							asChild
+							isActive={isActive(item.url)}
+						>
 							<a href={item.url}>
 								<item.icon />
 								<span>{item.name}</span>

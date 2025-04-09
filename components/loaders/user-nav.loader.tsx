@@ -5,7 +5,6 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from '@/components/dashboard/sidebar/sidebar'
-
 export function UserNavLoader() {
 	return (
 		<SidebarMenu>

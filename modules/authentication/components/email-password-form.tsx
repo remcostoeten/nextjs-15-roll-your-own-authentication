@@ -4,9 +4,9 @@ import { Loader2 } from 'lucide-react'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
 import { motion } from 'framer-motion'
 import { PasswordInput } from './password-input'
+import Checkbox from '@/shared/components/core/checkbox/Checkbox'
 
 type TProps = {
 	type: 'login' | 'register'
@@ -59,6 +59,9 @@ export function EmailPasswordForm({ type }: TProps) {
 					<Checkbox
 						id="remember"
 						name="remember"
+						color="#00aa8d"
+						hoverColor="#00bf92"
+						activeColor="#008975"
 					/>
 					<Label
 						htmlFor="remember"

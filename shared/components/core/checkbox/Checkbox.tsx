@@ -3,8 +3,10 @@
 import React, { useState, useEffect, useRef, InputHTMLAttributes } from 'react'
 import styles from './checkbox.module.css'
 
-interface CheckboxProps
-	extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'onChange'> {
+type CheckboxProps = Omit<
+	InputHTMLAttributes<HTMLInputElement>,
+	'type' | 'onChange'
+> & {
 	round?: boolean
 	checked?: boolean
 	label?: string

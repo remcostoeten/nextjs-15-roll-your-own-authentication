@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 import { PasswordInput } from './password-input'
 import { Flex } from '@/shared/components/flexer'
+import Checkbox from '@/shared/components/core/checkbox/Checkbox'
 
 export function RegisterForm() {
 	const { pending } = useFormStatus()
@@ -113,6 +114,36 @@ export function RegisterForm() {
 					autoComplete="new-password"
 					required
 				/>
+			</div>
+
+			<div className="flex items-center space-x-2">
+				<Checkbox
+					id="terms"
+					name="terms"
+					required
+					color="#00aa8d"
+					hoverColor="#00bf92"
+					activeColor="#008975"
+				/>
+				<Label
+					htmlFor="terms"
+					className="text-sm font-normal text-muted-foreground leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+				>
+					I agree to the{' '}
+					<a
+						href="/terms"
+						className="text-primary hover:underline"
+					>
+						Terms of Service
+					</a>{' '}
+					and{' '}
+					<a
+						href="/privacy"
+						className="text-primary hover:underline"
+					>
+						Privacy Policy
+					</a>
+				</Label>
 			</div>
 
 			<Button

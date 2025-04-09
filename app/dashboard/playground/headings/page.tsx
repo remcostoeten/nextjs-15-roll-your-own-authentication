@@ -1,4 +1,4 @@
-// app/dashboard/playground/ui/headings/page.tsx
+'use client'
 
 import React from 'react'
 import Title from '@/shared/components/headings'

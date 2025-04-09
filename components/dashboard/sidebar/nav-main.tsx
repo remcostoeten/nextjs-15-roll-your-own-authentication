@@ -39,10 +39,32 @@ export function NavMain({
 	const pathname = usePathname()
 
 	const isActive = (url: string) => {
+		// Exact match for root dashboard
 		if (url === '/dashboard' && pathname === '/dashboard') {
 			return true
 		}
-		return pathname.startsWith(url) && url !== '/dashboard'
+
+		// Special case for index routes
+		if (url === '#') {
+			return false
+		}
+
+		// For nested routes, check if the pathname starts with the url
+		// This ensures parent items are highlighted when a child route is active
+		// But only if the url is not just a fragment
+		if (url !== '#' && pathname.startsWith(url)) {
+			// For exact matches
+			if (pathname === url) {
+				return true
+			}
+
+			// For nested routes, ensure we're actually in a child route
+			// This prevents partial URL matches from triggering
+			const remainingPath = pathname.slice(url.length)
+			return remainingPath.startsWith('/')
+		}
+
+		return false
 	}
 
 	return (
@@ -59,7 +81,11 @@ export function NavMain({
 						>
 							<SidebarMenuItem>
 								<CollapsibleTrigger asChild>
-									<SidebarMenuButton tooltip={item.title}>
+									<SidebarMenuButton
+										tooltip={item.title}
+										isActive={isActive(item.url)}
+										className="transition-colors duration-200 relative data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-medium before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] data-[active=true]:before:bg-emerald-500"
+									>
 										{item.icon && <item.icon />}
 										<span className="flex items-center gap-2">
 											{item.title}
@@ -86,6 +112,7 @@ export function NavMain({
 													isActive={isActive(
 														subItem.url
 													)}
+													className="transition-colors duration-200 relative data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-medium before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] data-[active=true]:before:bg-emerald-500"
 												>
 													<Link href={subItem.url}>
 														<span>
@@ -105,6 +132,7 @@ export function NavMain({
 								asChild
 								isActive={isActive(item.url)}
 								tooltip={item.title}
+								className="transition-colors duration-200 relative data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-medium before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] data-[active=true]:before:bg-emerald-500"
 							>
 								<Link href={item.url}>
 									{item.icon && <item.icon />}

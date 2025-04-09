@@ -1,170 +1,165 @@
-// app/dashboard/playground/ui/flexer/page.tsx
+'use client'
 
-import React from 'react'
-import { Flex } from '@/shared/components/flexer'
-import Checkbox from '@/shared/components/core/checkbox/Checkbox'
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import {
+	PlaygroundLayout,
+	PlaygroundSection,
+	PlaygroundDemo,
+	PlaygroundControls,
+} from '@/components/playground/playground-layout'
 
-const FlexerPlayground = () => {
+export default function FlexerPlayground() {
+	const [direction, setDirection] = useState<'row' | 'column'>('row')
+	const [justify, setJustify] = useState<string>('flex-start')
+	const [align, setAlign] = useState<string>('flex-start')
+	const [gap, setGap] = useState<number>(4)
+
+	const items = ['Item 1', 'Item 2', 'Item 3']
+
 	return (
-		<div className="container mx-auto p-4">
-			<h1 className="text-2xl font-bold mb-4">Flexer Playground</h1>
-
-			<section className="mb-8">
-				<h2 className="text-xl font-semibold mb-2">Basic Usage</h2>
-				<Flex>
-					<div>Item 1</div>
-					<div>Item 2</div>
-					<div>Item 3</div>
-				</Flex>
-			</section>
-
-			<section className="mb-8">
-				<h2 className="text-xl font-semibold mb-2">Column Layout</h2>
-				<Flex
-					column
-					gap="md"
-				>
-					<div>Top</div>
-					<div>Middle</div>
-					<div>Bottom</div>
-				</Flex>
-			</section>
-
-			<section className="mb-8">
-				<h2 className="text-xl font-semibold mb-2">Centered Content</h2>
-				<Flex
-					center
-					className="h-32 bg-gray-100"
-				>
-					<div>Perfectly centered</div>
-				</Flex>
-			</section>
-
-			<section className="mb-8">
-				<h2 className="text-xl font-semibold mb-2">Space Between</h2>
-				<Flex
-					between
-					className="w-full bg-gray-100 p-2"
-				>
-					<button className="px-4 py-2 bg-blue-500 text-white rounded">
-						Cancel
-					</button>
-					<button className="px-4 py-2 bg-green-500 text-white rounded">
-						Save
-					</button>
-				</Flex>
-			</section>
-
-			<section className="mb-8">
-				<h2 className="text-xl font-semibold mb-2">Navigation Bar</h2>
-				<Flex
-					between
-					middle
-					className="bg-gray-100 p-4"
-				>
-					<div>Logo</div>
-					<Flex gap="lg">
-						<a href="/">Home</a>
-						<a href="/about">About</a>
-						<a href="/contact">Contact</a>
-					</Flex>
-				</Flex>
-			</section>
-
-			<section className="mb-8">
-				<h2 className="text-xl font-semibold mb-2">
-					Card Layout (Reverse Column)
-				</h2>
-				<Flex
-					column
-					reverse
-					gap="sm"
-					className="border p-4 rounded"
-				>
-					<button className="px-4 py-2 bg-blue-500 text-white rounded">
-						Read More
-					</button>
-					<p>Card description text here...</p>
-					<h3>Card Title</h3>
-				</Flex>
-			</section>
-
-			<section className="mb-8">
-				<h2 className="text-xl font-semibold mb-2">Wrapping Items</h2>
-				<Flex
-					wrap
-					gap="md"
-					className="w-full"
-				>
-					{Array.from({ length: 10 }).map((_, index) => (
-						<div
-							key={index}
-							className="w-1/4 bg-gray-100 p-4 rounded"
-						>
-							Item {index + 1}
+		<PlaygroundLayout
+			title="Flexbox Playground"
+			description="Experiment with different flexbox properties to understand how they work."
+		>
+			<PlaygroundSection
+				title="Basic Layout"
+				description="Try different flex container properties to see how they affect the layout."
+			>
+				<PlaygroundDemo className="min-h-[200px]">
+					<div
+						className="w-full h-full border border-dashed border-neutral-700 rounded-lg p-4"
+						style={{
+							display: 'flex',
+							flexDirection: direction,
+							justifyContent: justify,
+							alignItems: align,
+							gap: `${gap * 4}px`,
+						}}
+					>
+						{items.map((item, index) => (
+							<div
+								key={index}
+								className="bg-neutral-800 text-neutral-200 p-4 rounded-md"
+							>
+								{item}
+							</div>
+						))}
+					</div>
+				</PlaygroundDemo>
+				<PlaygroundControls>
+					<div className="space-y-4 w-full">
+						<div className="space-x-2">
+							<Button
+								variant={
+									direction === 'row' ? 'default' : 'outline'
+								}
+								onClick={() => setDirection('row')}
+							>
+								Row
+							</Button>
+							<Button
+								variant={
+									direction === 'column'
+										? 'default'
+										: 'outline'
+								}
+								onClick={() => setDirection('column')}
+							>
+								Column
+							</Button>
 						</div>
-					))}
-				</Flex>
-			</section>
+						<div className="space-x-2">
+							{[
+								'flex-start',
+								'center',
+								'flex-end',
+								'space-between',
+								'space-around',
+							].map((value) => (
+								<Button
+									key={value}
+									variant={
+										justify === value
+											? 'default'
+											: 'outline'
+									}
+									onClick={() => setJustify(value)}
+								>
+									{value}
+								</Button>
+							))}
+						</div>
+						<div className="space-x-2">
+							{[
+								'flex-start',
+								'center',
+								'flex-end',
+								'stretch',
+							].map((value) => (
+								<Button
+									key={value}
+									variant={
+										align === value ? 'default' : 'outline'
+									}
+									onClick={() => setAlign(value)}
+								>
+									{value}
+								</Button>
+							))}
+						</div>
+						<div className="space-x-2">
+							{[2, 4, 6, 8].map((value) => (
+								<Button
+									key={value}
+									variant={
+										gap === value ? 'default' : 'outline'
+									}
+									onClick={() => setGap(value)}
+								>
+									Gap {value}
+								</Button>
+							))}
+						</div>
+					</div>
+				</PlaygroundControls>
+			</PlaygroundSection>
 
-			<section className="mb-8">
-				<h2 className="text-xl font-semibold mb-2">
-					As Different Element
-				</h2>
-				<Flex
-					as="section"
-					column
-					gap="lg"
-					className="py-8 bg-gray-100 p-4"
-				>
-					<h2>Section Title</h2>
-					<p>Section content...</p>
-				</Flex>
-			</section>
+			<PlaygroundSection
+				title="Centered Content"
+				description="A common use case: perfectly centered content."
+			>
+				<PlaygroundDemo>
+					<div className="w-full h-[200px] border border-dashed border-neutral-700 rounded-lg">
+						<div className="w-full h-full flex items-center justify-center">
+							<div className="bg-neutral-800 text-neutral-200 p-4 rounded-md">
+								Centered Content
+							</div>
+						</div>
+					</div>
+				</PlaygroundDemo>
+			</PlaygroundSection>
 
-			<section className="mb-8">
-				<h2 className="text-xl font-semibold mb-2">With onClick</h2>
-				<Flex
-					center
-					className="bg-blue-100 p-4 rounded cursor-pointer hover:bg-blue-200"
-					onClick={() => alert('Clicked!')}
-				>
-					<span>Click me!</span>
-				</Flex>
-			</section>
-
-			<section className="mb-8">
-				<h2 className="text-xl font-semibold mb-2">
-					Responsive Layout
-				</h2>
-				<Flex
-					column
-					gap="md"
-					className="md:flex-row md:justify-between w-full bg-gray-100 p-4"
-				>
-					<div>Left on mobile, Left on desktop</div>
-					<div>Middle on mobile, Middle on desktop</div>
-					<div>Bottom on mobile, Right on desktop</div>
-				</Flex>
-			</section>
-
-			<section className="mb-8">
-				<h2 className="text-xl font-semibold mb-2">
-					Flex with Checkbox
-				</h2>
-				<Flex
-					center
-					gap="sm"
-				>
-					<Checkbox label="Option 1" />
-					<Checkbox
-						label="Option 2"
-						disabled
-					/>
-				</Flex>
-			</section>
-		</div>
+			<PlaygroundSection
+				title="Responsive Layout"
+				description="This section demonstrates a responsive flex layout that adapts to different screen sizes."
+			>
+				<PlaygroundDemo>
+					<div className="w-full border border-dashed border-neutral-700 rounded-lg p-4">
+						<div className="flex flex-col md:flex-row gap-4">
+							<div className="flex-1 bg-neutral-800 text-neutral-200 p-4 rounded-md">
+								Column 1
+							</div>
+							<div className="flex-1 bg-neutral-800 text-neutral-200 p-4 rounded-md">
+								Column 2
+							</div>
+							<div className="flex-1 bg-neutral-800 text-neutral-200 p-4 rounded-md">
+								Column 3
+							</div>
+						</div>
+					</div>
+				</PlaygroundDemo>
+			</PlaygroundSection>
+		</PlaygroundLayout>
 	)
 }
-
-export default FlexerPlayground

@@ -15,8 +15,10 @@ import {
 	ExternalLink,
 	CheckCircle,
 	Link,
+	Loader2,
 } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
+import { useRouter } from 'next/navigation'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
@@ -44,6 +46,7 @@ import { Button } from '@/components/ui/button'
 import { logout } from '@/modules/authentication/api/mutations'
 import { notifications } from '@/server/db/schema'
 import { UserNavLoader } from '@/components/loaders/user-nav.loader'
+import { customToast } from '@/components/ui/custom-toast'
 
 type UserData = {
 	id: string
@@ -87,11 +90,13 @@ type NotificationsResponse = {
 
 export function NavUser() {
 	const { isMobile } = useSidebar()
+	const router = useRouter()
 	const [user, setUser] = useState<UserData | null>(null)
 	const [sessionData, setSessionData] = useState<SessionData | null>(null)
 	const [notificationsData, setNotificationsData] =
 		useState<NotificationsResponse | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
+	const [isLoggingOut, setIsLoggingOut] = useState(false)
 
 	const fetchUserData = async () => {
 		try {
@@ -145,6 +150,35 @@ export function NavUser() {
 				return <AlertCircle className="h-4 w-4 text-rose-500" />
 			default:
 				return <Info className="h-4 w-4 text-blue-500" />
+		}
+	}
+
+	const handleLogout = async () => {
+		try {
+			setIsLoggingOut(true)
+			const result = await logout()
+
+			if (result.success) {
+				customToast.success({
+					title: 'Logged out successfully',
+					description: 'You have been logged out of your account.',
+				})
+				router.push('/login')
+				router.refresh()
+			} else {
+				customToast.error({
+					title: 'Logout failed',
+					description: result.error || 'Something went wrong.',
+				})
+			}
+		} catch (error) {
+			console.error('Logout error:', error)
+			customToast.error({
+				title: 'Logout failed',
+				description: 'An unexpected error occurred.',
+			})
+		} finally {
+			setIsLoggingOut(false)
 		}
 	}
 
@@ -253,180 +287,161 @@ export function NavUser() {
 									<Shield className="ml-auto h-4 w-4 text-emerald-500" />
 								)}
 							</div>
-						</DropdownMenuLabel>
-						{user.isAdmin && (
-							<>
-								<DropdownMenuSeparator />
-								<DropdownMenuGroup>
-									<DropdownMenuItem>
-										<Shield className="mr-2 h-4 w-4 text-emerald-500" />
-										Admin Dashboard
-									</DropdownMenuItem>
-								</DropdownMenuGroup>
-							</>
-						)}
-						<DropdownMenuSeparator />
-						{/* Notifications Section */}
-						<DropdownMenuSub>
-							<DropdownMenuSubTrigger className="flex items-center justify-between">
-								<div className="flex items-center relative">
-									<Bell className="mr-3 ∫h-4 w-4" />
-									<span>Notifications </span>
-									{notificationsData?.unreadCount &&
-										notificationsData.unreadCount > 0 && (
-											<span className="flex h-2 w-2 items-center opacity-50 justify-center">
-												<span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
-											</span>
-										)}
+							{sessionData && (
+								<div className="border-t px-4 py-2 text-xs text-muted-foreground">
+									<p>
+										Last sign in:{' '}
+										{formatDistanceToNow(
+											sessionData.lastSignIn
+										)}{' '}
+										ago
+									</p>
+									<p>IP: {sessionData.lastIp}</p>
 								</div>
-							</DropdownMenuSubTrigger>
-							<DropdownMenuSubContent className="w-72 p-0">
-								{!notificationsData ||
-								notificationsData.notifications.length === 0 ? (
-									<div className="flex flex-col items-center justify-center py-8 px-4">
-										<div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted mb-3">
-											<BellOff className="h-5 w-5 text-muted-foreground" />
-										</div>
-										<p className="text-xs text-center text-muted-foreground max-w-[200px]">
-											No notifications yet. We'll notify
-											you when something important
-											happens.
-										</p>
-										<a
-											href="/dashboard/notifications"
-											className="mt-4 text-xs text-emerald-500 hover:text-emerald-600 font-medium flex items-center"
+							)}
+						</DropdownMenuLabel>
+						<DropdownMenuSeparator />
+						<DropdownMenuGroup>
+							<DropdownMenuItem asChild>
+								<a
+									href="/profile"
+									className="flex items-center"
+								>
+									<User className="mr-2 h-4 w-4" />
+									<span>Profile</span>
+								</a>
+							</DropdownMenuItem>
+							<DropdownMenuItem asChild>
+								<a
+									href="/settings"
+									className="flex items-center"
+								>
+									<Settings className="mr-2 h-4 w-4" />
+									<span>Settings</span>
+								</a>
+							</DropdownMenuItem>
+							{user.isAdmin && (
+								<DropdownMenuItem asChild>
+									<a
+										href="/admin"
+										className="flex items-center"
+									>
+										<Shield className="mr-2 h-4 w-4" />
+										<span>Admin Panel</span>
+									</a>
+								</DropdownMenuItem>
+							)}
+						</DropdownMenuGroup>
+						<DropdownMenuSeparator />
+						<DropdownMenuGroup>
+							<DropdownMenuSub>
+								<DropdownMenuSubTrigger className="flex items-center">
+									<Bell className="mr-2 h-4 w-4" />
+									<span>Notifications</span>
+									{hasUnreadNotifications && (
+										<span className="ml-auto flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
+											{notificationsData.unreadCount}
+										</span>
+									)}
+								</DropdownMenuSubTrigger>
+								<DropdownMenuSubContent className="w-72">
+									<div className="flex items-center justify-between px-2 py-1.5">
+										<span className="text-xs font-semibold">
+											Recent Notifications
+										</span>
+										<Button
+											variant="ghost"
+											size="icon"
+											className="h-4 w-4"
+											asChild
 										>
-											<span>View all notifications</span>
-											<ExternalLink className="ml-1 h-3 w-3" />
-										</a>
+											<a href="/notifications">
+												<ExternalLink className="h-3 w-3" />
+											</a>
+										</Button>
 									</div>
-								) : (
-									<div className="max-h-[300px] overflow-y-auto">
-										{notificationsData.notifications.map(
+									<DropdownMenuSeparator />
+									{notificationsData?.notifications.length ===
+									0 ? (
+										<div className="flex items-center gap-2 px-2 py-4 text-center text-sm text-muted-foreground">
+											<BellOff className="mx-auto h-4 w-4" />
+											<span>No notifications</span>
+										</div>
+									) : (
+										notificationsData?.notifications.map(
 											(notification) => (
-												<div
+												<DropdownMenuItem
 													key={notification.id}
 													className={cn(
-														'flex cursor-pointer items-start gap-3 p-3 hover:bg-muted/50 transition-colors',
+														'flex items-start gap-2 p-2',
 														!notification.isRead &&
-															'bg-muted/30 border-l-2 border-emerald-500'
+															'bg-accent/40'
 													)}
-													onClick={() => {
-														if (notification.link) {
-															window.location.href =
-																notification.link
-														}
-													}}
+													asChild
 												>
-													<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted">
-														{getNotificationIcon(
-															notification.type
-														)}
-													</div>
-													<div className="flex-1 min-w-0">
-														<div className="flex items-center justify-between">
-															<p className="font-medium text-sm truncate">
+													<a
+														href={
+															notification.link ||
+															'/notifications'
+														}
+														className="grid gap-1"
+													>
+														<div className="flex items-center gap-2">
+															{getNotificationIcon(
+																notification.type
+															)}
+															<span className="font-medium">
 																{
 																	notification.title
 																}
-															</p>
-															{notification.link && (
-																<ExternalLink className="h-3 w-3 text-muted-foreground flex-shrink-0 ml-1" />
-															)}
+															</span>
 														</div>
-														<p className="line-clamp-2 text-xs text-muted-foreground mt-1">
+														<div className="line-clamp-2 text-xs text-muted-foreground">
 															{
 																notification.content
 															}
-														</p>
-														<div className="mt-1 flex items-center text-xs text-muted-foreground">
+														</div>
+														<div className="flex items-center gap-2 text-xs text-muted-foreground">
 															<span>
 																{formatDistanceToNow(
 																	new Date(
 																		notification.createdAt
-																	),
-																	{
-																		addSuffix:
-																			true,
-																	}
-																)}
+																	)
+																)}{' '}
+																ago
 															</span>
-															{!notification.isRead && (
+															{notification.link && (
 																<>
-																	<span className="mx-1.5">
+																	<span>
 																		•
 																	</span>
-																	<span className="font-medium text-emerald-500">
-																		New
-																	</span>
+																	<Link className="h-3 w-3" />
 																</>
 															)}
 														</div>
-													</div>
-												</div>
+													</a>
+												</DropdownMenuItem>
 											)
-										)}
-
-										<div className="border-t border-border p-2">
-											<Link
-												href="/dashboard/notifications"
-												className="flex items-center justify-center gap-1 w-full text-center text-xs py-2 text-emerald-500 hover:text-emerald-600 font-medium transition-colors"
-											>
-												<span>
-													View all notifications
-												</span>
-												<ExternalLink className="h-3 w-3" />
-											</Link>
-										</div>
-									</div>
-								)}
-							</DropdownMenuSubContent>
-						</DropdownMenuSub>
-						{sessionData && (
-							<>
-								<DropdownMenuSeparator />
-								<div className="px-4 py-2 text-xs text-muted-foreground">
-									<div className="flex items-center justify-between">
-										<span>Last sign in</span>
-										<span>
-											{formatDistanceToNow(
-												sessionData.lastSignIn,
-												{ addSuffix: true }
-											)}
-										</span>
-									</div>
-									<div className="flex items-center justify-between mt-1">
-										<span>IP address</span>
-										<span>{sessionData.lastIp}</span>
-									</div>
-									<div className="flex items-center justify-between mt-1">
-										<span>Sign in count</span>
-										<span>{sessionData.signInCount}</span>
-									</div>
-								</div>
-							</>
-						)}
-						<DropdownMenuSeparator />
-						<DropdownMenuGroup>
-							<DropdownMenuItem>
-								<User className="mr-2 h-4 w-4" />
-								Profile
-							</DropdownMenuItem>
-							<DropdownMenuItem>
-								<Settings className="mr-2 h-4 w-4" />
-								Settings
-							</DropdownMenuItem>
+										)
+									)}
+								</DropdownMenuSubContent>
+							</DropdownMenuSub>
 						</DropdownMenuGroup>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem asChild>
-							<Button
-								variant="ghost"
-								onClick={logout}
-								className="w-full justify-start text-destructive"
-							>
+						<DropdownMenuItem
+							className="text-red-600 focus:bg-red-600/10 focus:text-red-600"
+							disabled={isLoggingOut}
+							onSelect={(event) => {
+								event.preventDefault()
+								handleLogout()
+							}}
+						>
+							{isLoggingOut ? (
+								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							) : (
 								<LogOut className="mr-2 h-4 w-4" />
-								Log out
-							</Button>
+							)}
+							<span>Log out</span>
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>

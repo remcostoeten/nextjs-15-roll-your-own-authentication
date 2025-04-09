@@ -18,6 +18,13 @@ import { createId } from '@paralleldrive/cuid2'
 import { registerSchema, loginSchema } from '../models/z.register'
 import { DEFAULT_AVATAR_URL } from '../config/constants'
 
+const cookieOptions = {
+	httpOnly: true,
+	secure: process.env.NODE_ENV === 'production',
+	sameSite: 'lax' as const,
+	path: '/',
+}
+
 export async function register(formData: FormData) {
 	try {
 		const validatedData = registerSchema.parse({
@@ -143,14 +150,6 @@ export async function login(formData: FormData) {
 			return { error: 'Invalid credentials' }
 		}
 
-		// Check if user is active
-		if (user.isVerified === false) {
-			console.log('Login failed: User account is not verified', user.id)
-			return {
-				error: 'Your account has not been verified. Please contact an administrator.',
-			}
-		}
-
 		// Verify password
 		const isPasswordValid = await bcrypt.compare(
 			password,
@@ -163,7 +162,7 @@ export async function login(formData: FormData) {
 		}
 
 		// Create session
-		const headersList = headers()
+		const headersList = await headers()
 		const userAgent = headersList.get('user-agent') || ''
 		const ip = headersList.get('x-forwarded-for') || '127.0.0.1'
 
@@ -184,6 +183,8 @@ export async function login(formData: FormData) {
 		const token = await generateToken({
 			id: user.id,
 			email: user.email,
+			firstName: user.firstName,
+			lastName: user.lastName,
 			isAdmin: user.isAdmin || false,
 			sessionId,
 		})
@@ -191,7 +192,8 @@ export async function login(formData: FormData) {
 		console.log('Generated token for user', user.id)
 
 		// Set token cookie
-		cookies().set('token', token, {
+		const cookieStore = await cookies()
+		cookieStore.set('token', token, {
 			...cookieOptions,
 			expires: expiresAt,
 		})
@@ -214,10 +216,11 @@ export async function login(formData: FormData) {
 // Logout user
 export async function logout() {
 	try {
-		const token = cookies().get('token')?.value
+		const cookieStore = await cookies()
+		const token = cookieStore.get('token')?.value
 
 		if (token) {
-			cookies().delete('token')
+			cookieStore.delete('token')
 		}
 
 		return { success: true }

@@ -21,6 +21,17 @@ export default function RegisterView() {
 
 	const handleRegister = async (formData: FormData) => {
 		try {
+			// Check if terms are accepted
+			const termsAccepted = formData.get('terms') === 'on'
+			if (!termsAccepted) {
+				customToast.error({
+					title: 'Registration failed',
+					description:
+						'You must accept the Terms of Service and Privacy Policy to continue.',
+				})
+				return
+			}
+
 			const result = await registerAction(formData)
 
 			if (result.error) {
