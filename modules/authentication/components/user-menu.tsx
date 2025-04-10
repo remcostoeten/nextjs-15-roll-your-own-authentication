@@ -11,12 +11,17 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Icons } from '@/components/icons'
 import { logout } from '../api/mutations'
 import { customToast } from '@/components/ui/custom-toast'
+import { Moon, Sun, Laptop } from 'lucide-react'
+import { useTheme } from 'next-themes'
 
 interface UserMenuProps {
 	user: {
@@ -30,6 +35,7 @@ interface UserMenuProps {
 export function UserMenu({ user }: UserMenuProps) {
 	const router = useRouter()
 	const [isLoading, setIsLoading] = useState(false)
+	const { setTheme } = useTheme()
 
 	const handleLogout = async () => {
 		try {
@@ -105,6 +111,28 @@ export function UserMenu({ user }: UserMenuProps) {
 							<span>Settings</span>
 						</Link>
 					</DropdownMenuItem>
+					<DropdownMenuSub>
+						<DropdownMenuSubTrigger>
+							<Moon className="mr-2 h-4 w-4" />
+							<span>Appearance</span>
+						</DropdownMenuSubTrigger>
+						<DropdownMenuSubContent>
+							<DropdownMenuItem onClick={() => setTheme('light')}>
+								<Sun className="mr-2 h-4 w-4" />
+								<span>Light</span>
+							</DropdownMenuItem>
+							<DropdownMenuItem onClick={() => setTheme('dark')}>
+								<Moon className="mr-2 h-4 w-4" />
+								<span>Dark</span>
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => setTheme('system')}
+							>
+								<Laptop className="mr-2 h-4 w-4" />
+								<span>System</span>
+							</DropdownMenuItem>
+						</DropdownMenuSubContent>
+					</DropdownMenuSub>
 					<DropdownMenuItem asChild>
 						<Link href="/notifications">
 							<Icons.bell className="mr-2 h-4 w-4" />
@@ -117,7 +145,7 @@ export function UserMenu({ user }: UserMenuProps) {
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem
-					className="text-red-600 focus:text-red-600"
+					className="text-red-600 focus:text-red-600 cursor-pointer"
 					disabled={isLoading}
 					onSelect={(event) => {
 						event.preventDefault()
@@ -129,7 +157,7 @@ export function UserMenu({ user }: UserMenuProps) {
 					) : (
 						<Icons.logout className="mr-2 h-4 w-4" />
 					)}
-					<span>Log out</span>
+					<span>Sign out</span>
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>

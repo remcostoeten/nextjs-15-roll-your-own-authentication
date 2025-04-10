@@ -4,7 +4,6 @@
 
 @import './core/themes.css';
 
-
-* { 
-    border-color: var(--border);
+* {
+	border-color: var(--border);
 }

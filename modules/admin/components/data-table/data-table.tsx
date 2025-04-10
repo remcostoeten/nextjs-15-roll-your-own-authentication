@@ -23,7 +23,7 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table'
-import { cn } from '@/lib/utils'
+import { cn } from '@/shared/helpers'
 import { DataTablePagination } from './data-table-pagination'
 import { DataTableToolbar } from './data-table-toolbar'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -123,7 +123,7 @@ export function DataTable<TData, TValue>({
 														header.column.columnDef
 															.header,
 														header.getContext()
-												  )}
+													)}
 										</TableHead>
 									)
 								})}

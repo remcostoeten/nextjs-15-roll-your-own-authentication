@@ -3,7 +3,7 @@
 import type React from 'react'
 
 import { useCallback, useEffect, useRef } from 'react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/shared/helpers'
 
 const morphTime = 0.5
 const cooldownTime = 0.25

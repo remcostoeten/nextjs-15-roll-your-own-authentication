@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 import { PasswordInput } from './password-input'
 import Checkbox from '@/shared/components/core/checkbox/Checkbox'
+import { Flex } from '@/shared/components/flexer'
 
 type TProps = {
 	type: 'login' | 'register'
@@ -78,13 +79,17 @@ export function EmailPasswordForm({ type }: TProps) {
 				disabled={pending}
 			>
 				<span className="relative z-10">
-					{pending ? (
-						<>
-							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+					{!pending ? (
+						<Flex className="items-center justify-center">
+							<Loader2
+								className={`mr-2 h-4 w-4 animate-spin transition-opacity duration-[2000] ease-in-out ${
+									pending ? 'opacity-0' : 'opacity-100'
+								}`}
+							/>
 							{type === 'login'
 								? 'Signing in...'
 								: 'Creating account...'}
-						</>
+						</Flex>
 					) : (
 						<>{type === 'login' ? 'Sign in' : 'Create account'}</>
 					)}

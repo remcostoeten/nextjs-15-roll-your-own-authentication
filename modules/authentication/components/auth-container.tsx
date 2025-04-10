@@ -3,7 +3,7 @@
 import type React from 'react'
 
 import { motion } from 'framer-motion'
-import { Center } from '@/shared/components/Center'
+import { Center } from '@/shared/components/center'
 
 type TProps = {
 	children: React.ReactNode

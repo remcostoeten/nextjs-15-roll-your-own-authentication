@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { toast, Toaster, type ToastOptions } from 'react-hot-toast'
 import { CheckCircle, XCircle, Info, AlertTriangle } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/shared/helpers'
 
 // Custom toast types
 export type ToastType = 'success' | 'error' | 'info' | 'warning'
@@ -76,10 +76,10 @@ const ToastContent = ({
 					type === 'success'
 						? 'bg-emerald-500'
 						: type === 'error'
-						? 'bg-rose-500'
-						: type === 'warning'
-						? 'bg-amber-500'
-						: 'bg-blue-500'
+							? 'bg-rose-500'
+							: type === 'warning'
+								? 'bg-amber-500'
+								: 'bg-blue-500'
 				)}
 			/>
 			<div
@@ -88,10 +88,10 @@ const ToastContent = ({
 					type === 'success'
 						? 'bg-emerald-500'
 						: type === 'error'
-						? 'bg-rose-500'
-						: type === 'warning'
-						? 'bg-amber-500'
-						: 'bg-blue-500'
+							? 'bg-rose-500'
+							: type === 'warning'
+								? 'bg-amber-500'
+								: 'bg-blue-500'
 				)}
 			/>
 

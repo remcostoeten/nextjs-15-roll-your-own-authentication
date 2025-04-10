@@ -18,7 +18,7 @@ import {
 import { useEffect, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { cn } from '@/shared/helpers'
 
 export type ToastVariant =
 	| 'unsaved'
@@ -178,8 +178,8 @@ export function Toast({
 		position.includes('bottom')
 			? y
 			: position.includes('top')
-			? y.map((v) => -v)
-			: x,
+				? y.map((v) => -v)
+				: x,
 		[0, 100],
 		[1, 0]
 	)

@@ -1,168 +1,123 @@
-// This file defines the dashboard navigation structure.
-// It fetches the current user and dynamically adds an "Admin" menu if the user has the 'admin' role.
-
-import { getCurrentUser } from '@/modules/authentication/utilities/auth'
 import {
 	BookOpen,
 	Bot,
+	CircleDashed,
 	Frame,
+	Home,
 	Map,
 	PieChart,
 	Settings2,
 	SquareTerminal,
-	ShieldCheck,
+	User,
 } from 'lucide-react'
 
-export async function getDashboardNavigation() {
-	const user = await getCurrentUser()
-
-	const navMain = [
+export const data = {
+	navMain: [
 		{
-			title: 'UI Playground',
-			url: '#',
+			title: 'Home',
+			url: '/',
+			icon: Home,
+			iconColor: 'text-emerald-500',
+		},
+		{
+			title: 'Dashboard',
+			url: '/dashboard',
+			icon: CircleDashed,
+			iconColor: 'text-emerald-500',
+		},
+		{
+			title: 'Playground',
+			url: '/dashboard/playground',
 			icon: SquareTerminal,
-			iconColor:
-				'text-emerald-500 group-data-[active=true]/menu-item:text-emerald-400',
-			isActive: true,
+			iconColor: 'text-emerald-500',
 			items: [
 				{
 					title: 'Checkbox',
 					url: '/dashboard/playground/checkbox',
 				},
 				{
-					title: 'Flexer',
-					url: '/dashboard/playground/flexer',
-				},
-				{
 					title: 'Headings',
 					url: '/dashboard/playground/headings',
 				},
 				{
-					title: 'ui/checkbox',
-					url: '/dashboard/playground/ui/checkbox',
+					title: 'Loader',
+					url: '/dashboard/playground/loader',
 				},
 			],
 		},
 		{
-			title: 'Models',
-			url: '#',
+			title: 'Docs',
+			url: '/docs',
 			icon: Bot,
-			iconColor:
-				'text-purple-500 group-data-[active=true]/menu-item:text-purple-400',
+			iconColor: 'text-purple-500',
 			items: [
 				{
-					title: 'Genesis',
-					url: '#',
+					title: 'Route Protection',
+					url: '/docs/route-protection',
 				},
 				{
-					title: 'Explorer',
-					url: '#',
+					title: 'API authentication',
+					url: '/docs/api-authentication',
 				},
 				{
-					title: 'Quantum',
-					url: '#',
+					title: 'User Data',
+					url: '/docs/user-data',
 				},
 			],
 		},
 		{
-			title: 'Documentation',
-			url: '#',
+			title: 'Workspaces',
+			url: '/dashboard/workspaces',
 			icon: BookOpen,
-			iconColor:
-				'text-amber-500 group-data-[active=true]/menu-item:text-amber-400',
+			iconColor: 'text-amber-500',
 			items: [
 				{
-					title: 'Introduction',
-					url: '#',
-				},
-				{
-					title: 'Get Started',
-					url: '#',
-				},
-				{
-					title: 'Tutorials',
-					url: '#',
-				},
-				{
-					title: 'Changelog',
-					url: '#',
+					title: 'Create',
+					url: '/dashboard/workspaces/create',
 				},
 			],
 		},
 		{
-			title: 'Settings',
-			url: '#',
-			icon: Settings2,
-			iconColor:
-				'text-sky-500 group-data-[active=true]/menu-item:text-sky-400',
-			items: [
-				{
-					title: 'General',
-					url: '#',
-				},
-				{
-					title: 'Team',
-					url: '#',
-				},
-				{
-					title: 'Billing',
-					url: '#',
-				},
-				{
-					title: 'Limits',
-					url: '#',
-				},
-			],
+			title: 'Snippets',
+			url: '/dashboard/snippets',
+			icon: BookOpen,
+			iconColor: 'text-amber-500',
 		},
-	]
-
-	// Add admin menu if user is admin
-	if (user?.role === 'admin') {
-		navMain.push({
-			title: 'Admin',
-			url: '#',
-			icon: ShieldCheck,
-			iconColor:
-				'text-red-500 group-data-[active=true]/menu-item:text-red-400',
+		{
+			title: 'Profile',
+			url: '/dashboard/profile',
+			icon: User,
+			iconColor: 'text-amber-500',
 			items: [
-				{
-					title: 'User Management',
-					url: '/admin/users',
-				},
 				{
 					title: 'Settings',
-					url: '/admin/settings',
+					url: '/dashboard/profile/settings',
+				},
+				{
+					title: 'Notifications',
+					url: '/dashboard/notifications',
 				},
 			],
-		})
-	}
-
-	return {
-		navMain,
-		projects,
-	}
+		},
+	],
+	projects: [
+		{
+			name: 'Design Engineering',
+			url: '#',
+			icon: Frame,
+			iconColor: 'text-rose-500',
+		},
+		{
+			name: 'Sales & Marketing',
+			url: '#',
+			icon: PieChart,
+			iconColor: 'text-green-500',
+		},
+		{
+			name: 'Travel',
+			url: '#',
+			icon: Map,
+			iconColor: 'text-cyan-500',
+		},
+	],
 }
-
-export const projects = [
-	{
-		name: 'Design Engineering',
-		url: '#',
-		icon: Frame,
-		iconColor:
-			'text-rose-500 group-data-[active=true]/menu-item:text-rose-400',
-	},
-	{
-		name: 'Sales & Marketing',
-		url: '#',
-		icon: PieChart,
-		iconColor:
-			'text-green-500 group-data-[active=true]/menu-item:text-green-400',
-	},
-	{
-		name: 'Travel',
-		url: '#',
-		icon: Map,
-		iconColor:
-			'text-cyan-500 group-data-[active=true]/menu-item:text-cyan-400',
-	},
-]

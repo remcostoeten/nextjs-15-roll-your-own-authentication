@@ -16,9 +16,13 @@ import {
 	CheckCircle,
 	Link,
 	Loader2,
+	Moon,
+	Sun,
+	Laptop,
 } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { useRouter } from 'next/navigation'
+import { useTheme } from 'next-themes'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
@@ -41,7 +45,7 @@ import {
 } from '@/components/dashboard/sidebar/sidebar'
 import { getUserSessionData } from '@/modules/authentication/api/queries'
 import { getUserNotifications } from '@/modules/notifications/api/queries'
-import { cn } from '@/lib/utils'
+import { cn } from '@/shared/helpers'
 import { Button } from '@/components/ui/button'
 import { logout } from '@/modules/authentication/api/mutations'
 import { notifications } from '@/server/db/schema'
@@ -97,6 +101,7 @@ export function NavUser() {
 		useState<NotificationsResponse | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
 	const [isLoggingOut, setIsLoggingOut] = useState(false)
+	const { setTheme } = useTheme()
 
 	const fetchUserData = async () => {
 		try {
@@ -320,6 +325,32 @@ export function NavUser() {
 									<span>Settings</span>
 								</a>
 							</DropdownMenuItem>
+							<DropdownMenuSub>
+								<DropdownMenuSubTrigger className="flex items-center">
+									<Moon className="mr-2 h-4 w-4" />
+									<span>Appearance</span>
+								</DropdownMenuSubTrigger>
+								<DropdownMenuSubContent>
+									<DropdownMenuItem
+										onClick={() => setTheme('light')}
+									>
+										<Sun className="mr-2 h-4 w-4" />
+										<span>Light</span>
+									</DropdownMenuItem>
+									<DropdownMenuItem
+										onClick={() => setTheme('dark')}
+									>
+										<Moon className="mr-2 h-4 w-4" />
+										<span>Dark</span>
+									</DropdownMenuItem>
+									<DropdownMenuItem
+										onClick={() => setTheme('system')}
+									>
+										<Laptop className="mr-2 h-4 w-4" />
+										<span>System</span>
+									</DropdownMenuItem>
+								</DropdownMenuSubContent>
+							</DropdownMenuSub>
 							{user.isAdmin && (
 								<DropdownMenuItem asChild>
 									<a
@@ -368,61 +399,63 @@ export function NavUser() {
 											<span>No notifications</span>
 										</div>
 									) : (
-										notificationsData?.notifications.map(
-											(notification) => (
-												<DropdownMenuItem
-													key={notification.id}
-													className={cn(
-														'flex items-start gap-2 p-2',
-														!notification.isRead &&
-															'bg-accent/40'
-													)}
-													asChild
-												>
-													<a
-														href={
-															notification.link ||
-															'/notifications'
-														}
-														className="grid gap-1"
+										<>
+											{notificationsData?.notifications.map(
+												(notification) => (
+													<DropdownMenuItem
+														key={notification.id}
+														className={cn(
+															'flex items-start gap-2 p-2',
+															!notification.isRead &&
+																'bg-accent/40'
+														)}
+														asChild
 													>
-														<div className="flex items-center gap-2">
-															{getNotificationIcon(
-																notification.type
-															)}
-															<span className="font-medium">
-																{
-																	notification.title
-																}
-															</span>
-														</div>
-														<div className="line-clamp-2 text-xs text-muted-foreground">
-															{
-																notification.content
+														<a
+															href={
+																notification.link ||
+																'/notifications'
 															}
-														</div>
-														<div className="flex items-center gap-2 text-xs text-muted-foreground">
-															<span>
-																{formatDistanceToNow(
-																	new Date(
-																		notification.createdAt
-																	)
-																)}{' '}
-																ago
-															</span>
-															{notification.link && (
-																<>
-																	<span>
-																		•
-																	</span>
-																	<Link className="h-3 w-3" />
-																</>
-															)}
-														</div>
-													</a>
-												</DropdownMenuItem>
-											)
-										)
+															className="grid gap-1"
+														>
+															<div className="flex items-center gap-2">
+																{getNotificationIcon(
+																	notification.type
+																)}
+																<span className="font-medium">
+																	{
+																		notification.title
+																	}
+																</span>
+															</div>
+															<div className="line-clamp-2 text-xs text-muted-foreground">
+																{
+																	notification.content
+																}
+															</div>
+															<div className="flex items-center gap-2 text-xs text-muted-foreground">
+																<span>
+																	{formatDistanceToNow(
+																		new Date(
+																			notification.createdAt
+																		)
+																	)}{' '}
+																	ago
+																</span>
+																{notification.link && (
+																	<>
+																		<span>
+																			•
+																		</span>
+																		<Link className="h-3 w-3" />
+																	</>
+																)}
+															</div>
+														</a>
+													</DropdownMenuItem>
+												)
+											)}
+										</>
 									)}
 								</DropdownMenuSubContent>
 							</DropdownMenuSub>
@@ -436,7 +469,7 @@ export function NavUser() {
 								handleLogout()
 							}}
 						>
-							{isLoggingOut ? (
+							{!isLoggingOut ? (
 								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 							) : (
 								<LogOut className="mr-2 h-4 w-4" />

@@ -7,7 +7,7 @@ import {
 	useSidebar,
 } from '@/components/dashboard/sidebar/sidebar'
 import { Separator } from '@/components/ui/separator'
-import { cn } from '@/lib/utils'
+import { cn } from '@/shared/helpers'
 
 interface BreadcrumbItem {
 	title: string

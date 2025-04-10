@@ -25,21 +25,29 @@ export default async function DashboardPage() {
 	const stats = await getUserStats(authUser.id)
 
 	return (
-		<div className="flex flex-col gap-8 p-4 sm:p-8">
-			<WelcomeBanner
-				user={userProfile}
-				stats={stats}
-			/>
-
-			<div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-				<Suspense fallback={<div>Loading site activity...</div>}>
-					<SiteActivityFeed />
-				</Suspense>
-
-				<Suspense fallback={<div>Loading your activity...</div>}>
-					<UserActivityFeed userId={authUser.id} />
-				</Suspense>
+		<>
+			<div className="grid auto-rows-min gap-4 md:grid-cols-3">
+				<div className="aspect-video rounded-xl bg-muted/50" />
+				<div className="aspect-video rounded-xl bg-muted/50" />
+				<div className="aspect-video rounded-xl bg-muted/50" />
 			</div>
-		</div>
+
+			<div className="flex flex-col gap-8 mt-4">
+				<WelcomeBanner
+					user={userProfile}
+					stats={stats}
+				/>
+
+				<div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+					<Suspense fallback={<div>Loading site activity...</div>}>
+						<SiteActivityFeed />
+					</Suspense>
+
+					<Suspense fallback={<div>Loading your activity...</div>}>
+						<UserActivityFeed userId={authUser.id} />
+					</Suspense>
+				</div>
+			</div>
+		</>
 	)
 }

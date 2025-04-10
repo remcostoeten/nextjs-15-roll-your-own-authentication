@@ -8,16 +8,19 @@ import { UserProvider } from './user-provider'
 
 export default function Providers({ children }: { children: React.ReactNode }) {
 	return (
-		<UserProvider>
-			<TooltipProvider delayDuration={50}>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="dark"
-				>
-					<CustomToaster />
-					<SidebarProvider>{children}</SidebarProvider>
-				</ThemeProvider>
-			</TooltipProvider>
-		</UserProvider>
+		<SidebarProvider>
+			{' '}
+			<UserProvider>
+				<TooltipProvider delayDuration={50}>
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="dark"
+					>
+						<CustomToaster />
+						{children}
+					</ThemeProvider>
+				</TooltipProvider>
+			</UserProvider>
+		</SidebarProvider>
 	)
 }

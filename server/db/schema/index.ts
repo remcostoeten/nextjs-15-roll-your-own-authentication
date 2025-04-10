@@ -12,7 +12,14 @@ import {
 	primaryKey,
 } from 'drizzle-orm/pg-core'
 
-// Users and authentication
+import {
+	chats,
+	messages,
+	favorites,
+	chatMembers,
+} from '@/server/db/schema-chats'
+
+// Schemas for users and authentication
 export const users = pgTable('users', {
 	id: varchar('id', { length: 128 }).primaryKey(),
 	email: varchar('email', { length: 255 }).notNull().unique(),
@@ -200,8 +207,8 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 	sessions: many(sessions),
 	oauthAccounts: many(oauthAccounts),
 
-	// Workspace relations - this is the key fix for your error
-	workspacesMemberships: many(workspaceMembers), // Changed from workspaces to workspacesMemberships
+	// Workspace relations
+	workspacesMemberships: many(workspaceMembers),
 	createdWorkspaces: many(workspaces, { relationName: 'creator' }),
 	invitedWorkspaceMembers: many(workspaceMembers, {
 		relationName: 'inviter',
@@ -218,8 +225,11 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 	// Activity relations
 	activities: many(workspaceActivities),
 
-	// Note: These snippet-related relations need special handling due to ID type differences
-	// We'll define them but they may need adjustment based on your actual data model
+	// Chat relations
+	chatMemberships: many(chatMembers),
+	messages: many(messages),
+	favorites: many(favorites),
+	createdChats: many(chats, { relationName: 'creator' }),
 }))
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -246,6 +256,7 @@ export const workspacesRelations = relations(workspaces, ({ one, many }) => ({
 	tasks: many(tasks),
 	activities: many(workspaceActivities),
 	notifications: many(notifications),
+	chats: many(chats),
 }))
 
 export const workspaceMembersRelations = relations(
@@ -377,3 +388,6 @@ export const snippetLabelsRelations = relations(snippetLabels, ({ one }) => ({
 		references: [labels.id],
 	}),
 }))
+
+// Export chat schema
+export { chats, messages, favorites, chatMembers }

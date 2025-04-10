@@ -7,14 +7,15 @@
 type TProps = {
 	children: React.ReactNode
 	absolute?: boolean
+	className?: string
 }
 
 const flex = 'flex items-center justify-center w-full'
 
-export function Center({ children, absolute = false }: TProps) {
+export function Center({ className, children, absolute = false }: TProps) {
 	return (
 		<div
-			className={`${flex} ${
+			className={`${flex} ${className} ${
 				absolute ? 'fixed inset-0 z-50' : 'relative'
 			}`}
 		>

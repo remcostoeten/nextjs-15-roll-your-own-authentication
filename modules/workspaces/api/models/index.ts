@@ -1,13 +1,13 @@
-import { z } from "zod"
+import { z } from 'zod'
 
 const createWorkspaceSchema = z.object({
-  name: z.string().min(1, "Workspace name is required"),
-  description: z.string().optional(),
+	name: z.string().min(1, 'Workspace name is required'),
+	description: z.string().optional(),
 })
 
 const updateWorkspaceSchema = z.object({
-  name: z.string().min(1, "Workspace name is required"),
-  description: z.string().optional(),
+	name: z.string().min(1, 'Workspace name is required'),
+	description: z.string().optional(),
 })
 
 const inviteMemberSchema = z.object({
@@ -16,12 +16,12 @@ const inviteMemberSchema = z.object({
 })
 
 const updateMemberRoleSchema = z.object({
-  role: z.enum(["member", "admin", "owner"]),
+	role: z.enum(['member', 'admin', 'owner']),
 })
 
 const createActivitySchema = z.object({
-	type: z.enum(["message", "system"]),
-	content: z.string().min(1, "Content is required"),
+	type: z.enum(['message', 'system']),
+	content: z.string().min(1, 'Content is required'),
 	metadata: z.record(z.string(), z.any()).optional(),
 })
 

@@ -35,7 +35,6 @@ import { Textarea } from '@/components/ui/textarea'
 import { getUserWorkspaces } from '../api/queries'
 import { createWorkspace } from '../api/mutations'
 import { useToast } from '@/components/ui/use-toast'
-import { getCurrentUser } from '@/modules/authentication/utilities/auth'
 
 type Workspace = {
 	id: number
@@ -61,7 +60,6 @@ export function WorkspaceSwitcher({
 	const [isLoading, setIsLoading] = useState(false)
 	const [isCreating, setIsCreating] = useState(false)
 
-	const user = getCurrentUser()
 	// Fetch workspaces
 	useEffect(() => {
 		const fetchWorkspaces = async () => {
@@ -93,7 +91,7 @@ export function WorkspaceSwitcher({
 		const formData = new FormData(e.currentTarget)
 
 		try {
-			const result = await createWorkspace(user.id, formData)
+			const result = await createWorkspace(formData)
 
 			if (result.error) {
 				toast({

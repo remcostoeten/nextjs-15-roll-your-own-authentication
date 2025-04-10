@@ -1,4 +1,4 @@
-import { Center } from '@/shared/components/Center'
+import { Center } from '@/shared/components/center'
 
 export default function AuthLayout({
 	children,

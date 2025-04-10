@@ -1,39 +1,38 @@
 {
-  "compilerOptions": {
-    "target": "es6",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "paths": {
-      "@/*": ["./*"],
-      "@/utilities/*": ["./utilities/*"],
-      "@/components/*": ["./components/*"],
-      "@/server/*": ["./server/*"],
-      "@/modules/*": ["./modules/*"],
-      "db": ["./server/db/index.ts"],
-      "schema": ["./server/db/schema/index.ts"],
-      "ui": ["./components/ui/index.ts"],
-      "env": ["./server/env.ts"],
-      "user": ["./modules/authentication/utilities/auth.ts"]
-    },
-    "baseUrl": "."
-  },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+	"compilerOptions": {
+		"target": "es6",
+		"lib": ["dom", "dom.iterable", "esnext"],
+		"allowJs": true,
+		"skipLibCheck": true,
+		"strict": true,
+		"forceConsistentCasingInFileNames": true,
+		"noEmit": true,
+		"esModuleInterop": true,
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"jsx": "preserve",
+		"incremental": true,
+		"plugins": [
+			{
+				"name": "next"
+			}
+		],
+		"paths": {
+			"@/*": ["./*"],
+			"@/utilities/*": ["./utilities/*"],
+			"@/components/*": ["./components/*"],
+			"@/server/*": ["./server/*"],
+			"@/modules/*": ["./modules/*"],
+			"db": ["./server/db/index.ts"],
+			"schema": ["./server/db/schema/index.ts"],
+			"env": ["./server/env.ts"],
+			"user": ["./modules/authentication/utilities/auth.ts"],
+			"ui": ["./components/ui/index.ts"]
+		},
+		"baseUrl": "."
+	},
+	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+	"exclude": ["node_modules"]
 }
-

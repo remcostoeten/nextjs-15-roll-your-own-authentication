@@ -24,7 +24,7 @@ import {
 	ExternalLink,
 } from 'lucide-react'
 import { markNotificationAsRead } from '../api/mutations'
-import { cn } from '@/lib/utils'
+import { cn } from '@/shared/helpers'
 import { formatDistanceToNow } from 'date-fns'
 import {
 	DropdownMenu,

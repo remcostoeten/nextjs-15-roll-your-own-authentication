@@ -203,8 +203,8 @@ export function WorkspaceMembersList({
 									member.role === 'owner'
 										? 'default'
 										: member.role === 'admin'
-										? 'secondary'
-										: 'outline'
+											? 'secondary'
+											: 'outline'
 								}
 							>
 								{member.role}

@@ -15,7 +15,7 @@ import {
 	ExternalLink,
 } from 'lucide-react'
 import { markNotificationAsRead } from '../api/mutations'
-import { cn } from '@/lib/utils'
+import { cn } from '@/shared/helpers'
 import { format } from 'date-fns'
 import { toast } from '@/hooks/use-toast'
 

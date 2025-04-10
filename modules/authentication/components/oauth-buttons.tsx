@@ -8,7 +8,7 @@ import {
 	PopoverTrigger,
 } from '@/components/ui/popover'
 import { ChevronDown, Github, Mail } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/shared/helpers'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface OAuthProvider {
@@ -107,22 +107,22 @@ export function OAuthButtons({
 				</Button>
 			))}
 
-			{/* Additional providers */}
 			{additionalProviders.length > 0 && (
 				<Popover
 					open={isPopoverOpen}
 					onOpenChange={setIsPopoverOpen}
 				>
 					<PopoverTrigger asChild>
-						<Button
-							variant="outline"
-							type="button"
+						<button
 							disabled={isLoading !== null}
-							className="flex items-center justify-center gap-2"
+							style={{ border: 'none' }}
+							className="flex items-center justify-center !border-0 gap-2"
 						>
-							<ChevronDown className="h-4 w-4" />
-							<span>More options</span>
-						</Button>
+							<ChevronDown className="h-4 w-4 text-muted-foreground" />
+							<span className="text-xs font-medium text-muted-foreground">
+								More options
+							</span>
+						</button>
 					</PopoverTrigger>
 					<PopoverContent
 						className="w-full p-2"
