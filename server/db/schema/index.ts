@@ -9,7 +9,6 @@ import {
 	jsonb,
 	integer,
 	serial,
-	primaryKey,
 } from 'drizzle-orm/pg-core'
 
 import {
@@ -18,6 +17,8 @@ import {
 	favorites,
 	chatMembers,
 } from '@/server/db/schema-chats'
+
+import { oauthStates } from '@/modules/authentication/api/schemas'
 
 import {
 	snippets,
@@ -28,9 +29,21 @@ import {
 	categoriesRelations,
 	labelsRelations,
 	snippetLabelsRelations,
-} from '@/modules/snippets/db/schema'
+} from '@/modules/snippets/api/schema/snippet-schema'
 
-// Schemas for users and authentication
+export {
+	snippets,
+	categories,
+	labels,
+	snippetLabels,
+	snippetsRelations,
+	categoriesRelations,
+	labelsRelations,
+	snippetLabelsRelations,
+}
+
+export { chats, messages, favorites, chatMembers, oauthStates }
+
 export const users = pgTable('users', {
 	id: varchar('id', { length: 128 }).primaryKey(),
 	email: varchar('email', { length: 255 }).notNull().unique(),
@@ -168,58 +181,13 @@ export const userNotifications = pgTable('user_notifications', {
 	createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
-// Snippets and related tables
-// Note: Fixed the typo in created_by_id column name
-export const snippets = pgTable('snippets', {
-	id: varchar('id', { length: 128 }).primaryKey(),
-	title: varchar('title', { length: 256 }).notNull(),
-	content: text('content').notNull(),
-	categoryId: varchar('category_id', { length: 128 }),
-	// Fixed the typo from createdc_by_id to created_by_id
-	createdById: varchar('created_by_id', { length: 128 }),
-	createdAt: timestamp('created_at').defaultNow().notNull(),
-	updatedAt: timestamp('updated_at').defaultNow().notNull(),
-})
-
-export const categories = pgTable('categories', {
-	id: varchar('id', { length: 128 }).primaryKey(),
-	name: varchar('name', { length: 256 }).notNull(),
-	createdById: varchar('created_by_id', { length: 128 }),
-	createdAt: timestamp('created_at').defaultNow().notNull(),
-	updatedAt: timestamp('updated_at').defaultNow().notNull(),
-})
-
-export const labels = pgTable('labels', {
-	id: varchar('id', { length: 128 }).primaryKey(),
-	name: varchar('name', { length: 256 }).notNull(),
-	createdById: varchar('created_by_id', { length: 128 }),
-	createdAt: timestamp('created_at').defaultNow().notNull(),
-	updatedAt: timestamp('updated_at').defaultNow().notNull(),
-})
-
-export const snippetLabels = pgTable(
-	'snippet_labels',
-	{
-		snippetId: varchar('snippet_id', { length: 128 }).notNull(),
-		labelId: varchar('label_id', { length: 128 }).notNull(),
-		createdAt: timestamp('created_at').defaultNow().notNull(),
-	},
-	(table) => {
-		return {
-			pk: primaryKey({ columns: [table.snippetId, table.labelId] }),
-		}
-	}
-)
-
-// Relations definitions
-
 export const usersRelations = relations(users, ({ one, many }) => ({
 	// Authentication relations
 	sessions: many(sessions),
 	oauthAccounts: many(oauthAccounts),
 
 	// Workspace relations
-	workspacesMemberships: many(workspaceMembers),
+	workspaceMemberships: many(workspaceMembers, { relationName: 'member' }),
 	createdWorkspaces: many(workspaces, { relationName: 'creator' }),
 	invitedWorkspaceMembers: many(workspaceMembers, {
 		relationName: 'inviter',
@@ -235,12 +203,6 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 
 	// Activity relations
 	activities: many(workspaceActivities),
-
-	// Chat relations
-	chatMemberships: many(chatMembers),
-	messages: many(messages),
-	favorites: many(favorites),
-	createdChats: many(chats, { relationName: 'creator' }),
 }))
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -267,7 +229,6 @@ export const workspacesRelations = relations(workspaces, ({ one, many }) => ({
 	tasks: many(tasks),
 	activities: many(workspaceActivities),
 	notifications: many(notifications),
-	chats: many(chats),
 }))
 
 export const workspaceMembersRelations = relations(
@@ -277,10 +238,10 @@ export const workspaceMembersRelations = relations(
 			fields: [workspaceMembers.workspaceId],
 			references: [workspaces.id],
 		}),
-		user: one(users, {
+		member: one(users, {
 			fields: [workspaceMembers.userId],
 			references: [users.id],
-			relationName: 'member', // Add this relation name
+			relationName: 'member',
 		}),
 		inviter: one(users, {
 			fields: [workspaceMembers.invitedBy],
@@ -350,55 +311,3 @@ export const userNotificationsRelations = relations(
 		}),
 	})
 )
-
-// Snippet-related relations
-// Note: There's a type mismatch between users.id (integer) and snippets.createdById (varchar)
-// You'll need to decide how to handle this - either change the type in the database or handle it in your application
-
-export const snippetsRelations = relations(snippets, ({ one, many }) => ({
-	category: one(categories, {
-		fields: [snippets.categoryId],
-		references: [categories.id],
-	}),
-	labels: many(snippetLabels),
-	// Note: This relation is commented out due to type mismatch
-	// creator: one(users, {
-	//   fields: [snippets.createdById],
-	//   references: [users.id],
-	//   relationName: 'creator',
-	// }),
-}))
-
-export const categoriesRelations = relations(categories, ({ many }) => ({
-	snippets: many(snippets),
-	// Note: This relation is commented out due to type mismatch
-	// creator: one(users, {
-	//   fields: [categories.createdById],
-	//   references: [users.id],
-	//   relationName: 'creator',
-	// }),
-}))
-
-export const labelsRelations = relations(labels, ({ many }) => ({
-	snippets: many(snippetLabels),
-	// Note: This relation is commented out due to type mismatch
-	// creator: one(users, {
-	//   fields: [labels.createdById],
-	//   references: [users.id],
-	//   relationName: 'creator',
-	// }),
-}))
-
-export const snippetLabelsRelations = relations(snippetLabels, ({ one }) => ({
-	snippet: one(snippets, {
-		fields: [snippetLabels.snippetId],
-		references: [snippets.id],
-	}),
-	label: one(labels, {
-		fields: [snippetLabels.labelId],
-		references: [labels.id],
-	}),
-}))
-
-// Export chat schema
-export { chats, messages, favorites, chatMembers }

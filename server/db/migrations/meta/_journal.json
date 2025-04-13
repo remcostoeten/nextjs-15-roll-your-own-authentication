@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1744234630827,
-      "tag": "0000_living_speed_demon",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1744569853125,
-      "tag": "0001_small_nomad",
+      "when": 1744578413056,
+      "tag": "0000_clever_lenny_balinger",
       "breakpoints": true
     }
   ]

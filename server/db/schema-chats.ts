@@ -7,8 +7,7 @@ import {
 	boolean,
 	integer,
 } from 'drizzle-orm/pg-core'
-import { users } from './schema'
-import { workspaces } from './schema'
+import { users, workspaces } from 'schema'
 
 export const chats = pgTable('chats', {
 	id: varchar('id', { length: 36 }).primaryKey(),

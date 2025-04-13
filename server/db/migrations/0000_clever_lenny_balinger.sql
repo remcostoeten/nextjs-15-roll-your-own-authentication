@@ -1,17 +1,55 @@
 CREATE TABLE "categories" (
 	"id" varchar(128) PRIMARY KEY NOT NULL,
-	"name" varchar(256) NOT NULL,
-	"created_by_id" varchar(128),
+	"name" varchar(255) NOT NULL,
+	"workspace_id" integer NOT NULL,
+	"created_by_id" varchar(128) NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "chat_members" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"chat_id" varchar(36) NOT NULL,
+	"user_id" varchar(128) NOT NULL,
+	"joined_at" timestamp DEFAULT now() NOT NULL,
+	"role" varchar(20) DEFAULT 'member' NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "chats" (
+	"id" varchar(36) PRIMARY KEY NOT NULL,
+	"name" varchar(100) NOT NULL,
+	"workspace_id" integer NOT NULL,
+	"last_message" text,
+	"timestamp" timestamp DEFAULT now() NOT NULL,
+	"created_by_id" varchar(128) NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "favorites" (
+	"id" varchar(36) PRIMARY KEY NOT NULL,
+	"message_id" varchar(36) NOT NULL,
+	"user_id" varchar(35) NOT NULL,
+	"timestamp" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "labels" (
 	"id" varchar(128) PRIMARY KEY NOT NULL,
-	"name" varchar(256) NOT NULL,
-	"created_by_id" varchar(128),
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL
+	"name" varchar(255) NOT NULL,
+	"color" varchar(50) DEFAULT '#6366F1' NOT NULL,
+	"workspace_id" integer NOT NULL,
+	"created_by_id" varchar(128) NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "messages" (
+	"id" varchar(36) PRIMARY KEY NOT NULL,
+	"chat_id" varchar(36) NOT NULL,
+	"user_id" varchar(128) NOT NULL,
+	"name" varchar(100),
+	"message" text NOT NULL,
+	"timestamp" timestamp DEFAULT now() NOT NULL,
+	"attachment" text,
+	"is_favorite" boolean DEFAULT false NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "notifications" (
@@ -36,6 +74,14 @@ CREATE TABLE "oauth_accounts" (
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "oauth_states" (
+	"id" varchar(128) PRIMARY KEY NOT NULL,
+	"state" varchar(255) NOT NULL,
+	"user_id" varchar(128) NOT NULL,
+	"expires_at" timestamp NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "sessions" (
 	"id" uuid PRIMARY KEY NOT NULL,
 	"user_id" varchar(128) NOT NULL,
@@ -47,20 +93,24 @@ CREATE TABLE "sessions" (
 );
 --> statement-breakpoint
 CREATE TABLE "snippet_labels" (
+	"id" varchar(128) PRIMARY KEY NOT NULL,
 	"snippet_id" varchar(128) NOT NULL,
-	"label_id" varchar(128) NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "snippet_labels_snippet_id_label_id_pk" PRIMARY KEY("snippet_id","label_id")
+	"label_id" varchar(128) NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "snippets" (
 	"id" varchar(128) PRIMARY KEY NOT NULL,
-	"title" varchar(256) NOT NULL,
+	"title" varchar(255) NOT NULL,
 	"content" text NOT NULL,
+	"language" varchar(50) DEFAULT 'plain' NOT NULL,
 	"category_id" varchar(128),
-	"created_by_id" varchar(128),
+	"workspace_id" integer NOT NULL,
+	"created_by_id" varchar(128) NOT NULL,
+	"is_public" boolean DEFAULT false NOT NULL,
+	"share_id" varchar(128),
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "snippets_share_id_unique" UNIQUE("share_id")
 );
 --> statement-breakpoint
 CREATE TABLE "tasks" (
@@ -136,10 +186,28 @@ CREATE TABLE "workspaces" (
 	CONSTRAINT "workspaces_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint
+ALTER TABLE "categories" ADD CONSTRAINT "categories_workspace_id_workspaces_id_fk" FOREIGN KEY ("workspace_id") REFERENCES "public"."workspaces"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "categories" ADD CONSTRAINT "categories_created_by_id_users_id_fk" FOREIGN KEY ("created_by_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "chat_members" ADD CONSTRAINT "chat_members_chat_id_chats_id_fk" FOREIGN KEY ("chat_id") REFERENCES "public"."chats"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "chat_members" ADD CONSTRAINT "chat_members_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "chats" ADD CONSTRAINT "chats_workspace_id_workspaces_id_fk" FOREIGN KEY ("workspace_id") REFERENCES "public"."workspaces"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "chats" ADD CONSTRAINT "chats_created_by_id_users_id_fk" FOREIGN KEY ("created_by_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "favorites" ADD CONSTRAINT "favorites_message_id_messages_id_fk" FOREIGN KEY ("message_id") REFERENCES "public"."messages"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "favorites" ADD CONSTRAINT "favorites_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "labels" ADD CONSTRAINT "labels_workspace_id_workspaces_id_fk" FOREIGN KEY ("workspace_id") REFERENCES "public"."workspaces"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "labels" ADD CONSTRAINT "labels_created_by_id_users_id_fk" FOREIGN KEY ("created_by_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "messages" ADD CONSTRAINT "messages_chat_id_chats_id_fk" FOREIGN KEY ("chat_id") REFERENCES "public"."chats"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "messages" ADD CONSTRAINT "messages_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "notifications" ADD CONSTRAINT "notifications_created_by_id_users_id_fk" FOREIGN KEY ("created_by_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "notifications" ADD CONSTRAINT "notifications_workspace_id_workspaces_id_fk" FOREIGN KEY ("workspace_id") REFERENCES "public"."workspaces"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "oauth_accounts" ADD CONSTRAINT "oauth_accounts_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "oauth_states" ADD CONSTRAINT "oauth_states_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "snippet_labels" ADD CONSTRAINT "snippet_labels_snippet_id_snippets_id_fk" FOREIGN KEY ("snippet_id") REFERENCES "public"."snippets"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "snippet_labels" ADD CONSTRAINT "snippet_labels_label_id_labels_id_fk" FOREIGN KEY ("label_id") REFERENCES "public"."labels"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "snippets" ADD CONSTRAINT "snippets_category_id_categories_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."categories"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "snippets" ADD CONSTRAINT "snippets_workspace_id_workspaces_id_fk" FOREIGN KEY ("workspace_id") REFERENCES "public"."workspaces"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "snippets" ADD CONSTRAINT "snippets_created_by_id_users_id_fk" FOREIGN KEY ("created_by_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "tasks_workspace_id_workspaces_id_fk" FOREIGN KEY ("workspace_id") REFERENCES "public"."workspaces"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "tasks_assigned_to_id_users_id_fk" FOREIGN KEY ("assigned_to_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "tasks_created_by_id_users_id_fk" FOREIGN KEY ("created_by_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint

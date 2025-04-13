@@ -1,86 +1,113 @@
-import { labelsRelations } from './../../../../server/db/schema-snippets'
-import {
-	snippetsRelations,
-	categoriesRelations,
-	snippetLabels,
-	snippetLabelsRelations,
-} from './snippet-schema'
 import { relations } from 'drizzle-orm'
 import {
 	pgTable,
 	varchar,
 	text,
 	timestamp,
-	primaryKey,
+	boolean,
+	integer,
 } from 'drizzle-orm/pg-core'
+import { users, workspaces } from 'schema'
 
+// Snippets table
 export const snippets = pgTable('snippets', {
 	id: varchar('id', { length: 128 }).primaryKey(),
-	title: varchar('title', { length: 256 }).notNull(),
+	title: varchar('title', { length: 255 }).notNull(),
 	content: text('content').notNull(),
-	categoryId: varchar('category_id', { length: 128 }),
-	createdById: varchar('createdc_by_id', { length: 128 }),
+	language: varchar('language', { length: 50 }).default('plain').notNull(),
+	categoryId: varchar('category_id', { length: 128 }).references(
+		() => categories.id,
+		{ onDelete: 'set null' }
+	),
+	workspaceId: integer('workspace_id')
+		.notNull()
+		.references(() => workspaces.id, { onDelete: 'cascade' }),
+	createdById: varchar('created_by_id', { length: 128 })
+		.notNull()
+		.references(() => users.id),
+	isPublic: boolean('is_public').default(false).notNull(),
+	shareId: varchar('share_id', { length: 128 }).unique(),
 	createdAt: timestamp('created_at').defaultNow().notNull(),
 	updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
 
+// Categories table
 export const categories = pgTable('categories', {
 	id: varchar('id', { length: 128 }).primaryKey(),
-	name: varchar('name', { length: 256 }).notNull(),
-	createdById: varchar('created_by_id', { length: 128 }),
+	name: varchar('name', { length: 255 }).notNull(),
+	workspaceId: integer('workspace_id')
+		.notNull()
+		.references(() => workspaces.id, { onDelete: 'cascade' }),
+	createdById: varchar('created_by_id', { length: 128 })
+		.notNull()
+		.references(() => users.id),
 	createdAt: timestamp('created_at').defaultNow().notNull(),
-	updatedAt: timestamp('updated_at').defaultNow().notNull(),
-})
-export const labels = pgTable('labels', {
-	id: varchar('id', { length: 128 }).primaryKey(),
-	name: varchar('name', { length: 256 }).notNull(),
-	createdById: varchar('created_by_id', { length: 128 }),
-	createdAt: timestamp('created_at').defaultNow().notNull(),
-	updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
 
-export const snippetLabels = pgTable(
-	'snippet_labels',
-	{
-		snippetId: varchar('snippet_id', { length: 128 }).notNull(),
-		labelId: varchar('label_id', { length: 128 }).notNull(),
-		createdAt: timestamp('created_at').defaultNow().notNull(),
-	},
-	(table) => {
-		return {
-			pk: primaryKey(table.snippetId, table.labelId),
-		}
-	}
-)
+// Labels table
+export const labels = pgTable('labels', {
+	id: varchar('id', { length: 128 }).primaryKey(),
+	name: varchar('name', { length: 255 }).notNull(),
+	color: varchar('color', { length: 50 }).default('#6366F1').notNull(),
+	workspaceId: integer('workspace_id')
+		.notNull()
+		.references(() => workspaces.id, { onDelete: 'cascade' }),
+	createdById: varchar('created_by_id', { length: 128 })
+		.notNull()
+		.references(() => users.id),
+	createdAt: timestamp('created_at').defaultNow().notNull(),
+})
+
+// Snippet-Label junction table
+export const snippetLabels = pgTable('snippet_labels', {
+	id: varchar('id', { length: 128 }).primaryKey(),
+	snippetId: varchar('snippet_id', { length: 128 })
+		.notNull()
+		.references(() => snippets.id, { onDelete: 'cascade' }),
+	labelId: varchar('label_id', { length: 128 })
+		.notNull()
+		.references(() => labels.id, { onDelete: 'cascade' }),
+})
+
+// Define relations
 export const snippetsRelations = relations(snippets, ({ one, many }) => ({
 	category: one(categories, {
 		fields: [snippets.categoryId],
 		references: [categories.id],
 	}),
-	labels: many(snippetLabels),
+	workspace: one(workspaces, {
+		fields: [snippets.workspaceId],
+		references: [workspaces.id],
+	}),
 	creator: one(users, {
 		fields: [snippets.createdById],
 		references: [users.id],
-		relationName: 'creator',
 	}),
+	labels: many(snippetLabels),
 }))
 
 export const categoriesRelations = relations(categories, ({ one, many }) => ({
-	snippets: many(snippets),
+	workspace: one(workspaces, {
+		fields: [categories.workspaceId],
+		references: [workspaces.id],
+	}),
 	creator: one(users, {
 		fields: [categories.createdById],
 		references: [users.id],
-		relationName: 'creator',
 	}),
+	snippets: many(snippets),
 }))
 
-export const labelsRelations = relations(labels, ({ many }) => ({
-	snippets: many(snippetLabels),
+export const labelsRelations = relations(labels, ({ one, many }) => ({
+	workspace: one(workspaces, {
+		fields: [labels.workspaceId],
+		references: [workspaces.id],
+	}),
 	creator: one(users, {
 		fields: [labels.createdById],
 		references: [users.id],
-		relationName: 'creator',
 	}),
+	snippets: many(snippetLabels),
 }))
 
 export const snippetLabelsRelations = relations(snippetLabels, ({ one }) => ({

@@ -39,10 +39,6 @@ export const data = {
 					title: 'Headings',
 					url: '/dashboard/playground/headings',
 				},
-				{
-					title: 'Loader',
-					url: '/dashboard/playground/loader',
-				},
 			],
 		},
 		{
