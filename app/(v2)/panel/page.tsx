@@ -1,4 +1,5 @@
 import { DashboardLayout } from '@/components/dashboard/v2/dashboard-shell'
+import SearchExample from '@/src/modules/search/example-usage'
 
 export default function Home() {
 	return (
@@ -103,6 +104,7 @@ export default function Home() {
 					</p>
 
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+						<SearchExample />
 						<div className="bg-[#1A1A1A] border border-[#2E2E2E] rounded-md p-4">
 							<div className="flex items-center mb-4">
 								<div className="bg-[#2E2E2E] p-2 rounded-md">

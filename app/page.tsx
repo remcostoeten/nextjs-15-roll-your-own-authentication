@@ -4,12 +4,14 @@ import { Button } from '@/components/ui/button'
 import { getCurrentUser } from '@/modules/authentication/utilities/auth'
 import { redirect } from 'next/navigation'
 import { Center } from '@/shared/components/center'
-
+import { customToast } from '@/components/ui'
 export default async function Home() {
 	const user = await getCurrentUser()
 
 	if (user) {
-		redirect('/dashboard')
+		customToast.success({
+			title: 'You are already logged in',
+		})
 	}
 
 	return (

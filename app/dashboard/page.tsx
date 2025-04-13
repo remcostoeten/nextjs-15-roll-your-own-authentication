@@ -6,7 +6,7 @@ import { requireAuth } from '@/modules/authentication/utilities/auth'
 import { getUserStats } from '@/modules/dashboard/api/queries'
 import { getUserProfile } from '@/modules/profile/api/queries'
 import { logout } from '@/modules/authentication/api/mutations'
-
+import Link from 'next/link'
 export const metadata = {
 	title: 'Dashboard',
 }
@@ -32,6 +32,11 @@ export default async function DashboardPage() {
 				<div className="aspect-video rounded-xl bg-muted/50" />
 				<div className="aspect-video rounded-xl bg-muted/50" />
 			</div>
+			<Link href="/docs">docs</Link>
+			<Link href="/">home</Link>
+			<Link href="/panel">panel</Link>
+			<Link href="/login">login</Link>
+			<Link href="/register">register</Link>
 			<button onClick={logout}>logout</button>
 			<div className="flex flex-col gap-8 mt-4">
 				<WelcomeBanner
