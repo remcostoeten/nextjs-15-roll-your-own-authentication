@@ -1,9 +1,9 @@
 import type React from 'react'
 import { DocsSidebar } from '@/modules/docs/components/docs-sidebar'
 import { DocsSearch } from '@/modules/docs/components/docs-searc'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import type { Metadata } from 'next'
 import { Logo } from '@/shared/components/logo'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 export const metadata: Metadata = {
 	title: 'Documentation | JWT Authentication',
