@@ -98,7 +98,7 @@ export default function ApiAuthenticationClientPage() {
 				<CodeBlock
 					language="bash"
 					code={`curl -X GET \\
-  https://api.example.com/user/profile \\
+  https://api.example.com/dashboard/user/profile \\
   -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'`}
 				/>
 				<p>

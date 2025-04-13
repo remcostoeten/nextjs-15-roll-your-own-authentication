@@ -18,7 +18,7 @@ export default async function ProfilePage() {
 
 	return (
 		<UserProfile
-			user={user}
+			user={user as any}
 			sessionData={sessionData}
 		/>
 	)

@@ -1,5 +1,5 @@
 import { getUserNotifications } from '@/modules/notifications/api/queries'
-import { requireAdmin } from '@/modules/authentication/lib/auth'
+import { requireAdmin } from '@/modules/authentication/utilities/auth'
 import { NotificationList } from '@/modules/notifications/components/notification-list'
 import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'

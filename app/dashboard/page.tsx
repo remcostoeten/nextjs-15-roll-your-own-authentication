@@ -5,6 +5,7 @@ import { UserActivityFeed } from '@/modules/dashboard/components/user-activity-f
 import { requireAuth } from '@/modules/authentication/utilities/auth'
 import { getUserStats } from '@/modules/dashboard/api/queries'
 import { getUserProfile } from '@/modules/profile/api/queries'
+import { logout } from '@/modules/authentication/api/mutations'
 
 export const metadata = {
 	title: 'Dashboard',
@@ -31,7 +32,7 @@ export default async function DashboardPage() {
 				<div className="aspect-video rounded-xl bg-muted/50" />
 				<div className="aspect-video rounded-xl bg-muted/50" />
 			</div>
-
+			<button onClick={logout}>logout</button>
 			<div className="flex flex-col gap-8 mt-4">
 				<WelcomeBanner
 					user={userProfile}

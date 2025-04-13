@@ -1,3 +1,10 @@
+import { labelsRelations } from './../../../../server/db/schema-snippets'
+import {
+	snippetsRelations,
+	categoriesRelations,
+	snippetLabels,
+	snippetLabelsRelations,
+} from './snippet-schema'
 import { relations } from 'drizzle-orm'
 import {
 	pgTable,
@@ -24,7 +31,6 @@ export const categories = pgTable('categories', {
 	createdAt: timestamp('created_at').defaultNow().notNull(),
 	updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
-
 export const labels = pgTable('labels', {
 	id: varchar('id', { length: 128 }).primaryKey(),
 	name: varchar('name', { length: 256 }).notNull(),
@@ -46,7 +52,6 @@ export const snippetLabels = pgTable(
 		}
 	}
 )
-
 export const snippetsRelations = relations(snippets, ({ one, many }) => ({
 	category: one(categories, {
 		fields: [snippets.categoryId],

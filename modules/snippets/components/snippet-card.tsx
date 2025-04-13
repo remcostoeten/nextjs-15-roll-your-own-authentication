@@ -39,7 +39,7 @@ import {
 } from '@/modules/snippets/api/mutations'
 import { EditSnippetDialog } from './edit-snippet-dialog'
 import { SnippetSyntaxHighlighter } from './snippet-syntax-highlighter'
-import { Checkbox } from '@/components/ui/checkbox'
+import Checkbox from '@/shared/components/core/checkbox/Checkbox'
 
 interface SnippetCardProps {
 	snippet: {

@@ -116,7 +116,7 @@ export function OAuthButtons({
 						<button
 							disabled={isLoading !== null}
 							style={{ border: 'none' }}
-							className="flex items-center justify-center !border-0 gap-2"
+							className="flex items-center mt-2 justify-center !border-0 gap-2"
 						>
 							<ChevronDown className="h-4 w-4 text-muted-foreground" />
 							<span className="text-xs font-medium text-muted-foreground">

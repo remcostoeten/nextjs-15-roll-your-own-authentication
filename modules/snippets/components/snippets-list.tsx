@@ -11,7 +11,7 @@ import { SnippetCard } from './snippet-card'
 import { Pagination } from '@/components/ui/pagination'
 import { EmptyState } from './empty-state'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
+import Checkbox from '@/shared/components/core/checkbox/Checkbox'
 import { useToast } from '@/hooks/use-toast'
 import {
 	FolderArchiveIcon as ArchiveBox,

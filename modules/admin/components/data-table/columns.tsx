@@ -3,7 +3,7 @@
 import type { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown, MoreHorizontal, Shield, ShieldAlert } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
+import Checkbox from '@/shared/components/core/checkbox/Checkbox'
 import {
 	DropdownMenu,
 	DropdownMenuContent,

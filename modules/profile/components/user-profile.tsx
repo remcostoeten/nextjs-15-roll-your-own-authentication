@@ -32,7 +32,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { formatDistanceToNow } from 'date-fns'
+import { formatDistanceToNow, isValid } from 'date-fns'
 
 type UserProfileProps = {
 	user: UserType
@@ -79,7 +79,15 @@ export function UserProfile({ user, sessionData }: UserProfileProps) {
 	const lastUpdated = formatDate(user.updatedAt)
 	const lastSignIn = formatDate(sessionData.lastSignIn)
 
-	function getTimeSince(date: Date) {
+	function getTimeSince(
+		dateInput: Date | string | number | null | undefined
+	): string {
+		if (!dateInput) return 'Never'
+		const date = new Date(dateInput)
+		if (!isValid(date)) {
+			console.error('Invalid date passed to getTimeSince:', dateInput)
+			return 'Invalid date'
+		}
 		return formatDistanceToNow(date, { addSuffix: true })
 	}
 

@@ -19,6 +19,17 @@ import {
 	chatMembers,
 } from '@/server/db/schema-chats'
 
+import {
+	snippets,
+	categories,
+	labels,
+	snippetLabels,
+	snippetsRelations,
+	categoriesRelations,
+	labelsRelations,
+	snippetLabelsRelations,
+} from '@/modules/snippets/db/schema'
+
 // Schemas for users and authentication
 export const users = pgTable('users', {
 	id: varchar('id', { length: 128 }).primaryKey(),

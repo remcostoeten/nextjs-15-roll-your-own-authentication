@@ -10,7 +10,6 @@ import {
 import { users } from './schema'
 import { workspaces } from './schema'
 
-// Chat-related tables
 export const chats = pgTable('chats', {
 	id: varchar('id', { length: 36 }).primaryKey(),
 	name: varchar('name', { length: 100 }).notNull(),

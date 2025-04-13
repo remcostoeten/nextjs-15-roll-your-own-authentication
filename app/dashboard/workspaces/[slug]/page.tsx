@@ -1,4 +1,4 @@
-import { WorkspaceView } from '@/views/workspaces/[slug]'
+import WorkspaceView from '@/views/workspaces/[slug]'
 
 interface WorkspacePageProps {
 	params: {

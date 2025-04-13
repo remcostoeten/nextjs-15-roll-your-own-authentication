@@ -82,6 +82,12 @@ const config = {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 			},
+			transitionTimingFunction: {
+				'bezier-1': 'cubic-bezier(0.25, 0.1, 0.25, 1)', // standard ease
+				'bezier-2': 'cubic-bezier(0.42, 0, 0.58, 1)', // ease-in-out
+				'bezier-3': 'cubic-bezier(0.68, -0.55, 0.27, 1.55)', // elastic-ish
+				'bezier-4': 'cubic-bezier(0.87, 0, 0.13, 1)', // sharp ease-in-out
+			},
 		},
 	},
 	plugins: [require('tailwindcss-animate')],

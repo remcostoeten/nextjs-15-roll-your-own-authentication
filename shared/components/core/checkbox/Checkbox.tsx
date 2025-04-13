@@ -1,6 +1,12 @@
 'use client'
 
-import React, { useState, useEffect, useRef, InputHTMLAttributes } from 'react'
+import React, {
+	useState,
+	useEffect,
+	useRef,
+	InputHTMLAttributes,
+	useId,
+} from 'react'
 import styles from './checkbox.module.css'
 
 type CheckboxProps = Omit<
@@ -34,16 +40,15 @@ const Checkbox: React.FC<CheckboxProps> = ({
 	size = 20,
 	animationDuration = 250,
 	onChange,
-	id: externalId,
+	id: externalId, // Keep allowing external ID override
 	className,
 	...props
 }) => {
 	const [isChecked, setIsChecked] = useState<boolean>(checked)
-	const [uniqueId] = useState<string>(
-		`checkbox-${Math.random().toString(36).substring(2, 11)}`
-	)
 	const inputRef = useRef<HTMLInputElement>(null)
-	const id = externalId || uniqueId
+
+	const generatedId = useId() // Generate a stable unique ID
+	const id = externalId || generatedId // Use externalId if provided, otherwise use the generated one
 
 	useEffect(() => {
 		setIsChecked(checked)
@@ -71,13 +76,13 @@ const Checkbox: React.FC<CheckboxProps> = ({
 			className={`${styles.checkbox} ${round ? styles.round : ''} ${
 				disabled ? styles.disabled : ''
 			} ${className || ''}`}
-			htmlFor={id}
+			htmlFor={id} // Use the stable id
 			style={inlineStyles}
 			aria-disabled={disabled}
 		>
 			<input
 				ref={inputRef}
-				id={id}
+				id={id} // Use the stable id
 				type="checkbox"
 				className={styles.input}
 				onChange={handleChange}
@@ -88,8 +93,8 @@ const Checkbox: React.FC<CheckboxProps> = ({
 				aria-required={required}
 				{...props}
 			/>
-			<div className={styles.indicator}>
-				<div className={styles.background}></div>
+			<span className={styles.indicator}>
+				<span className={styles.background}></span>
 				<svg
 					className={styles.checkmark}
 					viewBox="0 0 14 14"
@@ -100,8 +105,8 @@ const Checkbox: React.FC<CheckboxProps> = ({
 						className={styles.checkmarkPath}
 					/>
 				</svg>
-				<div className={styles.ripple}></div>
-			</div>
+				<span className={styles.ripple}></span>
+			</span>
 			{label && (
 				<span className={styles.label}>
 					{label}
