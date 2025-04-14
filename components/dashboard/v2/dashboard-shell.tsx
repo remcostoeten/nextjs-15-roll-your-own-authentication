@@ -2,11 +2,11 @@
 
 import type React from 'react'
 
-import { PageProps, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Sidebar } from './dashboard-sidebar'
 import { MobileNavigationBar } from './mobile-navigation'
-import { LayoutHeader } from './layout-header'
 import { LogoLoader } from './logo-loader'
+import { LayoutHeader } from './layout-header'
 
 type TProps = {
 	children: React.ReactNode

@@ -57,7 +57,7 @@ const config = {
 				bg: 'var(--bg)',
 				'active-bg': 'var(--active-bg)',
 				'btn-50opacity': 'var(--btn-50opacity)',
-				white: 'var(--white)',
+				white: 'rgb(250, 250, 250)',
 				'menu-hover': 'var(--menu-hover)',
 				title: 'var(--title)',
 				'title-light': 'var(--title-light)',

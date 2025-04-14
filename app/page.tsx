@@ -1,4 +1,4 @@
-import Title from '@/shared/components/headings'
+\import Title from '@/shared/components/headings'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { getCurrentUser } from '@/modules/authentication/utilities/auth'
