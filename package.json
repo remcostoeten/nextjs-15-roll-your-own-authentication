@@ -6,7 +6,11 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "secret": "./scripts/generate-jwt-secret.sh",
+    "typecheck": "tsc --noEmit",
+    "f:check": "biome check ./src",
+    "f" : " biome format --write ./src"
   },
   "dependencies": {
     "@biomejs/biome": "^2.0.0-beta.2",
