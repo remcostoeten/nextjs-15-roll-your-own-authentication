@@ -41,7 +41,10 @@ export function Logo() {
 				ctx.fillText(char, i * fontSize, drops[i] * fontSize)
 
 				// Reset drop when it reaches bottom or randomly
-				if (drops[i] * fontSize > canvas.height && Math.random() > 0.95) {
+				if (
+					drops[i] * fontSize > canvas.height &&
+					Math.random() > 0.95
+				) {
 					drops[i] = 0
 				}
 
@@ -63,17 +66,14 @@ export function Logo() {
 
 	return (
 		<motion.div
-			className="relative"
+			className='relative'
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
 		>
-			<Link
-				href="/"
-				className="flex items-center gap-2"
-			>
-				<div className="relative h-9 w-9 rounded-md overflow-hidden flex items-center justify-center bg-gradient-to-br from-[#1E1E1E] to-[#0D0C0C] border border-[#2D2D2D]">
+			<Link href='/' className='flex items-center gap-2'>
+				<div className='relative h-9 w-9 rounded-md overflow-hidden flex items-center justify-center bg-gradient-to-br from-[#1E1E1E] to-[#0D0C0C] border border-[#2D2D2D]'>
 					{/* Improved logo design */}
-					<Lock className="h-5 w-5 text-[#4e9815]" />
+					<Lock className='h-5 w-5 text-[#4e9815]' />
 
 					{/* Matrix code overlay */}
 					<canvas
@@ -90,19 +90,22 @@ export function Logo() {
 				</div>
 
 				<motion.span
-					className="bg-gradient-to-b from-[#F2F0ED] to-[#ADADAD] bg-clip-text text-transparent font-bold text-lg tracking-wider"
+					className='bg-gradient-to-b from-[#F2F0ED] to-[#ADADAD] bg-clip-text text-transparent font-bold text-lg tracking-wider'
 					animate={
 						isHovered
 							? {
 									textShadow: [
 										'0 0 0px rgba(78, 152, 21, 0)',
 										'0 0 10px rgba(78, 152, 21, 0.5)',
-										'0 0 0px rgba(78, 152, 21, 0)',
-									],
+										'0 0 0px rgba(78, 152, 21, 0)'
+									]
 								}
 							: {}
 					}
-					transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+					transition={{
+						duration: 2,
+						repeat: Number.POSITIVE_INFINITY
+					}}
 				>
 					ROLL-YOUR-OWN-AUTH
 				</motion.span>
