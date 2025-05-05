@@ -285,7 +285,7 @@ export default function GitHubRepository() {
 						key={word}
 						custom={i}
 						variants={wordVariants}
-						className='inline-block bg-gradient-to-b from-[#F2F0ED] to-[#ADADAD] bg-clip-text text-transparent'
+						className='inline-block bg-linear-to-b from-[#F2F0ED] to-[#ADADAD] bg-clip-text text-transparent'
 						style={{ marginRight: '0.3em' }}
 					>
 						{word}
@@ -475,7 +475,7 @@ export default function GitHubRepository() {
 							{showTooltip && (
 								<div
 									ref={tooltipRef}
-									className='absolute bottom-8 left-24 z-[100] w-80 rounded-md border border-[#1E1E1E] bg-[#0D0C0C]/95 p-4 shadow-xl backdrop-blur-sm'
+									className='absolute bottom-8 left-24 z-100 w-80 rounded-md border border-[#1E1E1E] bg-[#0D0C0C]/95 p-4 shadow-xl backdrop-blur-sm'
 									style={{
 										boxShadow:
 											'0 4px 20px rgba(0, 0, 0, 0.5)'

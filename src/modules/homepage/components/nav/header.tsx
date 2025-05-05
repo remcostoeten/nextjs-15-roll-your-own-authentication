@@ -127,7 +127,7 @@ export function Header() {
 								<NavItem
 									name={item.name}
 									href={item.href}
-									isActive={pathname === item.href}
+									isActive={pathname ? pathname === item.href : false}
 								/>
 							)}
 						</For>
@@ -188,7 +188,7 @@ export function Header() {
 			</div>
 
 			<AnimatePresence>
-				{isMenuOpen && (
+				{isMenuOpen && pathname && (
 					<MobileMenu
 						navItems={navItems}
 						demoItems={DEMO_ITEMS}

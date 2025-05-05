@@ -71,7 +71,7 @@ export function Logo() {
 			onMouseLeave={() => setIsHovered(false)}
 		>
 			<Link href='/' className='flex items-center gap-2'>
-				<div className='relative h-9 w-9 rounded-md overflow-hidden flex items-center justify-center bg-gradient-to-br from-[#1E1E1E] to-[#0D0C0C] border border-[#2D2D2D]'>
+				<div className='relative h-9 w-9 rounded-md overflow-hidden flex items-center justify-center bg-linear-to-br from-[#1E1E1E] to-[#0D0C0C] border border-[#2D2D2D]'>
 					{/* Improved logo design */}
 					<Lock className='h-5 w-5 text-[#4e9815]' />
 
@@ -90,7 +90,7 @@ export function Logo() {
 				</div>
 
 				<motion.span
-					className='bg-gradient-to-b from-[#F2F0ED] to-[#ADADAD] bg-clip-text text-transparent font-bold text-lg tracking-wider'
+					className='bg-linear-to-b from-[#F2F0ED] to-[#ADADAD] bg-clip-text text-transparent font-bold text-lg tracking-wider'
 					animate={
 						isHovered
 							? {

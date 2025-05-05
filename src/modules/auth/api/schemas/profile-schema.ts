@@ -10,6 +10,8 @@ export const userProfiles = pgTable('user_profiles', {
     githubLink: varchar('github_link', { length: 255 }),
     twitterLink: varchar('twitter_link', { length: 255 }),
     websiteLink: varchar('website_link', { length: 255 }),
+    loginCount: integer('login_count').default(0),
+    lastLoginAt: timestamp('last_login_at', { withTimezone: true }),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true })
         .defaultNow()

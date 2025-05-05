@@ -40,10 +40,19 @@ export async function attemptUserRegistration(data: RegisterInput): Promise<{ id
     const userRole: Role = email.toLowerCase() === env.ADMIN_EMAIL?.toLowerCase() ? 'admin' : 'user';
 
     const newUser = await createUser({ email, username, password }, hashedPassword, userRole);
+    
+    if (!newUser.email || !newUser.username || !newUser.role) {
+        throw new Error('User creation failed: missing required fields');
+    }
 
     await setAuthCookieInternal(newUser.id, newUser.email, newUser.username, newUser.role);
 
-    return newUser;
+    return {
+        id: newUser.id,
+        email: newUser.email,
+        username: newUser.username,
+        role: newUser.role
+    };
 }
 
 export async function attemptUserLogin(data: LoginInput): Promise<{ id: number; email: string; username: string; role: Role }> {
@@ -61,17 +70,19 @@ export async function attemptUserLogin(data: LoginInput): Promise<{ id: number; 
         throw new Error('Invalid credentials.');
     }
 
+    if (!user.email || !user.username || !user.role) {
+        throw new Error('Invalid user data');
+    }
+
     await setAuthCookieInternal(user.id, user.email, user.username, user.role);
     await updateUserLoginStats(user.id);
 
-    // Explicitly omit passwordHash and type the result
-    const loggedInUser = {
-      id: user.id,
-      email: user.email,
-      username: user.username,
-      role: user.role
+    return {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        role: user.role
     };
-    return loggedInUser;
 }
 
 

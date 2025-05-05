@@ -146,7 +146,7 @@ export default function Hero() {
 						key={word}
 						custom={titleWords.indexOf(word)}
 						variants={animations.word}
-						className='inline-block bg-gradient-to-b from-[#F2F0ED] to-[#ADADAD] bg-clip-text text-transparent'
+						className='inline-block bg-linear-to-b from-[#F2F0ED] to-[#ADADAD] bg-clip-text text-transparent'
 						style={{ marginRight: '0.3em' }}
 					>
 						{word}
@@ -208,7 +208,7 @@ export default function Hero() {
 				{showTooltip && (
 					<div
 						ref={tooltipRef}
-						className='absolute left-24 bottom-8 z-[100] w-80 rounded-md border border-[#1E1E1E] bg-[#0D0C0C]/95 backdrop-blur-sm p-4 shadow-xl'
+						className='absolute left-24 bottom-8 z-100 w-80 rounded-md border border-[#1E1E1E] bg-[#0D0C0C]/95 backdrop-blur-sm p-4 shadow-xl'
 						style={{
 							boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)'
 						}}

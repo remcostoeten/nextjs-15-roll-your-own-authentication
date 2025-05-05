@@ -2,10 +2,11 @@
 
 import { useFormState, useFormStatus } from 'react-dom';
 import { useEffect } from 'react';
-import { showToast } from '@/components/ui/toast/CustomToast';
+import { showToast } from '@/components/ui/toast/custom-toast';
 import { ZodIssue } from 'zod';
-import Link from 'next/link'; // Import Link
+import Link from 'next/link'; 
 import { login } from '@/modules/auth/api/actions/auth.actions';
+import type { ActionResult } from '@/modules/auth/api/actions/auth.actions';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -23,33 +24,26 @@ function SubmitButton() {
 }
 
 export default function LoginPage() {
-  const initialState = { success: false, message: '', error: undefined };
-  const [state, formAction] = useFormState(async (state, formData: FormData) => {
-    try {
-      const email = formData.get('email') as string;
-      const password = formData.get('password') as string;
-      
-      // Add your authentication logic here
-      // Return success state
-      return { success: true, message: 'Login successful', error: undefined };
-    } catch (error) {
-      return { 
-        success: false, 
-        message: 'Login failed', 
-        error: error instanceof Error ? error.message : 'Unknown error' 
-      };
-    }
-  }, initialState);
+  const initialState: ActionResult = { success: false, message: '', error: undefined };
+  const [state, formAction] = useFormState(
+    (prevState: ActionResult, formData: FormData) => login(formData),
+    initialState
+  );
 
   useEffect(() => {
     if (state?.success) {
-      showToast({ message: 'Login successful!', type: 'success' });
+      showToast({ 
+        message: 'Login successful!', 
+        type: 'success',
+        description: 'Redirecting you to the dashboard...'
+      });
     } else if (state?.error) {
       showToast({ 
-        message: Array.isArray(state.error) 
-          ? state.error[0]?.message || 'Login failed' 
-          : state.error || 'Login failed', 
-        type: 'error' 
+        message: 'Login failed', 
+        type: 'error',
+        description: Array.isArray(state.error) 
+          ? state.error[0]?.message || 'Please check your credentials and try again'
+          : state.error || 'Please check your credentials and try again'
       });
     }
   }, [state]);

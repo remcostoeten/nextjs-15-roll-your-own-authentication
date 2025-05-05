@@ -34,6 +34,11 @@ export async function getUserSession(): Promise<UserSession> {
       return null;
     }
 
+    if (!user || !user.email || !user.username || !user.role) {
+      console.warn(`Invalid user data for ID ${verifiedPayload.sub}`);
+      return null;
+    }
+
     const session: UserSession = {
       id: user.id,
       email: user.email,

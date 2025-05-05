@@ -80,7 +80,7 @@ export function LoginButton() {
 					/>
 				</div>
 
-				<div className='absolute -inset-0.5 bg-gradient-to-r from-[#4e9815]/30 to-[#4e9815]/10 rounded-md blur opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
+				<div className='absolute -inset-0.5 bg-linear-to-r from-[#4e9815]/30 to-[#4e9815]/10 rounded-md blur opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
 
 				<div className='relative flex items-center gap-2 px-4 py-1.5 rounded-md border border-[#4e9815]/30 bg-[#0D0C0C] text-[#4e9815] transition-all duration-200'>
 					{/* Use displayText from the hook */}

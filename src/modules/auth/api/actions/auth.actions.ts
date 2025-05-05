@@ -1,4 +1,3 @@
-// src/modules/auth/actions/auth.actions.ts
 'use server';
 
 import { cookies, headers } from 'next/headers';
@@ -14,7 +13,7 @@ import { Role } from '@/modules/auth/api/schemas/user-schema';
 
 const AUTH_COOKIE_NAME = 'auth_token';
 
-type ActionResult = {
+export type ActionResult = {
   success: boolean;
   message: string;
   error?: string | z.ZodIssue[];
@@ -43,9 +42,9 @@ function setAuthCookie(userId: number, email: string, username: string, role: Ro
 
 export async function getRequestContext(): Promise<Omit<LogActionInput, 'userId' | 'actionType' | 'details'>> {
     const headersList = await headers();
-    const ip = headersList.get('x-forwarded-for') ?? headersList.get('x-real-ip');
-    const userAgent = headersList.get('user-agent');
-    const path = headersList.get('referer');
+    const ip = headersList.get('x-forwarded-for') ?? headersList.get('x-real-ip') ?? null;
+    const userAgent = headersList.get('user-agent') ?? null;
+    const path = headersList.get('referer') ?? null;
 
     return {
         ipAddress: ip,
@@ -54,13 +53,17 @@ export async function getRequestContext(): Promise<Omit<LogActionInput, 'userId'
     };
 }
 
-
 export async function register(formData: FormData): Promise<ActionResult> {
   const validatedFields = RegisterSchema.safeParse(Object.fromEntries(formData.entries()));
-  const requestContext = getRequestContext();
+  const requestContext = await getRequestContext();
 
   if (!validatedFields.success) {
-    await logUserAction({ ...requestContext, actionType: 'REGISTER_FAIL', details: { reason: 'Validation failed', errors: validatedFields.error.flatten() } });
+    await logUserAction({ 
+      ...requestContext, 
+      actionType: 'REGISTER_FAIL', 
+      details: { reason: 'Validation failed', errors: validatedFields.error.flatten() },
+      userId: null 
+    });
     return { success: false, message: "Invalid registration data.", error: validatedFields.error.errors };
   }
 
@@ -69,7 +72,12 @@ export async function register(formData: FormData): Promise<ActionResult> {
   try {
     const userExists = await checkUserExists(email, username);
     if (userExists) {
-      await logUserAction({ ...requestContext, actionType: 'REGISTER_FAIL', details: { reason: 'User exists', email, username } });
+      await logUserAction({ 
+        ...requestContext, 
+        actionType: 'REGISTER_FAIL', 
+        details: { reason: 'User exists', email, username },
+        userId: null 
+      });
       return { success: false, message: 'An account with this email or username already exists.' };
     }
 
@@ -77,12 +85,21 @@ export async function register(formData: FormData): Promise<ActionResult> {
     const userRole: Role = email.toLowerCase() === env.ADMIN_EMAIL?.toLowerCase() ? 'admin' : 'user';
 
     const newUser = await createUser({ email, username, password }, hashedPassword, userRole);
+    
+    if (!newUser.email || !newUser.username || !newUser.role) {
+      throw new Error('User creation failed: missing required fields');
+    }
 
     await setAuthCookie(newUser.id, newUser.email, newUser.username, newUser.role);
     await logUserAction({ ...requestContext, userId: newUser.id, actionType: 'REGISTER_SUCCESS' });
 
   } catch (error: any) {
-    await logUserAction({ ...requestContext, actionType: 'REGISTER_FAIL', details: { reason: 'Server error', message: error.message, email, username } });
+    await logUserAction({ 
+      ...requestContext, 
+      actionType: 'REGISTER_FAIL', 
+      details: { reason: 'Server error', message: error.message, email, username },
+      userId: null 
+    });
     console.error('Registration Error:', error);
     return { success: false, message: error.message || 'Registration failed. Please try again.' };
   }
@@ -93,29 +110,44 @@ export async function register(formData: FormData): Promise<ActionResult> {
 
 export async function login(formData: FormData): Promise<ActionResult> {
   const validatedFields = LoginSchema.safeParse(Object.fromEntries(formData.entries()));
-  const requestContext = getRequestContext();
+  const requestContext = await getRequestContext();
 
   if (!validatedFields.success) {
-    await logUserAction({ ...requestContext, actionType: 'LOGIN_FAIL', details: { reason: 'Validation failed', errors: validatedFields.error.flatten() } });
+    await logUserAction({ 
+      ...requestContext, 
+      actionType: 'LOGIN_FAIL', 
+      details: { reason: 'Validation failed', errors: validatedFields.error.flatten() },
+      userId: null 
+    });
     return { success: false, message: "Invalid login data.", error: validatedFields.error.errors };
   }
 
   const { identifier, password } = validatedFields.data;
-  let userId: number | undefined = undefined;
+  let userId: number | null = null;
 
   try {
     const user = await findUserByIdentifierWithPassword(identifier);
-    userId = user?.id;
+    userId = user?.id ?? null;
 
-    if (!user || !user.passwordHash) {
-      await logUserAction({ ...requestContext, userId, actionType: 'LOGIN_FAIL', details: { reason: 'User not found', identifier } });
+    if (!user || !user.passwordHash || !user.email || !user.username || !user.role) {
+      await logUserAction({ 
+        ...requestContext, 
+        userId, 
+        actionType: 'LOGIN_FAIL', 
+        details: { reason: 'User not found or invalid data', identifier } 
+      });
       return { success: false, message: 'Invalid credentials.' };
     }
 
     const passwordMatch = await comparePassword(password, user.passwordHash);
 
     if (!passwordMatch) {
-      await logUserAction({ ...requestContext, userId, actionType: 'LOGIN_FAIL', details: { reason: 'Password mismatch', identifier } });
+      await logUserAction({ 
+        ...requestContext, 
+        userId, 
+        actionType: 'LOGIN_FAIL', 
+        details: { reason: 'Password mismatch', identifier } 
+      });
       return { success: false, message: 'Invalid credentials.' };
     }
 
@@ -124,7 +156,12 @@ export async function login(formData: FormData): Promise<ActionResult> {
     await logUserAction({ ...requestContext, userId: user.id, actionType: 'LOGIN_SUCCESS' });
 
   } catch (error: any) {
-    await logUserAction({ ...requestContext, userId, actionType: 'LOGIN_FAIL', details: { reason: 'Server error', message: error.message, identifier } });
+    await logUserAction({ 
+      ...requestContext, 
+      userId, 
+      actionType: 'LOGIN_FAIL', 
+      details: { reason: 'Server error', message: error.message, identifier } 
+    });
     console.error('Login Error:', error);
     return { success: false, message: error.message || 'Login failed. Please try again.' };
   }
