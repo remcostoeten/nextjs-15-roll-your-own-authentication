@@ -7,6 +7,21 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes enter {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-enter {
+  animation: enter 0.35s ease-out;
+}
+
 @layer base {
 	:root {
 		--font-sans: var(--font-geist-sans);

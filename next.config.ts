@@ -6,7 +6,10 @@ const nextConfig = {
   // env: {
   //   NEXT_PUBLIC_SOME_VAR: env.SOME_PUBLIC_VAR, // Only use vars intended for client
   // },
-  reactCompiler: true,   viewTransition: true,
+  experimental: {
+    reactCompiler: true,   
+    viewTransition: true,
+  },
 
   // Add other configurations specific to your project below
   // For example:
