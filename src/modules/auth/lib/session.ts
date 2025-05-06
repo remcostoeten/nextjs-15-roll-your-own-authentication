@@ -1,3 +1,5 @@
+'use server';
+
 import { cookies } from 'next/headers';
 import { verifyJwt } from '@/modules/auth/lib/security';
 import { Role } from '@/api/schema';
@@ -13,29 +15,36 @@ export type UserSession = {
 } | null;
 
 export async function getUserSession(): Promise<UserSession> {
+  console.log('🔍 Getting user session...');
+  
   const cookieStore = await cookies();
   const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
 
   if (!token) {
+    console.log('❌ No auth token found in cookies');
     return null;
   }
+  console.log('✅ Found auth token');
 
   const verifiedPayload = await verifyJwt(token);
 
   if (!verifiedPayload) {
+    console.log('❌ JWT verification failed');
     return null;
   }
+  console.log('✅ JWT verified successfully');
 
   try {
+    console.log(`🔍 Looking up user with ID ${verifiedPayload.sub}`);
     const user = await findUserById(Number(verifiedPayload.sub));
 
     if (!user) {
-      console.warn(`User with ID ${verifiedPayload.sub} not found in DB, but valid JWT exists.`);
+      console.warn(`❌ User with ID ${verifiedPayload.sub} not found in DB, but valid JWT exists.`);
       return null;
     }
 
-    if (!user || !user.email || !user.username || !user.role) {
-      console.warn(`Invalid user data for ID ${verifiedPayload.sub}`);
+    if (!user.email || !user.username || !user.role) {
+      console.warn(`❌ Invalid user data for ID ${verifiedPayload.sub}`);
       return null;
     }
 
@@ -46,10 +55,11 @@ export async function getUserSession(): Promise<UserSession> {
       role: user.role,
     };
 
+    console.log('✅ User session created successfully:', { id: user.id, email: user.email });
     return session;
 
   } catch (error) {
-    console.error('Error fetching user data during session retrieval:', error);
+    console.error('❌ Error fetching user data during session retrieval:', error);
     return null;
   }
 }

@@ -1,3 +1,5 @@
+'use server';
+
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { hashPassword, comparePassword, createJwt, verifyJwt } from '@/modules/auth/lib/security';
@@ -7,7 +9,7 @@ import { RegisterInput, LoginInput } from '@/modules/auth/api/models/auth.models
 import { Role } from '@/modules/auth/api/schemas/user-schema';
 import { env } from 'env';
 import { logUserAction } from '@/modules/metrics/api/mutations/log-actions.mutation';
-import { getRequestContext } from '@/modules/auth/api/actions/auth.actions';
+
 
 const AUTH_COOKIE_NAME = 'auth_token';
 
@@ -104,12 +106,11 @@ export async function attemptUserLogout(): Promise<{ userId: number | null }> {
 
 export async function logout(): Promise<void> {
     const { userId } = await attemptUserLogout();
-    const requestContext = getRequestContext();
     try {
-        await logUserAction({ ...requestContext, userId, actionType: 'LOGOUT' });
+        await logUserAction({ userId, actionType: 'LOGOUT' });
     } catch (error: any) {
         console.error('Logout Action Error:', error);
-        await logUserAction({ ...requestContext, userId, actionType: 'LOGOUT', details: { error: 'Service error during logout', message: error.message } });
+        await logUserAction({ userId, actionType: 'LOGOUT', details: { error: 'Service error during logout', message: error.message } });
     }
     redirect('/login');
 }

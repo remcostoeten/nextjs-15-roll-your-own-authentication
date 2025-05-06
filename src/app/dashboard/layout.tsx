@@ -1,9 +1,10 @@
 import type React from "react"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { logout } from "@/modules/auth/api/actions/auth.actions";
 import { getUserSession } from "@/modules/auth/lib/session";
 import { redirect } from "next/navigation";
 import { AppSidebar } from "@/modules/dashboard/app-sidebar";
+import { logout } from "@/modules/auth/api/services/auth.service";
+
 function LogoutButton() {
     return (
         <form  className='mt-20'action={logout}>

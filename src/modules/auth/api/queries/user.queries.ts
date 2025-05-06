@@ -1,9 +1,13 @@
-// src/api/queries/user.queries.ts
+'use server';
+
 import { db } from '@/api/db';
 import { users } from '@/api/schema';
 import { eq, or } from 'drizzle-orm';
+import { getUserSession } from '@/modules/auth/lib/session';
+import type { UserSession } from '@/modules/auth/lib/session';
 
 export async function findUserById(id: number, includeProfile: boolean = false) {
+  console.log(`🔍 Finding user by ID: ${id}`);
   try {
     const user = await db.query.users.findFirst({
       where: eq(users.id, id),
@@ -14,9 +18,16 @@ export async function findUserById(id: number, includeProfile: boolean = false) 
         passwordHash: false,
       },
     });
-    return user || null;
+    
+    if (!user) {
+      console.log(`❌ No user found with ID: ${id}`);
+      return null;
+    }
+    
+    console.log(`✅ Found user:`, { id: user.id, email: user.email });
+    return user;
   } catch (error) {
-    console.error('Error finding user by ID:', error);
+    console.error('❌ Error finding user by ID:', error);
     return null;
   }
 }
@@ -81,3 +92,33 @@ export async function checkUserExists(email: string, username: string): Promise<
   }
 }
 
+export async function getCurrentUser(): Promise<UserSession | null> {
+  console.log('🔍 Getting current user...');
+  try {
+    const session = await getUserSession();
+    if (!session) {
+      console.log('❌ No active session found');
+      return null;
+    }
+    console.log('✅ Session found:', { id: session.id });
+
+    const user = await findUserById(session.id);
+    if (!user || !user.email || !user.username || !user.role) {
+      console.warn('❌ Invalid user data');
+      return null;
+    }
+
+    const userSession = {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      role: user.role
+    };
+
+    console.log('✅ Current user loaded successfully:', { id: user.id, email: user.email });
+    return userSession;
+  } catch (error) {
+    console.error('❌ Error getting current user:', error);
+    return null;
+  }
+}

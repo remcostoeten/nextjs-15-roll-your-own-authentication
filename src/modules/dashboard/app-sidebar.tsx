@@ -36,7 +36,7 @@ import {
 import { WorkspaceSwitcher } from "./workspace-switcher"
 import { cn } from "@/lib/utils"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { UserProfileDropdown } from "./user-profile-dropdown"
+import { UserProfileDropdownWrapper } from "@/app/dashboard/UserProfileDropdownWrapper"
 import { CreateWorkspaceModal } from "./create-workspace-modal"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { switchWorkspace } from "./actions/workspace"
@@ -335,7 +335,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenuItem>
         </SidebarMenu>
         <div className="mt-auto pt-2 border-t border-sidebar-border">
-          <UserProfileDropdown />
+          <UserProfileDropdownWrapper />
         </div>
       </SidebarFooter>
       <SidebarRail />
