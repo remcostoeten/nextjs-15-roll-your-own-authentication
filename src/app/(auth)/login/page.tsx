@@ -1,127 +1,53 @@
-'use client';
+import { Metadata } from "next"
+import { LoginForm } from "@/modules/auth/components/login-form"
 
-import { useFormState, useFormStatus } from 'react-dom';
-import { useEffect } from 'react';
-import { showToast } from '@/components/ui/toast/custom-toast';
-import { ZodIssue } from 'zod';
-import Link from 'next/link'; 
-import { login } from '@/modules/auth/api/actions/auth.actions';
-import type { ActionResult } from '@/modules/auth/api/actions/auth.actions';
-
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <button
-      type="submit"
-      disabled={pending}
-      className={`w-full px-4 py-2 font-semibold text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
-        pending ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'
-      }`}
-    >
-      {pending ? 'Logging In...' : 'Login'}
-    </button>
-  );
+export const metadata: Metadata = {
+  title: "Login",
+  description: "Login to your account",
 }
 
 export default function LoginPage() {
-  const initialState: ActionResult = { success: false, message: '', error: undefined };
-  const [state, formAction] = useFormState(
-    (prevState: ActionResult, formData: FormData) => login(formData),
-    initialState
-  );
-
-  useEffect(() => {
-    if (state?.success) {
-      showToast({ 
-        message: 'Login successful!', 
-        type: 'success',
-        description: 'Redirecting you to the dashboard...'
-      });
-    } else if (state?.error) {
-      showToast({ 
-        message: 'Login failed', 
-        type: 'error',
-        description: Array.isArray(state.error) 
-          ? state.error[0]?.message || 'Please check your credentials and try again'
-          : state.error || 'Please check your credentials and try again'
-      });
-    }
-  }, [state]);
-
-  const getFieldError = (fieldName: string): string | undefined => {
-    if (state?.error && Array.isArray(state.error)) {
-        const fieldError = state.error.find((err: ZodIssue) => err.path.includes(fieldName));
-        return fieldError?.message;
-    }
-    return undefined;
-  };
-
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center text-gray-900">Login</h2>
-        <form action={formAction} className="space-y-6">
-          {!state?.success && state?.message && !state.error && (
-            <div className="p-3 text-sm text-red-700 bg-red-100 border border-red-200 rounded-md">
-              {state.message}
-            </div>
-          )}
-
-          <div>
-            <label
-              htmlFor="identifier"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Email or Username
-            </label>
-            <input
-              id="identifier"
-              name="identifier"
-              type="text"
-              required
-              className="block w-full px-3 py-2 mt-1 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              aria-describedby="identifier-error"
-            />
-             {getFieldError('identifier') && (
-                <p className="mt-1 text-xs text-red-600" id="identifier-error">
-                    {getFieldError('identifier')}
-                </p>
-            )}
+    <div className="container relative flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+      <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
+        <div className="absolute inset-0 bg-zinc-900" />
+        <div className="relative z-20 flex items-center text-lg font-medium">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="mr-2 h-6 w-6"
+          >
+            <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
+          </svg>
+          Your App Name
+        </div>
+        <div className="relative z-20 mt-auto">
+          <blockquote className="space-y-2">
+            <p className="text-lg">
+              &ldquo;This app has saved me countless hours of work and helped me deliver stunning designs to my clients faster than ever before.&rdquo;
+            </p>
+            <footer className="text-sm">Sofia Davis</footer>
+          </blockquote>
+        </div>
+      </div>
+      <div className="lg:p-8">
+        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+          <div className="flex flex-col space-y-2 text-center">
+            <h1 className="text-2xl font-semibold tracking-tight">
+              Welcome back
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Enter your credentials to sign in to your account
+            </p>
           </div>
-
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              className="block w-full px-3 py-2 mt-1 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              aria-describedby="password-error"
-            />
-             {getFieldError('password') && (
-                <p className="mt-1 text-xs text-red-600" id="password-error">
-                    {getFieldError('password')}
-                </p>
-            )}
-          </div>
-
-          <div>
-            <SubmitButton />
-          </div>
-        </form>
-         <p className="text-sm text-center text-gray-600">
-            Don't have an account?{' '}
-            <Link href="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
-                Register here
-            </Link>
-        </p>
+          <LoginForm />
+        </div>
       </div>
     </div>
-  );
+  )
 }

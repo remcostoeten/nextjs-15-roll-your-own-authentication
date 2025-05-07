@@ -1,4 +1,3 @@
-import './globals.css'
 import { Header } from '@/modules/homepage/components/nav/header'
 import { Toaster } from 'react-hot-toast'
 
