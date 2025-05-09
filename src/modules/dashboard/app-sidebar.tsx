@@ -36,10 +36,9 @@ import {
 import { WorkspaceSwitcher } from "./workspace-switcher"
 import { cn } from "@/lib/utils"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { UserProfileDropdownWrapper } from "@/app/dashboard/UserProfileDropdownWrapper"
+import { UserProfileDropdown } from "@/modules/dashboard/user-profile-dropdown"
 import { CreateWorkspaceModal } from "./create-workspace-modal"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { switchWorkspace } from "./actions/workspace"
 import { toast } from "react-hot-toast"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -60,11 +59,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     }))
   }
 
-  const handleSwitchWorkspace = async (workspace: any) => {
+  async function switchWorkspace(workspace: any) {
     try {
       await switchWorkspace(workspace.id)
     } catch (error) {
       console.error("Failed to switch workspace:", error)
+      toast.error("Failed to switch workspace")
     }
   }
 
@@ -87,6 +87,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     return pathname?.startsWith(path)
   }
 
+  function handleSwitchWorkspace(workspace: any) {
+    switchWorkspace(workspace)
+  }
+
   return (
     <Sidebar collapsible="icon" className="z-50 border-r-0" {...props}>
       <SidebarHeader className="pb-0">
@@ -96,7 +100,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsCreateModalOpen(true)}>
+                  <Button variant="icon" size="sm" className="h-8 w-8" onClick={() => setIsCreateModalOpen(true)}>
                     <Plus className="h-4 w-4" />
                     <span className="sr-only">Create new store</span>
                   </Button>
@@ -335,7 +339,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenuItem>
         </SidebarMenu>
         <div className="mt-auto pt-2 border-t border-sidebar-border">
-          <UserProfileDropdownWrapper />
+          <UserProfileDropdown />
         </div>
       </SidebarFooter>
       <SidebarRail />

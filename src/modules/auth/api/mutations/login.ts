@@ -1,41 +1,94 @@
-import { SignJWT } from "jose"
-import { cookies } from "next/headers"
-import { z } from "zod"
+'use server'
 
+import { z } from "zod"
+import bcrypt from "bcryptjs"
+import { cookies } from "next/headers"
 import { db } from "@/api/db"
 import { users } from "@/api/schema"
-import { comparePasswords, createSession } from "@/modules/auth/lib/auth"
+import { createJwt } from "@/modules/auth/lib/security"
+
+const AUTH_COOKIE_NAME = 'auth_token'
 
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string(),
 })
 
-export async function login(data: z.infer<typeof loginSchema>) {
-  const { email, password } = loginSchema.parse(data)
+export type LoginData = z.infer<typeof loginSchema>
 
-  const user = await db.query.users.findFirst({
-    where: (users, { eq }) => eq(users.email, email),
-  })
+export async function login(data: LoginData) {
+  try {
+    const { email, password } = loginSchema.parse(data)
 
-  if (!user || !user.passwordHash) {
-    throw new Error("Invalid email or password")
+    // Find user
+    const user = await db.query.users.findFirst({
+      where: (users, { eq }) => eq(users.email, email),
+    })
+
+    if (!user || !user.passwordHash || !user.email || !user.username || !user.role) {
+      console.error('Login failed: User not found or invalid data', { email })
+      return {
+        success: false,
+        error: "Invalid email or password",
+      }
+    }
+
+    // Verify password
+    const isValidPassword = await bcrypt.compare(password, user.passwordHash)
+
+    if (!isValidPassword) {
+      console.error('Login failed: Invalid password', { email })
+      return {
+        success: false,
+        error: "Invalid email or password",
+      }
+    }
+
+    // Create JWT token
+    const token = await createJwt({
+      sub: user.id.toString(),
+      email: user.email,
+      username: user.username,
+      role: user.role,
+    })
+    
+    // Set auth cookie
+    cookies().set(AUTH_COOKIE_NAME, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+    })
+
+    console.log('Login successful', { email, userId: user.id })
+    return {
+      success: true,
+      data: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+      },
+    }
+  } catch (error) {
+    console.error('Login error:', error)
+    if (error instanceof z.ZodError) {
+      return {
+        success: false,
+        error: "Invalid input format",
+        issues: error.issues,
+      }
+    }
+
+    if (error instanceof Error) {
+      return {
+        success: false,
+        error: "Authentication failed",
+      }
+    }
+
+    return {
+      success: false,
+      error: "An unexpected error occurred",
+    }
   }
-
-  const isValidPassword = await comparePasswords(password, user.passwordHash)
-
-  if (!isValidPassword) {
-    throw new Error("Invalid email or password")
-  }
-
-  const session = await createSession(user)
-  
-  cookies().set("session", session, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
-  })
-
-  return { success: true }
 } 

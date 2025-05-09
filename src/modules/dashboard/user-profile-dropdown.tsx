@@ -1,10 +1,11 @@
 "use client"
 
 import { CreditCard, LogOut, Moon, Settings, Sun, User, Users, Keyboard } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
+import { useRouter } from "next/navigation"
 import { showToast } from "@/components/ui/toast/custom-toast"
 import { attemptUserLogout } from "@/modules/auth/api/services/auth.service"
-import type { UserSession } from "@/modules/auth/lib/session"
+import { useUser } from "@/modules/auth/lib/user-context"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -24,38 +25,41 @@ import { useTheme } from "@/components/theme-provider"
 import { KeyboardShortcutsModal } from "./components/keyboard-shortcuts-modal"
 import { useKeyboardShortcuts } from "./lib/keyboard-shortcuts"
 
-interface UserProfileDropdownProps {
-  user: NonNullable<UserSession>;
-}
-
-export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
+export function UserProfileDropdown() {
+  const { user } = useUser()
+  const router = useRouter()
   const { state } = useSidebar()
   const isCollapsed = state === "collapsed"
   const { theme, setTheme } = useTheme()
   const [shortcutsModalOpen, setShortcutsModalOpen] = useState(false)
   const { registerAction, unregisterAction, getShortcut } = useKeyboardShortcuts()
-  const logoutShortcut = getShortcut("logout") || ["shift", "meta", "q"]
 
-  const handleLogout = async () => {
-    showToast({
-      message: "Signing out...",
-      type: "info",
-      description: "You will be redirected to the login page."
-    })
-    await attemptUserLogout()
-  }
+  const handleLogout = useCallback(async () => {
+    try {
+      showToast({
+        message: "Signing out...",
+        type: "info",
+        description: "You will be redirected to the home page."
+      })
+      
+      await attemptUserLogout()
+      window.location.href = '/'
+    } catch (error) {
+      console.error('Logout failed:', error)
+      showToast({
+        message: "Logout failed",
+        type: "error",
+        description: "Please try again"
+      })
+    }
+  }, [])
 
-  const handleThemeChange = (newTheme: 'light' | 'dark') => {
-    setTheme(newTheme)
-    showToast({
-      message: `Theme changed to ${newTheme} mode`,
-      type: "success"
-    })
-  }
+  const logoutShortcut = getShortcut("user-logout") || ["shift", "meta", "q"]
 
   useEffect(() => {
+    const actionId = "user-logout"
     registerAction({
-      id: "logout",
+      id: actionId,
       name: "Logout",
       description: "Sign out of your account",
       defaultShortcut: ["shift", "meta", "q"],
@@ -64,9 +68,17 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
     })
 
     return () => {
-      unregisterAction("logout")
+      unregisterAction(actionId)
     }
-  }, [])
+  }, [registerAction, unregisterAction, handleLogout])
+
+  const handleThemeChange = (newTheme: 'light' | 'dark') => {
+    setTheme(newTheme)
+    showToast({
+      message: `Theme changed to ${newTheme} mode`,
+      type: "success"
+    })
+  }
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -182,15 +194,14 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <form action={handleLogout}>
-            <DropdownMenuItem className="cursor-pointer text-red-500 focus:text-red-500" asChild>
-              <button type="submit" className="w-full flex items-center">
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
-                <DropdownMenuShortcut>{formatShortcut(logoutShortcut)}</DropdownMenuShortcut>
-              </button>
-            </DropdownMenuItem>
-          </form>
+          <DropdownMenuItem 
+            className="cursor-pointer text-red-500 focus:text-red-500" 
+            onClick={handleLogout}
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Log out</span>
+            <DropdownMenuShortcut>{formatShortcut(logoutShortcut)}</DropdownMenuShortcut>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 

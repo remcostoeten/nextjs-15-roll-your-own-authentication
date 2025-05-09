@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -17,7 +15,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { createWorkspace } from "./actions/workspace"
+import { createWorkspace } from "@/modules/workspaces/api/mutations/create-workspace"
 
 const formSchema = z.object({
   name: z.string().min(2, {

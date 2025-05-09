@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { UserProfileDropdownServer } from './UserProfileDropdownServer';
-import { Skeleton } from 'ui';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export function UserProfileDropdown() {
     return (

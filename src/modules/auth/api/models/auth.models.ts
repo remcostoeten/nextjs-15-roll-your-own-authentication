@@ -21,7 +21,7 @@ export const JwtPayloadSchema = z.object({
   sub: z.string(),
   email: z.string().email(),
   username: z.string(),
-  role: z.enum(roles),
+  role: z.enum(['user', 'admin'])
 });
 
 export type JwtPayload = z.infer<typeof JwtPayloadSchema>;

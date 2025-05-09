@@ -1,15 +1,14 @@
-import { PageLayout } from "@/components/page-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ChevronDown } from "lucide-react"
-
+import { PageLayout } from "@/modules/dashboard/page-layout"
 export default function AnalyticsPage() {
   return (
     <PageLayout
       heading="Analytics"
       description="View your store performance metrics"
       actions={
-        <Button variant="outline" size="sm">
+        <Button variant="ghost" size="sm">
           <span>This week</span>
           <ChevronDown className="ml-2 h-4 w-4" />
         </Button>

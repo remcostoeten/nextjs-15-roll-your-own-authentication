@@ -1,3 +1,5 @@
+'use client'
+
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -30,17 +32,46 @@ export function LoginForm() {
   })
 
   async function onSubmit(data: LoginFormValues) {
+    if (isLoading) return
     setIsLoading(true)
 
     try {
-      await login(data)
-      router.push("/dashboard")
+      const result = await login(data)
+      
+      if (result.success) {
+        toast({
+          title: "Success!",
+          description: "Logged in successfully. Redirecting...",
+        })
+        
+        // Refresh the router first to ensure new session is loaded
+        router.refresh()
+        
+        // Short delay before redirect to ensure session is updated
+        setTimeout(() => {
+          // Use relative path to maintain correct port
+          router.push("/dashboard")
+          // Force a full page refresh to ensure clean state
+          window.location.href = "/dashboard"
+        }, 1000)
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: result.error || "Invalid credentials",
+        })
+        // Clear password field on error
+        form.setValue("password", "")
+      }
     } catch (error) {
+      console.error("Login error:", error)
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Invalid email or password",
+        description: "An unexpected error occurred. Please try again.",
       })
+      // Clear password field on error
+      form.setValue("password", "")
     } finally {
       setIsLoading(false)
     }
