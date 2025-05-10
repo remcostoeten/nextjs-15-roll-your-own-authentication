@@ -1,7 +1,6 @@
-"use client"
-
 import * as React from "react"
-import { Check, ChevronDown, Plus } from "lucide-react"
+import { Check, ChevronDown, Plus, Store, Sparkles } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -17,77 +16,65 @@ import {
 } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useSidebar } from "@/components/ui/sidebar"
+import { Skeleton } from "@/components/ui/skeleton"
 import { CreateWorkspaceModal } from "./create-workspace-modal"
+import { type Workspace } from "@/modules/workspaces/api/models/create-workspace-schema"
+import { useWorkspaces } from "@/modules/workspaces/hooks/use-workspaces"
 
-type Workspace = {
-  id: string
-  name: string
-  url: string
-  logo?: string
-}
-
-const workspaces: Workspace[] = [
-  {
-    id: "1",
-    name: "Untitled UI",
-    url: "store.untitledui.com",
-    logo: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "2",
-    name: "Epicurious",
-    url: "epicurious.com",
-    logo: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "3",
-    name: "BoltShift",
-    url: "boltshift.io",
-    logo: "/placeholder.svg?height=40&width=40",
-  },
-]
-
-type WorkspaceSwitcherProps = {
-  onCreateWorkspace?: () => void
-  onSwitchWorkspace?: (workspace: Workspace) => Promise<void> | void
-}
-
-export function WorkspaceSwitcher({ onSwitchWorkspace }: WorkspaceSwitcherProps) {
+export function WorkspaceSwitcher() {
   const [open, setOpen] = React.useState(false)
-  const [selectedWorkspace, setSelectedWorkspace] = React.useState<Workspace>(workspaces[0])
-  const [isLoading, setIsLoading] = React.useState(false)
+  const [switching, setSwitching] = React.useState(false)
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false)
   const { state } = useSidebar()
   const isCollapsed = state === "collapsed"
+  const {
+    workspaces,
+    selectedWorkspace,
+    isLoading,
+    switchWorkspace,
+    handleWorkspaceCreated
+  } = useWorkspaces()
 
   const handleSelect = async (workspace: Workspace) => {
-    if (workspace.id === selectedWorkspace.id) {
+    if (workspace.id === selectedWorkspace?.id) {
       setOpen(false)
       return
     }
 
-    setIsLoading(true)
+    setSwitching(true)
 
     try {
-      if (onSwitchWorkspace) {
-        await onSwitchWorkspace(workspace)
-      }
-      setSelectedWorkspace(workspace)
+      await switchWorkspace(workspace)
     } catch (error) {
       console.error("Failed to switch workspace:", error)
     } finally {
-      setIsLoading(false)
+      setSwitching(false)
       setOpen(false)
     }
-  }
-
-  const handleWorkspaceCreated = (workspace: Workspace) => {
-    setSelectedWorkspace(workspace)
   }
 
   const openCreateModal = () => {
     setOpen(false)
     setIsCreateModalOpen(true)
+  }
+
+  if (isLoading) {
+    return (
+      <div className={cn(
+        "w-full px-3 py-5 h-auto",
+        isCollapsed && "p-3"
+      )}>
+        <div className={cn("flex items-center gap-3", isCollapsed && "justify-center")}>
+          <Skeleton className="h-8 w-8 rounded-md" />
+          {!isCollapsed && (
+            <div className="flex flex-col gap-1 w-full">
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-3 w-1/2" />
+            </div>
+          )}
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -100,61 +87,88 @@ export function WorkspaceSwitcher({ onSwitchWorkspace }: WorkspaceSwitcherProps)
             aria-expanded={open}
             aria-label="Select a workspace"
             className={cn(
-              "w-full justify-between px-3 py-5 h-auto text-left font-normal rounded-none hover:bg-sidebar-accent",
-              isLoading && "opacity-50 cursor-not-allowed",
+              "w-full justify-between px-3 py-5 h-auto text-left font-normal rounded-none hover:bg-sidebar-accent border-b",
+              (isLoading || switching) && "opacity-50 cursor-not-allowed",
               isCollapsed && "justify-center p-3",
             )}
-            disabled={isLoading}
+            disabled={isLoading || switching}
           >
             <div className={cn("flex items-center gap-3", isCollapsed && "justify-center")}>
               <Avatar className="h-8 w-8 rounded-md">
-                <AvatarImage src={selectedWorkspace.logo || "/placeholder.svg"} alt={selectedWorkspace.name} />
+                <AvatarImage 
+                  src={selectedWorkspace?.logo || "/placeholder.svg"} 
+                  alt={selectedWorkspace?.name} 
+                />
                 <AvatarFallback className="rounded-md bg-sidebar-accent text-sidebar-accent-foreground">
-                  {selectedWorkspace.name.substring(0, 2)}
+                  {selectedWorkspace?.emoji || selectedWorkspace?.name?.substring(0, 2) || "ST"}
                 </AvatarFallback>
               </Avatar>
               {!isCollapsed && (
                 <div className="flex flex-col overflow-hidden">
-                  <p className="text-sm font-medium leading-none truncate">{selectedWorkspace.name}</p>
-                  <p className="text-xs text-muted-foreground truncate mt-1">{selectedWorkspace.url}</p>
+                  <p className="text-sm font-medium leading-none truncate">
+                    {selectedWorkspace?.name || "Select Store"}
+                  </p>
+                  <p className="text-xs text-muted-foreground truncate mt-1">
+                    {selectedWorkspace?.url || "No store selected"}
+                  </p>
                 </div>
               )}
             </div>
             {!isCollapsed && <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-(--radix-popover-trigger-width) p-0 rounded-none border-0" align="start">
+        <PopoverContent 
+          className="w-(--radix-popover-trigger-width) p-0 border border-[#2D2D2D] shadow-[0_2px_12px_rgba(0,0,0,0.25)] rounded-md overflow-hidden" 
+          align="start"
+          sideOffset={5}
+        >
           <Command className="rounded-none">
             <CommandInput placeholder="Search stores..." className="rounded-none" />
             <CommandList>
-              <CommandEmpty>No stores found.</CommandEmpty>
-              <CommandGroup heading="Your stores">
-                {workspaces.map((workspace) => (
-                  <CommandItem
-                    key={workspace.id}
-                    value={workspace.name}
-                    onSelect={() => handleSelect(workspace)}
-                    className="flex items-center gap-3 py-3 px-3 rounded-none cursor-pointer"
-                  >
-                    <div className="flex items-center gap-3 flex-1">
+              {workspaces.length > 0 ? (
+                <CommandGroup heading="Your stores">
+                  {workspaces.map((workspace) => (
+                    <CommandItem
+                      key={workspace.id}
+                      value={workspace.id.toString()}
+                      onSelect={() => handleSelect(workspace)}
+                      className="flex items-center gap-2 py-3"
+                    >
                       <Avatar className="h-8 w-8 rounded-md">
-                        <AvatarImage src={workspace.logo || "/placeholder.svg"} alt={workspace.name} />
                         <AvatarFallback className="rounded-md bg-sidebar-accent text-sidebar-accent-foreground">
-                          {workspace.name.substring(0, 2)}
+                          {workspace.emoji || workspace.name.substring(0, 2)}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="flex flex-col overflow-hidden">
-                        <p className="text-sm font-medium leading-none truncate">{workspace.name}</p>
-                        <p className="text-xs text-muted-foreground truncate mt-1">{workspace.url}</p>
+                      <div className="flex flex-col">
+                        <p className="text-sm">{workspace.name}</p>
+                        <p className="text-xs text-muted-foreground">{workspace.url || workspace.description}</p>
                       </div>
+                      {workspace.id === selectedWorkspace?.id && (
+                        <Check className="ml-auto h-4 w-4 text-primary" />
+                      )}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              ) : (
+                <CommandEmpty className="pt-6 pb-2 px-2">
+                  <div className="flex flex-col items-center justify-center text-center">
+                    <div className="relative w-12 h-12 mb-4">
+                      <div className="absolute inset-0 bg-primary/10 rounded-full animate-pulse" />
+                      <Store className="w-6 h-6 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-primary" />
+                      <Sparkles className="w-4 h-4 absolute -top-1 -right-1 text-primary animate-bounce" />
                     </div>
-                    {workspace.id === selectedWorkspace.id && <Check className="ml-auto h-4 w-4 shrink-0" />}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+                    <h3 className="text-sm font-medium mb-1">No stores found</h3>
+                    <p className="text-xs text-muted-foreground mb-4">Get started by creating your first store</p>
+                  </div>
+                </CommandEmpty>
+              )}
               <CommandSeparator className="bg-border" />
               <div className="p-2">
-                <Button className="w-full justify-center gap-2" onClick={openCreateModal}>
+                <Button 
+                  variant="dark"
+                  className="w-full justify-center gap-2 font-medium text-sm hover:text-white/90" 
+                  onClick={openCreateModal}
+                >
                   <Plus className="h-4 w-4" />
                   Create new store
                 </Button>

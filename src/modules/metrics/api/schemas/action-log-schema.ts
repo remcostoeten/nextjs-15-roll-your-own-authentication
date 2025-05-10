@@ -1,5 +1,5 @@
 import { pgTable, serial, integer, varchar, timestamp, jsonb, text, index } from 'drizzle-orm/pg-core';
-import { users } from '@/modules/auth/api/schemas/user-schema'; // Adjust path if needed
+import { users } from 'schema';
 
 export const actionTypes = [
     'LOGIN_SUCCESS',

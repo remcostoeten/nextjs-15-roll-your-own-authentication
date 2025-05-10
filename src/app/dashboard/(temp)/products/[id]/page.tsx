@@ -1,9 +1,9 @@
-import { PageLayout } from "@/components/page-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Edit, Trash, ArrowLeft } from "lucide-react"
 import Link from "next/link"
+import { PageLayout } from "@/modules/dashboard/page-layout"
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   const productId = params.id
@@ -26,7 +26,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       }
     >
       <div className="mb-6">
-        <Button variant="outline" size="sm" asChild>
+        <Button variant="outline" size="sm">
           <Link href="/products">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Products

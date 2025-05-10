@@ -1,4 +1,4 @@
-import { db } from '@/api/db';
+import { db } from 'db';
 import { userActions, ActionType } from '@/modules/metrics/api/schemas/action-log-schema';
 
 export interface LogActionInput {

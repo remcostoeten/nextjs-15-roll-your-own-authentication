@@ -1,14 +1,16 @@
 import { Suspense } from 'react'
-import { DashboardContent } from '@/modules/dashboard/components/DashboardContent'
 import { LoadingPage } from '@/components/ui/loading'
-
+import { PageLayout } from '@/modules/dashboard/page-layout'
+import { DashboardContent } from '@/modules/dashboard/components/dashboard-content'
 export const dynamic = 'force-dynamic'
-export const revalidate = 60 // revalidate every minute
+export const revalidate = 60
 
 export default function DashboardPage() {
   return (
-    <Suspense fallback={<LoadingPage />}>
-      <DashboardContent />
-    </Suspense>
+    <PageLayout>
+      <Suspense fallback={<LoadingPage />}>
+        <DashboardContent  />
+      </Suspense>
+    </PageLayout>
   )
 }

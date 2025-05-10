@@ -1,7 +1,7 @@
 import { db } from '@/api/db';
 import { users, userProfiles } from '@/modules/auth/api/schemas';
-import { Role } from '@/modules/auth/api/schemas/user-schema';
-import { RegisterInput } from '@/modules/auth/api/models/auth.models';
+import { Role } from 'schema';
+import { RegisterInput } from '@/modules/auth/api/schemas/z.user';
 import { eq, sql } from 'drizzle-orm';
 
 export async function createUser(input: RegisterInput, hashedPasswordHash: string, role: Role) {

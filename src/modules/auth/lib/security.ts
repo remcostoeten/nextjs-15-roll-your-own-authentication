@@ -2,7 +2,7 @@
 import bcrypt from 'bcryptjs';
 import * as jose from 'jose';
 import { env } from 'env';
-import { JwtPayload, JwtPayloadSchema } from '@/modules/auth/api/models/auth.models';
+import { JwtPayload, JwtPayloadSchema } from '@/modules/auth/api/schemas/z.user';
 
 const SALT_ROUNDS = 10;
 

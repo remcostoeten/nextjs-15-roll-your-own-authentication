@@ -9,7 +9,7 @@ import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
-import { login } from "@/modules/auth/api/mutations/login"
+import { login } from "@/modules/auth/api/mutations/login.server"
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),

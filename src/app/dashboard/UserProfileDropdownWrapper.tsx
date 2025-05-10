@@ -1,6 +1,5 @@
-import { Suspense, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { getCurrentUser } from '@/modules/auth/api/queries/user.queries';
-import { UserProfileDropdown } from '@/modules/dashboard/user-profile-dropdown';
 import { Skeleton } from '@/components/ui/skeleton';
 import { UserProvider } from '@/modules/auth/lib/user-context';
 

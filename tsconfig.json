@@ -26,6 +26,8 @@
       "ui": ["./components/ui/index.ts"],
       "utils": ["./src/utils/index.ts"],
       "env": ["./src/api/env/env-schema.ts"],
+      "current-user": ["./src/modules/auth/api/queries/user.queries.ts"],
+      "session": ["./src/modules/auth/api/services/session.ts"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

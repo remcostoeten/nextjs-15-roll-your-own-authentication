@@ -9,7 +9,8 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
-import { register as registerUser } from '@/modules/auth/api/actions/auth.actions';
+import { register } from '@/modules/auth/api/mutations/register.server';
+// import { register as registerUser } from '@/modules/auth/api/actions/auth.actions';
 
 const registerSchema = z.object({
   username: z.string().min(3, 'Username must be at least 3 characters'),
@@ -38,7 +39,7 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      const result = await registerUser(data);
+      const result = await register(data);
       
       if (result.success) {
         toast({

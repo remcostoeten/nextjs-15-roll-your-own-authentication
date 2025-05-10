@@ -1,11 +1,11 @@
 "use client"
 
-import { CreditCard, LogOut, Moon, Settings, Sun, User, Users, Keyboard } from "lucide-react"
+import { CreditCard, LogOut, Settings, User, Users, Keyboard, Sun, Moon, Laptop, Check } from "lucide-react"
 import { useEffect, useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { showToast } from "@/components/ui/toast/custom-toast"
-import { attemptUserLogout } from "@/modules/auth/api/services/auth.service"
 import { useUser } from "@/modules/auth/lib/user-context"
+import { useTheme } from "next-themes"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -21,9 +21,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useSidebar } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
-import { useTheme } from "@/components/theme-provider"
 import { KeyboardShortcutsModal } from "./components/keyboard-shortcuts-modal"
 import { useKeyboardShortcuts } from "./lib/keyboard-shortcuts"
+import { logout } from "@/modules/auth/api/mutations/logout"
 
 export function UserProfileDropdown() {
   const { user } = useUser()
@@ -31,8 +31,13 @@ export function UserProfileDropdown() {
   const { state } = useSidebar()
   const isCollapsed = state === "collapsed"
   const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
   const [shortcutsModalOpen, setShortcutsModalOpen] = useState(false)
   const { registerAction, unregisterAction, getShortcut } = useKeyboardShortcuts()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleLogout = useCallback(async () => {
     try {
@@ -41,9 +46,10 @@ export function UserProfileDropdown() {
         type: "info",
         description: "You will be redirected to the home page."
       })
-      
-      await attemptUserLogout()
-      window.location.href = '/'
+      setTimeout(async () => {
+        await logout()
+        window.location.href = '/'
+      }, 1000)
     } catch (error) {
       console.error('Logout failed:', error)
       showToast({
@@ -119,7 +125,7 @@ export function UserProfileDropdown() {
           <Button
             variant="ghost"
             className={cn(
-              "w-full justify-start gap-2 px-3 py-2 h-auto rounded-none hover:bg-sidebar-accent",
+              "w-full justify-start gap-2 px-3 py-2 h-auto rounded-none hover:bg-sidebar-accent relative",
               isCollapsed && "justify-center p-3",
             )}
           >
@@ -136,6 +142,13 @@ export function UserProfileDropdown() {
               <div className="flex flex-col items-start text-left">
                 <span className="text-sm font-medium">{user.username}</span>
                 <span className="text-xs text-muted-foreground">{user.email}</span>
+              </div>
+            )}
+            {mounted && (
+              <div className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4">
+                {theme === 'dark' && <Moon className="h-4 w-4" />}
+                {theme === 'light' && <Sun className="h-4 w-4" />}
+                {theme === 'system' && <Laptop className="h-4 w-4" />}
               </div>
             )}
           </Button>
@@ -174,19 +187,27 @@ export function UserProfileDropdown() {
           <DropdownMenuGroup>
             <DropdownMenuItem 
               className="cursor-pointer" 
-              onClick={() => handleThemeChange(theme === "dark" ? "light" : "dark")}
+              onClick={() => setTheme('light')}
             >
-              {theme === "dark" ? (
-                <>
-                  <Sun className="mr-2 h-4 w-4" />
-                  <span>Light mode</span>
-                </>
-              ) : (
-                <>
-                  <Moon className="mr-2 h-4 w-4" />
-                  <span>Dark mode</span>
-                </>
-              )}
+              <Sun className="mr-2 h-4 w-4" />
+              <span>Light</span>
+              {theme === 'light' && <Check className="ml-auto h-4 w-4" />}
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              className="cursor-pointer" 
+              onClick={() => setTheme('dark')}
+            >
+              <Moon className="mr-2 h-4 w-4" />
+              <span>Dark</span>
+              {theme === 'dark' && <Check className="ml-auto h-4 w-4" />}
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              className="cursor-pointer" 
+              onClick={() => setTheme('system')}
+            >
+              <Laptop className="mr-2 h-4 w-4" />
+              <span>System</span>
+              {theme === 'system' && <Check className="ml-auto h-4 w-4" />}
             </DropdownMenuItem>
             <DropdownMenuItem className="cursor-pointer" onClick={() => setShortcutsModalOpen(true)}>
               <Keyboard className="mr-2 h-4 w-4" />

@@ -1,8 +1,8 @@
 import * as React from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { Building2, Loader2 } from "lucide-react"
+import { Building2, Loader2, Smile } from "lucide-react"
+import EmojiPicker from 'emoji-picker-react'
 
 import { Button } from "@/components/ui/button"
 import {
@@ -14,58 +14,66 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { createWorkspace } from "@/modules/workspaces/api/mutations/create-workspace"
+import { createWorkspaceSchema, type CreateWorkspaceSchema, type Workspace } from "@/modules/workspaces/api/models/create-workspace-schema"
+import { Textarea } from "@/components/ui/textarea"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { useToast } from "@/components/ui/use-toast"
 
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Store name must be at least 2 characters.",
-  }),
-})
-
-type FormData = z.infer<typeof formSchema>
-
-interface CreateWorkspaceModalProps {
+type TCreateWorkspaceModalProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onWorkspaceCreated?: (workspace: any) => void
+  onWorkspaceCreated?: (workspace: Workspace) => void
 }
 
-export function CreateWorkspaceModal({ open, onOpenChange, onWorkspaceCreated }: CreateWorkspaceModalProps) {
+export function CreateWorkspaceModal({ open, onOpenChange, onWorkspaceCreated }: TCreateWorkspaceModalProps) {
   const [isSubmitting, setIsSubmitting] = React.useState(false)
-  const [error, setError] = React.useState<string | null>(null)
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  const [showEmojiPicker, setShowEmojiPicker] = React.useState(false)
+  const { toast } = useToast()
+  
+  const form = useForm<CreateWorkspaceSchema>({
+    resolver: zodResolver(createWorkspaceSchema),
     defaultValues: {
       name: "",
+      description: "",
+      emoji: "🏪",
     },
   })
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: CreateWorkspaceSchema) => {
     setIsSubmitting(true)
-    setError(null)
 
     try {
-      // Call the server action to create a workspace
-      const result = await createWorkspace(data.name)
+      const result = await createWorkspace({
+        name: data.name,
+        description: data.description || `${data.name}'s store`, 
+        emoji: data.emoji,
+      })
 
-      if (result.success) {
-        // Pass the created workspace back to the parent component
-        onWorkspaceCreated?.(result.workspace)
-        reset()
+      if (result.success && result.workspace) {
+        onWorkspaceCreated?.(result.workspace as Workspace)
+        form.reset()
         onOpenChange(false)
+        toast({
+          title: "Success",
+          description: "Store created successfully",
+          variant: "default",
+        })
       } else {
-        setError(result.error || "Failed to create store. Please try again.")
+        toast({
+          title: "Error",
+          description: result.error || "Failed to create store. Please try again.",
+          variant: "destructive",
+        })
       }
     } catch (error) {
       console.error("Failed to create store:", error)
-      setError("An unexpected error occurred. Please try again.")
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      })
     } finally {
       setIsSubmitting(false)
     }
@@ -74,10 +82,10 @@ export function CreateWorkspaceModal({ open, onOpenChange, onWorkspaceCreated }:
   // Reset form when dialog closes
   React.useEffect(() => {
     if (!open) {
-      reset()
-      setError(null)
+      form.reset()
+      setShowEmojiPicker(false)
     }
-  }, [open, reset])
+  }, [open, form])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -86,34 +94,101 @@ export function CreateWorkspaceModal({ open, onOpenChange, onWorkspaceCreated }:
           <DialogTitle>Create new store</DialogTitle>
           <DialogDescription>Create a new store for your products or services.</DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="name">Store name</Label>
-              <div className="relative">
-                <Input
-                  id="name"
-                  placeholder="My Awesome Store"
-                  className="pl-9"
-                  {...register("name")}
-                  autoComplete="off"
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <FormField
+                  control={form.control}
+                  name="emoji"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Store icon</FormLabel>
+                      <div className="flex items-center gap-2">
+                        <Popover open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className="w-16 h-16 text-2xl"
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setShowEmojiPicker(true);
+                              }}
+                            >
+                              {field.value || <Smile className="h-6 w-6 text-muted-foreground" />}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-full p-0 border-none" align="start">
+                            <EmojiPicker
+                              onEmojiClick={(emojiData) => {
+                                field.onChange(emojiData.emoji)
+                                setShowEmojiPicker(false)
+                              }}
+                              theme="dark"
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <div className="flex-1">
+                          <FormField
+                            control={form.control}
+                            name="name"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Store name</FormLabel>
+                                <FormControl>
+                                  <div className="relative">
+                                    <Input
+                                      id="name"
+                                      placeholder="My Awesome Store"
+                                      className="pl-9"
+                                      {...field}
+                                      autoComplete="off"
+                                    />
+                                    <Building2 className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                  </div>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                <Building2 className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
               </div>
-              {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
+
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Store description (optional)</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Briefly describe your store"
+                        className="resize-none"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
-            {error && <div className="bg-red-50 dark:bg-red-900/20 text-red-500 p-3 rounded-md text-sm">{error}</div>}
-          </div>
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Create store
-            </Button>
-          </DialogFooter>
-        </form>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Create store
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   )
