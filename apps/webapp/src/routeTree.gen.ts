@@ -20,6 +20,7 @@ import { Route as AuthenticatedDashboardImport } from './routes/_authenticated/d
 import { Route as AuthRegisterImport } from './routes/_auth/register'
 import { Route as AuthLoginImport } from './routes/_auth/login'
 import { Route as AuthenticatedDashboardIndexImport } from './routes/_authenticated/dashboard/index'
+import { Route as AuthenticatedDocsSchemaBuilderImport } from './routes/_authenticated/docs/schema-builder'
 import { Route as AuthenticatedDocsCrudImport } from './routes/_authenticated/docs/crud'
 
 // Create/Update Routes
@@ -75,6 +76,13 @@ const AuthenticatedDashboardIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+
+const AuthenticatedDocsSchemaBuilderRoute =
+  AuthenticatedDocsSchemaBuilderImport.update({
+    id: '/docs/schema-builder',
+    path: '/docs/schema-builder',
+    getParentRoute: () => AuthenticatedRoute,
   } as any)
 
 const AuthenticatedDocsCrudRoute = AuthenticatedDocsCrudImport.update({
@@ -150,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDocsCrudImport
       parentRoute: typeof AuthenticatedImport
     }
+    '/_authenticated/docs/schema-builder': {
+      id: '/_authenticated/docs/schema-builder'
+      path: '/docs/schema-builder'
+      fullPath: '/docs/schema-builder'
+      preLoaderRoute: typeof AuthenticatedDocsSchemaBuilderImport
+      parentRoute: typeof AuthenticatedImport
+    }
     '/_authenticated/dashboard/': {
       id: '/_authenticated/dashboard/'
       path: '/'
@@ -179,11 +194,13 @@ const AuthenticatedDashboardRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
   AuthenticatedDocsCrudRoute: typeof AuthenticatedDocsCrudRoute
+  AuthenticatedDocsSchemaBuilderRoute: typeof AuthenticatedDocsSchemaBuilderRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRouteWithChildren,
   AuthenticatedDocsCrudRoute: AuthenticatedDocsCrudRoute,
+  AuthenticatedDocsSchemaBuilderRoute: AuthenticatedDocsSchemaBuilderRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -211,6 +228,7 @@ export interface FileRoutesByFullPath {
   '/$postId': typeof IndexPostIdRoute
   '/': typeof IndexIndexRoute
   '/docs/crud': typeof AuthenticatedDocsCrudRoute
+  '/docs/schema-builder': typeof AuthenticatedDocsSchemaBuilderRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
 }
 
@@ -222,6 +240,7 @@ export interface FileRoutesByTo {
   '/$postId': typeof IndexPostIdRoute
   '/': typeof IndexIndexRoute
   '/docs/crud': typeof AuthenticatedDocsCrudRoute
+  '/docs/schema-builder': typeof AuthenticatedDocsSchemaBuilderRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
 }
 
@@ -236,6 +255,7 @@ export interface FileRoutesById {
   '/_index/$postId': typeof IndexPostIdRoute
   '/_index/': typeof IndexIndexRoute
   '/_authenticated/docs/crud': typeof AuthenticatedDocsCrudRoute
+  '/_authenticated/docs/schema-builder': typeof AuthenticatedDocsSchemaBuilderRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
 }
 
@@ -250,6 +270,7 @@ export interface FileRouteTypes {
     | '/$postId'
     | '/'
     | '/docs/crud'
+    | '/docs/schema-builder'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -260,6 +281,7 @@ export interface FileRouteTypes {
     | '/$postId'
     | '/'
     | '/docs/crud'
+    | '/docs/schema-builder'
     | '/dashboard'
   id:
     | '__root__'
@@ -272,6 +294,7 @@ export interface FileRouteTypes {
     | '/_index/$postId'
     | '/_index/'
     | '/_authenticated/docs/crud'
+    | '/_authenticated/docs/schema-builder'
     | '/_authenticated/dashboard/'
   fileRoutesById: FileRoutesById
 }
@@ -313,7 +336,8 @@ export const routeTree = rootRoute
       "filePath": "_authenticated.tsx",
       "children": [
         "/_authenticated/dashboard",
-        "/_authenticated/docs/crud"
+        "/_authenticated/docs/crud",
+        "/_authenticated/docs/schema-builder"
       ]
     },
     "/_index": {
@@ -349,6 +373,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/docs/crud": {
       "filePath": "_authenticated/docs/crud.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/docs/schema-builder": {
+      "filePath": "_authenticated/docs/schema-builder.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/dashboard/": {

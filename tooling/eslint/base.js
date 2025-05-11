@@ -37,48 +37,36 @@ export const restrictEnvAccess = tseslint.config(
   },
 );
 
-export default tseslint.config(
-  // Ignore files not tracked by VCS and any config files
-  includeIgnoreFile(path.join(import.meta.dirname, "../../.gitignore")),
-  { ignores: ["**/*.config.*"] },
-  {
-    files: ["**/*.js", "**/*.ts", "**/*.tsx"],
-    plugins: {
-      import: importPlugin,
-      turbo: turboPlugin,
-    },
-    extends: [
-      eslint.configs.recommended,
-      ...tseslint.configs.recommended,
-      ...tseslint.configs.recommendedTypeChecked,
-      ...tseslint.configs.stylisticTypeChecked,
-    ],
-    rules: {
-      ...turboPlugin.configs.recommended.rules,
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
-      ],
-      "@typescript-eslint/consistent-type-imports": [
-        "warn",
-        { prefer: "type-imports", fixStyle: "separate-type-imports" },
-      ],
-      "@typescript-eslint/no-misused-promises": [
-        2,
-        { checksVoidReturn: { attributes: false } },
-      ],
-      "@typescript-eslint/no-unnecessary-condition": [
-        "error",
-        {
-          allowConstantLoopConditions: true,
-        },
-      ],
-      "@typescript-eslint/no-non-null-assertion": "error",
-      "import/consistent-type-specifier-style": ["error", "prefer-top-level"],
-    },
+/** @type {import('eslint').Linter.Config} */
+export default {
+  extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  plugins: ["@typescript-eslint"],
+  rules: {
+    // Enforce kebab-case for file names
+    "filenames/match": ["error", "^[a-z0-9-]+$"],
+
+    // Use single quotes
+    quotes: ["error", "single"],
+
+    // No semicolons
+    semi: ["error", "never"],
+
+    // No trailing commas
+    "comma-dangle": ["error", "never"],
+
+    // Prefer function declarations over const arrow functions
+    "func-style": ["error", "declaration"],
+
+    // Additional style rules
+    indent: ["error", 2],
+    "no-multiple-empty-lines": ["error", { max: 1 }],
+    "object-curly-spacing": ["error", "always"],
+    "array-bracket-spacing": ["error", "never"],
+    "computed-property-spacing": ["error", "never"],
+
+    // TypeScript specific rules
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/no-unused-vars": "error",
   },
-  {
-    linterOptions: { reportUnusedDisableDirectives: true },
-    languageOptions: { parserOptions: { projectService: true } },
-  },
-);
+};

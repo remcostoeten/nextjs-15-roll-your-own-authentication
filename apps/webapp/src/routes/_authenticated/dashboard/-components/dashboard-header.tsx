@@ -13,6 +13,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@acme/ui/dropdown-menu";
+import { ThemeToggle } from "@acme/ui/theme";
 
 import { Logo } from "~/components/Logo";
 
@@ -25,6 +26,7 @@ export function DashboardHeader() {
         </Link>
       </div>
       <div className="ml-auto flex items-center gap-4">
+        <ThemeToggle />
         <UserAvatar />
       </div>
     </header>

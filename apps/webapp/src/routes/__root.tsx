@@ -10,6 +10,7 @@ import {
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 import type { TrpcRouter } from "@acme/api";
+import { ThemeProvider } from "@acme/ui/theme";
 
 import { NotFound } from "../components/NotFound";
 import globalCss from "../global.css?url";
@@ -79,9 +80,11 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 function RootComponent() {
   return (
     <RootDocument>
-      <div className={`flex min-h-screen flex-col`}>
-        <Outlet />
-      </div>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <div className={`flex min-h-screen flex-col`}>
+          <Outlet />
+        </div>
+      </ThemeProvider>
     </RootDocument>
   );
 }
@@ -90,15 +93,12 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
-      className="h-full dark"
-      data-theme="dark"
       suppressHydrationWarning
-      color-scheme="dark"
     >
       <head>
         <HeadContent />
       </head>
-      <body className="dark bg-background text-foreground">
+      <body className="bg-background text-foreground">
         {children}
         <TanStackRouterDevtools position="bottom-right" />
         <ReactQueryDevtools buttonPosition="bottom-left" />
