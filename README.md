@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js Custom Authentication with Enterprise Architecture
 
-## Getting Started
+A Next.js 15 project with custom authentication, following enterprise-level architecture patterns.
 
-First, run the development server:
+## Project Structure
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+├── src/
+│   ├── app/                 # Next.js app router pages
+│   ├── core/               # Core application logic
+│   │   ├── config/         # Configuration files
+│   │   │   └── metadata/   # Metadata configurations
+│   │   ├── types/         # Global TypeScript types
+│   │   └── utils/         # Shared utilities
+│   ├── modules/           # Feature-specific modules
+│   │   └── [module]/      # Each module can contain:
+│   │       ├── components/
+│   │       ├── hooks/
+│   │       ├── api/
+│   │       │   ├── queries/
+│   │       │   ├── mutations/
+│   │       │   ├── schemas/
+│   │       │   └── models/
+│   │       └── types.ts
+│   └── views/             # Page-specific view components
+│       └── [feature]-view/
+├── commands/             # CLI commands for development
+│   ├── scaffold/         # Feature scaffolding
+│   ├── create-metadata/  # Metadata file generation
+│   └── generate-docs/    # Documentation generation
+├── __tests__/           # Test files matching src/ structure
+│   └── core/
+│       └── utils/
+└── public/              # Static files
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Development Commands
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Development
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Code Quality
+npm run lint         # Run linter
+npm run lint:fix     # Fix linting issues
+npm run format       # Format code
+
+# Testing
+npm run test         # Run tests
+npm run test:watch   # Watch mode
+npm run test:coverage # Coverage report
+
+# Development Tools
+npm run scaffold         # Scaffold new features
+npm run create-metadata # Create metadata files
+npm run generate-docs   # Generate documentation
+```
+
+## Architecture Decisions
+
+- **Modular Structure**: Features are organized in modules with their own components, hooks, and API logic
+- **View Pattern**: Pages delegate to view components for better separation of concerns
+- **Metadata Management**: Centralized metadata configuration with per-view overrides
+- **Testing**: Tests are colocated with source files in a parallel `__tests__` structure
+- **CLI Tools**: Custom commands for scaffolding and development tasks
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Commands Documentation](./commands/README.md)
+- [API Documentation](./docs/index.html)
