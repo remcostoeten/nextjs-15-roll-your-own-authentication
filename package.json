@@ -2,26 +2,41 @@
   "name": "nextjs-custom-rolled-auth-enterprise-architecture",
   "version": "0.1.0",
   "private": true,
+  "author": "Remco Stoeten",
+  "license": "MIT",
+  "homepage": "https://github.com/remco-stoeten/nextjs-custom-rolled-auth-enterprise-architecture",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/remcostoeten/nextjs-custom-rolled-auth-enterprise-architecture"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "format": "biome format --write .",
+    "lint": "biome check .",
+    "lint:fix": "biome check --apply .",
+    "lint:watch": "nodemon --watch 'src/**/*' --ext 'ts,tsx,js,jsx' --exec 'bun lint:fix'",
+    "scaffold": "tsx commands/scaffold/index.ts",
+    "create-metadata": "tsx commands/create-metadata/index.ts",
+    "generate-docs": "tsx commands/generate-docs/index.ts"
   },
   "dependencies": {
+    "next": "15.3.2",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "next": "15.3.2"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@biomejs/biome": "1.5.3",
+    "@tailwindcss/postcss": "^4",
+    "@types/fs-extra": "^11.0.4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
+    "enquirer": "^2.4.1",
+    "nodemon": "^3.1.10",
     "tailwindcss": "^4",
-    "eslint": "^9",
-    "eslint-config-next": "15.3.2",
-    "@eslint/eslintrc": "^3"
+    "tsx": "^4.19.4",
+    "typescript": "^5"
   }
 }
