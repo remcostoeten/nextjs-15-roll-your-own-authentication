@@ -1,0 +1,105 @@
+🔧 Project Structure Rules
+
+Use a clear domain-driven folder structure:
+
+modules/authenticatie → All authentication logic
+
+server/ → Drizzle queries and mutations (server actions only)
+
+lib/ → Shared utilities (e.g. JWT, sessions, hashing)
+
+schema/ → Drizzle schemas only
+
+components/ → UI components (modular and themed)
+
+hooks/ → Custom React hooks (auth state, effects)
+
+🧱 Architecture Patterns
+
+✅ Patterns to Follow
+
+Use functional programming.
+
+Define all logic in functions, not classes.
+
+Use TProps if only one type exists in a file.
+
+Use TPrefixName style if multiple types exist in a file.
+
+Prefer type unless you need polymorphism, then use interface.
+
+Only use server actions for all mutations and queries (no API routes).
+
+Always use email as the unique user identity key.
+
+Immediately create a session and set cookies after authentication.
+
+Use conditional UI rendering to redirect away from login/register if authenticated.
+
+Use mapUser() per provider for adaptable OAuth payloads.
+
+Store authenticated state in a shared state or hook so the UI updates instantly.
+
+Place provider configurations in a single PROVIDERS object for scalability.
+
+🚀 Performance Optimization Rules
+
+Font Loading:
+- Use local fonts over Google Fonts when possible
+- Set display: 'optional' for primary fonts to prevent CLS
+- Set display: 'swap' for secondary fonts
+- Preload only critical fonts
+- Use woff2 format for best compression
+- Include comprehensive font fallbacks
+
+Bundle Optimization:
+- Keep First Load JS under 70kb for instant hydration
+- Use dynamic imports for non-critical components
+- Split metadata into static and dynamic parts
+- Implement proper code splitting boundaries
+- Avoid large dependencies in shared layouts
+- Use route segments for granular chunking
+
+Image Optimization:
+- Use next/image with priority for LCP images
+- Implement blur placeholder for images
+- Preload critical images
+- Use responsive sizes attribute
+- Optimize image formats (WebP/AVIF)
+
+Component Optimization:
+- Use React.memo() for expensive renders
+- Implement proper suspense boundaries
+- Keep component bundles under 50kb
+- Use CSS Modules for scoped styling
+- Implement proper lazy loading boundaries
+
+❌ Anti-patterns to Avoid
+
+Don't use getServerSideProps, useEffect for data fetching.
+Don't call JWT functions on the client.
+Don't use classes or class-based architecture.
+Don't hardcode provider logic outside the PROVIDERS map.
+Don't use magic strings for role checks (e.g. use isAdmin).
+Don't bundle large libraries in the initial JS payload.
+Don't load non-critical fonts eagerly.
+Don't use client-side navigation for critical paths.
+Don't implement heavy computations without memoization.
+Don't load full libraries when only parts are needed.
+
+🔑 OAuth Guidelines
+
+All OAuth callback URIs should resolve to:
+http://localhost:3000?provider=xyz
+
+Provider tokens should always be exchanged server-side.
+
+Extract email fallback from providers that don't send it directly.
+
+🔐 Authentication Logic
+
+A user is considered admin if their email matches process.env.ADMIN_EMAIL
+
+The session is created server-side via createSession()
+
+Session must persist across page reloads and logouts must be handled via a mutation (not a route)
