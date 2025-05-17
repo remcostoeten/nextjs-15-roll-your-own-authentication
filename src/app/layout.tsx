@@ -1,7 +1,7 @@
-import { inter } from '@/core/config/fonts';
-import { baseMetadata } from '@/core/config/metadata';
+import { geistMono } from 'core/config/fonts';
+import { baseMetadata } from 'core/config/metadata';
 import type { Metadata } from 'next';
-import './globals.css';
+import '../styles/main.css';
 
 export const metadata: Metadata = {
 	...baseMetadata(),
@@ -11,17 +11,14 @@ export const dynamic = 'force-static';
 export const preferredRegion = 'home';
 export const revalidate = false;
 
-function RootLayout({
+export default function RootLayout({
 	children,
-}: Readonly<{
+}: {
 	children: React.ReactNode;
-}>) {
+}) {
 	return (
-		<html lang="en" suppressHydrationWarning className="dark">
-			<body className={`${inter.variable} font-sans antialiased`}>{children}</body>
+		<html lang="en" className={`${geistMono.variable} ${geistMono.variable}`}>
+			<body>{children}</body>
 		</html>
 	);
 }
-
-// Optimize component for static rendering
-export default RootLayout;

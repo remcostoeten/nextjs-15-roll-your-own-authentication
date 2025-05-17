@@ -1,20 +1,6 @@
 version: '3.9'
 
 services:
-  web:
-    image: node:20-alpine
-    working_dir: /app
-    volumes:
-      - .:/app
-    ports:
-      - "3000:3000"
-    command: sh -c "npm install && bun run dev"
-    environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/nextjsdb
-    depends_on:
-      - db
-    restart: unless-stopped
-
   db:
     image: postgres:15
     restart: unless-stopped
@@ -23,9 +9,14 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "54232:54232"
+      # Exposing the standard PostgreSQL port 5432
+      # Mapping it to port 5432 on the host for easy access
+      - "5432:5432"
     volumes:
+      # This named volume will store your database data
+      # so it persists even if the container is removed
       - postgres_data:/var/lib/postgresql/data
 
 volumes:
+  # Defining the named volume
   postgres_data:

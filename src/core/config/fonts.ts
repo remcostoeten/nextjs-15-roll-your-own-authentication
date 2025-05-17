@@ -1,33 +1,13 @@
-import { Inter } from 'next/font/google';
-import localFont from 'next/font/local';
+import { Geist, Geist_Mono } from 'next/font/google';
 
-// Optimize main font loading
-export const inter = Inter({
-	variable: '--font-inter',
+export const inter = Geist({
 	subsets: ['latin'],
-	display: 'optional', // Use optional to prevent layout shift
-	preload: true,
-	fallback: ['system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Arial'],
-	adjustFontFallback: true,
-	weight: ['400', '500', '700'],
+	display: 'swap',
+	variable: '--font-geist',
 });
 
-// Load monospace font locally for better performance
-export const jetbrainsMono = localFont({
-	variable: '--font-jetbrains',
+export const geistMono = Geist_Mono({
+	subsets: ['latin'],
 	display: 'swap',
-	preload: false, // Only load when needed
-	fallback: ['Consolas', 'Monaco', 'monospace'],
-	src: [
-		{
-			path: '../../../public/fonts/JetBrainsMono-Regular.woff2',
-			weight: '400',
-			style: 'normal',
-		},
-		{
-			path: '../../../public/fonts/JetBrainsMono-Bold.woff2',
-			weight: '700',
-			style: 'normal',
-		},
-	],
+	variable: '--font-geist-mono',
 });
