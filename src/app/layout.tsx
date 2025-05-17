@@ -7,7 +7,6 @@ export const metadata: Metadata = {
 	...baseMetadata(),
 };
 
-// Optimize for static rendering and code splitting
 export const dynamic = 'force-static';
 export const preferredRegion = 'home';
 export const revalidate = false;
@@ -19,9 +18,7 @@ function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning className="dark">
-			<body className={`${inter.variable} font-sans antialiased`}>
-				{children}
-			</body>
+			<body className={`${inter.variable} font-sans antialiased`}>{children}</body>
 		</html>
 	);
 }

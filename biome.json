@@ -21,5 +21,32 @@
 			"quoteStyle": "single",
 			"trailingComma": "es5"
 		}
+	},
+	"files": {
+		"ignore": [
+			".next/**/*",
+			"dist/**/*",
+			"build/**/*",
+			"node_modules/**/*",
+			"**/node_modules/**/*",
+			".cache/**/*",
+			"coverage/**/*",
+			".env*",
+			"*.config.js",
+			"*.config.ts",
+			"package-lock.json",
+			"yarn.lock",
+			"bun.lockb",
+			"**/*.d.ts",
+			"next-env.d.ts",
+			"public/**/*",
+			"tmp/**/*",
+			"temp/**/*",
+			"**/__snapshots__/**",
+			".vscode/**/*",
+			".git/**/*",
+			"*.min.js",
+			"*.map"
+		]
 	}
 }
