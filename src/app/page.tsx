@@ -1,14 +1,9 @@
-import { Logo } from '@/components/core/logo';
-import { Flex } from '@/shared/components/flex';
-import { Button, Card, Input } from 'ui';
+import FeaturesSection from '@/modules/landing/components/features';
 export default function Home() {
 	return (
-		<Card className="flex h-screen w-screen items-center justify-center">
-			<Logo />
-			<Flex>
-				<Input type="email" />
-				<Button>Click me</Button>
-			</Flex>
-		</Card>
-	);
+
+	<div className='flex flex-col gap-4 justify-center items-center mx-auto' >
+			<FeaturesSection />
+	</div>
+);
 }

@@ -7,7 +7,9 @@
       "views/*": ["./src/views/*"],
       "shared/*": ["./src/shared/*"],
       "ui": ["./src/shared/components/ui/index.ts"],
-      "utilities": ["./src/shared/utilities/index.ts"]
+      "utilities": ["./src/shared/utilities/index.ts"],
+      "db": ["./src/api/db/connection.ts"],
+      "env": ["./src/api/env.ts"],
     },
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],

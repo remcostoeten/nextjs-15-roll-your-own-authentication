@@ -1,3 +1,4 @@
+import Providers from '@/components/providers';
 import { geistMono } from 'core/config/fonts';
 import { baseMetadata } from 'core/config/metadata';
 import type { Metadata } from 'next';
@@ -17,8 +18,10 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<html lang="en" className={`${geistMono.variable} ${geistMono.variable}`}>
-			<body>{children}</body>
+		<html lang="en" className={`${geistMono.variable} `}  suppressHydrationWarning data-theme="supabase-dark">
+			<body className="bg-background text-foreground antialiased">
+				<Providers>{children}</Providers>
+			</body>
 		</html>
 	);
 }

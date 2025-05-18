@@ -1,10 +1,11 @@
-'use client';
+	'use client';
 
+import { cn } from '@/shared/utilities';
 import { siteConfig } from 'core/site-config';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
-const LogoIcon = () => {
+export const LogoIcon = () => {
 	const pathVariants = {
 		hidden: { pathLength: 0, opacity: 0 },
 		visible: {
@@ -188,12 +189,12 @@ const LogoIcon = () => {
 	);
 };
 
-export function Logo() {
+export function Logo({className}: {className?: string}) {
 	return (
 		<div className="flex items-center justify-center py-4">
 			<Link href="/dashboard">
 				<motion.div
-					className="group relative flex h-14 w-14 items-center justify-center"
+					className={cn("group relative flex h-14 w-14 items-center justify-center", className)}
 					initial={{ opacity: 0, scale: 0.9 }}
 					animate={{ opacity: 1, scale: 1 }}
 					transition={{
@@ -202,7 +203,6 @@ export function Logo() {
 						delay: 0.2,
 					}}
 				>
-					{/* Animated background gradient */}
 					<motion.div
 						className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/20 via-primary/15 to-primary/10"
 						initial={{ opacity: 0 }}
@@ -210,7 +210,6 @@ export function Logo() {
 						transition={{ delay: 0.3, duration: 0.5 }}
 					/>
 
-					{/* Glowing effect */}
 					<motion.div
 						className="absolute inset-0 rounded-xl bg-primary/5 blur-xl"
 						initial={{ opacity: 0 }}
