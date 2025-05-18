@@ -366,7 +366,6 @@ from the specific UI component structure (e.g., '.../{UI_COMPONENTS_REL_PATH.nam
 Important:
   - Backups: Original files are backed up with a '.bak' extension before modification (unless it's a dry run).
   - tsconfig.json: For the new import alias (e.g., '{DEFAULT_UI_IMPORT_ALIAS}') to work, ensure you have a corresponding path alias in your tsconfig.json.
-    Example for alias '{DEFAULT_UI_IMPORT_ALIAS}': "paths": {{ "{DEFAULT_UI_IMPORT_ALIAS}": ["{(project_root/UI_COMPONENTS_REL_PATH).as_posix()}/index.ts"] }} (replace 'project_root')
   - Verbosity: The script is verbose by default, printing actions as it performs them.
   - Target UI folder name: The script specifically looks for an import path segment matching the last part of UI_COMPONENTS_REL_PATH (i.e., '{UI_COMPONENTS_REL_PATH.name}').
 """,
@@ -402,9 +401,13 @@ Important:
     # Update the effective UI import alias based on args
     effective_ui_alias = args.ui_alias
     print(f"{CYAN}Using UI import alias: '{MAGENTA}{effective_ui_alias}{RESET}'")
-    # Update the help text example for tsconfig with the actual project root found
-    parser.epilog = parser.epilog.replace('(replace \'project_root\')', f'src folder at {project_root_path.as_posix()}')
 
+    # Now that we have project_root_path, we can add the tsconfig.json example
+    tsconfig_example = f"""Example for alias '{DEFAULT_UI_IMPORT_ALIAS}':
+  "paths": {{
+    "{DEFAULT_UI_IMPORT_ALIAS}": ["{(project_root_path/UI_COMPONENTS_REL_PATH).as_posix()}/index.ts"]
+  }}"""
+    print(f"\n{CYAN}Add this to your tsconfig.json:{RESET}\n{tsconfig_example}\n")
 
     process_files(project_root_path, args.target, args.dry_run, args.revert, current_ui_alias=effective_ui_alias)
 
