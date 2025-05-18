@@ -100,7 +100,10 @@ export async function register(formData: FormData): Promise<RegisterResult> {
 		return {
 			success: false,
 			message: 'Registration failed',
-			error: error instanceof Error ? error.message : 'An unexpected error occurred. Please try again.',
+			error:
+				error instanceof Error
+					? error.message
+					: 'An unexpected error occurred. Please try again.',
 		};
 	}
 }

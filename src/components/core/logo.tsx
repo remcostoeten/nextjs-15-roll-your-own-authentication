@@ -1,4 +1,4 @@
-	'use client';
+'use client';
 
 import { cn } from '@/shared/utilities';
 import { siteConfig } from 'core/site-config';
@@ -189,12 +189,15 @@ export const LogoIcon = () => {
 	);
 };
 
-export function Logo({className}: {className?: string}) {
+export function Logo({ className }: { className?: string }) {
 	return (
 		<div className="flex items-center justify-center py-4">
 			<Link href="/dashboard">
 				<motion.div
-					className={cn("group relative flex h-14 w-14 items-center justify-center", className)}
+					className={cn(
+						'group relative flex h-14 w-14 items-center justify-center',
+						className
+					)}
 					initial={{ opacity: 0, scale: 0.9 }}
 					animate={{ opacity: 1, scale: 1 }}
 					transition={{

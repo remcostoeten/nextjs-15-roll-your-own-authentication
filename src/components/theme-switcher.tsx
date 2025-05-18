@@ -13,12 +13,12 @@ import React from 'react';
 
 type TTheme = 'catpuccini' | 'supabase' | 'caffeine' | 'night-bourbon';
 
-type  TThemeItem = {
+type TThemeItem = {
 	key: TTheme;
 	icon: LucideIcon;
 	label: string;
 	class: string;
-}
+};
 
 const themes: Array<TThemeItem> = [
 	{
@@ -58,21 +58,13 @@ export function ThemeSwitcher() {
 
 	if (!mounted) {
 		return (
-			<div className={cn("flex gap-2", !isMobile && state === 'collapsed' && "flex-col")}>
+			<div className={cn('flex gap-2', !isMobile && state === 'collapsed' && 'flex-col')}>
 				<div className="relative isolate flex h-8 rounded-full bg-background p-1 ring-1 ring-border">
 					<For each={Array(4)} keyExtractor={(_, i) => i}>
-						{() => (
-							<Skeleton
-								variant="circular"
-								className="h-6 w-6 rounded-full"
-							/>
-						)}
+						{() => <Skeleton variant="circular" className="h-6 w-6 rounded-full" />}
 					</For>
 				</div>
-				<Skeleton
-					variant="circular"
-					className="h-8 w-8 rounded-full"
-				/>
+				<Skeleton variant="circular" className="h-8 w-8 rounded-full" />
 			</div>
 		);
 	}
@@ -89,12 +81,9 @@ export function ThemeSwitcher() {
 	};
 
 	return (
-		<div className={cn("flex gap-2", isCollapsed && "flex-col")}>
+		<div className={cn('flex gap-2', isCollapsed && 'flex-col')}>
 			<div className="relative isolate flex h-8 rounded-full bg-background p-1 ring-1 ring-border">
-				<For<TThemeItem>
-					each={themes}
-					keyExtractor={(item) => item.key}
-				>
+				<For<TThemeItem> each={themes} keyExtractor={(item) => item.key}>
 					{(item) => {
 						const isActive = currentThemeKey === item.key;
 						const Icon = item.icon;

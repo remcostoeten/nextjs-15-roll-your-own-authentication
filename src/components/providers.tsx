@@ -9,8 +9,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 	return (
 		<TooltipProvider>
 			<ThemeProvider>
-				<SidebarProvider>
-{children}				</SidebarProvider>
+				<SidebarProvider>{children} </SidebarProvider>
 			</ThemeProvider>
 		</TooltipProvider>
 	);

@@ -18,7 +18,12 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<html lang="en" className={`${geistMono.variable} `}  suppressHydrationWarning data-theme="supabase-dark">
+		<html
+			lang="en"
+			className={`${geistMono.variable} `}
+			suppressHydrationWarning
+			data-theme="supabase-dark"
+		>
 			<body className="bg-background text-foreground antialiased">
 				<Providers>{children}</Providers>
 			</body>

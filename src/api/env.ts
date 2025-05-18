@@ -7,12 +7,13 @@ export const env = createEnv({
 		ADMIN_EMAIL: z.string().min(1),
 		JWT_SECRET: z.string().min(1),
 		REFRESH_TOKEN_SECRET: z.string().min(1),
+		GITHUB_TOKEN: z.string().min(1),
 	},
 	runtimeEnv: {
 		DATABASE_URL: process.env.DATABASE_URL,
 		ADMIN_EMAIL: process.env.ADMIN_EMAIL,
 		JWT_SECRET: process.env.JWT_SECRET,
 		REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
+		GITHUB_TOKEN: process.env.GITHUB_TOKEN,
 	},
 });
-

@@ -1,7 +1,7 @@
 'use server';
 
-import { sessions } from '@/api/db/schema';
 import { randomUUID } from 'crypto';
+import { sessions } from '@/api/db/schema';
 import { db } from 'db';
 import { cookies } from 'next/headers';
 import { signJwt, verifyJwt } from './jwt';
