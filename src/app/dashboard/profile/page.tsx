@@ -4,9 +4,10 @@ import { useAuth } from '@/modules/authenticatie/hooks/use-auth';
 import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
 import { Label } from '@/shared/components/ui/label';
-import { toast } from '@/shared/components/ui/toast';
-import { AlertTriangle, Link, Loader2 } from 'lucide-react';
+import { AlertTriangle, Loader2 } from 'lucide-react';
+import Link from 'next/link';
 import { useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 
 function useFormStatus() {
 	const [pending, setPending] = useState(false);
