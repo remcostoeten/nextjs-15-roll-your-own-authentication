@@ -26,7 +26,7 @@ function UpdateButton({ onClick }: { onClick: () => void }) {
 		<Button onClick={onClick} disabled={pending}>
 			{pending ? (
 				<>
-					<Loader2 className="w-4 h-4 mr-2 animate-custom-spin" />
+					<	Loader2 className="w-4 h-4 mr-2 animate-custom-spin" />
 					<span>Updating...</span>
 				</>
 			) : (
