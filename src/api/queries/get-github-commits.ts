@@ -1,82 +1,65 @@
 'use server';
-import { env } from '@/api/env';
-import { enhancedCache } from '../cache-api-service';
+
+import { cache } from 'react';
+
+const GITHUB_API_BASE = 'https://api.github.com';
+const REPO_OWNER = 'remcostoeten';
+const REPO_NAME = 'architecture-ryoa';
+
+type TGitHubError = {
+	message: string;
+	documentation_url?: string;
+};
 
 /**
- * Get GitHub commits with proper caching and rate limit handling
- * Uses a fallback repository if the main one is not found
+ * Get GitHub commits for the main repository
+ * @returns Promise with commit data or empty array on error
  */
-export const getGithubCommits = enhancedCache(
-	'github-commits',
-	async () => {
-		// Use authentication token if available
-		const headers: HeadersInit = {};
-		if (env.GITHUB_TOKEN) {
-			headers.Authorization = `token ${env.GITHUB_TOKEN}`;
+export const getGithubCommits = cache(async () => {
+	try {
+		const headers = new Headers({
+			'Accept': 'application/vnd.github.v3+json',
+			'User-Agent': 'architecture-ryoa',
+		});
+
+		// Add GitHub token if available
+		if (process.env.GITHUB_TOKEN) {
+			headers.append('Authorization', `token ${process.env.GITHUB_TOKEN}`);
 		}
 
-		// List of repositories to try (in order)
-		const repositories = [
-			'remcostoeten/architecture-ryoa', // Original repo that's failing
-			'facebook/react', // Fallback to a popular repo
-			'vercel/next.js', // Another fallback option
-		];
-
-		let error = null;
-
-		// Try each repository until one works
-		for (const repo of repositories) {
-			try {
-				const response = await fetch(`https://api.github.com/repos/${repo}/commits`, {
-					headers,
-				});
-
-				// Check for rate limiting
-				if (
-					response.status === 403 &&
-					response.headers.get('X-RateLimit-Remaining') === '0'
-				) {
-					const resetTime = response.headers.get('X-RateLimit-Reset');
-					throw new Error(
-						`GitHub API rate limit exceeded. Resets at ${new Date(
-							Number(resetTime) * 1000
-						).toLocaleString()}`
-					);
-				}
-
-				if (!response.ok) {
-					throw new Error(
-						`GitHub API error for ${repo}: ${response.status} ${response.statusText}`
-					);
-				}
-
-				// If we get here, the request was successful
-				const data = await response.json();
-				console.log(`Successfully fetched commits from ${repo}`);
-				return data;
-			} catch (err) {
-				console.error(`Failed to fetch from ${repo}:`, err);
-				error = err; // Store the error to throw if all repositories fail
-				// Continue to the next repository
+		const response = await fetch(
+			`${GITHUB_API_BASE}/repos/${REPO_OWNER}/${REPO_NAME}/commits`,
+			{
+				headers,
+				next: {
+					revalidate: 300, // Cache for 5 minutes
+				},
 			}
+		);
+
+		if (!response.ok) {
+			const error = (await response.json()) as TGitHubError;
+			throw new Error(`GitHub API error: ${error.message}`);
 		}
 
-		// If we've tried all repositories and none worked
-		throw error || new Error('Failed to fetch commits from any repository');
-	},
-	10 * 60 * 1000 // Cache GitHub data for 10 minutes (simplified from your original)
-);
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error('Error fetching commits:', error);
+		return [];
+	}
+});
 
 /**
- * Utility function to get a commit count with error handling
+ * Utility function to get a commit count with error handling and caching
+ * @returns Promise with commit count or fallback number
  */
-export async function getCommitCount() {
+export const getCommitCount = cache(async () => {
 	try {
 		const commits = await getGithubCommits();
 		return commits.length;
 	} catch (error) {
 		console.error('Error fetching commit count:', error);
-		// Return a fallback value so the UI doesn't break
 		return 999; // Fallback number that looks reasonable
 	}
-}
+});
