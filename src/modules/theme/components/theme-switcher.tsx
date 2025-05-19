@@ -1,6 +1,6 @@
 'use client';
 
-import { For } from '@/components/core/for';
+import { For } from '@/shared/components/core/for';
 import { useSidebar } from '@/shared/components/ui/sidebar';
 import { Skeleton } from '@/shared/components/ui/skeleton';
 import { toast } from '@/shared/components/ui/toast';
@@ -11,7 +11,7 @@ import { Coffee, Database, Moon, Palette, Sun, ThermometerSun } from 'lucide-rea
 import { useTheme } from 'next-themes';
 import React from 'react';
 
-type TTheme = 'catpuccini' | 'supabase' | 'caffeine' | 'night-bourbon';
+export type TTheme = 'catpuccini' | 'supabase' | 'caffeine' | 'night-bourbon';
 
 type TThemeItem = {
 	key: TTheme;

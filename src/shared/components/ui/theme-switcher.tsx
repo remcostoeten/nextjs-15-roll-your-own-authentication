@@ -1,12 +1,12 @@
 'use client';
 
-import { For } from '@/components/core/for';
 import { cn } from '@/shared/utilities/cn';
 import { motion } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
 import { Coffee, Database, Moon, Palette, Sun, ThermometerSun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import React from 'react';
+import { For } from '../core/for';
 import { useSidebar } from './sidebar';
 import { Skeleton } from './skeleton';
 import { toast } from './toast';

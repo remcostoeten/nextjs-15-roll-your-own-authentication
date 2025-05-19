@@ -7,7 +7,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 	return (
 		<NextThemesProvider
 			attribute="data-theme"
-			defaultTheme="catpuccini"
+			defaultTheme="caffeine"
 			themes={[
 				'catpuccini',
 				'catpuccini-dark',
@@ -15,6 +15,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 				'supabase-dark',
 				'caffeine',
 				'caffeine-dark',
+				'night-bourbon',
+				'night-bourbon-dark'
 			]}
 			enableSystem={false}
 			disableTransitionOnChange
