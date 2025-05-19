@@ -1,4 +1,5 @@
-import Providers from '@/components/providers';
+import { Providers } from '@/modules/layout/providers';
+import { type TTheme } from '@/modules/theme/types';
 import { geistMono } from 'core/config/fonts';
 import { baseMetadata } from 'core/config/metadata';
 import type { Metadata } from 'next';
@@ -12,6 +13,8 @@ export const dynamic = 'force-static';
 export const preferredRegion = 'home';
 export const revalidate = false;
 
+const themes: TTheme[] = ['catpuccini', 'supabase', 'caffeine', 'night-bourbon'];
+
 export default function RootLayout({
 	children,
 }: {
@@ -20,11 +23,11 @@ export default function RootLayout({
 	return (
 		<html
 			lang="en"
-			className={`${geistMono.variable} `}
+			className={geistMono.variable}
 			suppressHydrationWarning
-			data-theme="supabase-dark"
+			data-theme="catpuccini-dark"
 		>
-			<body className="bg-background text-foreground antialiased">
+			<body className="bg-background text-foreground antialiased min-h-screen flex flex-col items-center justify-center">
 				<Providers>{children}</Providers>
 			</body>
 		</html>
