@@ -1,19 +1,16 @@
-import { getGithubCommits } from '@/api/queries/get-github-commits';
-import { AnimatedNumbers } from '@/modules/landing/components/a';
-import { FeaturesClient } from '@/modules/landing/components/features';
-import { Skeleton } from '@/shared/components/ui/skeleton';
-import { Suspense } from 'react';
+'use client';
 
-export default async function Page() {
-  const commits = await getGithubCommits(); // SSR prefetch
-  const commitCount = commits?.length ?? 0;
-  const repoName = 'ryoa/repo-name'; // Replace with actual repo name or fetch if needed
+import { Features } from '@/modules/landing/components/features';
+import { Container } from '@/shared/components/ui/container';
 
+export default function HomePage() {
   return (
-    <main>
-      <FeaturesClient commitCount={0} />
-
-
+    <main className="flex min-h-screen flex-col items-center justify-center">
+      <Container className="flex-1 w-full max-w-[1400px] mx-auto px-4">
+        <div className="space-y-24 py-8 md:py-12">
+          <Features />
+        </div>
+      </Container>
     </main>
   );
 }
