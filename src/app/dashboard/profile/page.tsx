@@ -95,6 +95,7 @@ function ProfilePage() {
 			setShowDeleteConfirm(false);
 			setLoadingState('unauthenticated');
 		}, 2000);
+		toast.success('Account deleted successfully');
 	};
 
 	return (
