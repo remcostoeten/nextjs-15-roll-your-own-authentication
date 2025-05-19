@@ -16,9 +16,15 @@ const config: Config = {
 						transform: 'translateX(100%)',
 					},
 				},
+				flicker: {
+					'0%': { 'background-position': '200% 0' },
+					'100%': { 'background-position': '-200% 0' },
+				},
 			},
 			animation: {
 				shimmer: 'shimmer 2s infinite',
+				'flicker': 'flicker 3s linear infinite',
+				'flicker-fast': 'flicker 1.5s linear infinite',
 			},
 		},
 	},
