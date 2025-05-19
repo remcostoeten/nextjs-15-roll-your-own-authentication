@@ -1,11 +1,11 @@
 'use client';
-import { Logo } from '@/components/logo';
+import { Logo } from '@/shared/components/core/logo';
 import {
 	type ChartConfig,
 	ChartContainer,
 	ChartTooltip,
 	ChartTooltipContent,
-} from '@/components/ui/chart';
+} from '@/shared/components/ui/charts';
 import DottedMap from 'dotted-map';
 import { Activity, Map as MapIcon, MessageCircle } from 'lucide-react';
 import { Area, AreaChart, CartesianGrid } from 'recharts';
