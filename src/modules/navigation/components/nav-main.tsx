@@ -1,23 +1,23 @@
 'use client';
 
+import { For } from '@/shared/components/core/for';
 import {
-	Collapsible,
-	CollapsibleContent,
-	CollapsibleTrigger,
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
 } from '@/shared/components/ui/collapsible';
 import {
-	SidebarGroup,
-	SidebarGroupLabel,
-	SidebarMenu,
-	SidebarMenuButton,
-	SidebarMenuItem,
-	SidebarMenuSub,
-	SidebarMenuSubButton,
-	SidebarMenuSubItem,
+    SidebarGroup,
+    SidebarGroupLabel,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    SidebarMenuSub,
+    SidebarMenuSubButton,
+    SidebarMenuSubItem,
 } from '@/shared/components/ui/sidebar';
 import { ChevronRight, type LucideIcon } from 'lucide-react';
 import Link from 'next/link';
-import { For } from './core/for';
 
 type NavItem = {
 	title: string;
