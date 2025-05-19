@@ -10,8 +10,6 @@
 [data-theme="catpuccini"] {
   --background: oklch(0.96 0.01 264.53);
   --foreground: oklch(0.44 0.04 279.33);
-  --card: oklch(1.00 0 0);
-  --card-foreground: oklch(0.44 0.04 279.33);
   --popover: oklch(0.86 0.01 268.48);
   --popover-foreground: oklch(0.44 0.04 279.33);
   --primary: oklch(0.55 0.25 297.02);
@@ -315,7 +313,7 @@
   --sidebar-ring: oklch(0.77 0 0);
 }
 
-[data-theme="caffeine-dark"] {
+[data-theme="night-bourbon-dark"] {
   --background: oklch(0.99 0.01 56.32);
   --foreground: oklch(0.34 0.01 2.77);
   --card: oklch(1.00 0 0);
