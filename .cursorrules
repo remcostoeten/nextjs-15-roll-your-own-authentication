@@ -103,3 +103,29 @@ A user is considered admin if their email matches process.env.ADMIN_EMAIL
 The session is created server-side via createSession()
 
 Session must persist across page reloads and logouts must be handled via a mutation (not a route)
+
+## TypeScript Type Naming Conventions
+
+- Use `TProps` if only one type exists in a file
+- Use `T` prefix (e.g., `TButton`, `TInput`) if multiple types exist in a file
+- Only use interfaces when you plan to extend them
+- Prefer type over interface unless polymorphism is needed
+
+## Component Structure
+
+- Keep components in their own files
+- Ufroup related components in feature folders
+
+## Styling
+
+- Use Tailwind CSS for styling
+- Follow mobile-first approach
+- Use CSS variables for theming
+- Prefer composition over inheritance
+
+## Performance
+
+- Lazy load non-critical components
+- Use proper React.memo() for expensive renders
+- Implement proper Suspense boundaries
+- Keep bundle sizes optimized
