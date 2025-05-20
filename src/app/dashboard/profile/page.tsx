@@ -271,7 +271,7 @@ function ProfilePage() {
 						<div className="mt-12 border-t border-red-200 pt-8">
 							<div className="rounded-lg bg-red-50 p-6">
 								<h2 className="flex items-center text-lg font-semibold text-red-800 mb-4">
-									<AlertTriangle className="w-5 h-5 mr-2" />
+									<	AlertTriangle className="w-5 h-5 mr-2" />
 									Danger Zone
 								</h2>
 								<p className="text-sm text-red-600 mb-4">
