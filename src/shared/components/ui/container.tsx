@@ -1,5 +1,5 @@
-import { cn } from '@/lib/utils';
 import { type HTMLAttributes } from 'react';
+import { cn } from 'utilities';
 
 interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
   className?: string;
