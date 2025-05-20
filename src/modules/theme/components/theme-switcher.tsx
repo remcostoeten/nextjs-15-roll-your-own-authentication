@@ -8,7 +8,7 @@ import { cn } from '@/shared/utilities/cn';
 import type { LucideIcon } from 'lucide-react';
 import { Coffee, Database, Moon, Palette, Sun, ThermometerSun } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export type TTheme = 'catpuccini' | 'supabase' | 'caffeine' | 'night-bourbon';
 
@@ -51,9 +51,15 @@ export function ThemeSwitcher() {
 	const { state, isMobile } = useSidebar();
 	const [mounted, setMounted] = React.useState(false);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		setMounted(true);
-	}, []);
+		// Load saved theme from localStorage
+		const savedTheme = localStorage.getItem('theme-preference');
+		if (savedTheme) {
+			setTheme(savedTheme);
+			document.documentElement.setAttribute('data-theme', savedTheme);
+		}
+	}, [setTheme]);
 
 	if (!mounted) {
 		return (
@@ -76,7 +82,15 @@ export function ThemeSwitcher() {
 		const nextTheme = isDark ? `${newTheme}-dark` : newTheme;
 		setTheme(nextTheme);
 		document.documentElement.setAttribute('data-theme', nextTheme);
+		localStorage.setItem('theme-preference', nextTheme);
 		toast.success('Theme changed to ' + newTheme);
+	};
+
+	const handleDarkModeToggle = () => {
+		const nextTheme = isDark ? currentThemeKey : `${currentThemeKey}-dark`;
+		setTheme(nextTheme);
+		document.documentElement.setAttribute('data-theme', nextTheme);
+		localStorage.setItem('theme-preference', nextTheme);
 	};
 
 	return (
@@ -102,11 +116,7 @@ export function ThemeSwitcher() {
 				})}
 			</div>
 			<button
-				onClick={() => {
-					const nextTheme = isDark ? currentThemeKey : `${currentThemeKey}-dark`;
-					setTheme(nextTheme);
-					document.documentElement.setAttribute('data-theme', nextTheme);
-				}}
+				onClick={handleDarkModeToggle}
 				className="relative flex h-8 w-8 items-center justify-center rounded-full bg-background p-1 ring-1 ring-border"
 				aria-label="Toggle dark mode"
 			>
