@@ -50,7 +50,7 @@ export function Breadcrumbs() {
 		<Breadcrumb>
 			<BreadcrumbList>
 				<BreadcrumbItem>
-					<Link href="/" legacyBehavior passHref>
+					<Link href="/" passHref>
 						<BreadcrumbLink className="flex items-center">
 							<Home className="h-4 w-4" />
 						</BreadcrumbLink>
@@ -70,7 +70,7 @@ export function Breadcrumbs() {
 								{isLast ? (
 									<BreadcrumbPage>{displayName}</BreadcrumbPage>
 								) : (
-									<Link href={href} legacyBehavior passHref>
+									<Link href={href} passHref>
 										<BreadcrumbLink>{displayName}</BreadcrumbLink>
 									</Link>
 								)}

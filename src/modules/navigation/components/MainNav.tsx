@@ -1,3 +1,5 @@
+'use client'
+
 import { cn } from '@/shared/utilities/cn';
 import Link from 'next/link';
 import * as React from 'react';
@@ -51,10 +53,10 @@ export function MainNav() {
                   </Link>
                 </NavigationMenuLink>
               </li>
-              <ListItem href="/login" title="Login">
-                Login to your account.
+              <ListItem href="/login" title="Documentation">
+                Learn how to use our platform effectively with detailed guides.
               </ListItem>
-              <ListItem href="/register" title="Register">
+              <ListItem href="/docs/api" title="API">
                 Explore our API documentation for integration possibilities.
               </ListItem>
               <ListItem href="/docs/examples" title="Examples">
@@ -80,7 +82,7 @@ export function MainNav() {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link href="/docs" legacyBehavior passHref>
+          <Link href="/docs"  passHref>
             <NavigationMenuLink className={cn(
               'group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50'
             )}>
