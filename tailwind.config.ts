@@ -20,11 +20,27 @@ const config: Config = {
 					'0%': { 'background-position': '200% 0' },
 					'100%': { 'background-position': '-200% 0' },
 				},
+				        'wave-pulse': 'wave-pulse 4s ease-in-out infinite',
+				'gradient-x': {
+					'0%, 100%': {
+						'background-size': '200% 200%',
+						'background-position': 'left center',
+					},
+					'50%': {
+						'background-size': '200% 200%',
+						'background-position': 'right center',
+					},
+				},
 			},
 			animation: {
+				  'wave-pulse': {
+          '0%, 100%': { opacity: 0.4 },
+          '50%': { opacity: 0.7 },
+        },
 				shimmer: 'shimmer 2s infinite',
 				'flicker': 'flicker 3s linear infinite',
 				'flicker-fast': 'flicker 1.5s linear infinite',
+				'gradient-x': 'gradient-x 15s ease infinite',
 			},
 		},
 	},

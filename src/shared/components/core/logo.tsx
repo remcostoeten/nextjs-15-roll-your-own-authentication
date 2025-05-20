@@ -1,22 +1,24 @@
-'use client';
+'use client'
 
-import { cn } from '@/shared/utilities';
-import { siteConfig } from 'core/site-config';
+import { cn } from '@/shared/utilities/cn';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 
-export const LogoIcon = ({ className }: { className?: string }) => {
+interface LogoIconProps {
+	uniColor?: boolean;
+}
+
+const LogoIcon = ({ uniColor }: LogoIconProps) => {
 	const pathVariants = {
 		hidden: { pathLength: 0, opacity: 0 },
 		visible: {
 			pathLength: 1,
 			opacity: 1,
 			transition: {
-				pathLength: { duration: 1, ease: [0.76, 0, 0.24, 1] },
-				opacity: { duration: 0.5 },
-			},
-		},
-	};
+				pathLength: { duration: 1.5, ease: [0.76, 0, 0.24, 1] },
+				opacity: { duration: 0.3 }
+			}
+		}
+	}
 
 	const circleVariants = {
 		hidden: { scale: 0, opacity: 0 },
@@ -24,38 +26,46 @@ export const LogoIcon = ({ className }: { className?: string }) => {
 			scale: 1,
 			opacity: 1,
 			transition: {
-				duration: 0.3,
-				ease: [0.76, 0, 0.24, 1],
-			},
-		},
-	};
+				duration: 0.5,
+				ease: [0.76, 0, 0.24, 1]
+			}
+		}
+	}
 
 	const streamVariants = {
-		hidden: { opacity: 0, pathLength: 0 },
+		hidden: { opacity: 0, y: 10 },
 		visible: {
 			opacity: 1,
-			pathLength: 1,
+			y: [10, -10],
 			transition: {
-				duration: 0.5,
-				ease: [0.76, 0, 0.24, 1],
-			},
-		},
-	};
+				opacity: { duration: 0.3 },
+				y: {
+					duration: 2,
+					repeat: Infinity,
+					repeatType: "reverse" as const,
+					ease: "easeInOut"
+				}
+			}
+		}
+	}
 
 	return (
 		<motion.svg
 			viewBox="0 0 32 32"
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
-			className={cn("h-8 w-8 transition-all duration-300 group-hover:scale-110", className)}
+			className={cn("h-8 w-8", uniColor ? "text-current" : "text-foreground")}
 			initial="hidden"
 			animate="visible"
 		>
-			<title>{siteConfig.name}</title>
+			{/* Main hexagonal container with draw animation */}
 			<motion.path
 				d="M16 2L28 9V23L16 30L4 23V9L16 2Z"
-				className="fill-primary/10 stroke-primary"
-				strokeWidth="1"
+				className={cn(
+					"stroke-foreground",
+					uniColor ? "fill-transparent stroke-current" : "fill-background"
+				)}
+				strokeWidth="2.5"
 				variants={pathVariants}
 			/>
 
@@ -66,31 +76,30 @@ export const LogoIcon = ({ className }: { className?: string }) => {
 					visible: {
 						opacity: 1,
 						transition: {
-							delayChildren: 0.15,
-							staggerChildren: 0.1,
-						},
-					},
+							delayChildren: 0.5,
+							staggerChildren: 0.2
+						}
+					}
 				}}
-				className="animate-[slideUp_3s_linear_infinite]"
 			>
 				<motion.path
 					d="M8 18L16 22L24 18"
-					className="stroke-primary"
-					strokeWidth="1"
+					className={cn("stroke-foreground", uniColor && "stroke-current")}
+					strokeWidth="2"
 					strokeLinecap="round"
 					variants={streamVariants}
 				/>
 				<motion.path
 					d="M8 14L16 18L24 14"
-					className="stroke-primary"
-					strokeWidth="1"
+					className={cn("stroke-foreground", uniColor && "stroke-current")}
+					strokeWidth="2"
 					strokeLinecap="round"
 					variants={streamVariants}
 				/>
 				<motion.path
 					d="M8 10L16 14L24 10"
-					className="stroke-primary"
-					strokeWidth="1"
+					className={cn("stroke-foreground", uniColor && "stroke-current")}
+					strokeWidth="2"
 					strokeLinecap="round"
 					variants={streamVariants}
 				/>
@@ -103,29 +112,38 @@ export const LogoIcon = ({ className }: { className?: string }) => {
 					visible: {
 						opacity: 1,
 						transition: {
-							delay: 0.8,
-							duration: 0.5,
-						},
-					},
+							delay: 1,
+							duration: 0.5
+						}
+					}
 				}}
 			>
-				<path
+				<motion.path
 					d="M16 2V30"
-					className="stroke-primary/40"
-					strokeWidth="0.75"
+					className={cn("stroke-foreground/60", uniColor && "stroke-current/60")}
+					strokeWidth="1.5"
 					strokeDasharray="2 2"
+					initial={{ pathLength: 0 }}
+					animate={{ pathLength: 1 }}
+					transition={{ duration: 1, delay: 1 }}
 				/>
-				<path
+				<motion.path
 					d="M4 9L28 9"
-					className="stroke-primary/40"
-					strokeWidth="0.75"
+					className={cn("stroke-foreground/60", uniColor && "stroke-current/60")}
+					strokeWidth="1.5"
 					strokeDasharray="2 2"
+					initial={{ pathLength: 0 }}
+					animate={{ pathLength: 1 }}
+					transition={{ duration: 1, delay: 1.2 }}
 				/>
-				<path
+				<motion.path
 					d="M4 23L28 23"
-					className="stroke-primary/40"
-					strokeWidth="0.75"
+					className={cn("stroke-foreground/60", uniColor && "stroke-current/60")}
+					strokeWidth="1.5"
 					strokeDasharray="2 2"
+					initial={{ pathLength: 0 }}
+					animate={{ pathLength: 1 }}
+					transition={{ duration: 1, delay: 1.4 }}
 				/>
 			</motion.g>
 
@@ -136,72 +154,78 @@ export const LogoIcon = ({ className }: { className?: string }) => {
 					visible: {
 						opacity: 1,
 						transition: {
-							delayChildren: 1,
-							staggerChildren: 0.1,
-						},
-					},
+							delayChildren: 1.5,
+							staggerChildren: 0.1
+						}
+					}
 				}}
 			>
 				<motion.circle
 					cx="16"
 					cy="2"
-					r="1.5"
-					className="fill-primary"
+					r="2"
+					className={cn("fill-foreground", uniColor && "fill-current")}
 					variants={circleVariants}
 				/>
 				<motion.circle
 					cx="28"
 					cy="9"
-					r="1.5"
-					className="fill-primary"
+					r="2"
+					className={cn("fill-foreground", uniColor && "fill-current")}
 					variants={circleVariants}
 				/>
 				<motion.circle
 					cx="28"
 					cy="23"
-					r="1.5"
-					className="fill-primary"
+					r="2"
+					className={cn("fill-foreground", uniColor && "fill-current")}
 					variants={circleVariants}
 				/>
 				<motion.circle
 					cx="16"
 					cy="30"
-					r="1.5"
-					className="fill-primary"
+					r="2"
+					className={cn("fill-foreground", uniColor && "fill-current")}
 					variants={circleVariants}
 				/>
 				<motion.circle
 					cx="4"
 					cy="23"
-					r="1.5"
-					className="fill-primary"
+					r="2"
+					className={cn("fill-foreground", uniColor && "fill-current")}
 					variants={circleVariants}
 				/>
 				<motion.circle
 					cx="4"
 					cy="9"
-					r="1.5"
-					className="fill-primary"
+					r="2"
+					className={cn("fill-foreground", uniColor && "fill-current")}
 					variants={circleVariants}
 				/>
 			</motion.g>
 		</motion.svg>
-	);
-};
+	)
+}
 
-export function Logo({ className }: { className?: string }) {
+interface LogoProps {
+	className?: string;
+	uniColor?: boolean;
+}
+
+export function Logo({ className, uniColor }: LogoProps) {
 	return (
-		<div className="flex items-center justify-center py-4">
-			<Link href="/dashboard">
-				<motion.div
-					className={cn(
-						'group relative flex h-14 w-14 items-center justify-center',
-						className
-					)}
-				>
-					<LogoIcon />
-				</motion.div>
-			</Link>
+		<div className={cn("flex items-center justify-center", className)}>
+			<motion.div
+				className="group relative flex h-10 w-10 items-center justify-center"
+				initial={{ opacity: 0, scale: 0.9 }}
+				animate={{ opacity: 1, scale: 1 }}
+				transition={{
+					duration: 0.3,
+					ease: [0.76, 0, 0.24, 1],
+				}}
+			>
+				<LogoIcon uniColor={uniColor} />
+			</motion.div>
 		</div>
-	);
+	)
 }
