@@ -47,7 +47,7 @@ export const LogoIcon = ({ className }: { className?: string }) => {
 			viewBox="0 0 32 32"
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
-			className="h-8 w-8 transition-all duration-300 group-hover:scale-110"
+			className={cn("h-8 w-8 transition-all duration-300 group-hover:scale-110", className)}
 			initial="hidden"
 			animate="visible"
 		>

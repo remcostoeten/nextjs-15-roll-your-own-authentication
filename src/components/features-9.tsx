@@ -1,4 +1,6 @@
 'use client';
+import { getGithubCommits } from '@/api/queries/get-github-commits';
+import { GitHubStats } from '@/modules/landing/components/stats';
 import { Logo } from '@/shared/components/core/logo';
 import {
 	type ChartConfig,
@@ -7,10 +9,66 @@ import {
 	ChartTooltipContent,
 } from '@/shared/components/ui/charts';
 import DottedMap from 'dotted-map';
-import { Activity, Map as MapIcon, MessageCircle } from 'lucide-react';
+import { Activity, GitCommit, Map as MapIcon, MessageCircle } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { Area, AreaChart, CartesianGrid } from 'recharts';
 
+type TGitHubCommit = {
+	commit: {
+		message: string;
+		author: {
+			name: string;
+			date: string;
+		};
+	};
+	author: {
+		login: string;
+	};
+};
+
+function CommitPopover({ commit }: { commit: TGitHubCommit }) {
+	return (
+		<div className="space-y-2">
+			<div className="flex items-center gap-2 text-sm font-medium">
+				<GitCommit className="h-4 w-4" />
+				Latest Commit
+			</div>
+			<div className="text-xs text-muted-foreground">
+				<p className="font-medium text-foreground">{commit.commit.message}</p>
+				<p className="mt-1">by {commit.commit.author?.name || 'Unknown'}</p>
+				<p>{new Intl.DateTimeFormat('en-US', {
+					weekday: 'long',
+					year: 'numeric',
+					month: 'long',
+					day: 'numeric',
+					hour: '2-digit',
+					minute: '2-digit',
+				}).format(new Date(commit.commit.author?.date))}</p>
+			</div>
+		</div>
+	);
+}
+
 export default function FeaturesSection() {
+	const [commits, setCommits] = useState<TGitHubCommit[]>([]);
+	const [loading, setLoading] = useState(true);
+	const [rateLimit, setRateLimit] = useState<{ remaining: number; limit: number; resetAt: string } | null>(null);
+
+	useEffect(() => {
+		const fetchCommits = async () => {
+			try {
+				const commitData = await getGithubCommits();
+				setCommits(commitData || []);
+				// Rate limit info is logged to console
+			} catch (error) {
+				console.error('Error fetching commits:', error);
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchCommits();
+	}, []);
+
 	return (
 		<section className="px-4 py-16 md:py-32">
 			<div className="mx-auto grid max-w-5xl border md:grid-cols-2">
@@ -40,7 +98,7 @@ export default function FeaturesSection() {
 						</div>
 					</div>
 				</div>
-				<div className="overflow-hidden border-t bg-zinc-50 p-6 sm:p-12 md:border-0 md:border-l dark:bg-transparent">
+				<div className="overflow-hidden border-t  p-6 sm:p-12 md:border-0 md:border-l bg-transparent">
 					<div className="relative z-10">
 						<span className="text-muted-foreground flex items-center gap-2">
 							<MessageCircle className="size-4" />
@@ -75,9 +133,7 @@ export default function FeaturesSection() {
 						</div>
 					</div>
 				</div>
-				<div className="col-span-full border-y p-12">
-					<p className="text-center text-4xl font-semibold lg:text-7xl">99.99% Uptime</p>
-				</div>
+				<GitHubStats/>
 				<div className="relative col-span-full">
 					<div className="absolute z-10 max-w-lg px-6 pr-12 pt-6 md:px-12 md:pt-12">
 						<span className="text-muted-foreground flex items-center gap-2">
