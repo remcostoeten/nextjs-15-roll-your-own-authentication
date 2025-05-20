@@ -5,7 +5,7 @@ import { siteConfig } from 'core/site-config';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
-export const LogoIcon = () => {
+export const LogoIcon = ({ className }: { className?: string }) => {
 	const pathVariants = {
 		hidden: { pathLength: 0, opacity: 0 },
 		visible: {

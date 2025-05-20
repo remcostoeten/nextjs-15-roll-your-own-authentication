@@ -83,34 +83,24 @@ export function ThemeSwitcher() {
 	return (
 		<div className={cn('flex gap-2', isCollapsed && 'flex-col')}>
 			<div className="relative isolate flex h-8 rounded-full bg-background p-1 ring-1 ring-border">
-				<For<TThemeItem> each={themes} keyExtractor={(item) => item.key}>
-					{(item) => {
-						const isActive = currentThemeKey === item.key;
-						const Icon = item.icon;
-						return (
-							<button
-								type="button"
-								className="relative h-6 w-6 rounded-full"
-								onClick={() => handleThemeChange(item.key)}
-								aria-label={item.label}
-							>
-								{isActive && (
-									<motion.div
-										layoutId="activeTheme"
-										className="absolute inset-0 rounded-full bg-secondary"
-										transition={{ type: 'spring', duration: 0.5 }}
-									/>
-								)}
-								<Icon
-									className={cn(
-										'relative z-10 m-auto h-4 w-4',
-										isActive ? 'text-foreground' : 'text-muted-foreground'
-									)}
-								/>
-							</button>
-						);
-					}}
-				</For>
+				{themes.map((item) => {
+					const isActive = currentThemeKey === item.key;
+					const Icon = item.icon;
+					return (
+						<button
+							key={item.key}
+							type="button"
+							className={cn(
+								'relative flex h-6 w-6 items-center justify-center rounded-full transition',
+								isActive && 'bg-primary text-primary-foreground'
+							)}
+							onClick={() => handleThemeChange(item.key as TTheme)}
+							title={item.label}
+						>
+							<Icon className="size-4" />
+						</button>
+					);
+				})}
 			</div>
 			<button
 				onClick={() => {
