@@ -1,17 +1,14 @@
 'use client';
 
 import {
-    AudioWaveform,
     BookOpen,
     Bot,
-    Command,
     Frame,
-    GalleryVerticalEnd,
     Map as MapIcon,
     PieChart,
     Settings2,
     SquareTerminal,
-    type LucideIcon,
+    type LucideIcon
 } from 'lucide-react';
 import type * as React from 'react';
 
@@ -24,13 +21,8 @@ import {
     SidebarHeader,
     SidebarRail,
 } from '@/shared/components/ui/sidebar';
-import { NavMain, NavProjects, NavUser, TeamSwitcher } from './';
-
-type Team = {
-    name: string;
-    logo: LucideIcon;
-    plan: string;
-};
+import { NavMain, NavProjects, NavUser } from './';
+import { WorkspaceSwitcher } from './workspace-switcher';
 
 type NavItem = {
     title: string;
@@ -50,23 +42,27 @@ type Project = {
 };
 
 const data = {
-    teams: [
+    currentWorkspace: {
+        id: '1',
+        name: 'Personal Workspace',
+    },
+    workspaces: [
         {
-            name: 'Acme Inc',
-            logo: GalleryVerticalEnd,
-            plan: 'Enterprise',
+            id: '1',
+            name: 'Personal Workspace',
+            role: 'owner',
         },
         {
-            name: 'Acme Corp.',
-            logo: AudioWaveform,
-            plan: 'Startup',
+            id: '2',
+            name: 'Team Workspace',
+            role: 'member',
         },
         {
-            name: 'Evil Corp.',
-            logo: Command,
-            plan: 'Free',
+            id: '3',
+            name: 'Client Project',
+            role: 'admin',
         },
-    ] as Team[],
+    ],
     navMain: [
         {
             title: 'Playground',
@@ -149,13 +145,16 @@ const data = {
             icon: MapIcon,
         },
     ] as Project[],
-} as const;
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     return (
         <Sidebar collapsible="icon" {...props}>
             <SidebarHeader>
-                <TeamSwitcher teams={data.teams} />
+                <WorkspaceSwitcher
+                    currentWorkspace={data.currentWorkspace}
+                    workspaces={data.workspaces}
+                />
             </SidebarHeader>
             <SidebarContent>
                 <NavMain items={data.navMain} />
