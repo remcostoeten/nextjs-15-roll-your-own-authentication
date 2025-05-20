@@ -1,4 +1,5 @@
 import { Providers } from '@/modules/layout/providers';
+import { ThemeProvider } from '@/modules/theme/providers/theme-provider';
 import { type TTheme } from '@/modules/theme/types';
 import { geistMono } from 'core/config/fonts';
 import { baseMetadata } from 'core/config/metadata';
@@ -28,7 +29,9 @@ export default function RootLayout({
 			data-theme="catpuccini-dark"
 		>
 			<body className="bg-background text-foreground antialiased min-h-screen flex flex-col items-center justify-center">
-				<Providers>{children}</Providers>
+				<ThemeProvider>
+					<Providers>{children}</Providers>
+				</ThemeProvider>
 			</body>
 		</html>
 	);
