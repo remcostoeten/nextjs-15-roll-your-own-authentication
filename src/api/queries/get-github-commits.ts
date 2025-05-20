@@ -23,10 +23,25 @@ export const getGithubCommits = cache(async () => {
 		});
 
 		// Add GitHub token if available
-		if (process.env.GITHUB_TOKEN) {
-			headers.append('Authorization', `token ${process.env.GITHUB_TOKEN}`);
+		const token = process.env.GITHUB_TOKEN;
+		if (!token) {
+			console.warn('GITHUB_TOKEN not found in environment variables. Using public API with rate limits.');
+		} else {
+			headers.append('Authorization', `Bearer ${token}`);
 		}
 
+		// First check if the repository exists
+		const repoResponse = await fetch(
+			`${GITHUB_API_BASE}/repos/${REPO_OWNER}/${REPO_NAME}`,
+			{ headers }
+		);
+
+		if (!repoResponse.ok) {
+			console.error('Repository not found or API error');
+			return [];
+		}
+
+		// Then fetch commits
 		const response = await fetch(
 			`${GITHUB_API_BASE}/repos/${REPO_OWNER}/${REPO_NAME}/commits`,
 			{
@@ -39,7 +54,8 @@ export const getGithubCommits = cache(async () => {
 
 		if (!response.ok) {
 			const error = (await response.json()) as TGitHubError;
-			throw new Error(`GitHub API error: ${error.message}`);
+			console.error('GitHub API error:', error.message);
+			return [];
 		}
 
 		const data = await response.json();
@@ -57,9 +73,9 @@ export const getGithubCommits = cache(async () => {
 export const getCommitCount = cache(async () => {
 	try {
 		const commits = await getGithubCommits();
-		return commits.length;
+		return commits.length || 0;
 	} catch (error) {
 		console.error('Error fetching commit count:', error);
-		return 999; // Fallback number that looks reasonable
+		return 0; // Return 0 instead of fallback number for accuracy
 	}
 });
