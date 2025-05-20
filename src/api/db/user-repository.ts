@@ -2,7 +2,7 @@ import { db } from '@/api/db/connection';
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import { TUserRole, UserRole, users } from './schema';
-
+export { noteMentions, noteMentionsRelations, notes, notesRelations } from '../schemas/notes-scheme';
 export type TUser = {
 	id: string;
 	email: string;
@@ -49,7 +49,7 @@ export const userRepository = {
 			})
 			.from(users)
 			.where(eq(users.id, id));
-		return user ?? null;
+		return user ? { ...user, role: user.role as TUserRole } : null;
 	},
 
 	findByEmail: async (email: string) => {
@@ -70,6 +70,7 @@ export const userRepository = {
 					role: data.role ?? UserRole.USER,
 					name: data.name ?? null,
 					avatar: data.avatar ?? null,
+					createdAt: now,
 					updatedAt: now,
 				})
 				.returning({
@@ -87,7 +88,7 @@ export const userRepository = {
 				throw new Error('Failed to create user');
 			}
 
-			return user as TUser;
+			return { ...user, role: user.role as TUserRole };
 		} catch (error) {
 			console.error('Error creating user:', error);
 			throw new Error('Failed to create user account');
@@ -114,7 +115,7 @@ export const userRepository = {
 			updatedAt: users.updatedAt,
 			lastLoginAt: users.lastLoginAt,
 		});
-		return (user as TUser) ?? null;
+		return user ? { ...user, role: user.role as TUserRole } : null;
 	},
 
 	findAll: async (): Promise<TUser[]> => {
@@ -130,7 +131,7 @@ export const userRepository = {
 				lastLoginAt: users.lastLoginAt,
 			})
 			.from(users);
-		return allUsers as TUser[];
+		return allUsers.map(user => ({ ...user, role: user.role as TUserRole }));
 	},
 
 	delete: async (id: string) => {
