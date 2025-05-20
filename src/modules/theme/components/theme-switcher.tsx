@@ -5,7 +5,6 @@ import { useSidebar } from '@/shared/components/ui/sidebar';
 import { Skeleton } from '@/shared/components/ui/skeleton';
 import { toast } from '@/shared/components/ui/toast';
 import { cn } from '@/shared/utilities/cn';
-import { motion } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
 import { Coffee, Database, Moon, Palette, Sun, ThermometerSun } from 'lucide-react';
 import { useTheme } from 'next-themes';
@@ -60,7 +59,7 @@ export function ThemeSwitcher() {
 		return (
 			<div className={cn('flex gap-2', !isMobile && state === 'collapsed' && 'flex-col')}>
 				<div className="relative isolate flex h-8 rounded-full bg-background p-1 ring-1 ring-border">
-					<For each={Array(4)} keyExtractor={(_, i) => i}>
+					<For each={Array(4)} keyExtractor={(_: any, i: any) => i}>
 						{() => <Skeleton variant="circular" className="h-6 w-6 rounded-full" />}
 					</For>
 				</div>
