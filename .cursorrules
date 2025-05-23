@@ -1,0 +1,311 @@
+---
+title: Travel Allowance Dashboard - Coding Standards
+description: Comprehensive coding standards and technical requirements for the Travel Allowance application
+---
+
+# Technical Standards & Architecture
+
+## 🛠 Core Technical Stack
+
+- **Framework**: Next.js 15 + React 19 (latest APIs including RC)
+- **Database**: PostgreSQL with Drizzle ORM on neon.tech
+- **UI Components**: ShadcN UI
+- **Form Handling**: Next.js `<Form>` with Server Actions
+- **Validation**: Zod
+- **Environment**: @t3-oss/t3-env
+
+## 📁 Project Structure
+
+```
+src/
+├── api/
+│   └── db/
+│       ├── index.ts
+│       └── schema/
+│           └── index.ts
+├── modules/
+│   └── [MODULE_NAME]/
+│       └── api/
+│           ├── models/
+│           │   ├── index.ts
+│           │   └── validate-*.z.ts
+│           ├── mutations/
+│           │   └── [action-name].ts
+│           └── queries/
+│               └── get-*.ts
+└── shared/
+    └── components/
+        └── ui/
+            └── index.ts
+```
+
+## 💻 Coding Standards
+
+### File & Directory Naming
+- Files: Kebab-case only (`my-component.tsx`)
+- Modules:  for module names
+- Test files: `.test.ts` or `.spec.ts` suffix
+
+### Type System
+- Use types exclusively (no interfaces except when extending)
+- Type naming:
+  - Single type in file: `TProps`
+  - Multiple types: Prefix with 'T' (`TUser`, `TCalendarEntry`)
+- Export types via barrel files (index.ts)
+
+### Function Declarations
+- Use `function functionName()` syntax
+- NO arrow functions (`const functionName = () => {}`)
+- Functions must be self-explanatory (no comments)
+- One Server Action per file
+
+### Component Structure
+- ShadcN UI components in `src/shared/components/ui`
+- Use barrel exports: `export * from './component-name'`
+- Implement Suspense boundaries with skeleton loaders
+
+### Data Handling
+- Server Actions only (no API routes)
+- No useEffect for data fetching
+- Use Next.js `<Form>` with `action={serverAction}`
+- Implement proper caching strategies
+
+### Form & Validation
+- Zod schemas in `src/modules/[MODULE_NAME]/api/models`
+- Robust error handling in Server Actions
+- Form submissions via Server Actions only
+
+## 🔄 Next.js Features Usage
+
+- Partial Prerendering
+- useOptimistic for mutations
+- use hook
+- useTransition hook
+- ViewTransitions component (RC)
+- Suspense with skeleton loaders
+
+## 📊 Database Standards
+
+```
+├── drizzle.config.ts
+├── .env
+└── src/
+    └── api/
+        └── db/
+            ├── index.ts
+            └── schema/
+                └── index.ts
+```
+
+## ⚙️ Environment Configuration
+
+- Use @t3-oss/t3-env for type-safe env
+- Required variables:
+  - DATABASE_URL
+  - AUTH_PROVIDERS (Google, GitHub)
+  - TIMEZONE (Amsterdam)
+
+## 🚫 Prohibited Practices
+
+- No API routes
+- No useEffect for data fetching
+- No arrow function syntax
+- No interfaces (unless extending)
+- No code comments
+- No "actions" folder naming
+- No inline styles
+- No prop drilling
+
+## 🔒 Security Standards
+
+- Secure env variable management
+- OAuth2 implementation for Google/GitHub
+- Proper session handling
+- Data isolation per user
+- Input validation with Zod
+
+## 💅 UI/UX Standards
+
+- Responsive design
+- Skeleton loaders during data fetch
+- Optimistic updates
+- View transitions
+- Consistent error handling
+- Accessible components
+
+## 🔐 Authentication Architecture
+
+### Server-Side Authentication Flow
+- JWT tokens generated and verified only on server
+- Refresh token rotation with limited lifetime
+- HTTP-only secure cookies for token storage
+- CSRF protection via double-submit pattern
+
+### Token Management
+```
+src/
+└── modules/
+    └── auth/
+        ├── api/
+        │   ├── models/
+        │   │   ├── validate-auth.z.ts
+        │   │   └── validate-session.z.ts
+        │   ├── mutations/
+        │   │   ├── create-session.ts
+        │   │   ├── refresh-token.ts
+        │   │   └── revoke-session.ts
+        │   └── queries/
+        │       └── get-session.ts
+        └── lib/
+            ├── jwt.server.ts
+            └── session.server.ts
+```
+
+### Session Flow
+1. Login success → Generate access + refresh tokens
+2. Store refresh token in database
+3. Set HTTP-only cookies
+4. Client requests → Middleware validates token
+5. Token expiry → Auto-refresh via middleware
+
+## 🏢 Workspace Management
+
+### Workspace Structure
+```
+src/
+└── modules/
+    └── workspace/
+        ├── api/
+        │   ├── models/
+        │   │   ├── validate-workspace.z.ts
+        │   │   └── validate-invitation.z.ts
+        │   ├── mutations/
+        │   │   ├── create-workspace.ts
+        │   │   ├── invite-member.ts
+        │   │   └── update-settings.ts
+        │   └── queries/
+        │       ├── get-workspace.ts
+        │       └── list-workspaces.ts
+        └── components/
+            ├── workspace-switcher.tsx
+            └── member-management.tsx
+```
+
+### Database Schema
+```sql
+-- Workspaces
+CREATE TABLE workspaces (
+  id UUID PRIMARY KEY,
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+-- Workspace Members
+CREATE TABLE workspace_members (
+  workspace_id UUID REFERENCES workspaces(id),
+  user_id UUID REFERENCES users(id),
+  role TEXT NOT NULL,
+  joined_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (workspace_id, user_id)
+);
+
+-- Workspace Invitations
+CREATE TABLE workspace_invitations (
+  id UUID PRIMARY KEY,
+  workspace_id UUID REFERENCES workspaces(id),
+  email TEXT NOT NULL,
+  role TEXT NOT NULL,
+  token TEXT UNIQUE NOT NULL,
+  expires_at TIMESTAMP NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+```
+
+### Routing Structure
+```
+/app
+├── (auth)
+│   ├── login
+│   └── register
+├── (workspace)
+│   ├── [workspace]
+│   │   ├── settings
+│   │   ├── members
+│   │   └── modules
+│   └── create
+└── (dashboard)
+    └── overview
+```
+
+### Security Measures
+- Workspace isolation via middleware
+- Role-based access control (RBAC)
+- Rate limiting on invitations
+- Email verification for invites
+- Audit logging for member actions
+
+### Workspace Features
+- Custom domains support
+- Module marketplace
+- Usage analytics
+- Billing integration
+- Member permissions
+- Activity logs
+
+## 🔄 Authentication Flow
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant M as Middleware
+    participant A as Auth Server
+    participant D as Database
+
+    C->>A: Login Request
+    A->>D: Verify Credentials
+    A->>A: Generate Tokens
+    A->>D: Store Refresh Token
+    A->>C: Set HTTP-only Cookies
+
+    C->>M: Protected Route Request
+    M->>M: Validate Access Token
+    M->>A: Auto-refresh if needed
+    M->>C: Response with new tokens
+```
+
+## 🏗 Workspace Creation Flow
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant S as Server
+    participant D as Database
+
+    U->>S: Create Workspace Request
+    S->>S: Validate Input
+    S->>D: Create Workspace Record
+    S->>D: Add Creator as Admin
+    S->>S: Generate Workspace URL
+    S->>U: Return Workspace Details
+```
+
+## 📨 Invitation Flow
+
+```mermaid
+sequenceDiagram
+    participant A as Admin
+    participant S as Server
+    participant D as Database
+    participant U as User
+
+    A->>S: Send Invitation
+    S->>S: Generate Secure Token
+    S->>D: Store Invitation
+    S->>U: Send Email
+    U->>S: Accept Invitation
+    S->>D: Verify Token
+    S->>D: Add Member
+    S->>U: Redirect to Workspace
+```
