@@ -1,5 +1,5 @@
 import { CheckCircle, Info, Loader2, X, XCircle } from 'lucide-react';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { toast as hotToast } from 'react-hot-toast';
 import { cn } from 'utilities';
 
@@ -63,7 +63,7 @@ export function toast({ message, description, type = 'info', duration = 4000 }: 
 			</div>
 		),
 		{
-			duration: type === 'loading' ? Infinity : duration,
+			duration: type === 'loading' ? Number.POSITIVE_INFINITY : duration,
 			position: 'bottom-right',
 		}
 	);

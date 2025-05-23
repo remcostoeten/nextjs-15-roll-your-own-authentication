@@ -6,16 +6,16 @@ import { Container } from '@/shared/components/ui/container';
 
 export default function HomePage() {
 	return (
-    <Flex column className='w-screen min-h-screen mx-auto'>
-		<header className="w-screen sticky top-0 z-50 flex  border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 ">
+		<Flex column className="w-screen min-h-screen mx-auto">
+			<header className="w-screen sticky top-0 z-50 flex  border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 ">
 				<MainNav />
-		</header>
-<Flex column gap='sm' center >
-  <Container>
-			<FeaturesSection />
-    	<GlowingBento />
-</Container>
+			</header>
+			<Flex column gap="sm" center>
+				<Container>
+					<FeaturesSection />
+					<GlowingBento />
+				</Container>
+			</Flex>
 		</Flex>
-    </Flex>
 	);
 }

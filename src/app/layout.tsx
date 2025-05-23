@@ -1,6 +1,6 @@
 import { Providers } from '@/modules/layout/providers';
 import { ThemeProvider } from '@/modules/theme/providers/theme-provider';
-import { type TTheme } from '@/modules/theme/types';
+import type { TTheme } from '@/modules/theme/types';
 import { geistMono } from 'core/config/fonts';
 import { baseMetadata } from 'core/config/metadata';
 import type { Metadata } from 'next';
@@ -14,7 +14,6 @@ export const dynamic = 'force-static';
 export const preferredRegion = 'home';
 export const revalidate = false;
 
-const themes: TTheme[] = ['catpuccini', 'supabase', 'caffeine', 'night-bourbon'];
 
 export default function RootLayout({
 	children,

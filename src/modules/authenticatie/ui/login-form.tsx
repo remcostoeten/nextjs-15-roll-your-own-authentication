@@ -167,7 +167,11 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 
 						<div className="relative hidden h-full min-h-[500px] bg-muted md:block overflow-hidden">
 							<Waves
-								lineColor={theme === "dark" ? "rgba(255, 255, 255, 0.3)" : "rgba(0, 0, 0, 0.3)"}
+								lineColor={
+									theme === 'dark'
+										? 'rgba(255, 255, 255, 0.3)'
+										: 'rgba(0, 0, 0, 0.3)'
+								}
 								backgroundColor="transparent"
 								waveSpeedX={0.02}
 								waveSpeedY={0.01}

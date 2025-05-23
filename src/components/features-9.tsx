@@ -1,7 +1,7 @@
 'use client';
 import { getGithubCommits } from '@/api/queries/get-github-commits';
 import { GitHubStats } from '@/modules/landing/components/stats';
-import { Logo } from '@/shared/components/core/logo';
+import { TextAnimate } from '@/shared/components/effects/text-animate';
 import {
 	type ChartConfig,
 	ChartContainer,
@@ -36,14 +36,16 @@ function CommitPopover({ commit }: { commit: TGitHubCommit }) {
 			<div className="text-xs text-muted-foreground">
 				<p className="font-medium text-foreground">{commit.commit.message}</p>
 				<p className="mt-1">by {commit.commit.author?.name || 'Unknown'}</p>
-				<p>{new Intl.DateTimeFormat('en-US', {
-					weekday: 'long',
-					year: 'numeric',
-					month: 'long',
-					day: 'numeric',
-					hour: '2-digit',
-					minute: '2-digit',
-				}).format(new Date(commit.commit.author?.date))}</p>
+				<p>
+					{new Intl.DateTimeFormat('en-US', {
+						weekday: 'long',
+						year: 'numeric',
+						month: 'long',
+						day: 'numeric',
+						hour: '2-digit',
+						minute: '2-digit',
+					}).format(new Date(commit.commit.author?.date))}
+				</p>
 			</div>
 		</div>
 	);
@@ -52,14 +54,17 @@ function CommitPopover({ commit }: { commit: TGitHubCommit }) {
 export default function FeaturesSection() {
 	const [commits, setCommits] = useState<TGitHubCommit[]>([]);
 	const [loading, setLoading] = useState(true);
-	const [rateLimit, setRateLimit] = useState<{ remaining: number; limit: number; resetAt: string } | null>(null);
+	const [rateLimit, setRateLimit] = useState<{
+		remaining: number;
+		limit: number;
+		resetAt: string;
+	} | null>(null);
 
 	useEffect(() => {
 		const fetchCommits = async () => {
 			try {
 				const commitData = await getGithubCommits();
 				setCommits(commitData || []);
-				// Rate limit info is logged to console
 			} catch (error) {
 				console.error('Error fetching commits:', error);
 			} finally {
@@ -88,7 +93,8 @@ export default function FeaturesSection() {
 						<div aria-hidden className="relative">
 							<div className="absolute inset-0 z-10 m-auto size-fit">
 								<div className="AAAAA bg-background z-1 dark:bg-muted relative flex size-fit w-fit items-center gap-2 border px-3 py-1 text-xs font-medium shadow-md shadow-zinc-950/5">
-									<span className="text-lg">🇨🇩</span> Last connection from DR Congo
+									<span className="text-lg">🇨🇩</span> Last connection from DR
+									Congo
 								</div>
 								<div className="AAAAA bg-background absolute inset-2 -bottom-2 mx-auto border px-3 py-4 text-xs font-medium shadow-md shadow-zinc-950/5 dark:bg-zinc-900"></div>
 							</div>
@@ -113,13 +119,15 @@ export default function FeaturesSection() {
 						<div aria-hidden className="flex flex-col gap-8">
 							<div>
 								<div className="flex items-center gap-2">
-									<span className="flex size-5 rounded-full border">
-										<Logo className="m-auto size-3" uniColor />
-									</span>
-									<span className="text-muted-foreground text-xs">Sat 22 Feb</span>
+									<time className="text-muted-foreground text-xs opacity-70">
+										Sat 22 Feb
+									</time>
 								</div>
 								<div className="AAAAA bg-background mt-1.5 w-3/5 border p-3 text-xs">
-									Hey, I'm having trouble with my account.
+									<TextAnimate
+										className="text-foreground" 
+										text="Hey, I'm having trouble with my account."
+									/>
 								</div>
 							</div>
 
@@ -135,7 +143,7 @@ export default function FeaturesSection() {
 						</div>
 					</div>
 				</div>
-				<GitHubStats/>
+				<GitHubStats />
 				<div className="border-t relative">
 					<div className="absolute z-10 max-w-lg px-6 pr-12 pt-6 md:px-12 md:pt-12">
 						<span className="text-muted-foreground flex items-center gap-2">

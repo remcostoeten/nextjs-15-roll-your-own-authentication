@@ -3,12 +3,12 @@
 import { useAuth } from '@/modules/authenticatie/hooks/use-auth';
 import { AppSidebar } from '@/modules/navigation/components';
 import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
+	Breadcrumb,
+	BreadcrumbItem,
+	BreadcrumbLink,
+	BreadcrumbList,
+	BreadcrumbPage,
+	BreadcrumbSeparator,
 } from '@/shared/components/ui/breadcrumb';
 import { Separator } from '@/shared/components/ui/separator';
 import { SidebarInset, SidebarTrigger } from '@/shared/components/ui/sidebar';

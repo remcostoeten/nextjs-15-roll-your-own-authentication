@@ -10,8 +10,8 @@ services:
       POSTGRES_PASSWORD: postgres
     ports:
       # Exposing the standard PostgreSQL port 5432
-      # Mapping it to port 5432 on the host for easy access
-      - "5432:5432"
+      # Mapping it to port 5433 on the host to avoid conflicts
+      - "5433:5432"
     volumes:
       # This named volume will store your database data
       # so it persists even if the container is removed

@@ -69,7 +69,9 @@ export default function DashboardPage() {
 						) : (
 							<>
 								<div className="text-2xl font-bold">{data?.stats.totalNotes}</div>
-								<p className="text-xs text-muted-foreground">+10% from last month</p>
+								<p className="text-xs text-muted-foreground">
+									+10% from last month
+								</p>
 							</>
 						)}
 					</CardContent>
@@ -85,7 +87,9 @@ export default function DashboardPage() {
 						) : (
 							<>
 								<div className="text-2xl font-bold">{data?.stats.totalTickets}</div>
-								<p className="text-xs text-muted-foreground">+20% from last month</p>
+								<p className="text-xs text-muted-foreground">
+									+20% from last month
+								</p>
 							</>
 						)}
 					</CardContent>
@@ -116,7 +120,9 @@ export default function DashboardPage() {
 							<Skeleton className="h-8 w-20" />
 						) : (
 							<>
-								<div className="text-2xl font-bold">{data?.stats.activityRate}%</div>
+								<div className="text-2xl font-bold">
+									{data?.stats.activityRate}%
+								</div>
 								<p className="text-xs text-muted-foreground">+5% from last month</p>
 							</>
 						)}
@@ -149,7 +155,10 @@ export default function DashboardPage() {
 								<CardContent>
 									<div className="space-y-4">
 										{Array.from({ length: 3 }).map((_, i) => (
-											<div key={i} className="flex items-center justify-between">
+											<div
+												key={i}
+												className="flex items-center justify-between"
+											>
 												<div className="flex items-center gap-3">
 													<Skeleton className="h-8 w-8 rounded-full" />
 													<Skeleton className="h-4 w-24" />

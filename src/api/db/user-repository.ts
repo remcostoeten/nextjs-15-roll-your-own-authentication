@@ -1,8 +1,13 @@
 import { db } from '@/api/db/connection';
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
-import { TUserRole, UserRole, users } from './schema';
-export { noteMentions, noteMentionsRelations, notes, notesRelations } from '../schemas/notes-scheme';
+import { type TUserRole, UserRole, users } from './schema';
+export {
+	noteMentions,
+	noteMentionsRelations,
+	notes,
+	notesRelations,
+} from '../schemas/notes-scheme';
 export type TUser = {
 	id: string;
 	email: string;
@@ -131,7 +136,7 @@ export const userRepository = {
 				lastLoginAt: users.lastLoginAt,
 			})
 			.from(users);
-		return allUsers.map(user => ({ ...user, role: user.role as TUserRole }));
+		return allUsers.map((user) => ({ ...user, role: user.role as TUserRole }));
 	},
 
 	delete: async (id: string) => {

@@ -5,23 +5,19 @@
  */
 
 type TProps = {
-	children: React.ReactNode
-	absolute?: boolean
-	className?: string
-}
+	children: React.ReactNode;
+	absolute?: boolean;
+	className?: string;
+};
 
-const flex = 'flex items-center justify-center w-full'
+const flex = 'flex items-center justify-center w-full';
 
 export function Center({ className, children, absolute = false }: TProps) {
 	return (
-		<div
-			className={`${flex} ${className} ${
-				absolute ? 'fixed inset-0 z-50' : 'relative'
-			}`}
-		>
+		<div className={`${flex} ${className} ${absolute ? 'fixed inset-0 z-50' : 'relative'}`}>
 			{children}
 		</div>
-	)
+	);
 }
 
 /*

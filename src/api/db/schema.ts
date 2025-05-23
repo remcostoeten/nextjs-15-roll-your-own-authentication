@@ -95,21 +95,21 @@ export const noteMentions = pgTable('note_mentions', {
 
 // === Ticket-related schemas ===
 export const TicketStatus = {
-	BACKLOG: "backlog",
-	TODO: "todo",
-	IN_PROGRESS: "in_progress",
-	IN_REVIEW: "in_review",
-	DONE: "done",
-	CANCELED: "canceled",
+	BACKLOG: 'backlog',
+	TODO: 'todo',
+	IN_PROGRESS: 'in_progress',
+	IN_REVIEW: 'in_review',
+	DONE: 'done',
+	CANCELED: 'canceled',
 } as const;
 
 export type TTicketStatus = (typeof TicketStatus)[keyof typeof TicketStatus];
 
 export const TicketPriority = {
-	LOW: "low",
-	MEDIUM: "medium",
-	HIGH: "high",
-	URGENT: "urgent",
+	LOW: 'low',
+	MEDIUM: 'medium',
+	HIGH: 'high',
+	URGENT: 'urgent',
 } as const;
 
 export type TTicketPriority = (typeof TicketPriority)[keyof typeof TicketPriority];

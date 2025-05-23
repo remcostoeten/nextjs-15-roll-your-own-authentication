@@ -4,8 +4,15 @@ export const Logo = ({ className, uniColor }: { className?: string; uniColor?: b
 	return (
 		<div className={cn('flex items-center gap-2', className)}>
 			<div className="relative size-6">
-				<div className={cn('absolute inset-0 size-4 bg-primary', uniColor && 'bg-current')} />
-				<div className={cn('absolute bottom-0 right-0 size-4 bg-primary/50', uniColor && 'bg-current opacity-50')} />
+				<div
+					className={cn('absolute inset-0 size-4 bg-primary', uniColor && 'bg-current')}
+				/>
+				<div
+					className={cn(
+						'absolute bottom-0 right-0 size-4 bg-primary/50',
+						uniColor && 'bg-current opacity-50'
+					)}
+				/>
 			</div>
 			<span className="font-medium">RYOA</span>
 		</div>

@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { ToastProps } from './toast';
-
+import type { ToastProps } from './toast';
 
 const TOAST_LIMIT = 5;
 const TOAST_REMOVE_DELAY = 5000;
@@ -108,7 +107,7 @@ export const reducer = (state: State, action: Action): State => {
 						? {
 								...t,
 								open: false,
-						  }
+							}
 						: t
 				),
 			};

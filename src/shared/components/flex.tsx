@@ -1,4 +1,4 @@
-import React, { JSX, type ReactNode } from 'react';
+import React, { type JSX, type ReactNode } from 'react';
 
 type FlexProps = {
 	children: ReactNode;

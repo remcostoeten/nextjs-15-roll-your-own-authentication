@@ -1,7 +1,7 @@
 'use client';
 
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
-import * as React from 'react';
+import type * as React from 'react';
 import { useEffect, useState } from 'react';
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
@@ -24,7 +24,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 				'caffeine',
 				'caffeine-dark',
 				'night-bourbon',
-				'night-bourbon-dark'
+				'night-bourbon-dark',
 			]}
 			enableSystem={false}
 			storageKey="theme-preference"

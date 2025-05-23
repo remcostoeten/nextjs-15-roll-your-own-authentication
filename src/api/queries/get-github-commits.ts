@@ -13,7 +13,7 @@ type TGitHubError = {
 
 async function checkRateLimit() {
 	const headers = new Headers({
-		'Accept': 'application/vnd.github.v3+json',
+		Accept: 'application/vnd.github.v3+json',
 		'User-Agent': 'nextjs-15-roll-your-own-authentication',
 	});
 
@@ -29,7 +29,7 @@ async function checkRateLimit() {
 		remaining: data.rate.remaining,
 		limit: data.rate.limit,
 		resetAt: new Date(data.rate.reset * 1000).toLocaleString(),
-		isRateLimited: data.rate.remaining === 0
+		isRateLimited: data.rate.remaining === 0,
 	});
 
 	return data.rate;
@@ -46,40 +46,47 @@ export const getGithubCommits = cache(async () => {
 		console.log('Rate Limit:', {
 			remaining: rateLimit.remaining,
 			limit: rateLimit.limit,
-			resetAt: new Date(rateLimit.reset * 1000).toLocaleString()
+			resetAt: new Date(rateLimit.reset * 1000).toLocaleString(),
 		});
 
 		if (rateLimit.remaining === 0) {
-			console.error('GitHub API rate limit exceeded. Resets at:', new Date(rateLimit.reset * 1000).toLocaleString());
+			console.error(
+				'GitHub API rate limit exceeded. Resets at:',
+				new Date(rateLimit.reset * 1000).toLocaleString()
+			);
 			return [];
 		}
 
 		const headers = new Headers({
-			'Accept': 'application/vnd.github.v3+json',
+			Accept: 'application/vnd.github.v3+json',
 			'User-Agent': 'architecture-ryoa',
 		});
 
 		const token = process.env.GITHUB_TOKEN;
 		if (!token) {
-			console.warn('GITHUB_TOKEN not found in environment variables. Using public API with rate limits.');
+			console.warn(
+				'GITHUB_TOKEN not found in environment variables. Using public API with rate limits.'
+			);
 		} else {
 			headers.append('Authorization', `Bearer ${token}`);
-			console.log('Using GitHub token:', token.substring(0, 4) + '...' + token.substring(token.length - 4));
+			console.log(
+				'Using GitHub token:',
+				token.substring(0, 4) + '...' + token.substring(token.length - 4)
+			);
 		}
 
 		// First check if the repository exists
 		console.log('\nChecking repository:', `${REPO_OWNER}/${REPO_NAME}`);
-		const repoResponse = await fetch(
-			`${GITHUB_API_BASE}/repos/${REPO_OWNER}/${REPO_NAME}`,
-			{ headers }
-		);
+		const repoResponse = await fetch(`${GITHUB_API_BASE}/repos/${REPO_OWNER}/${REPO_NAME}`, {
+			headers,
+		});
 
 		if (!repoResponse.ok) {
 			const error = await repoResponse.json();
 			console.error('Repository access error:', {
 				status: repoResponse.status,
 				statusText: repoResponse.statusText,
-				error
+				error,
 			});
 			return [];
 		}
@@ -88,7 +95,7 @@ export const getGithubCommits = cache(async () => {
 		console.log('Repository info:', {
 			name: repoData.name,
 			fullName: repoData.full_name,
-			defaultBranch: repoData.default_branch
+			defaultBranch: repoData.default_branch,
 		});
 
 		// Then fetch commits
@@ -108,7 +115,7 @@ export const getGithubCommits = cache(async () => {
 			console.error('Commits fetch error:', {
 				status: response.status,
 				statusText: response.statusText,
-				error
+				error,
 			});
 			return [];
 		}
@@ -117,7 +124,7 @@ export const getGithubCommits = cache(async () => {
 		console.log('\nFetched commits:', {
 			count: data.length,
 			firstCommit: data[data.length - 1]?.commit?.message,
-			lastCommit: data[0]?.commit?.message
+			lastCommit: data[0]?.commit?.message,
 		});
 		console.log('=== End Debug Info ===\n');
 
