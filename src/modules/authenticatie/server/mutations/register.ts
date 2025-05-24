@@ -1,24 +1,46 @@
 'use server';
 
-import { userRepository } from '@/api/db/user-repository';
 import { env } from '@/api/env';
-import { redirect } from 'next/navigation';
+import { z } from 'zod';
+import { hashPassword } from '../../helpers/hash-password';
 import { createSession } from '../../helpers/session';
+import { userRepository } from '../../repositories/user-repository';
+import type { TAuthMutationResponse } from '../../types';
 
-const REDIRECT_ERROR_CODE = 'NEXT_REDIRECT';
+const registerSchema = z.object({
+	email: z.string().email('Invalid email address'),
+	password: z.string().min(8, 'Password must be at least 8 characters'),
+	name: z.string().optional(),
+});
 
-export async function register(formData: FormData) {
+export async function register(formData: FormData): Promise<TAuthMutationResponse> {
 	const email = formData.get('email')?.toString();
 	const password = formData.get('password')?.toString();
+	const name = formData.get('name')?.toString();
+	const skipValidation = formData.get('skip_validation')?.toString() === 'true';
 
 	if (!email || !password) {
-		throw new Error('Missing credentials');
+		return {
+			success: false,
+			error: 'Missing credentials',
+		};
 	}
 
 	try {
+		// Always validate email
+		registerSchema.shape.email.parse(email);
+
+		// Only validate password if skip_validation is false
+		if (!skipValidation) {
+			registerSchema.shape.password.parse(password);
+		}
+
 		const existing = await userRepository.findByEmail(email);
 		if (existing) {
-			throw new Error('Email already in use');
+			return {
+				success: false,
+				error: 'Email already in use',
+			};
 		}
 
 		const AVATAR_OPTIONS = {
@@ -38,36 +60,43 @@ export async function register(formData: FormData) {
 				Math.floor(Math.random() * Object.values(AVATAR_OPTIONS).length)
 			];
 
+		const hashedPassword = await hashPassword(password);
+
 		// Create the user
 		const user = await userRepository.create({
 			email,
-			password,
+			password: hashedPassword,
 			role: isAdmin ? 'admin' : 'user',
 			avatar: randomAvatar,
-			name: email.split('@')[0], // Set a default name from email
+			name: name || email.split('@')[0], // Set a default name from email
 		});
 
 		// Create the session
-		try {
-			await createSession(user);
-		} catch (error) {
-			console.error('Session creation error:', error);
-			// Only clean up if it's not a redirect
-			if (!(error instanceof Error && error.message === REDIRECT_ERROR_CODE)) {
-				await userRepository.delete(user.id);
-				throw new Error('Failed to create session. Please try again.');
-			}
-		}
+		await createSession(user);
 
-		// If we get here, everything worked
-		redirect('/dashboard');
+		return {
+			success: true,
+			user,
+			message: 'Registration successful',
+			redirect: '/dashboard',
+		};
 	} catch (error) {
 		console.error('Registration error:', error);
-		// Re-throw user-friendly errors
-		if (error instanceof Error) {
-			throw error;
+		if (error instanceof z.ZodError) {
+			return {
+				success: false,
+				error: error.errors[0].message,
+			};
 		}
-		// For unknown errors, throw a generic message
-		throw new Error('An unexpected error occurred. Please try again.');
+		if (error instanceof Error) {
+			return {
+				success: false,
+				error: error.message,
+			};
+		}
+		return {
+			success: false,
+			error: 'An unexpected error occurred. Please try again.',
+		};
 	}
 }

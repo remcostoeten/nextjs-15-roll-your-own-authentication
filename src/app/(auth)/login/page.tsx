@@ -1,60 +1,36 @@
 'use client';
 
-import { login } from '@/modules/authenticatie/server/mutations/login';
-import { useRef, useState } from 'react';
-import { useFormStatus } from 'react-dom';
-
-function LoginButton() {
-	const { pending } = useFormStatus();
-
-	return (
-		<button
-			type="submit"
-			disabled={pending}
-			className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50 w-full"
-		>
-			{pending ? 'Logging in...' : 'Login'}
-		</button>
-	);
-}
+import { GitHubLoginButton } from '@/modules/authenticatie/ui/GitHubLoginButton';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/ui/card';
+import { LoginForm } from './LoginForm';
 
 export default function LoginPage() {
-	const [error, setError] = useState<string>('');
-	const formRef = useRef<HTMLFormElement>(null);
-
-	async function handleSubmit(formData: FormData) {
-		setError('');
-		try {
-			await login(formData);
-		} catch (e) {
-			setError(e instanceof Error ? e.message : 'Failed to login');
-			formRef.current?.reset();
-		}
-	}
-
 	return (
-		<form ref={formRef} action={handleSubmit} className="max-w-sm mx-auto mt-20 space-y-4">
-			<h1 className="text-xl font-bold">Login</h1>
-			{error && (
-				<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-					{error}
-				</div>
-			)}
-			<input
-				name="email"
-				type="email"
-				placeholder="Email"
-				required
-				className="w-full border rounded px-3 py-2"
-			/>
-			<input
-				name="password"
-				type="password"
-				placeholder="Password"
-				required
-				className="w-full border rounded px-3 py-2"
-			/>
-			<LoginButton />
-		</form>
+		<div className="container flex h-screen w-screen flex-col items-center justify-center">
+			<Card className="w-full max-w-lg">
+				<CardHeader className="space-y-1">
+					<CardTitle className="text-2xl">Welcome back</CardTitle>
+					<CardDescription>
+						Choose your preferred sign in method
+					</CardDescription>
+				</CardHeader>
+				<CardContent className="grid gap-4">
+					<GitHubLoginButton className="w-full" />
+
+					<div className="relative">
+						<div className="absolute inset-0 flex items-center">
+							<span className="w-full border-t" />
+						</div>
+						<div className="relative flex justify-center text-xs uppercase">
+							<span className="bg-background px-2 text-muted-foreground">
+								Or continue with
+							</span>
+						</div>
+					</div>
+
+					<LoginForm />
+				</CardContent>
+			</Card>
+		</div>
 	);
 }

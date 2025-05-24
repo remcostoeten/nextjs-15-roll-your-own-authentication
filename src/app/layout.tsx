@@ -1,3 +1,4 @@
+import { DevTools } from '@/modules/authenticatie/ui/dev-tools';
 import '@/styles/globals.css';
 import { Inter } from 'next/font/google';
 
@@ -19,6 +20,7 @@ export default function RootLayout({
         <main className="min-h-screen bg-gray-50">
           {children}
         </main>
+        <DevTools />
       </body>
     </html>
   );

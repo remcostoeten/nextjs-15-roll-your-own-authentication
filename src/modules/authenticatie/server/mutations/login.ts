@@ -1,9 +1,9 @@
 'use server';
 
-import { userRepository } from '@/api/db/user-repository';
+import { verifyPassword } from 'modules/authenticatie/helpers/hash-password';
+import { createSession } from 'modules/authenticatie/helpers/session';
+import { userRepository } from 'modules/authenticatie/repositories/user-repository';
 import { redirect } from 'next/navigation';
-import { verifyPassword } from '../../helpers/hash-password';
-import { createSession } from '../../helpers/session';
 
 export async function login(formData: FormData) {
 	const email = formData.get('email')?.toString();

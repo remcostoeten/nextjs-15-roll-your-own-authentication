@@ -2,19 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { logout } from '../server/mutations/logout';
-
-export type TUser = {
-	id: string;
-	email: string;
-	role: string;
-	name?: string | null;
-	avatar?: string | null;
-};
-
-export type AuthState =
-	| { status: 'loading' }
-	| { status: 'authenticated'; user: TUser }
-	| { status: 'unauthenticated' };
+import { getCurrentUser } from '../server/queries/get-current-user';
+import type { AuthState, AuthUser } from '../types';
 
 export function useAuth() {
 	const [state, setState] = useState<AuthState>({ status: 'loading' });
@@ -22,15 +11,9 @@ export function useAuth() {
 	useEffect(() => {
 		async function fetchUser() {
 			try {
-				const res = await fetch('/api/auth/me');
-				if (!res.ok) {
-					setState({ status: 'unauthenticated' });
-					return;
-				}
-
-				const user = await res.json();
+				const user = await getCurrentUser();
 				if (user?.id) {
-					setState({ status: 'authenticated', user });
+					setState({ status: 'authenticated', user: user as AuthUser });
 				} else {
 					setState({ status: 'unauthenticated' });
 				}

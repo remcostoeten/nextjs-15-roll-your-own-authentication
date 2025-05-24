@@ -21,17 +21,15 @@ export async function createSession(user: { id: string; email: string; role: str
 	const expiresAt = new Date();
 	expiresAt.setDate(expiresAt.getDate() + SESSION_EXPIRY_DAYS);
 
-	// First create the session in the database
 	await db.insert(sessions).values({
 		userId: user.id,
 		expiresAt,
 	});
 
-	// Then set the cookie
 	const cookieStore = await cookies();
 	cookieStore.set(COOKIE_NAME, token, {
 		...COOKIE_OPTIONS,
-		maxAge: 60 * 60 * 24 * SESSION_EXPIRY_DAYS, // 7 days in seconds
+		maxAge: 60 * 60 * 24 * SESSION_EXPIRY_DAYS,
 	});
 }
 
