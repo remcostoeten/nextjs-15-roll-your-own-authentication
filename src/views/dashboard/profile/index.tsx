@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { ConnectedAccounts } from '@/modules/authenticatie/ui/connected-accounts';
-import { ProfileForm } from '@/modules/authenticatie/ui/profile-form';
-import { Separator } from '@/shared/components/ui/separator';
+import { ConnectedAccounts } from "@/modules/authenticatie/ui/connected-accounts";
+import { ProfileForm } from "@/modules/authenticatie/ui/profile-form";
+import { Separator } from "@radix-ui/react-select";
 
 export function ProfileView() {
 	return (

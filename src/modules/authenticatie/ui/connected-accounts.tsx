@@ -1,7 +1,12 @@
-'use client';
+"use client";
 
 import { toast } from '@/shared/components/toast';
-import { Button } from '@/shared/components/ui/button';
+import { useEffect, useState } from 'react';
+import { Button, Icons } from 'ui';
+import { unlinkOAuthAccount } from '../server/mutations/unlink-oauth-account';
+import { getOAuthAccounts } from '../server/queries/get-oauth-accounts';
+import { TOAuthAccount } from '../types/oauth';
+
 import {
 	Card,
 	CardContent,
@@ -9,11 +14,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/shared/components/ui/card';
-import { Icons } from '@/shared/components/ui/icons';
-import { useEffect, useState } from 'react';
-import { unlinkOAuthAccount } from '../server/mutations/unlink-oauth-account';
-import { getOAuthAccounts } from '../server/queries/get-oauth-accounts';
-import { TOAuthAccount } from '../types/oauth';
 
 export function ConnectedAccounts() {
 	const [accounts, setAccounts] = useState<TOAuthAccount[]>([]);

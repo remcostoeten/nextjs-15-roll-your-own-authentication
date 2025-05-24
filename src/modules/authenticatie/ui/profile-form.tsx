@@ -1,7 +1,13 @@
-'use client';
+"use client";
 
 import { toast } from '@/shared/components/toast';
-import { Button } from '@/shared/components/ui/button';
+import { TBaseUser } from '@/shared/types/base';
+import { useTransition } from 'react';
+import { Button, Icons, Input, Label } from 'ui';
+import { useAuth } from '../hooks/use-auth';
+import { updateProfile } from '../server/mutations/update-profile';
+import { getCurrentUser } from '../server/queries/get-current-user';
+
 import {
 	Card,
 	CardContent,
@@ -9,14 +15,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/shared/components/ui/card';
-import { Icons } from '@/shared/components/ui/icons';
-import { Input } from '@/shared/components/ui/input';
-import { Label } from '@/shared/components/ui/label';
-import { TBaseUser } from '@/shared/types/base';
-import { useTransition } from 'react';
-import { useAuth } from '../hooks/use-auth';
-import { updateProfile } from '../server/mutations/update-profile';
-import { getCurrentUser } from '../server/queries/get-current-user';
 
 export function ProfileForm() {
 	const auth = useAuth();

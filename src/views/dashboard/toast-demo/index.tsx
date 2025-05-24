@@ -1,13 +1,8 @@
-'use client';
+"use client";
 
 import { toast } from '@/shared/components/toast';
-import { Button } from '@/shared/components/ui/button';
-import { Card } from '@/shared/components/ui/card';
-import { Input } from '@/shared/components/ui/input';
-import { Label } from '@/shared/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select';
-import { Switch } from '@/shared/components/ui/switch';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { Button, Card, Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Switch } from 'ui';
 
 type TToast = 'success' | 'error' | 'warning' | 'info' | 'neutral';
 

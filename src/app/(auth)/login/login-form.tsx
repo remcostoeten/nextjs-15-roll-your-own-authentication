@@ -1,14 +1,10 @@
-'use client';
-
 import { login } from '@/modules/authenticatie/server/mutations/login';
 import { toast } from '@/shared/components/toast';
-import { Button } from '@/shared/components/ui/button';
-import { Input } from '@/shared/components/ui/input';
-import { Label } from '@/shared/components/ui/label';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import { useFormStatus } from 'react-dom';
+import { Button, Input, Label } from 'ui';
 
 function LoginButton() {
 	const { pending } = useFormStatus();

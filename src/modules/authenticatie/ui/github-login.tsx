@@ -1,12 +1,11 @@
-'use client';
+"use client";
 
 import { toast } from '@/shared/components/toast';
-import { Button } from '@/shared/components/ui/button';
-import { Icons } from '@/shared/components/ui/icons';
 import { useState } from 'react';
+import { Button, Icons } from 'ui';
 import { generateGitHubAuthUrl } from '../server/mutations/github-login';
 
-type TGitHubLoginButtonProps = {
+type TProps = {
 	className?: string;
 	redirectTo?: string;
 };
@@ -14,7 +13,7 @@ type TGitHubLoginButtonProps = {
 export function GitHubLoginButton({
 	className,
 	redirectTo = '/dashboard',
-}: TGitHubLoginButtonProps) {
+}: TProps) {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleLogin = async () => {
