@@ -68,19 +68,19 @@ export function DashboardView() {
 
 	return (
 		<div className="space-y-6">
-			<div className="bg-background bbb shadow rounded-lg p-6">
+			<div className="bg-background bbb shadow-sm rounded-lg p-6">
 				<h2 className="text-2xl font-bold text-gray-900">Welcome, {auth.user.email}!</h2>
 				<p className="mt-2 text-gray-600">
 					You are logged in as: <span className="font-medium">{auth.user.role}</span>
 				</p>
 			</div>
 
-			<div className="bg-background bbb shadow rounded-lg p-6">
-				<h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+			<div className="bgdark-lighttext  bglight-darktext bbb shadow-sm rounded-lg p-6 contain">
+				<h3 className="text-lg font-semibold text-foreground mb-4">Quick Actions</h3>
 				<div className="space-y-4">
 					<button
 						onClick={() => router.push('/dashboard/profile')}
-						className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 px-4 py-2 rounded-lg transition-colors text-left"
+						className="w-full bg-background border text-foreground px-4 py-2 rounded-lg transition-colors text-left"
 					>
 						Edit Profile
 					</button>

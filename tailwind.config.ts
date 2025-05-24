@@ -1,7 +1,9 @@
+import typography from '@tailwindcss/typography';
 import type { Config } from "tailwindcss";
+import tailwindAnimate from 'tailwindcss-animate';
 
-export default {
-  darkMode: ['class'],
+const config: Config = {
+  darkMode: 'class',
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -179,12 +181,15 @@ export default {
     },
   },
   plugins: [
-    require('tailwindcss-animate'),
-    require('@tailwindcss/typography'),
+    tailwindAnimate,
+    typography,
   ],
+  // @ts-expect-error - safelist is a valid config option but not typed in Config
   safelist: [
     {
       pattern: /translate-[xy]-[-]?\d+/,
     },
   ],
 } satisfies Config;
+
+export default config;

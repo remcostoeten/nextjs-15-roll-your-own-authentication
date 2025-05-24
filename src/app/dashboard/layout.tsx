@@ -16,7 +16,7 @@ export default function DashboardLayout({
 	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white">
+		<div className="min-h-screen bg-linear-to-br from-gray-900 to-black text-white">
 			<Suspense fallback={<DashboardLoading />}>
 				<main className="container mx-auto px-4 py-8">{children}</main>
 			</Suspense>

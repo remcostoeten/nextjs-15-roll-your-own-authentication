@@ -12,11 +12,11 @@ import {
 import { Icons } from '@/shared/components/ui/icons';
 import { Input } from '@/shared/components/ui/input';
 import { Label } from '@/shared/components/ui/label';
+import { TBaseUser } from '@/shared/types/base';
 import { useTransition } from 'react';
 import { useAuth } from '../hooks/use-auth';
 import { updateProfile } from '../server/mutations/update-profile';
 import { getCurrentUser } from '../server/queries/get-current-user';
-import { TUser } from '../types/user';
 
 export function ProfileForm() {
 	const auth = useAuth();
@@ -34,7 +34,7 @@ export function ProfileForm() {
 				if (result.success) {
 					const updatedUser = await getCurrentUser();
 					if (updatedUser) {
-						auth.updateUser(updatedUser as TUser);
+						auth.updateUser(updatedUser as TBaseUser);
 						toast.success('Profile updated successfully');
 					} else {
 						toast.error('Failed to refresh user data');

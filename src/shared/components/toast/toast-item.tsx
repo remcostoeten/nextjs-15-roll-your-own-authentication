@@ -85,7 +85,7 @@ const { removeToast } = useToastContext();
       onClick={handleClose}
     >
       <div className="flex items-center gap-2.5 relative z-10">
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           {getIcon()}
         </div>
         <div className="flex-1 min-w-0">
@@ -98,7 +98,7 @@ const { removeToast } = useToastContext();
             e.stopPropagation();
             handleClose();
           }}
-          className="flex-shrink-0 text-white/40 hover:text-white/70
+          className="shrink-0 text-white/40 hover:text-white/70
                      transition-colors duration-200 p-0.5 -m-0.5 rounded
                      hover:bg-background bbb/5"
         >
