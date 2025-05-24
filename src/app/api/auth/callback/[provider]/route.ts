@@ -1,51 +1,43 @@
 import { GitHubOAuthService } from '@/modules/authenticatie/services/github-oauth-service';
 import { TOAuthProvider } from '@/modules/authenticatie/types/oauth';
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 const OAUTH_SERVICES = {
   github: new GitHubOAuthService(),
 };
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { provider: TOAuthProvider } }
-) {
+export async function GET(request: NextRequest) {
   try {
+    const pathname = request.nextUrl.pathname;
+    const parts = pathname.split('/');
+    const provider = parts[parts.length - 1] as TOAuthProvider;
+
     const searchParams = request.nextUrl.searchParams;
     const code = searchParams.get('code');
     const state = searchParams.get('state');
     const error = searchParams.get('error');
 
     if (error) {
-      return Response.redirect(
-        `/login?error=${encodeURIComponent(error)}`
-      );
+      return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(error)}`, request.url));
     }
 
     if (!code || !state) {
-      return Response.redirect(
-        `/login?error=${encodeURIComponent('Missing code or state')}`
-      );
+      return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent('Missing code or state')}`, request.url));
     }
 
-    const service = OAUTH_SERVICES[params.provider];
+    const service = OAUTH_SERVICES[provider];
     if (!service) {
-      return Response.redirect(
-        `/login?error=${encodeURIComponent('Invalid provider')}`
-      );
+      return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent('Invalid provider')}`, request.url));
     }
 
     const { redirectTo = '/dashboard' } = JSON.parse(state);
     const { user, isNewUser } = await service.handleCallback(code);
 
-    // Add a welcome message for new users
     const successParam = isNewUser ? '&welcome=true' : '';
-    return Response.redirect(`${redirectTo}?success=true${successParam}`);
+    return NextResponse.redirect(new URL(`${redirectTo}?success=true${successParam}`, request.url));
   } catch (error) {
     console.error('OAuth callback error:', error);
     const message = error instanceof Error ? error.message : 'Authentication failed';
-    return Response.redirect(
-      `/login?error=${encodeURIComponent(message)}`
-    );
+    return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(message)}`, request.url));
   }
 }

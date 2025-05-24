@@ -3,17 +3,17 @@
 import { useEffect, useState } from 'react';
 import { logout } from '../server/mutations/logout';
 import { getCurrentUser } from '../server/queries/get-current-user';
-import type { AuthState, AuthUser } from '../types';
+import type { TAuthState, TAuthUser } from '../types';
 
 export function useAuth() {
-	const [state, setState] = useState<AuthState>({ status: 'loading' });
+	const [state, setState] = useState<TAuthState>({ status: 'loading' });
 
 	useEffect(() => {
 		async function fetchUser() {
 			try {
 				const user = await getCurrentUser();
 				if (user?.id) {
-					setState({ status: 'authenticated', user: user as AuthUser });
+					setState({ status: 'authenticated', user: user as TAuthUser });
 				} else {
 					setState({ status: 'unauthenticated' });
 				}

@@ -1,10 +1,10 @@
 {
 	"editor.formatOnSave": true,
 	"editor.formatOnPaste": true,
-	"editor.defaultFormatter": "biomejs.biome",
+	"editor.defaultFormatter": "@biomejs/biome",
 	"editor.codeActionsOnSave": {
-		"source.organizeImports": "explicit",
-		"source.fixAll": "explicit"
+		"source.organizeImports": "always",
+		"source.fixAll":"always"
 	},
 	"files.autoSave": "onFocusChange",
 	"files.autoSaveDelay": 1000,
@@ -14,18 +14,19 @@
 	"files.trimFinalNewlines": true,
 	"files.insertFinalNewline": true,
 	"[typescript]": {
-		"editor.defaultFormatter": "biomejs.biome"
+		"editor.defaultFormatter": "@biomejs/biome"
 	},
 	"[javascript]": {
-		"editor.defaultFormatter": "biomejs.biome"
+		"editor.defaultFormatter": "@biomejs/biome"
 	},
 	"[typescriptreact]": {
-		"editor.defaultFormatter": "biomejs.biome"
+		"editor.defaultFormatter": "@biomejs/biome"
 	},
 	"[javascriptreact]": {
-		"editor.defaultFormatter": "biomejs.biome"
+		"editor.defaultFormatter": "@biomejs/biome"
 	},
 	"[json]": {
-		"editor.defaultFormatter": "biomejs.biome"
-	}
+		"editor.defaultFormatter": "@biomejs/biome"
+	},
+	"editor.fontWeight":"500"
 }
