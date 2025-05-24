@@ -100,7 +100,7 @@ const { removeToast } = useToastContext();
           }}
           className="flex-shrink-0 text-white/40 hover:text-white/70
                      transition-colors duration-200 p-0.5 -m-0.5 rounded
-                     hover:bg-white/5"
+                     hover:bg-background bbb/5"
         >
           <X className="w-3 h-3" />
         </button>

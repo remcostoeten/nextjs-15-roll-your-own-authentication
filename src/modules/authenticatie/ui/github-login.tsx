@@ -30,11 +30,16 @@ export function GitHubLoginButton({
 	};
 
 	return (
-		<Button variant="outline" onClick={handleLogin} disabled={isLoading} className={className}>
+		<Button
+			variant="outline"
+			onClick={handleLogin}
+			disabled={isLoading}
+			className={`bg-background border-border text-foreground hover:bg-muted hover:text-foreground ${className}`}
+		>
 			{isLoading ? (
-				<Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+				<Icons.spinner className="mr-2 h-4 w-4 animate-spin text-foreground" />
 			) : (
-				<Icons.gitHub className="mr-2 h-4 w-4" />
+				<Icons.gitHub className="mr-2 h-4 w-4 text-foreground" />
 			)}
 			Continue with GitHub
 		</Button>

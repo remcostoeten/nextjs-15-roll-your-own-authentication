@@ -1,8 +1,8 @@
 'use server';
 
-import { sessions } from '@/api/db/schema';
 import { db } from 'db';
 import { cookies } from 'next/headers';
+import { sessions } from 'schema';
 import { signJwt, verifyJwt } from './jwt';
 
 const COOKIE_NAME = 'auth_token';

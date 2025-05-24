@@ -1,13 +1,13 @@
 'use client';
 
-import { toast } from '@/shared/components/custom-toast';
+import { toast } from '@/shared/components/toast';
 import { Button } from '@/shared/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
 } from '@/shared/components/ui/card';
 import { Icons } from '@/shared/components/ui/icons';
 import { useEffect, useState } from 'react';

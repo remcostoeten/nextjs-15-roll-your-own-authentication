@@ -1,6 +1,6 @@
 'use client';
 
-import { toast } from '@/shared/components/custom-toast';
+import { toast } from '@/shared/components/toast';
 import { Button } from '@/shared/components/ui/button';
 import {
 	Card,
@@ -15,6 +15,8 @@ import { Label } from '@/shared/components/ui/label';
 import { useTransition } from 'react';
 import { useAuth } from '../hooks/use-auth';
 import { updateProfile } from '../server/mutations/update-profile';
+import { getCurrentUser } from '../server/queries/get-current-user';
+import { TUser } from '../types/user';
 
 export function ProfileForm() {
 	const auth = useAuth();
@@ -30,7 +32,13 @@ export function ProfileForm() {
 				const result = await updateProfile(formData);
 
 				if (result.success) {
-					toast.success('Profile updated successfully');
+					const updatedUser = await getCurrentUser();
+					if (updatedUser) {
+						auth.updateUser(updatedUser as TUser);
+						toast.success('Profile updated successfully');
+					} else {
+						toast.error('Failed to refresh user data');
+					}
 				} else {
 					toast.error(result.error || 'Failed to update profile');
 				}

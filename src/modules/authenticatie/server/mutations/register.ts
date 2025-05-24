@@ -1,17 +1,11 @@
 'use server';
 
-import { env } from '@/api/env';
+import { env } from 'env';
 import { z } from 'zod';
-import { hashPassword } from '../../helpers/hash-password';
-import { createSession } from '../../helpers/session';
+import { createSession, hashPassword } from '../../helpers/';
 import { userRepository } from '../../repositories/user-repository';
 import type { TAuthMutationResponse } from '../../types';
-
-const registerSchema = z.object({
-	email: z.string().email('Invalid email address'),
-	password: z.string().min(8, 'Password must be at least 8 characters'),
-	name: z.string().optional(),
-});
+import { registerSchema } from '../models/z.register';
 
 export async function register(formData: FormData): Promise<TAuthMutationResponse> {
 	const email = formData.get('email')?.toString();

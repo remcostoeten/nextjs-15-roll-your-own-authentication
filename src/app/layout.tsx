@@ -1,5 +1,5 @@
+import { Providers } from '@/components/providers';
 import { DevTools } from '@/modules/authenticatie/ui/dev-tools';
-import { ToastProvider } from '@/shared/components/toast';
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -19,10 +19,10 @@ export default function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning className="dark">
 			<body className={inter.className}>
-				<ToastProvider>
+				<Providers>
 					<main className="min-h-screen bg-gray-50">{children}</main>
 					<DevTools />
-				</ToastProvider>
+				</Providers>
 			</body>
 		</html>
 	);

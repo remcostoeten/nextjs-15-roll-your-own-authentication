@@ -35,8 +35,13 @@ export function useAuth() {
 		}
 	};
 
+	const updateUser = (user: TAuthUser) => {
+		setState({ status: 'authenticated', user });
+	};
+
 	return {
 		...state,
 		signOut,
+		updateUser,
 	};
 }

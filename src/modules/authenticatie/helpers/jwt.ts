@@ -1,16 +1,16 @@
 import { env } from '@/api/env';
-import { SignJWT, jwtVerify } from 'jose';
+import { JWTPayload, SignJWT, jwtVerify } from 'jose';
 
 const JWT_SECRET = new TextEncoder().encode(env.JWT_SECRET);
 const EXPIRATION = '7d';
 
-type JWTPayload = {
+type TPayload = {
 	id: string;
 	email: string;
 	role: string;
 };
 
-export async function signJwt(payload: JWTPayload) {
+export async function signJwt(payload: TPayload) {
 	return new SignJWT(payload)
 		.setProtectedHeader({ alg: 'HS256' })
 		.setIssuedAt()
