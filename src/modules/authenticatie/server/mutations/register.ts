@@ -35,7 +35,7 @@ export async function register(formData: FormData): Promise<TAuthMutationRespons
 			registerSchema.shape.password.parse(password);
 		}
 
-		const existing = await userRepository.findByEmail(email);
+		const existing = await userRepository().findByEmail(email);
 		if (existing) {
 			return {
 				success: false,
@@ -63,7 +63,7 @@ export async function register(formData: FormData): Promise<TAuthMutationRespons
 		const hashedPassword = await hashPassword(password);
 
 		// Create the user
-		const user = await userRepository.create({
+		const user = await userRepository().create({
 			email,
 			password: hashedPassword,
 			role: isAdmin ? 'admin' : 'user',

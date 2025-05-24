@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, unique, uuid } from 'drizzle-orm/pg-core';
 import { users } from './users';
 
 export const oauthAccounts = pgTable('oauth_accounts', {
@@ -11,7 +11,9 @@ export const oauthAccounts = pgTable('oauth_accounts', {
 	accessToken: text('access_token').notNull(),
 	createdAt: timestamp('created_at').defaultNow().notNull(),
 	updatedAt: timestamp('updated_at').defaultNow().notNull(),
-});
+}, (table) => ({
+	providerAccountIdx: unique().on(table.provider, table.providerAccountId),
+}));
 
 // Create a unique constraint to prevent multiple accounts from the same provider
 export const oauthAccountsProviderKey = pgTable('oauth_accounts_provider_key', {

@@ -1,5 +1,6 @@
 'use client';
 
+import { toast } from '@/shared/components/custom-toast';
 import { Button } from '@/shared/components/ui/button';
 import {
 	Card,
@@ -11,33 +12,30 @@ import {
 import { Icons } from '@/shared/components/ui/icons';
 import { Input } from '@/shared/components/ui/input';
 import { Label } from '@/shared/components/ui/label';
-import { useState, useTransition } from 'react';
+import { useTransition } from 'react';
 import { useAuth } from '../hooks/use-auth';
 import { updateProfile } from '../server/mutations/update-profile';
 
 export function ProfileForm() {
-	const { user } = useAuth();
+	const auth = useAuth();
 	const [isPending, startTransition] = useTransition();
-	const [error, setError] = useState<string | null>(null);
-	const [success, setSuccess] = useState<string | null>(null);
+
+	if (auth.status !== 'authenticated') {
+		return null;
+	}
 
 	async function onSubmit(formData: FormData) {
-		setError(null);
-		setSuccess(null);
-
 		startTransition(async () => {
 			try {
-				if (!user) return;
-
 				const result = await updateProfile(formData);
 
 				if (result.success) {
-					setSuccess('Profile updated successfully');
+					toast.success('Profile updated successfully');
 				} else {
-					setError(result.error || 'Failed to update profile');
+					toast.error(result.error || 'Failed to update profile');
 				}
 			} catch (err) {
-				setError(err instanceof Error ? err.message : 'An error occurred');
+				toast.error(err instanceof Error ? err.message : 'An error occurred');
 			}
 		});
 	}
@@ -57,7 +55,7 @@ export function ProfileForm() {
 						<Input
 							id="name"
 							name="name"
-							defaultValue={user?.name || ''}
+							defaultValue={auth.user.name || ''}
 							disabled={isPending}
 						/>
 					</div>
@@ -67,7 +65,7 @@ export function ProfileForm() {
 							id="email"
 							name="email"
 							type="email"
-							defaultValue={user?.email}
+							defaultValue={auth.user.email}
 							disabled={isPending}
 						/>
 					</div>
@@ -89,16 +87,6 @@ export function ProfileForm() {
 							disabled={isPending}
 						/>
 					</div>
-					{error && (
-						<div className="text-sm font-medium text-red-500">
-							{error}
-						</div>
-					)}
-					{success && (
-						<div className="text-sm font-medium text-green-500">
-							{success}
-						</div>
-					)}
 					<Button type="submit" disabled={isPending}>
 						{isPending && (
 							<Icons.spinner className="mr-2 h-4 w-4 animate-spin" />

@@ -2,18 +2,36 @@
 
 import { useAuth } from '@/modules/authenticatie/hooks/use-auth';
 import { logout } from '@/modules/authenticatie/server/mutations/logout';
-import { useRouter } from 'next/navigation';
+import { toast } from '@/shared/components/toast';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function DashboardPage() {
 	const auth = useAuth();
 	const router = useRouter();
+	const searchParams = useSearchParams();
 
 	useEffect(() => {
 		if (auth.status === 'unauthenticated') {
 			router.replace('/login');
 		}
 	}, [auth.status, router]);
+
+	useEffect(() => {
+		const success = searchParams.get('success');
+		const welcome = searchParams.get('welcome');
+
+		if (success === 'true') {
+			if (welcome === 'true') {
+				toast.success('Welcome to your new account! 🎉');
+			}
+			// Clean up the URL
+			const url = new URL(window.location.href);
+			url.searchParams.delete('success');
+			url.searchParams.delete('welcome');
+			window.history.replaceState({}, '', url);
+		}
+	}, [searchParams]);
 
 	if (auth.status === 'loading') {
 		return (
@@ -36,9 +54,11 @@ export default function DashboardPage() {
 	const handleLogout = async () => {
 		try {
 			await logout();
+			toast.success('Successfully logged out');
 			router.replace('/login');
 		} catch (error) {
 			console.error('Error logging out:', error);
+			toast.error('Failed to logout');
 		}
 	};
 

@@ -1,9 +1,10 @@
 'use client';
 
 import { register } from '@/modules/authenticatie/server/mutations/register';
+import { toast } from '@/shared/components/toast';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useRef, useState, useTransition } from 'react';
+import { useRef, useTransition } from 'react';
 import { useFormStatus } from 'react-dom';
 
 function RegisterButton() {
@@ -28,25 +29,29 @@ function RegisterButton() {
 }
 
 export default function RegisterPage() {
-	const [error, setError] = useState<string>('');
 	const formRef = useRef<HTMLFormElement>(null);
 	const router = useRouter();
 	const [isPending, startTransition] = useTransition();
 
 	async function handleSubmit(formData: FormData) {
-		setError('');
 		try {
-			await register(formData);
-			startTransition(() => {
-				router.push('/dashboard');
-			});
+			const result = await register(formData);
+			if (result.success) {
+				toast.success('Account created successfully');
+				startTransition(() => {
+					router.push(result.redirect || '/dashboard');
+				});
+			} else {
+				toast.error(result.error || 'Failed to create account');
+				formRef.current?.reset();
+			}
 		} catch (e) {
 			if (e instanceof Error && e.message.includes('NEXT_REDIRECT')) {
 				startTransition(() => {
 					router.push('/dashboard');
 				});
 			} else {
-				setError(e instanceof Error ? e.message : 'Failed to register');
+				toast.error(e instanceof Error ? e.message : 'Failed to register');
 				formRef.current?.reset();
 			}
 		}
@@ -71,12 +76,6 @@ export default function RegisterPage() {
 			</div>
 
 			<form ref={formRef} action={handleSubmit} className="space-y-4">
-				{error && (
-					<div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
-						{error}
-					</div>
-				)}
-
 				<div className="space-y-2">
 					<label htmlFor="email" className="block text-sm font-medium text-gray-700">
 						Email

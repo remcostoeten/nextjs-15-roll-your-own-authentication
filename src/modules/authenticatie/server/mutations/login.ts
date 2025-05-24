@@ -1,24 +1,47 @@
 'use server';
 
-import { verifyPassword } from 'modules/authenticatie/helpers/hash-password';
 import { createSession } from 'modules/authenticatie/helpers/session';
 import { userRepository } from 'modules/authenticatie/repositories/user-repository';
-import { redirect } from 'next/navigation';
+import type { TAuthMutationResponse } from '../../types';
 
-export async function login(formData: FormData) {
+export async function login(formData: FormData): Promise<TAuthMutationResponse> {
 	const email = formData.get('email')?.toString();
 	const password = formData.get('password')?.toString();
 
 	if (!email || !password) {
-		throw new Error('Missing credentials');
+		return {
+			success: false,
+			error: 'Missing credentials'
+		};
 	}
 
-	const user = await userRepository.findByEmail(email);
+	try {
+		const user = await userRepository().validateCredentials(email, password);
+		if (!user) {
+			return {
+				success: false,
+				error: 'Invalid credentials'
+			};
+		}
 
-	if (!user || !(await verifyPassword(password, user.password))) {
-		throw new Error('Invalid credentials');
+		await createSession(user);
+		return {
+			success: true,
+			user,
+			message: 'Login successful',
+			redirect: '/dashboard'
+		};
+	} catch (error) {
+		console.error('Login error:', error);
+		if (error instanceof Error) {
+			return {
+				success: false,
+				error: error.message
+			};
+		}
+		return {
+			success: false,
+			error: 'An unexpected error occurred'
+		};
 	}
-
-	await createSession(user);
-	redirect('/dashboard');
 }

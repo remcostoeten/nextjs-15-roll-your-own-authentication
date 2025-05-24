@@ -1,5 +1,6 @@
 'use client';
 
+import { toast } from '@/shared/components/custom-toast';
 import { Button } from '@/shared/components/ui/button';
 import {
   Card,
@@ -17,7 +18,6 @@ import { TOAuthAccount } from '../types/oauth';
 export function ConnectedAccounts() {
 	const [accounts, setAccounts] = useState<TOAuthAccount[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
 		async function loadAccounts() {
@@ -26,10 +26,10 @@ export function ConnectedAccounts() {
 				if (result.success && result.accounts) {
 					setAccounts(result.accounts);
 				} else {
-					setError(result.error || 'Failed to load accounts');
+					toast.error(result.error || 'Failed to load accounts');
 				}
 			} catch (error) {
-				setError('Failed to load accounts');
+				toast.error('Failed to load accounts');
 				console.error('Error loading OAuth accounts:', error);
 			} finally {
 				setIsLoading(false);
@@ -44,11 +44,12 @@ export function ConnectedAccounts() {
 			const result = await unlinkOAuthAccount(provider as any);
 			if (result.success) {
 				setAccounts(accounts.filter(account => account.provider !== provider));
+				toast.success('Account unlinked successfully');
 			} else {
-				setError(result.error || 'Failed to unlink account');
+				toast.error(result.error || 'Failed to unlink account');
 			}
 		} catch (error) {
-			setError('Failed to unlink account');
+			toast.error('Failed to unlink account');
 			console.error('Error unlinking account:', error);
 		}
 	};
@@ -74,11 +75,6 @@ export function ConnectedAccounts() {
 				<CardDescription>Manage your connected accounts</CardDescription>
 			</CardHeader>
 			<CardContent>
-				{error && (
-					<div className="mb-4 text-sm font-medium text-red-500">
-						{error}
-					</div>
-				)}
 				{accounts.length === 0 ? (
 					<p className="text-sm text-muted-foreground">
 						No connected accounts

@@ -18,16 +18,22 @@ export async function GET(request: NextRequest) {
     const error = searchParams.get('error');
 
     if (error) {
-      return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(error)}`, request.url));
+      return NextResponse.redirect(
+        new URL(`/login?error=${encodeURIComponent(error)}&toast=error&message=${encodeURIComponent('Authentication failed')}`, request.url)
+      );
     }
 
     if (!code || !state) {
-      return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent('Missing code or state')}`, request.url));
+      return NextResponse.redirect(
+        new URL(`/login?error=${encodeURIComponent('Missing code or state')}&toast=error&message=${encodeURIComponent('Authentication failed')}`, request.url)
+      );
     }
 
     const service = OAUTH_SERVICES[provider];
     if (!service) {
-      return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent('Invalid provider')}`, request.url));
+      return NextResponse.redirect(
+        new URL(`/login?error=${encodeURIComponent('Invalid provider')}&toast=error&message=${encodeURIComponent('Authentication failed')}`, request.url)
+      );
     }
 
     const { redirectTo = '/dashboard' } = JSON.parse(state);
@@ -38,6 +44,8 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('OAuth callback error:', error);
     const message = error instanceof Error ? error.message : 'Authentication failed';
-    return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(message)}`, request.url));
+    return NextResponse.redirect(
+      new URL(`/login?error=${encodeURIComponent(message)}&toast=error&message=${encodeURIComponent('Authentication failed')}`, request.url)
+    );
   }
 }

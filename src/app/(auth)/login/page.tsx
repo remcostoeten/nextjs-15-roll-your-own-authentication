@@ -1,6 +1,7 @@
 'use client';
 
 import { GitHubLoginButton } from '@/modules/authenticatie/ui/GitHubLoginButton';
+import { toast } from '@/shared/components/toast';
 import {
 	Card,
 	CardContent,
@@ -8,9 +9,32 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/shared/components/ui/card';
+import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 import { LoginForm } from './LoginForm';
 
 export default function LoginPage() {
+	const searchParams = useSearchParams();
+
+	useEffect(() => {
+		const toastType = searchParams.get('toast');
+		const message = searchParams.get('message');
+		const error = searchParams.get('error');
+
+		if (toastType === 'error' && message) {
+			toast.error(message);
+		}
+
+		// Clean up the URL
+		if (toastType || message || error) {
+			const url = new URL(window.location.href);
+			url.searchParams.delete('toast');
+			url.searchParams.delete('message');
+			url.searchParams.delete('error');
+			window.history.replaceState({}, '', url);
+		}
+	}, [searchParams]);
+
 	return (
 		<div className="container flex h-screen w-screen flex-col items-center justify-center">
 			<Card className="w-full max-w-lg">

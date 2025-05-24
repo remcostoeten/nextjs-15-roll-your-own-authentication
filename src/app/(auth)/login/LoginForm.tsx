@@ -1,11 +1,13 @@
 'use client';
 
 import { login } from '@/modules/authenticatie/server/mutations/login';
+import { toast } from '@/shared/components/toast';
 import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
 import { Label } from '@/shared/components/ui/label';
 import Link from 'next/link';
-import { useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useRef } from 'react';
 import { useFormStatus } from 'react-dom';
 
 function LoginButton() {
@@ -19,15 +21,21 @@ function LoginButton() {
 }
 
 export function LoginForm() {
-	const [error, setError] = useState<string>('');
 	const formRef = useRef<HTMLFormElement>(null);
+	const router = useRouter();
 
 	async function handleSubmit(formData: FormData) {
-		setError('');
 		try {
-			await login(formData);
+			const result = await login(formData);
+			if (result.success) {
+				toast.success('Successfully logged in');
+				router.push(result.redirect || '/dashboard');
+			} else {
+				toast.error(result.error || 'Failed to login');
+				formRef.current?.reset();
+			}
 		} catch (e) {
-			setError(e instanceof Error ? e.message : 'Failed to login');
+			toast.error(e instanceof Error ? e.message : 'Failed to login');
 			formRef.current?.reset();
 		}
 	}
@@ -35,11 +43,6 @@ export function LoginForm() {
 	return (
 		<div className="grid gap-6">
 			<form ref={formRef} action={handleSubmit}>
-				{error && (
-					<div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md">
-						{error}
-					</div>
-				)}
 				<div className="grid gap-4">
 					<div className="grid gap-2">
 						<Label htmlFor="email">Email</Label>

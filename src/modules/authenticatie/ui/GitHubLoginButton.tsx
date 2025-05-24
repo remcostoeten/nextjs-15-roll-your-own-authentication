@@ -1,5 +1,6 @@
 'use client';
 
+import { toast } from '@/shared/components/toast';
 import { Button } from '@/shared/components/ui/button';
 import { Icons } from '@/shared/components/ui/icons';
 import { useState } from 'react';
@@ -23,6 +24,7 @@ export function GitHubLoginButton({
 			window.location.href = url;
 		} catch (error) {
 			console.error('GitHub login error:', error);
+			toast.error('Failed to initiate GitHub login');
 			setIsLoading(false);
 		}
 	};
