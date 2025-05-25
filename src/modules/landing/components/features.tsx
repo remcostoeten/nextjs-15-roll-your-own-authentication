@@ -147,9 +147,8 @@ export default function FeaturesSection() {
 								</div>
 							</BlurIn>
 
-							{/* Map appears with the badge */}
 							<BlurIn delay={0.8}>
-								<div className="relative overflow-hidden translate-y-[4	rem]">
+								<div className="relative overflow-hidden transX-y">
 									<div className="bg-radial z-1 to-background absolute inset-0 from-transparent to-75%"></div>
 									<Map />
 								</div>
