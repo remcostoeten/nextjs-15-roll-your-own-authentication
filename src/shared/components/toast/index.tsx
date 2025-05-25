@@ -54,7 +54,12 @@ export function useInitializeToast() {
 	}
 }
 
-function ToastItem({ toast, onRemove, index, total }: { toast: Toast; onRemove: () => void; index: number; total: number }) {
+function ToastItem({
+	toast,
+	onRemove,
+	index,
+	total,
+}: { toast: Toast; onRemove: () => void; index: number; total: number }) {
 	const [isExiting, setIsExiting] = useState(false);
 
 	useEffect(() => {
@@ -106,13 +111,15 @@ function ToastItem({ toast, onRemove, index, total }: { toast: Toast; onRemove: 
 	return (
 		<div
 			className={`absolute bottom-0 right-0 w-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]`}
-			style={{
-				'--stack-offset': `${stackIndex * -8}px`,
-				'--stack-scale': stackScale.toString(),
-				transform: `translateY(var(--stack-offset)) scale(var(--stack-scale))`,
-				opacity: stackOpacity,
-				zIndex: 50 - stackIndex,
-			} as React.CSSProperties}
+			style={
+				{
+					'--stack-offset': `${stackIndex * -8}px`,
+					'--stack-scale': stackScale.toString(),
+					transform: `translateY(var(--stack-offset)) scale(var(--stack-scale))`,
+					opacity: stackOpacity,
+					zIndex: 50 - stackIndex,
+				} as React.CSSProperties
+			}
 		>
 			<div
 				className={`
@@ -163,7 +170,10 @@ function ClientOnlyPortal({ children }: { children: React.ReactNode }) {
 	return createPortal(children, document.body);
 }
 
-function ToastContainer({ toasts, removeToast }: { toasts: Toast[]; removeToast: (id: string) => void }) {
+function ToastContainer({
+	toasts,
+	removeToast,
+}: { toasts: Toast[]; removeToast: (id: string) => void }) {
 	const [isExpanded, setIsExpanded] = useState(false);
 
 	return (
@@ -198,10 +208,13 @@ function ToastInitializer() {
 export function ToastProvider({ children }: { children: React.ReactNode }) {
 	const [toasts, setToasts] = useState<Toast[]>([]);
 
-	const addToast = useCallback((message: string, type: ToastType = 'neutral', duration = 5000) => {
-		const id = Math.random().toString(36).substring(2, 9);
-		setToasts((prev) => [...prev, { id, message, type, duration, visible: true }]);
-	}, []);
+	const addToast = useCallback(
+		(message: string, type: ToastType = 'neutral', duration = 5000) => {
+			const id = Math.random().toString(36).substring(2, 9);
+			setToasts((prev) => [...prev, { id, message, type, duration, visible: true }]);
+		},
+		[]
+	);
 
 	const removeToast = useCallback((id: string) => {
 		setToasts((prev) => prev.filter((toast) => toast.id !== id));

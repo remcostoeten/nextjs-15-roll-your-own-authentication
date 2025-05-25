@@ -79,8 +79,8 @@ function Flex({
 	if (nowrap) classes.push('flex-nowrap');
 
 	// Grow/Shrink
-	if (grow) classes.push('flex-grow');
-	if (shrink) classes.push('flex-shrink');
+	if (grow) classes.push('grow');
+	if (shrink) classes.push('shrink');
 
 	// Gap
 	if (gap) {

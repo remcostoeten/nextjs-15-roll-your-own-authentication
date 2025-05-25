@@ -1,8 +1,19 @@
-"use client";
+'use client';
 
 import { toast } from '@/shared/components/toast';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Button, Card, Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Switch } from 'ui';
+import {
+	Button,
+	Card,
+	Input,
+	Label,
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+	Switch,
+} from 'ui';
 
 type TToast = 'success' | 'error' | 'warning' | 'info' | 'neutral';
 
@@ -10,7 +21,7 @@ type TProps = {
 	message: string;
 	type: TToast;
 	duration: number;
-}
+};
 
 export function ToastDemoView() {
 	const [config, setConfig] = useState<TProps>({
@@ -87,7 +98,7 @@ export function ToastDemoView() {
 							<Label>Type</Label>
 							<Select
 								value={config.type}
-									onValueChange={(value: TToast) =>
+								onValueChange={(value: TToast) =>
 									setConfig((prev) => ({ ...prev, type: value }))
 								}
 							>
@@ -159,7 +170,9 @@ export function ToastDemoView() {
 								<Input
 									type="number"
 									value={repeatDelay}
-									onChange={(e) => setRepeatDelay(parseInt(e.target.value) || 1000)}
+									onChange={(e) =>
+										setRepeatDelay(parseInt(e.target.value) || 1000)
+									}
 								/>
 							</div>
 
@@ -193,8 +206,8 @@ export function ToastDemoView() {
 				<h3>Instructions:</h3>
 				<ul>
 					<li>
-						<strong>Single Toast:</strong> Configure and show individual toasts with custom
-						messages, types, and durations.
+						<strong>Single Toast:</strong> Configure and show individual toasts with
+						custom messages, types, and durations.
 					</li>
 					<li>
 						<strong>Freeze Toasts:</strong> Show multiple toasts at once that will stay

@@ -1,19 +1,11 @@
-'use client'
+'use client';
 
 /**
  * @description: 'A utility component for rendering lists of items in React. It allows for flexible rendering of each item, including optional wrappers, loading states, and empty fallbacks.'
  * @author: 'Remco Stoeten'
  */
 
-import {
-	createElement,
-	ElementType,
-	Fragment,
-	memo,
-	ReactNode,
-	useCallback,
-	useMemo
-} from 'react'
+import { createElement, ElementType, Fragment, memo, ReactNode, useCallback, useMemo } from 'react';
 
 /**
  * @template T The type of the items in the list.
@@ -43,21 +35,21 @@ import {
  */
 
 type TProps<T> = {
-	each: T[]
-	children: (item: T, index: number) => ReactNode
-	as?: ElementType
-	role?: string
-	className?: string
-	id?: string
-	ariaLabel?: string
-	keyExtractor?: (item: T, index: number) => string | number
-	props?: Record<string, unknown>
-	itemWrapper?: (node: ReactNode, item: T, index: number) => ReactNode
-	memoizeChildren?: boolean
-	emptyFallback?: ReactNode
-	isLoading?: boolean
-	loadingFallback?: ReactNode
-}
+	each: T[];
+	children: (item: T, index: number) => ReactNode;
+	as?: ElementType;
+	role?: string;
+	className?: string;
+	id?: string;
+	ariaLabel?: string;
+	keyExtractor?: (item: T, index: number) => string | number;
+	props?: Record<string, unknown>;
+	itemWrapper?: (node: ReactNode, item: T, index: number) => ReactNode;
+	memoizeChildren?: boolean;
+	emptyFallback?: ReactNode;
+	isLoading?: boolean;
+	loadingFallback?: ReactNode;
+};
 
 export function For<T>(props: TProps<T>) {
 	const {
@@ -74,47 +66,40 @@ export function For<T>(props: TProps<T>) {
 		memoizeChildren = false,
 		emptyFallback = null,
 		isLoading = false,
-		loadingFallback = null
-	} = props
+		loadingFallback = null,
+	} = props;
 
 	const renderItem = useCallback(
 		(item: T, index: number) => {
-			const key = keyExtractor(item, index)
-			let node = children(item, index)
-			if (itemWrapper) node = itemWrapper(node, item, index)
-			return <Fragment key={key}>{node}</Fragment>
+			const key = keyExtractor(item, index);
+			let node = children(item, index);
+			if (itemWrapper) node = itemWrapper(node, item, index);
+			return <Fragment key={key}>{node}</Fragment>;
 		},
 		[keyExtractor, children, itemWrapper]
-	)
+	);
 
 	const MemoizedItem = useMemo(
-		() =>
-			memo((props: { item: T; index: number }) =>
-				renderItem(props.item, props.index)
-			),
+		() => memo((props: { item: T; index: number }) => renderItem(props.item, props.index)),
 		[renderItem]
-	)
+	);
 
 	const mapped = useMemo(() => {
 		return each.map((item, index) =>
 			memoizeChildren ? (
-				<MemoizedItem
-					key={keyExtractor(item, index)}
-					item={item}
-					index={index}
-				/>
+				<MemoizedItem key={keyExtractor(item, index)} item={item} index={index} />
 			) : (
 				renderItem(item, index)
 			)
-		)
-	}, [each, memoizeChildren, keyExtractor, renderItem, MemoizedItem])
+		);
+	}, [each, memoizeChildren, keyExtractor, renderItem, MemoizedItem]);
 
 	if (isLoading) {
-		return loadingFallback
+		return loadingFallback;
 	}
 
 	if (!each || each.length === 0) {
-		return emptyFallback
+		return emptyFallback;
 	}
 
 	// Only apply non-Fragment props when Component is not Fragment
@@ -127,8 +112,8 @@ export function For<T>(props: TProps<T>) {
 					id,
 					role,
 					'aria-label': ariaLabel,
-					...restProps
-				}
+					...restProps,
+			  };
 
-	return createElement(Component, componentProps, mapped)
+	return createElement(Component, componentProps, mapped);
 }

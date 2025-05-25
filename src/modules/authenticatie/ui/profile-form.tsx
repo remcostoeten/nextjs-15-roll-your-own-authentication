@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { toast } from '@/shared/components/toast';
 import { TBaseUser } from '@/shared/types/base';
@@ -50,9 +50,7 @@ export function ProfileForm() {
 		<Card>
 			<CardHeader>
 				<CardTitle>Profile</CardTitle>
-				<CardDescription>
-					Update your profile information.
-				</CardDescription>
+				<CardDescription>Update your profile information.</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<form action={onSubmit} className="space-y-4">
@@ -94,9 +92,7 @@ export function ProfileForm() {
 						/>
 					</div>
 					<Button type="submit" disabled={isPending}>
-						{isPending && (
-							<Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-						)}
+						{isPending && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
 						Update Profile
 					</Button>
 				</form>

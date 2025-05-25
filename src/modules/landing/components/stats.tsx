@@ -1,6 +1,7 @@
 'use client';
 
 import { getGithubCommits } from '@/api/queries/get-github-commits';
+import { DottedBackground } from '@/components/effects/dotted-bg';
 import { Waves } from '@/components/effects/waves';
 import { AnimatedContent, AnimatedText } from '@/shared/components/effects/animated-content';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/ui/popover';
@@ -112,7 +113,7 @@ export function GitHubStats() {
 									login: 'dev',
 								},
 							},
-						];
+					  ];
 
 				setCommits(commits);
 
@@ -237,6 +238,20 @@ export function GitHubStats() {
 						</div>
 					) : (
 						<div className="flex items-center justify-between w-full max-w-2xl px-4 py-2 rounded-lg border border-border/20 bg-background/50 backdrop-blur-sm">
+							<div className="absolute inset-0 opacity-0 group-hover/bento:opacity-100 transition-all duration-700">
+								<DottedBackground
+									dotColor="var(--primary)"
+									dotSize={0.8}
+									dotSpacing={12}
+									enableVignette={false}
+									enableInnerGlow={true}
+									innerGlowColor="var(--primary)"
+									hoverColor="var(--primary)"
+									hoverRadius={40}
+									backgroundColor="transparent"
+								/>
+							</div>
+
 							<div className="flex items-center gap-2">
 								<GitCommit className="h-4 w-4 text-primary" />
 								<span className="text-sm text-muted-foreground">

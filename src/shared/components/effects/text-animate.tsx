@@ -1,7 +1,7 @@
 'use client';
 
 import { AnimatePresence, type MotionProps, type Variants, motion } from 'framer-motion';
-import type { ElementType } from 'react';
+import type { ElementType, ReactNode } from 'react';
 import { cn } from 'utilities';
 
 type AnimationType = 'text' | 'word' | 'character' | 'line';
@@ -21,7 +21,7 @@ interface TextAnimateProps extends MotionProps {
 	/**
 	 * The text content to animate
 	 */
-	children: string;
+	children: ReactNode;
 	/**
 	 * The class name to be applied to the component
 	 */
@@ -307,26 +307,27 @@ export function TextAnimate({
 	as: Component = 'p',
 	startOnView = true,
 	once = false,
-	by = 'word',
-	animation = 'fadeIn',
+	by = 'character',
+	animation = 'blurIn',
 	...props
 }: TextAnimateProps) {
 	const MotionComponent = motion.create(Component);
+	const text = children?.toString() || '';
 
 	let segments: string[] = [];
 	switch (by) {
 		case 'word':
-			segments = children?.split(/(\s+)/);
+			segments = text.split(/(\s+)/);
 			break;
 		case 'character':
-			segments = children?.split('');
+			segments = text.split('');
 			break;
 		case 'line':
-			segments = children?.split('\n');
+			segments = text.split('\n');
 			break;
 		case 'text':
 		default:
-			segments = [children];
+			segments = [text];
 			break;
 	}
 
@@ -351,9 +352,9 @@ export function TextAnimate({
 					},
 				},
 				item: variants,
-			}
+		  }
 		: animation
-			? {
+		  ? {
 					container: {
 						...defaultItemAnimationVariants[animation].container,
 						show: {
@@ -372,8 +373,8 @@ export function TextAnimate({
 						},
 					},
 					item: defaultItemAnimationVariants[animation].item,
-				}
-			: { container: defaultContainerVariants, item: defaultItemVariants };
+			  }
+		  : { container: defaultContainerVariants, item: defaultItemVariants };
 
 	return (
 		<AnimatePresence mode="popLayout">
