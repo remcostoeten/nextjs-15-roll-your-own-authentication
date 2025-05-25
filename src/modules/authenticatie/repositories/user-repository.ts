@@ -4,6 +4,7 @@ import { db } from 'db';
 import { and, eq } from 'drizzle-orm';
 import { env } from 'env';
 import { oauthAccounts, users } from 'schema';
+import { hashPassword } from '../helpers';
 import type { TAuthUser } from '../types';
 import type { TOAuthAccount, TOAuthProvider } from '../types/oauth';
 
@@ -12,6 +13,12 @@ type TCreateUserData = Omit<
 	'id' | 'createdAt' | 'updatedAt' | 'emailVerified' | 'lastLoginAt'
 >;
 type TUpdateUserData = Partial<Omit<TBaseUserWithPassword, 'id' | 'createdAt' | 'updatedAt'>>;
+
+type CreateUserInput = {
+	name: string;
+	email: string;
+	password: string;
+};
 
 export function userRepository() {
 	return {
@@ -51,10 +58,7 @@ export function userRepository() {
 		},
 
 		async validateCredentials(email: string, password: string): Promise<TAuthUser | null> {
-			const result = await db
-				.select()
-				.from(users)
-				.where(eq(users.email, email));
+			const result = await db.select().from(users).where(eq(users.email, email));
 
 			const user = result[0] as (TBaseUserWithPassword & TAuthUser) | undefined;
 			if (!user || !user.password) return null;
@@ -114,4 +118,20 @@ export function userRepository() {
 				.where(and(eq(oauthAccounts.userId, userId), eq(oauthAccounts.provider, provider)));
 		},
 	};
+}
+
+export async function createUser(input: CreateUserInput) {
+	const hashedPassword = await hashPassword(input.password);
+
+	const [user] = await db
+		.insert(users)
+		.values({
+			name: input.name,
+			email: input.email,
+			password: hashedPassword,
+			role: input.email === process.env.ADMIN_EMAIL ? 'admin' : 'user',
+		})
+		.returning();
+
+	return user;
 }

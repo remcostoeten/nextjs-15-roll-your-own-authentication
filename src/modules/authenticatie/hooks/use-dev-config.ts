@@ -5,7 +5,7 @@ type TProps = {
 	skipPasswordValidation: boolean;
 	minRequiredPasswordLength: number;
 	togglePasswordValidation: () => void;
-}
+};
 
 export const useDevConfig = create<TProps>()(
 	persist(

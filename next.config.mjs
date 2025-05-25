@@ -14,6 +14,9 @@ const nextConfig = {
 		}
 		return config;
 	},
+	experimental: {
+		viewTransition: true,
+	},
 	typescript: {
 		ignoreBuildErrors: true,
 	},

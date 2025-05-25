@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { toast } from '@/shared/components/toast';
 import { useEffect, useState } from 'react';
@@ -43,7 +43,7 @@ export function ConnectedAccounts() {
 		try {
 			const result = await unlinkOAuthAccount(provider as any);
 			if (result.success) {
-				setAccounts(accounts.filter(account => account.provider !== provider));
+				setAccounts(accounts.filter((account) => account.provider !== provider));
 				toast.success('Account unlinked successfully');
 			} else {
 				toast.error(result.error || 'Failed to unlink account');
@@ -76,16 +76,11 @@ export function ConnectedAccounts() {
 			</CardHeader>
 			<CardContent>
 				{accounts.length === 0 ? (
-					<p className="text-sm text-muted-foreground">
-						No connected accounts
-					</p>
+					<p className="text-sm text-muted-foreground">No connected accounts</p>
 				) : (
 					<div className="space-y-4">
 						{accounts.map((account) => (
-							<div
-								key={account.id}
-								className="flex items-center justify-between"
-							>
+							<div key={account.id} className="flex items-center justify-between">
 								<div className="flex items-center space-x-4">
 									<Icons.gitHub className="h-6 w-6" />
 									<div>
@@ -94,7 +89,8 @@ export function ConnectedAccounts() {
 												account.provider.slice(1)}
 										</p>
 										<p className="text-sm text-muted-foreground">
-											Connected {new Date(account.createdAt).toLocaleDateString()}
+											Connected{' '}
+											{new Date(account.createdAt).toLocaleDateString()}
 										</p>
 									</div>
 								</div>

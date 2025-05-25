@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { toast } from '@/shared/components/toast';
 import { useState } from 'react';
@@ -10,10 +10,7 @@ type TProps = {
 	redirectTo?: string;
 };
 
-export function GitHubLoginButton({
-	className,
-	redirectTo = '/dashboard',
-}: TProps) {
+export function GitHubLoginButton({ className, redirectTo = '/dashboard' }: TProps) {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleLogin = async () => {

@@ -11,7 +11,7 @@ export async function login(formData: FormData): Promise<TAuthMutationResponse> 
 	if (!email || !password) {
 		return {
 			success: false,
-			error: 'Missing credentials'
+			error: 'Missing credentials',
 		};
 	}
 
@@ -20,7 +20,7 @@ export async function login(formData: FormData): Promise<TAuthMutationResponse> 
 		if (!user) {
 			return {
 				success: false,
-				error: 'Invalid credentials'
+				error: 'Invalid credentials',
 			};
 		}
 
@@ -29,19 +29,19 @@ export async function login(formData: FormData): Promise<TAuthMutationResponse> 
 			success: true,
 			user,
 			message: 'Login successful',
-			redirect: '/dashboard'
+			redirect: '/dashboard',
 		};
 	} catch (error) {
 		console.error('Login error:', error);
 		if (error instanceof Error) {
 			return {
 				success: false,
-				error: error.message
+				error: error.message,
 			};
 		}
 		return {
 			success: false,
-			error: 'An unexpected error occurred'
+			error: 'An unexpected error occurred',
 		};
 	}
 }

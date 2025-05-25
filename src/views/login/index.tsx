@@ -36,10 +36,13 @@ export function LoginView() {
 
 	return (
 		<div className="container flex h-screen w-screen flex-col items-center justify-center">
+			<LoginForm />
 			<Card className="w-full max-w-lg bg-background border-border shadow-2xl">
 				<CardHeader className="space-y-1">
 					<CardTitle className="text-2xl text-foreground">Welcome back</CardTitle>
-					<CardDescription className="text-muted-foreground">Choose your preferred sign in method</CardDescription>
+					<CardDescription className="text-muted-foreground">
+						Choose your preferred sign in method
+					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4">
 					<GitHubLoginButton className="w-full" />
