@@ -132,10 +132,17 @@ export default function FeaturesSection() {
 							</div>
 						</BlurIn>
 
-						<div aria-hidden className="relative">
-							{/* Connection badge appears after text */}
+						<div aria-hidden className="relative overflow-hidden translate-y-[25px] ">
 							<BlurIn delay={0.6}>
-								<div className="absolute inset-0 z-10 m-auto size-fit">
+								<motion.div
+									animate={{
+										opacity: [0, 1],
+									}}
+									transition={{
+										duration: 1,
+										delay: 0.8,
+									}}
+								className="absolute inset-0 z-10 m-auto size-fit">
 									<div className="bg-background z-1 dark:bg-muted relative flex size-fit w-fit items-center gap-2 border px-3 py-1 text-xs font-medium shadow-md shadow-zinc-950/5">
 										<Text as="span" className="text-lg">
 											🇨🇩
@@ -144,14 +151,21 @@ export default function FeaturesSection() {
 											Last connection from DR Congo
 										</Text>
 									</div>
-								</div>
+								</motion.div>
 							</BlurIn>
 
 							<BlurIn delay={0.8}>
-								<div className="relative overflow-hidden transX-y">
-									<div className="bg-radial z-1 to-background absolute inset-0 from-transparent to-75%"></div>
+								<motion.div className="relative overflow-hidden "
+									animate={{
+										opacity: [0, 1],
+									}}
+									transition={{
+       										duration: 1,
+										delay: 0.8,
+									}}>
+									<div className="bg-radial z		-1 to-background absolute inset-0 from-transparent to-100% "></div>
 									<Map />
-								</div>
+								</motion.div>
 							</BlurIn>
 						</div>
 					</div>

@@ -59,6 +59,10 @@ export function RegisterForm({ className, ...props }: React.ComponentProps<'div'
 			}
 
 			toast.success('Account created successfully! Redirecting to dashboard...');
+
+			if (result.redirect) {
+				window.location.href = result.redirect;
+			}
 		} catch (e) {
 			if (e instanceof Error && e.message.includes('NEXT_REDIRECT')) return;
 			toast.error(

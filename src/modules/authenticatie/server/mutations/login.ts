@@ -1,7 +1,7 @@
 'use server';
 
-import { createSession } from 'modules/authenticatie/helpers/session';
-import { userRepository } from 'modules/authenticatie/repositories/user-repository';
+import { createSession } from '@/modules/authenticatie/helpers/session';
+import { userRepository } from '@/modules/authenticatie/repositories/user-repository';
 import type { TAuthMutationResponse } from '../../types';
 
 export async function login(formData: FormData): Promise<TAuthMutationResponse> {

@@ -5,7 +5,7 @@ const JWT_SECRET = new TextEncoder().encode(
 	process.env.JWT_SECRET || 'default_secret_please_change'
 );
 
-export async function signJWT(payload: { sub: string; name: string; email: string }) {
+export async function signJWT(payload: { sub: string; name?: string; email: string; role?: string }) {
 	return await new SignJWT(payload)
 		.setProtectedHeader({ alg: 'HS256' })
 		.setJti(nanoid())

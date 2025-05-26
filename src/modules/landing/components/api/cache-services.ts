@@ -1,10 +1,10 @@
 'use server';
 
-import { octokit } from '@/core/lib/octokit'; // Assuming you have Octokit setup
+import { octokit } from '@/core/lib/octokit';
 import { cache } from 'react';
 import { fallbackCommitData } from './fallback-data';
 
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+const CACHE_TTL_MS = 5 * 60 * 1000;
 
 export async function fetchCommitData() {
 	try {
@@ -32,10 +32,8 @@ export async function fetchCommitData() {
 	}
 }
 
-// Cached version using React cache
 export const getCachedCommitData = cache(fetchCommitData);
 
-// Client-side fetch wrapper
 export async function getCommitDataClient() {
 	try {
 		const data = await getCachedCommitData();

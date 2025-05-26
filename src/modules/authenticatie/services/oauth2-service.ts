@@ -4,11 +4,11 @@ import { eq } from 'drizzle-orm';
 import { createSession } from '../helpers/session';
 import { TAuthUser } from '../types';
 import {
-	TOAuthConfig,
-	TOAuthProvider,
-	TOAuthState,
-	TOAuthTokenResponse,
-	TOAuthUserInfo,
+    TOAuthConfig,
+    TOAuthProvider,
+    TOAuthState,
+    TOAuthTokenResponse,
+    TOAuthUserInfo,
 } from '../types/oauth';
 
 export class OAuth2Service {
@@ -89,7 +89,7 @@ export class OAuth2Service {
 		if (existingUser) {
 			// Check if user has password auth
 			if (existingUser.password) {
-				throw new Error('Account already exists with email/password login');
+				throw new Error('An account with this email already exists. Please sign in with your email and password instead.');
 			}
 
 			// Update or create OAuth account

@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
 			new URL(
 				`/login?error=${encodeURIComponent(
 					message
-				)}&toast=error&message=${encodeURIComponent('Authentication failed')}`,
+				)}&toast=error&message=${encodeURIComponent(message)}`,
 				request.url
 			)
 		);

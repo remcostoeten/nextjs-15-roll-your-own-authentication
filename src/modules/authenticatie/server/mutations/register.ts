@@ -1,9 +1,7 @@
 'use server';
 
-import { signJWT } from '@/modules/authenticatie/helpers/jwt';
+import { createSession } from '@/modules/authenticatie/helpers/session';
 import { createUser } from '@/modules/authenticatie/repositories/user-repository';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
 const registerSchema = z.object({
@@ -33,23 +31,21 @@ export async function register(formData: FormData) {
 			};
 		}
 
-		// Create session token
-		const token = await signJWT({
-			sub: user.id,
-			name: user.name,
+		// Create session
+		await createSession({
+			id: user.id,
 			email: user.email,
+			role: user.role || 'user',
+			name: user.name,
 		});
 
-		// Set session cookie
-		cookies().set('session', token, {
-			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production',
-			sameSite: 'lax',
-			maxAge: 60 * 60 * 24 * 7, // 1 week
-		});
-
-		redirect('/dashboard');
+		return {
+			success: true,
+			message: 'Account created successfully',
+			redirect: '/dashboard',
+		};
 	} catch (error) {
+		console.error('Register error:', error);
 		if (error instanceof z.ZodError) {
 			return {
 				success: false,

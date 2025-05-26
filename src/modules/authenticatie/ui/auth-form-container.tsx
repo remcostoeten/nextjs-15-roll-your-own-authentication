@@ -45,14 +45,7 @@ export function AuthFormContainer({
 		const error = searchParams.get('error');
 
 		if (toastType === 'error' && message) {
-			if (message.includes('Account already exists with email/password login')) {
-				toast.error(
-					'This email is already registered with a password. Please use the login form instead.',
-					5000
-				);
-			} else {
-				toast.error(`${message}`);
-			}
+			toast.error(`${message}`);
 		}
 
 		if (toastType || message || error) {

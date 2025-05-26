@@ -3,7 +3,7 @@
 import { db } from 'db';
 import { cookies } from 'next/headers';
 import { sessions } from 'schema';
-import { signJwt, verifyJwt } from './jwt';
+import { signJWT, verifyJWT } from './jwt';
 
 const COOKIE_NAME = 'auth_token';
 const COOKIE_OPTIONS = {
@@ -15,8 +15,8 @@ const COOKIE_OPTIONS = {
 
 const SESSION_EXPIRY_DAYS = 7;
 
-export async function createSession(user: { id: string; email: string; role: string }) {
-	const token = await signJwt({ id: user.id, email: user.email, role: user.role });
+export async function createSession(user: { id: string; email: string; role: string; name?: string }) {
+	const token = await signJWT({ sub: user.id, email: user.email, role: user.role, name: user.name });
 
 	const expiresAt = new Date();
 	expiresAt.setDate(expiresAt.getDate() + SESSION_EXPIRY_DAYS);
@@ -43,11 +43,17 @@ export async function getSession() {
 	const token = cookieStore.get(COOKIE_NAME)?.value;
 	if (!token) return null;
 
-	const payload = await verifyJwt(token);
+	const payload = await verifyJWT(token);
 	if (!payload) {
 		cookieStore.delete(COOKIE_NAME);
 		return null;
 	}
 
-	return payload;
+	// Map JWT payload to session format
+	return {
+		id: payload.sub as string,
+		email: payload.email as string,
+		role: payload.role as string,
+		name: payload.name as string,
+	};
 }
