@@ -72,277 +72,278 @@ export default function FeaturesSection() {
 	}, []);
 
 	return (
-			<motion.section
-				className="mx-auto grid max-w-7xl relative"
-				initial="hidden"
-				animate="visible"
-				variants={{
-					hidden: {
-						opacity: 0,
+		<motion.section
+			className="mx-auto grid max-w-7xl relative"
+			initial="hidden"
+			animate="visible"
+			variants={{
+				hidden: {
+					opacity: 0,
+				},
+				visible: {
+					opacity: 1,
+					transition: {
+						staggerChildren: 0.2,
 					},
+				},
+			}}
+		>
+			<motion.div
+				className="absolute inset-0 border-t "
+				variants={{
+					hidden: { opacity: 0, width: 0 },
 					visible: {
 						opacity: 1,
+						width: '100%',
 						transition: {
-							staggerChildren: 0.2,
+							duration: 1,
+							delay: 0.1,
 						},
 					},
 				}}
-			>
-				<motion.div
-					className="absolute inset-0 border-t "
-					variants={{
-						hidden: { opacity: 0, width: 0 },
-						visible: {
-							opacity: 1,
-							width: '100%',
-							transition: {
-								duration: 1,
-								delay: 0.1,
-							},
+			/>
+			<motion.div
+			/* needs to be refactored to psuedo elements so we can animate height */
+				className="absolute pointer-events-none inset-0 border-l border-r border-red-500 z-10"
+				variants={{
+					hidden: { opacity: 0 },
+					visible: {
+						opacity: 1,
+						transition: {
+							duration: 0.8,
+							delay: 0.3,
 						},
-					}}
-				/>
-				<motion.div
-					className="absolute inset-0 border-l border-r border-red-500 z-10"
-					variants={{
-						hidden: { opacity: 0 },
-						visible: {
-							opacity: 1,
-							transition: {
-								duration: 0.8,
-								delay: 0.3,
-							},
-						},
-					}}
-				/>
-				{/* First main rid section */}
-				<div className="grid md:grid-cols-2">
-					{/* Left column - Analytics Section */}
-					<div>
-						<BlurIn delay={0.2}>
-							<div className="p-6 sm:p-12 space-y-6">
-								<span className="text-muted-foreground flex items-center gap-2">
-									<MapIcon className="size-4" />
-									<Text as="span">Roll Your Own Analytics</Text>
-								</span>
-								<Text animate animationDelay={0.4} size="xl">
-									Custom rolled analytics system with easy to integrate endpoints
-									and full-fledged admin dashboard.
-								</Text>
-							</div>
+					},
+				}}
+			/>
+			<div className="grid md:grid-cols-2">
+				<div>
+					<BlurIn delay={0.2}>
+						<div className="p-6 sm:p-12 space-y-6">
+							<span className="text-muted-foreground flex items-center gap-2">
+								<MapIcon className="size-4" size="xl" />
+								<Text as="span"><i className='mr-[2px]'>R</i>oll your own analytics</Text>
+							</span>
+							<Text animate animationDelay={0.4} size="xl">
+								Custom rolled analytics system with easy to integrate endpoints and
+								full-fledged admin dashboard.
+							</Text>
+						</div>
+					</BlurIn>
+
+					<div aria-hidden className="relative overflow-hidden translate-y-[25px] ">
+						<BlurIn delay={0.6}>
+							<motion.div
+								animate={{
+									opacity: [0, 1],
+								}}
+								transition={{
+									duration: 1,
+									delay: 0.8,
+								}}
+								className="absolute inset-0 z-10 m-auto size-fit"
+							>
+								<div className="bg-background z-1 dark:bg-muted relative flex size-fit w-fit items-center gap-2 border px-3 py-1 text-xs font-medium shadow-md shadow-zinc-950/5">
+									<Text as="span" className="text-lg">
+										🇨🇩
+									</Text>
+									<Text as="span" animate animationDelay={0.7}>
+										Last connection from DR Congo
+									</Text>
+								</div>
+							</motion.div>
 						</BlurIn>
 
-						<div aria-hidden className="relative overflow-hidden translate-y-[25px] ">
-							<BlurIn delay={0.6}>
-								<motion.div
-									animate={{
-										opacity: [0, 1],
-									}}
-									transition={{
-										duration: 1,
-										delay: 0.8,
-									}}
-								className="absolute inset-0 z-10 m-auto size-fit">
-									<div className="bg-background z-1 dark:bg-muted relative flex size-fit w-fit items-center gap-2 border px-3 py-1 text-xs font-medium shadow-md shadow-zinc-950/5">
-										<Text as="span" className="text-lg">
-											🇨🇩
-										</Text>
-										<Text as="span" animate animationDelay={0.7}>
-											Last connection from DR Congo
-										</Text>
-									</div>
-								</motion.div>
-							</BlurIn>
-
-							<BlurIn delay={0.8}>
-								<motion.div className="relative overflow-hidden "
-									animate={{
-										opacity: [0, 1],
-									}}
-									transition={{
-       										duration: 1,
-										delay: 0.8,
-									}}>
-									<div className="bg-radial z		-1 to-background absolute inset-0 from-transparent to-100% "></div>
-									<Map />
-								</motion.div>
-							</BlurIn>
-						</div>
-					</div>
-
-					{/* Right column - Developer Support Section */}
-					<div className="overflow-hidden border-t p-6 sm:p-12 md:border-0 md:border-l bg-transparent">
-						<div className="relative z-10 space-y-6">
-							<span className="text-muted-foreground flex items-center gap-2">
-								<MessageCircle className="size-4" />
-								<Text as="span" animate animationDelay={0.4}>
-									Developer Support
-								</Text>
-							</span>
-
-							<Text
-								animate
-								animationDelay={0.6}
-								className="text-pretty hyphens-auto"
-								size="xl"
+						<BlurIn delay={0.8}>
+							<motion.div
+								className="relative overflow-hidden transX-y"
+								animate={{
+									opacity: [0, 1],
+								}}
+								transition={{
+									duration: 1,
+									delay: 0.8,
+								}}
 							>
-								Actually proper documentation unlike librarys deprecating or simply
-								not documenting at all
-							</Text>
-
-							<div aria-hidden className="flex flex-col gap-8 pt-6">
-								{/* First message group */}
-								<BlurIn
-									delay={0.7}
-									variants={{
-										hidden: { x: -20, opacity: 0 },
-										show: {
-											x: 0,
-											opacity: 1,
-											transition: { duration: 0.5 },
-										},
-										hover: { x: 4, transition: { duration: 0.2 } },
-									}}
-									whileHover="hover"
-								>
-									<div className="w-3/5">
-										<time className="text-muted-foreground text-xs opacity-70">
-											<Text animate animationDelay={0.7}>
-												Sat 22 Feb
-											</Text>
-										</time>
-										<motion.div className="mt-1.5 border p-3 text-xs bg-background/80 backdrop-blur-sm rounded-2xl rounded-tl-none shadow-lg">
-											<Text animate animationDelay={0.8}>
-												Hey, I'm having trouble with my account.
-											</Text>
-										</motion.div>
-									</div>
-								</BlurIn>
-
-								{/* Second message group */}
-								<BlurIn
-									delay={0.9}
-									variants={{
-										hidden: { x: 20, opacity: 0 },
-										show: {
-											x: 0,
-											opacity: 1,
-											transition: { duration: 0.5 },
-										},
-										hover: { x: -4, transition: { duration: 0.2 } },
-									}}
-									whileHover="hover"
-								>
-									<div className="ml-auto w-3/5">
-										<motion.div className="bg-primary/90 p-3 text-xs text-primary-foreground rounded-2xl rounded-tr-none shadow-lg backdrop-blur-sm">
-											<Text animate animationDelay={1.0}>
-												Our authentication system provides secure user
-												management with complete customization options.
-											</Text>
-										</motion.div>
-										<Text
-											as={motion.span}
-											animate
-											animationDelay={1.1}
-											className="block text-right text-muted-foreground text-xs opacity-70"
-										>
-											Now
-										</Text>
-									</div>
-								</BlurIn>
-
-								{/* Typing indicator */}
-								<BlurIn
-									delay={1.2}
-									variants={{
-										hidden: { opacity: 0, scale: 0.8 },
-										show: {
-											opacity: 1,
-											scale: 1,
-											transition: { duration: 0.3 },
-										},
-									}}
-								>
-									<div className="w-16">
-										<motion.div
-											className="flex gap-1.5 items-center"
-											animate={{
-												y: [0, -4, 0],
-											}}
-											transition={{
-												repeat: Infinity,
-												duration: 1.5,
-												ease: 'easeInOut',
-											}}
-										>
-											{[0, 1, 2].map((i) => (
-												<motion.span
-													key={i}
-													className="w-2 h-2 bg-primary/50 rounded-full"
-													animate={{
-														y: [0, -4, 0],
-													}}
-													transition={{
-														repeat: Infinity,
-														duration: 1.5,
-														delay: i * 0.15,
-														ease: 'easeInOut',
-													}}
-												/>
-											))}
-										</motion.div>
-									</div>
-								</BlurIn>
-							</div>
-						</div>
+								<div className="bg-radial z		-1 to-background absolute inset-0 from-transparent to-100% "/>
+								<Map />
+							</motion.div>
+						</BlurIn>
 					</div>
 				</div>
 
-				<motion.div
-					initial={{ opacity: 0, y: 10 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.5, ease: 'easeInOut' }}
-				>
-					<BlurIn delay={1.8}>
-						<GitHubStats />
-					</BlurIn>
-				</motion.div>
-
-				<motion.div
-					initial={{ height: 0, opacity: 0 }}
-					animate={{ height: '100%', opacity: 1 }}
-					transition={{ duration: 0.5, ease: 'easeInOut' }}
-					className="relative before:absolute before:top-0 before:left-0 before:right-0 before:h-px before:bg-border before:opacity-0 before:animate-in before:fade-in before:duration-600 before:delay-1000"
-				>
-					{/* Text content appears first */}
-					<BlurIn delay={2.0}>
-						<div className="absolute z-10 max-w-lg px-6 pr-12 pt-6 md:px-12 md:pt-12">
-							<span className="text-muted-foreground flex items-center gap-2">
-								<Activity className="size-4" />
-								<Text as="span">Activity Feed</Text>
-							</span>
-
-							<Text
-								animate
-								animationDelay={2.2}
-								size="2xl"
-								className="font-semibold mt-6"
-							>
-								Monitor your application's activity in real-time.
-								<Text as="span" className="text-muted-foreground">
-									{' '}
-									Instantly identify and resolve issues.
-								</Text>
+				<div className="overflow-hidden border-t p-6 sm:p-12 md:border-0 md:border-l bg-transparent">
+					<div className="relative z-10 space-y-6">
+						<span className="text-muted-foreground flex items-center gap-2">
+							<MessageCircle className="size-4" />
+							<Text as="span" animate animationDelay={0.4}>
+								Developer Support
 							</Text>
-						</div>
-					</BlurIn>
+						</span>
 
-					{/* Chart appears last */}
-					<BlurIn delay={2.4}>
-						<MonitoringChart />
-					</BlurIn>
-				</motion.div>
-			</motion.section>
+						<Text
+							animate
+							animationDelay={0.6}
+							className="text-pretty hyphens-auto"
+							size="xl"
+						>
+							Actually proper documentation unlike librarys deprecating or simply not
+							documenting at all
+						</Text>
+
+						<div aria-hidden className="flex flex-col gap-8 pt-6">
+							{/* First message group */}
+							<BlurIn
+								delay={0.7}
+								variants={{
+									hidden: { x: -20, opacity: 0 },
+									show: {
+										x: 0,
+										opacity: 1,
+										transition: { duration: 0.5 },
+									},
+									hover: { x: 4, transition: { duration: 0.2 } },
+								}}
+								whileHover="hover"
+							>
+								<div className="w-3/5">
+									<time className="text-muted-foreground text-xs opacity-70">
+										<Text animate animationDelay={0.7}>
+											Sat 22 Feb
+										</Text>
+									</time>
+									<motion.div className="mt-1.5 border p-3 text-xs bg-background/80 backdrop-blur-sm rounded-2xl rounded-tl-none shadow-lg">
+										<Text animate animationDelay={0.8}>
+											Hey, I'm having trouble with my account.
+										</Text>
+									</motion.div>
+								</div>
+							</BlurIn>
+
+							{/* Second message group */}
+							<BlurIn
+								delay={0.9}
+								variants={{
+									hidden: { x: 20, opacity: 0 },
+									show: {
+										x: 0,
+										opacity: 1,
+										transition: { duration: 0.5 },
+									},
+									hover: { x: -4, transition: { duration: 0.2 } },
+								}}
+								whileHover="hover"
+							>
+								<div className="ml-auto w-3/5">
+									<motion.div className="bg-primary/90 p-3 text-xs text-primary-foreground rounded-2xl rounded-tr-none shadow-lg backdrop-blur-sm">
+										<Text animate animationDelay={1.0}>
+											Our authentication system provides secure user
+											management with complete customization options.
+										</Text>
+									</motion.div>
+									<Text
+										as={motion.span}
+										animate
+										animationDelay={1.1}
+										className="block text-right text-muted-foreground text-xs opacity-70"
+									>
+										Now
+									</Text>
+								</div>
+							</BlurIn>
+
+							{/* Typing indicator */}
+							<BlurIn
+								delay={1.2}
+								variants={{
+									hidden: { opacity: 0, scale: 0.8 },
+									show: {
+										opacity: 1,
+										scale: 1,
+										transition: { duration: 0.3 },
+									},
+								}}
+							>
+								<div className="w-16">
+									<motion.div
+										className="flex gap-1.5 items-center"
+										animate={{
+											y: [0, -4, 0],
+										}}
+										transition={{
+											repeat: Infinity,
+											duration: 1.5,
+											ease: 'easeInOut',
+										}}
+									>
+										{[0, 1, 2].map((i) => (
+											<motion.span
+												key={i}
+												className="w-2 h-2 bg-primary/50 rounded-full"
+												animate={{
+													y: [0, -4, 0],
+												}}
+												transition={{
+													repeat: Infinity,
+													duration: 1.5,
+													delay: i * 0.15,
+													ease: 'easeInOut',
+												}}
+											/>
+										))}
+									</motion.div>
+								</div>
+							</BlurIn>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<motion.div
+				initial={{ opacity: 0, y: 10 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ duration: 0.5, ease: 'easeInOut' }}
+			>
+				<BlurIn delay={1.8}>
+					<GitHubStats />
+				</BlurIn>
+			</motion.div>
+
+			<motion.div
+				initial={{ height: 0, opacity: 0 }}
+				animate={{ height: '100%', opacity: 1 }}
+				transition={{ duration: 0.5, ease: 'easeInOut' }}
+				className="relative before:absolute before:top-0 before:left-0 before:right-0 before:h-px before:bg-border before:opacity-0 before:animate-in before:fade-in before:duration-600 before:delay-1000"
+			>
+				{/* Text content appears first */}
+				<BlurIn delay={2.0}>
+					<div className="absolute z-10 max-w-lg px-6 pr-12 pt-6 md:px-12 md:pt-12">
+						<span className="text-muted-foreground flex items-center gap-2">
+							<Activity className="size-4" />
+							<Text as="span">Activity Feed</Text>
+						</span>
+
+						<Text
+							animate
+							animationDelay={2.2}
+							size="2xl"
+							className="font-semibold mt-6"
+						>
+							Monitor your application's activity in real-time.
+							<Text as="span" className="text-muted-foreground">
+								{' '}
+								Instantly identify and resolve issues.
+							</Text>
+						</Text>
+					</div>
+				</BlurIn>
+
+				{/* Chart appears last */}
+				<BlurIn delay={2.4}>
+					<MonitoringChart />
+				</BlurIn>
+			</motion.div>
+		</motion.section>
 	);
 }
 
@@ -375,11 +376,11 @@ const Map = () => {
 const chartConfig = {
 	desktop: {
 		label: 'Desktop',
-		color: '#2563eb',
+		color: 'hsl(var(--accent))',
 	},
 	mobile: {
 		label: 'Mobile',
-		color: '#60a5fa',
+		color: 'hsl(var(--primary))',
 	},
 } satisfies ChartConfig;
 
@@ -393,6 +394,16 @@ const chartData = [
 ];
 
 const MonitoringChart = () => {
+	const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
+	const handleMouseEnter = (data: any, index: number) => {
+		setActiveIndex(index);
+	};
+
+	const handleMouseLeave = () => {
+		setActiveIndex(null);
+	};
+
 	return (
 		<ChartContainer className="h-120 aspect-auto md:h-96" config={chartConfig}>
 			<AreaChart
@@ -402,6 +413,12 @@ const MonitoringChart = () => {
 					left: 0,
 					right: 0,
 				}}
+				onMouseMove={(data: any) => {
+					if (data && data.activeTooltipIndex !== undefined) {
+						handleMouseEnter(data, data.activeTooltipIndex);
+					}
+				}}
+				onMouseLeave={handleMouseLeave}
 			>
 				<defs>
 					<linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
@@ -415,14 +432,18 @@ const MonitoringChart = () => {
 				</defs>
 				<CartesianGrid vertical={false} />
 				<ChartTooltip
-					active
-					cursor={false}
+					active={activeIndex !== null}
+					cursor={{
+						stroke: 'var(--color-desktop)',
+						strokeWidth: 1,
+						strokeDasharray: '5 5',
+					}}
 					content={<ChartTooltipContent className="dark:bg-muted" />}
 				/>
 				<Area
 					strokeWidth={2}
 					dataKey="mobile"
-					type="stepBefore"
+					type="monotone"
 					fill="url(#fillMobile)"
 					fillOpacity={0.1}
 					stroke="var(--color-mobile)"

@@ -1,5 +1,5 @@
 import { getSession } from '@/modules/authenticatie/helpers/session';
-import { userRepository } from '@/modules/authenticatie/repositories/user-repository';
+import { userRepository } from '@/modules/authenticatie/server/repositories/user-repository';
 import { NextResponse } from 'next/server';
 
 export async function GET() {

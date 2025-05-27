@@ -1,8 +1,8 @@
 'use server';
 
 import { getSession } from '../../helpers/session';
-import { userRepository } from '../../repositories/user-repository';
 import { TUpdateProfileData } from '../../types';
+import { userRepository } from '../repositories/user-repository';
 
 export async function updateProfile(formData: FormData) {
 	const name = formData.get('name') as string;
@@ -20,7 +20,6 @@ export async function updateProfile(formData: FormData) {
 			throw new Error('Name and email are required');
 		}
 
-		// Only include password fields if both are provided
 		const updateData: TUpdateProfileData = {
 			name,
 			email,

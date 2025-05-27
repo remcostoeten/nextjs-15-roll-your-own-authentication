@@ -37,7 +37,7 @@ export function GitHubLoginButton({ className, redirectTo = '/dashboard' }: TPro
 			) : (
 				<Icons.gitHub className="mr-2 h-4 w-4" />
 			)}
-			<span className='sr-only'>Continue with GitHub</span>
+			<span className="sr-only">Continue with GitHub</span>
 		</Button>
 	);
 }

@@ -2,7 +2,7 @@
 
 import { ConnectedAccounts } from '@/modules/authenticatie/ui/connected-accounts';
 import { ProfileForm } from '@/modules/authenticatie/ui/profile-form';
-import { Separator } from '@radix-ui/react-select';
+import { Separator } from 'ui';
 
 export function ProfileView() {
 	return (
@@ -10,16 +10,9 @@ export function ProfileView() {
 			<div className="space-y-6">
 				<div>
 					<h2 className="text-2xl font-bold tracking-tight">Profile</h2>
-					<p className="text-muted-foreground">
-						Manage your account settings and set your preferences.
-					</p>
 				</div>
 				<Separator />
-
-				{/* Profile Form */}
 				<ProfileForm />
-
-				{/* Connected Accounts */}
 				<ConnectedAccounts />
 			</div>
 		</div>

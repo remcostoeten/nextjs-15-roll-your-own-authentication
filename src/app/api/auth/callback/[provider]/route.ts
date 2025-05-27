@@ -1,3 +1,4 @@
+import { DiscordOAuthService } from '@/modules/authenticatie/services/discord-oauth-service';
 import { GitHubOAuthService } from '@/modules/authenticatie/services/github-oauth-service';
 import { GoogleOAuthService } from '@/modules/authenticatie/services/google-oauth-service';
 import { TOAuthProvider } from '@/modules/authenticatie/types/oauth';
@@ -6,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 const OAUTH_SERVICES = {
 	github: new GitHubOAuthService(),
 	google: new GoogleOAuthService(),
+	discord: new DiscordOAuthService(),
 };
 
 export async function GET(request: NextRequest) {

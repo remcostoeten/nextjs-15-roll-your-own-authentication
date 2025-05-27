@@ -1,3 +1,5 @@
+'use client';
+
 import { GlowingEffect } from '@/components/effects/glowing-effect';
 import { Flex } from '@/shared/components/flex';
 import {
@@ -22,6 +24,7 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from '@/shared/components/ui/sheet';
+import { motion } from 'framer-motion';
 import { Book, Menu, Sunset, Trees, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { Container } from 'ui';
@@ -246,59 +249,84 @@ const Navbar = ({
 		<section className="py-4">
 			<Container>
 				<nav className="hidden justify-between lg:flex items-center">
-					<Flex center gap="md">
-						<Logo />
-						<Flex center>
-							<NavigationMenu>
-								<NavigationMenuList>
-									{menu.map((item) => renderMenuItem(item))}
-								</NavigationMenuList>
-							</NavigationMenu>
+					<motion.div
+						initial={{ opacity: 0, x: -20 }}
+						animate={{ opacity: 1, x: 0 }}
+						transition={{ duration: 0.6, ease: 'easeOut' }}
+					>
+						<Flex center gap="md">
+							<Logo />
+							<Flex center>
+								<NavigationMenu>
+									<NavigationMenuList>
+										{menu.map((item, index) => (
+											<motion.div
+												key={item.title}
+												initial={{ opacity: 0, y: -10 }}
+												animate={{ opacity: 1, y: 0 }}
+												transition={{
+													duration: 0.5,
+													delay: 0.1 + index * 0.1,
+													ease: 'easeOut',
+												}}
+											>
+												{renderMenuItem(item)}
+											</motion.div>
+										))}
+									</NavigationMenuList>
+								</NavigationMenu>
+							</Flex>
 						</Flex>
-					</Flex>
-					<Flex gap="md" start >
-						<Button
-							asChild
-							variant="outline"
-							size="sm"
-							className="rounded-none relative group max-h-[35px] min-h-[35px]"
-						>
-							<Link href={auth.login.url}>
-								{auth.login.text}
-								<div className="absolute inset-0 opacity-0 group-hover:opacity-100">
-									<GlowingEffect
-										variant="default"
-										blur={8}
-										spread={15}
-										glow={true}
-										disabled={false}
-										movementDuration={0.8}
-										borderWidth={1}
-									/>
-								</div>
-							</Link>
-						</Button>
-						<Button
-							className="rounded-none relative group max-h-[33px] min-h-[33px] font-semibold"
-							asChild
-							size="sm"
-						>
-							<Link href={auth.signup.url}>
-								{auth.signup.text}
-								<div className="absolute inset-0 opacity-0 group-hover:opacity-100">
-									<GlowingEffect
-										variant="default"
-										blur={8}
-										spread={15}
-										glow={true}
-										disabled={false}
-										movementDuration={0.8}
-										borderWidth={1}
-									/>
-								</div>
-							</Link>
-						</Button>
-					</Flex>
+					</motion.div>
+					<motion.div
+						initial={{ opacity: 0, x: 20 }}
+						animate={{ opacity: 1, x: 0 }}
+						transition={{ duration: 0.6, delay: 0.3, ease: 'easeOut' }}
+					>
+						<Flex gap="md" start>
+							<Button
+								asChild
+								variant="outline"
+								size="sm"
+								className="rounded-none relative group max-h-[35px] min-h-[35px]"
+							>
+								<Link href={auth.login.url}>
+									{auth.login.text}
+									<div className="absolute inset-0 opacity-0 group-hover:opacity-100">
+										<GlowingEffect
+											variant="default"
+											blur={8}
+											spread={15}
+											glow={true}
+											disabled={false}
+											movementDuration={0.8}
+											borderWidth={1}
+										/>
+									</div>
+								</Link>
+							</Button>
+							<Button
+								className="rounded-none relative group max-h-[33px] min-h-[33px] font-semibold"
+								asChild
+								size="sm"
+							>
+								<Link href={auth.signup.url}>
+									{auth.signup.text}
+									<div className="absolute inset-0 opacity-0 group-hover:opacity-100">
+										<GlowingEffect
+											variant="default"
+											blur={8}
+											spread={15}
+											glow={true}
+											disabled={false}
+											movementDuration={0.8}
+											borderWidth={1}
+										/>
+									</div>
+								</Link>
+							</Button>
+						</Flex>
+					</motion.div>
 				</nav>
 				<div className="lg:hidden flex justify-between items-center gap-4">
 					<Flex center gap="md">

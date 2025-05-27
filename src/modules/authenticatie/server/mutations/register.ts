@@ -1,7 +1,7 @@
 'use server';
 
 import { createSession } from '@/modules/authenticatie/helpers/session';
-import { createUser } from '@/modules/authenticatie/repositories/user-repository';
+import { createUser } from '@/modules/authenticatie/server/repositories/user-repository';
 import { z } from 'zod';
 
 const registerSchema = z.object({

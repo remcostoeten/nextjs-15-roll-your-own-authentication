@@ -6,21 +6,21 @@ import { createPortal } from 'react-dom';
 
 type ToastType = 'success' | 'error' | 'warning' | 'info' | 'neutral';
 
-interface Toast {
+type TToast = {
 	id: string;
 	message: string;
 	type: ToastType;
 	duration?: number;
 	visible?: boolean;
-}
+};
 
-interface ToastContextValue {
-	toasts: Toast[];
+type TContextValue = {
+	toasts: TToast[];
 	addToast: (message: string, type: ToastType, duration?: number) => void;
 	removeToast: (id: string) => void;
-}
+};
 
-const ToastContext = createContext<ToastContextValue | null>(null);
+const ToastContext = createContext<TContextValue | null>(null);
 
 function useToastContext() {
 	const context = useContext(ToastContext);
@@ -59,7 +59,14 @@ function ToastItem({
 	onRemove,
 	index,
 	total,
-}: { toast: Toast; onRemove: () => void; index: number; total: number }) {
+	isHovered,
+}: {
+	toast: TToast;
+	onRemove: () => void;
+	index: number;
+	total: number;
+	isHovered: boolean;
+}) {
 	const [isExiting, setIsExiting] = useState(false);
 
 	useEffect(() => {
@@ -104,22 +111,21 @@ function ToastItem({
 		neutral: 'before:bg-gray-500/10',
 	};
 
-	const stackIndex = total - index - 1;
-	const stackScale = 1 - stackIndex * 0.05;
-	const stackOpacity = 1 - stackIndex * 0.15;
+	// When hovered, spread toasts vertically with equal spacing
+	// When not hovered, stack them with partial visibility
+	const offsetY = isHovered ? index * 70 : index * 8; // Large vertical offset when hovered
+	const scale = isHovered ? 1 : 1 - index * 0.05; // Full scale when hovered
+	const opacity = isHovered ? 1 : 1 - index * 0.2; // Full opacity when hovered
+	const zIndex = 50 - index;
 
 	return (
 		<div
-			className={`absolute bottom-0 right-0 w-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]`}
-			style={
-				{
-					'--stack-offset': `${stackIndex * -8}px`,
-					'--stack-scale': stackScale.toString(),
-					transform: `translateY(var(--stack-offset)) scale(var(--stack-scale))`,
-					opacity: stackOpacity,
-					zIndex: 50 - stackIndex,
-				} as React.CSSProperties
-			}
+			className="absolute bottom-0 right-0 w-full transition-all duration-300 ease-out"
+			style={{
+				transform: `translateY(${-offsetY}px) scale(${scale})`,
+				opacity: opacity,
+				zIndex: zIndex,
+			}}
 		>
 			<div
 				className={`
@@ -142,11 +148,12 @@ function ToastItem({
 					</p>
 				</div>
 				<button
-					onClick={() => {
+					onClick={(e) => {
+						e.stopPropagation();
 						setIsExiting(true);
 						setTimeout(onRemove, 400);
 					}}
-					className="shrink-0 rounded-full p-1.5 text-white/40 hover:text-white/90 hover:bg-background bbb/[0.06] transition-all duration-200"
+					className="shrink-0 rounded-full p-1.5 text-white/40 hover:text-white/90 hover:bg-background/[0.06] transition-all duration-200"
 					aria-label="Close notification"
 				>
 					<X className="w-3.5 h-3.5" />
@@ -173,26 +180,34 @@ function ClientOnlyPortal({ children }: { children: React.ReactNode }) {
 function ToastContainer({
 	toasts,
 	removeToast,
-}: { toasts: Toast[]; removeToast: (id: string) => void }) {
-	const [isExpanded, setIsExpanded] = useState(false);
+}: { toasts: TToast[]; removeToast: (id: string) => void }) {
+	const [isHovered, setIsHovered] = useState(false);
+	const maxVisibleToasts = 3; // Show only 3 toasts at a time in the stack
+	const visibleToasts = toasts.slice(0, maxVisibleToasts);
 
 	return (
 		<ClientOnlyPortal>
 			<div
 				className="fixed bottom-6 right-6 z-50 min-w-[320px] max-w-[380px]"
-				onMouseEnter={() => setIsExpanded(true)}
-				onMouseLeave={() => setIsExpanded(false)}
+				onMouseEnter={() => setIsHovered(true)}
+				onMouseLeave={() => setIsHovered(false)}
 			>
-				<div className="relative h-[72px]">
-					{toasts.map((toast, index) => (
+				<div className="relative">
+					{visibleToasts.map((toast, index) => (
 						<ToastItem
 							key={toast.id}
 							toast={toast}
 							onRemove={() => removeToast(toast.id)}
 							index={index}
-							total={toasts.length}
+							total={visibleToasts.length}
+							isHovered={isHovered}
 						/>
 					))}
+					{toasts.length > maxVisibleToasts && (
+						<div className="absolute bottom-[-24px] right-0 text-xs text-white/50">
+							+{toasts.length - maxVisibleToasts} more
+						</div>
+					)}
 				</div>
 			</div>
 		</ClientOnlyPortal>

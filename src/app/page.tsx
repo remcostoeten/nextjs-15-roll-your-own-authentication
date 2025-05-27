@@ -11,10 +11,10 @@ export default function HomePage() {
 		<>
 			<Header />
 			<Flex column className="w-screen min-h-screen mx-auto relative bg-background">
-					<Container>
-						<FeaturesSection />
-						<GlowingBento />
-					</Container>
+				<Container>
+					<FeaturesSection />
+					<GlowingBento />
+				</Container>
 			</Flex>
 		</>
 	);

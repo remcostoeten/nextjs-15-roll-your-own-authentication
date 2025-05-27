@@ -10,7 +10,7 @@ export type TUserRole = (typeof UserRole)[keyof typeof UserRole];
 export const users = pgTable('users', {
 	id: uuid('id').defaultRandom().primaryKey(),
 	email: text('email').notNull().unique(),
-	password: text('password'), // Make password optional for OAuth users
+	password: text('password'),
 	role: text('role', { enum: ['admin', 'user'] })
 		.notNull()
 		.default('user'),

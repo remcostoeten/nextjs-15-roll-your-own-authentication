@@ -4,6 +4,8 @@ export * from './card';
 export * from './charts';
 export * from './container';
 export * from './custom-checkbox';
+export * from './dialog';
+export * from './form';
 export * from './icons';
 export * from './input';
 export * from './label';

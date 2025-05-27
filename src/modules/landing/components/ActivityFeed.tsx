@@ -147,8 +147,16 @@ export function ActivityFeed() {
 							<LineChart data={performanceData}>
 								<defs>
 									<linearGradient id="colorLatency" x1="0" y1="0" x2="0" y2="1">
-										<stop offset="5%" stopColor="#6366f1" stopOpacity={0.8} />
-										<stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+										<stop
+											offset="5%"
+											stopColor="hsl(var(--accent))"
+											stopOpacity={0.8}
+										/>
+										<stop
+											offset="95%"
+											stopColor="hsl(var(--accent))"
+											stopOpacity={0}
+										/>
 									</linearGradient>
 								</defs>
 								<CartesianGrid strokeDasharray="3 3" opacity={0.1} />
@@ -171,7 +179,7 @@ export function ActivityFeed() {
 									type="monotone"
 									dataKey="latency"
 									name="Latency (ms)"
-									stroke="#6366f1"
+									stroke="hsl(var(--accent))"
 									strokeWidth={2}
 									dot={false}
 								/>
@@ -179,7 +187,7 @@ export function ActivityFeed() {
 									type="monotone"
 									dataKey="load"
 									name="System Load (%)"
-									stroke="#8b5cf6"
+									stroke="hsl(var(--primary))"
 									strokeWidth={2}
 									dot={false}
 								/>
