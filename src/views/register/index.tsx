@@ -2,13 +2,14 @@
 
 import { RegisterForm } from '@/app/(auth)/register/register-form';
 import { GitHubLoginButton } from '@/modules/authenticatie/ui/github-login';
+import { GoogleLoginButton } from '@/modules/authenticatie/ui/google-login';
 import { toast } from '@/shared/components/toast';
 import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/shared/components/ui/card';
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
@@ -44,7 +45,10 @@ export function RegisterView() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4">
-					<GitHubLoginButton className="w-full" />
+					<div className="grid gap-2">
+						<GitHubLoginButton className="w-full" />
+						<GoogleLoginButton className="w-full" />
+					</div>
 
 					<div className="relative">
 						<div className="absolute inset-0 flex items-center">

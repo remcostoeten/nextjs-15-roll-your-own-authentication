@@ -1,4 +1,4 @@
-export type TOAuthProvider = 'github';
+export type TOAuthProvider = 'github' | 'google';
 
 export type TOAuthConfig = {
 	clientId: string;

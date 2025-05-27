@@ -3,24 +3,24 @@
 import { toast } from '@/shared/components/toast';
 import { useState } from 'react';
 import { Button, Icons } from 'ui';
-import { generateGitHubAuthUrl } from '../server/mutations/github-login';
+import { generateGoogleAuthUrl } from '../server/mutations/google-login';
 
 type TProps = {
 	className?: string;
 	redirectTo?: string;
 };
 
-export function GitHubLoginButton({ className, redirectTo = '/dashboard' }: TProps) {
+export function GoogleLoginButton({ className, redirectTo = '/dashboard' }: TProps) {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleLogin = async () => {
 		try {
 			setIsLoading(true);
-			const url = await generateGitHubAuthUrl(redirectTo);
+			const url = await generateGoogleAuthUrl(redirectTo);
 			window.location.href = url;
 		} catch (error) {
-			console.error('GitHub login error:', error);
-			toast.error('Failed to initiate GitHub login');
+			console.error('Google login error:', error);
+			toast.error('Failed to initiate Google login');
 			setIsLoading(false);
 		}
 	};
@@ -35,9 +35,9 @@ export function GitHubLoginButton({ className, redirectTo = '/dashboard' }: TPro
 			{isLoading ? (
 				<Icons.spinner className="mr-2 h-4 w-4 animate-spin text-foreground" />
 			) : (
-				<Icons.gitHub className="mr-2 h-4 w-4" />
+				<Icons.google className="mr-2 h-4 w-4" />
 			)}
-			<span className='sr-only'>Continue with GitHub</span>
+			Continue with Google
 		</Button>
 	);
 }
