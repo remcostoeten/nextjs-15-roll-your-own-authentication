@@ -1,7 +1,6 @@
 import { Providers } from '@/components/providers';
 import { ThemeProvider, ThemeSwitcher } from '@/modules/landing/components';
 import '@/styles/globals.css';
-import '@/styles/themes.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 

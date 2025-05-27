@@ -5,11 +5,11 @@ import { GitHubLoginButton } from '@/modules/authenticatie/ui/github-login';
 import { GoogleLoginButton } from '@/modules/authenticatie/ui/google-login';
 import { toast } from '@/shared/components/toast';
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
 } from '@/shared/components/ui/card';
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';

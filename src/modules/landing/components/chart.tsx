@@ -3,7 +3,7 @@
 import { Activity } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
-import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from 'ui';
+import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from 'ui';
 import { getCommitDataClient } from './api/cache-services';
 
 type CommitDataPoint = {
@@ -14,7 +14,7 @@ type CommitDataPoint = {
 const chartConfig: ChartConfig = {
 	commits: {
 		label: 'Commits',
-		color: '#2563eb',
+		color: 'hsl(var(--accent))',
 	},
 };
 

@@ -169,7 +169,6 @@ export function AuthFormContainer({
 													fill="currentColor"
 												/>
 											</svg>
-											<span className="sr-only">Login with Google</span>
 										</Button>
 
 										<Button

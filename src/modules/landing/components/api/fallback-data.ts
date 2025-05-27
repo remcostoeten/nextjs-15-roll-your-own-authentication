@@ -14,7 +14,7 @@ export const fallbackRepoStats = {
 	branch: 'main',
 };
 
- export const fallbackCommits = [
+export const fallbackCommits = [
 	{
 		commit: {
 			message: 'Initial commit: Project setup with Next.js and authentication',

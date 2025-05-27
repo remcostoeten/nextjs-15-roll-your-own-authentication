@@ -15,8 +15,18 @@ const COOKIE_OPTIONS = {
 
 const SESSION_EXPIRY_DAYS = 7;
 
-export async function createSession(user: { id: string; email: string; role: string; name?: string }) {
-	const token = await signJWT({ sub: user.id, email: user.email, role: user.role, name: user.name });
+export async function createSession(user: {
+	id: string;
+	email: string;
+	role: string;
+	name?: string;
+}) {
+	const token = await signJWT({
+		sub: user.id,
+		email: user.email,
+		role: user.role,
+		name: user.name,
+	});
 
 	const expiresAt = new Date();
 	expiresAt.setDate(expiresAt.getDate() + SESSION_EXPIRY_DAYS);

@@ -4,24 +4,18 @@ import { db } from 'db';
 import { and, eq } from 'drizzle-orm';
 import { env } from 'env';
 import { oauthAccounts, users } from 'schema';
-import { hashPassword } from '../helpers';
-import type { TAuthUser } from '../types';
-import type { TOAuthAccount, TOAuthProvider } from '../types/oauth';
+import { hashPassword } from '../../helpers';
+import type { TAuthUser } from '../../types';
+import type { TOAuthAccount, TOAuthProvider } from '../../types/oauth';
 
-type TCreateUserData = Omit<
-	TBaseUserWithPassword,
-	'id' | 'createdAt' | 'updatedAt' | 'emailVerified' | 'lastLoginAt'
->;
 type TUpdateUserData = Partial<Omit<TBaseUserWithPassword, 'id' | 'createdAt' | 'updatedAt'>>;
-
-type CreateUserInput = {
-	name: string;
-	email: string;
-	password: string;
-};
 
 export function userRepository() {
 	return {
+		isAdmin(user: TAuthUser): boolean {
+			return user.email === env.ADMIN_EMAIL || user.role === 'admin';
+		},
+
 		async findByEmail(email: string): Promise<TAuthUser | null> {
 			const result = await db.select().from(users).where(eq(users.email, email));
 			return (result[0] ?? null) as TAuthUser | null;
@@ -30,12 +24,6 @@ export function userRepository() {
 		async findById(id: string): Promise<TAuthUser | null> {
 			const result = await db.select().from(users).where(eq(users.id, id));
 			return (result[0] ?? null) as TAuthUser | null;
-		},
-
-		async create(data: TCreateUserData): Promise<TAuthUser> {
-			const result = await db.insert(users).values(data).returning();
-			if (!result[0]) throw new Error('Failed to create user');
-			return result[0] as TAuthUser;
 		},
 
 		async update(id: string, data: TUpdateUserData): Promise<TAuthUser> {
@@ -48,13 +36,8 @@ export function userRepository() {
 			return result[0] as TAuthUser;
 		},
 
-		async delete(id: string): Promise<void> {
-			await db.delete(users).where(eq(users.id, id));
-		},
-
-		async findAll(): Promise<TAuthUser[]> {
-			const result = await db.select().from(users);
-			return result as TAuthUser[];
+		async deleteAccount(userId: string): Promise<void> {
+			await db.delete(users).where(eq(users.id, userId));
 		},
 
 		async validateCredentials(email: string, password: string): Promise<TAuthUser | null> {
@@ -70,10 +53,6 @@ export function userRepository() {
 
 			const { password: _, ...userWithoutPassword } = user;
 			return userWithoutPassword;
-		},
-
-		isAdmin(user: TAuthUser): boolean {
-			return user.email === env.ADMIN_EMAIL || user.role === 'admin';
 		},
 
 		async findOAuthAccount(
@@ -117,10 +96,22 @@ export function userRepository() {
 				.delete(oauthAccounts)
 				.where(and(eq(oauthAccounts.userId, userId), eq(oauthAccounts.provider, provider)));
 		},
+
+		async updatePassword(userId: string, password: string): Promise<void> {
+			const hashedPassword = await hashPassword(password);
+			await db
+				.update(users)
+				.set({ password: hashedPassword, updatedAt: new Date() })
+				.where(eq(users.id, userId));
+		},
 	};
 }
 
-export async function createUser(input: CreateUserInput) {
+export async function createUser(input: {
+	name: string;
+	email: string;
+	password: string;
+}) {
 	const hashedPassword = await hashPassword(input.password);
 
 	const [user] = await db

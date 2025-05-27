@@ -1,7 +1,7 @@
 'use server';
 
 import { createSession } from '@/modules/authenticatie/helpers/session';
-import { userRepository } from '@/modules/authenticatie/repositories/user-repository';
+import { userRepository } from '@/modules/authenticatie/server/repositories/user-repository';
 import type { TAuthMutationResponse } from '../../types';
 
 export async function login(formData: FormData): Promise<TAuthMutationResponse> {
@@ -24,7 +24,12 @@ export async function login(formData: FormData): Promise<TAuthMutationResponse> 
 			};
 		}
 
-		await createSession(user);
+		await createSession({
+			id: user.id,
+			email: user.email,
+			role: user.role,
+			name: user.name || undefined,
+		});
 		return {
 			success: true,
 			user,

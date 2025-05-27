@@ -1,7 +1,7 @@
 'use server';
 
 import { getSession } from '../../helpers/session';
-import { userRepository } from '../../repositories/user-repository';
+import { userRepository } from '../repositories/user-repository';
 
 export async function getOAuthAccounts() {
 	try {

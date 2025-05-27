@@ -4,11 +4,11 @@ import { eq } from 'drizzle-orm';
 import { createSession } from '../helpers/session';
 import { TAuthUser } from '../types';
 import {
-    TOAuthConfig,
-    TOAuthProvider,
-    TOAuthState,
-    TOAuthTokenResponse,
-    TOAuthUserInfo,
+	TOAuthConfig,
+	TOAuthProvider,
+	TOAuthState,
+	TOAuthTokenResponse,
+	TOAuthUserInfo,
 } from '../types/oauth';
 
 export class OAuth2Service {
@@ -81,54 +81,61 @@ export class OAuth2Service {
 		const { access_token } = await this.getAccessToken(code);
 		const userInfo = await this.getUserInfo(access_token);
 
-		// Check if user exists by email
-		const existingUser = await db.query.users.findFirst({
-			where: eq(users.email, userInfo.email),
-		});
+		try {
+			// Check if user exists by email
+			const existingUser = await db.query.users.findFirst({
+				where: eq(users.email, userInfo.email),
+			});
 
-		if (existingUser) {
-			// Check if user has password auth
-			if (existingUser.password) {
-				throw new Error('An account with this email already exists. Please sign in with your email and password instead.');
+			if (existingUser) {
+				// Check if user has password auth
+				if (existingUser.password) {
+					throw new Error(
+						'An account with this email already exists. Please sign in with your email and password instead.'
+					);
+				}
+
+				// Update or create OAuth account
+				await db
+					.insert(oauthAccounts)
+					.values({
+						userId: existingUser.id,
+						provider: this.provider,
+						providerAccountId: userInfo.providerAccountId,
+						accessToken: userInfo.accessToken,
+					})
+					.onConflictDoUpdate({
+						target: [oauthAccounts.provider, oauthAccounts.providerAccountId],
+						set: { accessToken: userInfo.accessToken },
+					});
+
+				await createSession(existingUser);
+				return { user: existingUser as TAuthUser, isNewUser: false };
 			}
 
-			// Update or create OAuth account
-			await db
-				.insert(oauthAccounts)
+			// Create new user and OAuth account
+			const [newUser] = await db
+				.insert(users)
 				.values({
-					userId: existingUser.id,
-					provider: this.provider,
-					providerAccountId: userInfo.providerAccountId,
-					accessToken: userInfo.accessToken,
+					email: userInfo.email,
+					name: userInfo.name,
+					avatar: userInfo.avatar,
+					emailVerified: new Date(), // OAuth emails are verified
 				})
-				.onConflictDoUpdate({
-					target: [oauthAccounts.provider, oauthAccounts.providerAccountId],
-					set: { accessToken: userInfo.accessToken },
-				});
+				.returning();
 
-			await createSession(existingUser);
-			return { user: existingUser as TAuthUser, isNewUser: false };
+			await db.insert(oauthAccounts).values({
+				userId: newUser.id,
+				provider: this.provider,
+				providerAccountId: userInfo.providerAccountId,
+				accessToken: userInfo.accessToken,
+			});
+
+			await createSession(newUser);
+			return { user: newUser as TAuthUser, isNewUser: true };
+		} catch (error) {
+			console.error('OAuth callback error:', error);
+			throw error;
 		}
-
-		// Create new user and OAuth account
-		const [newUser] = await db
-			.insert(users)
-			.values({
-				email: userInfo.email,
-				name: userInfo.name,
-				avatar: userInfo.avatar,
-				emailVerified: new Date(), // OAuth emails are verified
-			})
-			.returning();
-
-		await db.insert(oauthAccounts).values({
-			userId: newUser.id,
-			provider: this.provider,
-			providerAccountId: userInfo.providerAccountId,
-			accessToken: userInfo.accessToken,
-		});
-
-		await createSession(newUser);
-		return { user: newUser as TAuthUser, isNewUser: true };
 	}
 }
