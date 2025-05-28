@@ -1,6 +1,7 @@
-import { TBaseEntity, TBaseUser } from '@/shared/types/base';
+import { TBaseEntity } from "@/shared/types/base";
+import { UUID } from "@/shared/types/common";
 
-export type TNotificationType = 
+export type TNotificationType =
   | 'workspace_invite'
   | 'member_joined'
   | 'member_left'
@@ -15,61 +16,42 @@ export type TNotificationType =
 
 export type TNotificationPriority = 'low' | 'medium' | 'high' | 'urgent';
 
-export type TBaseNotification = TBaseEntity & {
-  userId: string;
+export type TNotification = TBaseEntity & {
+  userId: UUID;
   type: TNotificationType;
   title: string;
   message: string;
+  read: boolean;
+  archived: boolean;
   priority: TNotificationPriority;
-  isRead: boolean;
-  isArchived: boolean;
-  actionUrl?: string | null;
-  actionLabel?: string | null;
-  metadata?: Record<string, any> | null;
-  expiresAt?: Date | null;
+  actionUrl?: string;
+  actionLabel?: string;
+  metadata?: Record<string, unknown>;
+  actorId?: UUID;
+  expiresAt?: Date;
 };
 
-export type TNotificationWithActor = TBaseNotification & {
-  actor?: Pick<TBaseUser, 'id' | 'name' | 'email' | 'avatar'> | null;
-  actorId?: string | null;
+export type TNotificationWithActor = TNotification & {
+  actor?: {
+    id: UUID;
+    name: string;
+    email: string;
+    avatar?: string;
+  };
 };
 
-export type TNotificationGroup = {
-  type: TNotificationType;
-  count: number;
-  latestNotification: TNotificationWithActor;
-  notifications: TNotificationWithActor[];
-};
+export type TCreateNotificationInput = Omit<TNotification, 'id' | 'createdAt' | 'updatedAt' | 'read' | 'archived'>;
 
 export type TNotificationStats = {
   total: number;
   unread: number;
-  byType: Record<TNotificationType, number>;
-  byPriority: Record<TNotificationPriority, number>;
+  highPriority: number;
 };
 
-export type TNotificationPreferences = {
-  userId: string;
-  emailNotifications: boolean;
-  pushNotifications: boolean;
-  inAppNotifications: boolean;
-  notificationTypes: Partial<Record<TNotificationType, boolean>>;
-  quietHours: {
-    enabled: boolean;
-    startTime: string; // HH:mm format
-    endTime: string; // HH:mm format
-  };
-};
-
-export type TCreateNotificationInput = {
-  userId: string;
-  type: TNotificationType;
-  title: string;
-  message: string;
-  priority?: TNotificationPriority;
-  actionUrl?: string;
-  actionLabel?: string;
-  metadata?: Record<string, any>;
-  actorId?: string;
-  expiresAt?: Date;
+export type TGetNotificationsOptions = {
+  limit?: number;
+  offset?: number;
+  unreadOnly?: boolean;
+  types?: TNotificationType[];
+  includeArchived?: boolean;
 };

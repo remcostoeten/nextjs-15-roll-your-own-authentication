@@ -1,10 +1,11 @@
+'use client';
+
 import { toast } from '@/shared/components/toast';
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
+import { Button, Icons } from 'ui';
 import { useWorkspace } from '../hooks/use-workspace';
 import { createWorkspace } from '../server/mutations/create-workspace';
-import { Button, Icons } from 'ui';
-'use client';
 
 
 export function WorkspaceSwitcher() {

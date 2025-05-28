@@ -1,10 +1,11 @@
 'use server';
 
+import { siteConfig } from '@/core/config/site-config';
 import { cache } from 'react';
 
 const GITHUB_API_BASE = 'https://api.github.com';
-const REPO_OWNER = 'remcostoeten';
-const REPO_NAME = 'nextjs-15-roll-your-own-authentication';
+const REPO_OWNER = siteConfig.github.owner;
+const REPO_NAME = siteConfig.github.repo;
 
 type TGitHubError = {
 	message: string;

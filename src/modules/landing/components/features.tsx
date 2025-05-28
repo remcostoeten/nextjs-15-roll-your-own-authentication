@@ -60,7 +60,7 @@ function CommitPopover({ commit }: { commit: TGitHubCommit }) {
 	);
 }
 
-export default function FeaturesSection() {
+export function FeaturesSection() {
 	const [commits, setCommits] = useState<TGitHubCommit[]>([]);
 
 	useEffect(() => {
@@ -356,7 +356,7 @@ const svgOptions = {
 	radius: 0.15,
 };
 
-const Map = () => {
+function Map() {
 	const viewBox = `0 0 120 60`;
 	return (
 		<svg viewBox={viewBox} style={{ background: svgOptions.backgroundColor }}>
@@ -374,7 +374,7 @@ const Map = () => {
 };
 
 const chartConfig = {
-	desktop: {
+desktop: {
 		label: 'Desktop',
 		color: 'hsl(var(--accent))',
 	},
@@ -393,7 +393,7 @@ const chartData = [
 	{ month: 'April', desktop: 400, mobile: 800 },
 ];
 
-const MonitoringChart = () => {
+function MonitoringChart() {
 	const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
 	const handleMouseEnter = (data: any, index: number) => {
@@ -458,7 +458,7 @@ const MonitoringChart = () => {
 					stroke="var(--color-desktop)"
 					stackId="a"
 				/>
-			</AreaChart>
+ 			</AreaChart>
 		</ChartContainer>
 	);
 };

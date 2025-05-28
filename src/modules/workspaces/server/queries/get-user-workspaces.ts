@@ -1,10 +1,10 @@
 'use server';
 
-import { db } from 'db';
-import { workspaces, workspaceMembers, users } from 'schema';
 import { getSession } from '@/modules/authenticatie/helpers/session';
+import { db } from 'db';
+import { eq, sql } from 'drizzle-orm';
+import { users, workspaceMembers, workspaces } from 'schema';
 import { TWorkspaceWithOwner } from '../../types';
-import { eq, sql, count } from 'drizzle-orm';
 
 export async function getUserWorkspaces(): Promise<TWorkspaceWithOwner[]> {
 	const session = await getSession();
@@ -24,13 +24,11 @@ export async function getUserWorkspaces(): Promise<TWorkspaceWithOwner[]> {
 				owner: {
 					id: users.id,
 					name: users.name,
-					email: users.email,
-					avatar: users.avatar,
+					role: workspaceMembers.role,
 				},
-				userRole: workspaceMembers.role,
 				memberCount: sql<number>`(
-					SELECT COUNT(*)::int 
-					FROM ${workspaceMembers} wm 
+					SELECT COUNT(*)::int
+					FROM ${workspaceMembers} wm
 					WHERE wm.workspace_id = ${workspaces.id}
 				)`,
 			})
@@ -40,7 +38,17 @@ export async function getUserWorkspaces(): Promise<TWorkspaceWithOwner[]> {
 			.where(eq(workspaceMembers.userId, session.id))
 			.orderBy(workspaces.createdAt);
 
-		return userWorkspaces;
+		return userWorkspaces.map(workspace => ({
+			...workspace,
+			memberCount: workspace.memberCount,
+			owner: {
+				id: workspace.owner.id,
+				name: workspace.owner.name || '',
+				email: '',
+				avatar: null,
+			},
+			userRole: workspace.owner.role,
+		}));
 	} catch (error) {
 		console.error('Get user workspaces error:', error);
 		return [];

@@ -1,16 +1,17 @@
 'use server';
 
+import { siteConfig } from '@/core/config/site-config';
 import { octokit } from '@/core/lib/octokit';
 import { cache } from 'react';
-import { fallbackCommitData } from './fallback-data';
+import { fallbackCommits } from './fallback-data';
 
 const CACHE_TTL_MS = 5 * 60 * 1000;
 
 export async function fetchCommitData() {
 	try {
 		const { data: commits } = await octokit.rest.repos.listCommits({
-			owner: 'remcostoeten',
-			repo: 'architecture-ryoa',
+			owner: siteConfig.github.owner,
+			repo: siteConfig.github.repo,
 			per_page: 100,
 		});
 
@@ -28,7 +29,7 @@ export async function fetchCommitData() {
 		}));
 	} catch (error) {
 		console.error('Error fetching commit data:', error);
-		return fallbackCommitData;
+		return fallbackCommits;
 	}
 }
 
@@ -40,6 +41,6 @@ export async function getCommitDataClient() {
 		return data;
 	} catch (error) {
 		console.error('Error in client commit data:', error);
-		return fallbackCommitData;
+		return fallbackCommits;
 	}
 }

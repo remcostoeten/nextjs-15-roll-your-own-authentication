@@ -9,13 +9,13 @@ import { updateMemberRole } from '../server/mutations/update-member-role';
 import { TWorkspaceMember, TWorkspaceMemberRole, TWorkspaceWithOwner } from '../types';
 
 
-interface MembersListProps {
+type TMembersList  = {
 	members: TWorkspaceMember[];
 	workspace: TWorkspaceWithOwner;
 	userRole: TWorkspaceMemberRole;
 }
 
-export function MembersList({ members, workspace, userRole }: MembersListProps) {
+export function MembersList({ members, workspace, userRole }: TMembersList) {
 	const [isInviting, setIsInviting] = useState(false);
 	const [inviteEmail, setInviteEmail] = useState('');
 	const [inviteRole, setInviteRole] = useState<'admin' | 'member' | 'viewer'>('member');
