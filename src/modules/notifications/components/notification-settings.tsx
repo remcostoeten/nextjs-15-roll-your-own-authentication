@@ -1,15 +1,19 @@
 'use client';
 
-import { For } from '@/shared/components/for';
-import { useToast } from '@/shared/components/toast';
-import { Button } from '@/shared/components/ui/button';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/ui/card';
-import { Label } from '@/shared/components/ui/label';
-import { Separator } from '@/shared/components/ui/separator';
 import { Switch } from '@/shared/components/ui/switch';
-import { useState } from 'react';
+import { Label } from '@/shared/components/ui/label';
+import { Button } from '@/shared/components/ui/button';
+import { useToast } from '@/shared/components/toast';
+import { Separator } from '@/shared/components/ui/separator';
+import { For } from '@/shared/components/for';
+import { useAuth } from '@/modules/authenticatie/hooks/use-auth';
+import { saveNotificationPreferences } from '../server/mutations/save-preferences';
 
 function DebugBar({ metrics }: { metrics: Array<{ label: string; value: string | number }> }) {
+  if (process.env.NODE_ENV === 'production') return null;
+  
   return (
     <div className="mb-4 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
       <div className="flex flex-wrap gap-4 items-center">
@@ -22,7 +26,8 @@ function DebugBar({ metrics }: { metrics: Array<{ label: string; value: string |
               <span className="text-sm font-medium text-blue-50">{metric.value}</span>
             </div>
           </div>
-      </For>
+          )}
+        </For>
       </div>
     </div>
   );
@@ -30,22 +35,26 @@ function DebugBar({ metrics }: { metrics: Array<{ label: string; value: string |
 
 export function NotificationSettings() {
   const { toast } = useToast();
+  const auth = useAuth();
   const [settings, setSettings] = useState({
-    email: true,
-    push: true,
-    inApp: true,
     taskUpdates: true,
     projectUpdates: true,
     teamMessages: true,
     securityAlerts: true,
   });
-
-  const debugMetrics = [
-    { label: 'User Role', value: 'Admin' },
-    { label: 'Workspace Members', value: 12 },
-    { label: 'Notification Count', value: settings.email + settings.push + settings.inApp },
-    { label: 'Environment', value: process.env.NODE_ENV || 'development' }
-  ];
+  
+  const [debugMetrics, setDebugMetrics] = useState<Array<{ label: string; value: string | number }>>([]);
+  
+  useEffect(() => {
+    // Only collect debug metrics in non-production environments
+    if (process.env.NODE_ENV !== 'production') {
+      setDebugMetrics([
+        { label: 'User Role', value: auth.user?.role || 'Guest' },
+        { label: 'Notification Types', value: Object.keys(settings).length },
+        { label: 'Environment', value: process.env.NODE_ENV || 'development' }
+      ]);
+    }
+  }, [settings, auth.user]);
 
   const handleToggle = (key: keyof typeof settings) => {
     setSettings((prev) => ({
@@ -54,13 +63,30 @@ export function NotificationSettings() {
     }));
   };
 
-  const handleSave = () => {
-    // Here you would save the settings to the backend
-    toast({
-      title: 'Settings saved',
-      message: 'Your notification preferences have been updated.',
-      type: 'success',
-    });
+  const handleSave = async () => {
+    try {
+      const result = await saveNotificationPreferences(settings);
+      
+      if (result.success) {
+        toast({
+          title: 'Settings saved',
+          message: 'Your notification preferences have been updated.',
+          type: 'success',
+        });
+      } else {
+        toast({
+          title: 'Error',
+          message: result.error || 'Failed to save preferences',
+          type: 'error',
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Error',
+        message: 'An unexpected error occurred',
+        type: 'error',
+      });
+    }
   };
 
   return (
@@ -70,32 +96,10 @@ export function NotificationSettings() {
         <CardHeader>
           <CardTitle>Notification Preferences</CardTitle>
           <CardDescription>
-            Customize how and when you receive notifications
+            Customize when you receive notifications
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="space-y-4">
-            <h3 className="text-sm font-medium">Delivery Methods</h3>
-            <div className="space-y-3">
-              {[
-                { id: 'email', label: 'Email Notifications' },
-                { id: 'push', label: 'Push Notifications' },
-                { id: 'inApp', label: 'In-App Notifications' },
-              ].map(({ id, label }) => (
-                <div key={id} className="flex items-center justify-between">
-                  <Label htmlFor={id} className="flex-1">
-                    {label}
-                  </Label>
-                  <Switch
-                    id={id}
-                    checked={settings[id as keyof typeof settings]}
-                    onCheckedChange={() => handleToggle(id as keyof typeof settings)}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
           <div className="space-y-4">
             <h3 className="text-sm font-medium">Notification Types</h3>
             <div className="space-y-3">

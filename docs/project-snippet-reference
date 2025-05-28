@@ -44,14 +44,7 @@ Please create these diagrams using standard UML notation, with a focus on clarit
 
 ### 1. Base Types
 ```typescript
-// src/shared/types/base.ts
-export type TBaseEntity = {
-  id: UUID;
-  createdAt: Date;
-  updatedAt: Date;
-};
-
-// src/modules/notifications/types.ts
+// src/shared/types/base.tsextensions
 export type TNotification = TBaseEntity & {
   userId: UUID;
   type: TNotificationType;
@@ -62,27 +55,14 @@ export type TNotification = TBaseEntity & {
   priority: TNotificationPriority;
   actionUrl?: string;
   actionLabel?: string;
-  metadata?: Record<string, unknown>;
-  actorId?: UUID;
-  expiresAt?: Date;
-};
-```
-
-### 2. Database Schema
+  metadata?: Record<string, unknown>;extensions
 ```typescript
 // src/modules/notifications/server/schemas/schema-notifications.ts
 export const notifications = pgTable('notifications', {
   id: uuid('id').primaryKey().defaultRandom(),
   userId: uuid('user_id')
     .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-  type: notificationTypeEnum('type').notNull(),
-  title: text('title').notNull(),
-  message: text('message').notNull(),
-  read: boolean('read').notNull().default(false),
-  archived: boolean('archived').notNull().default(false),
-  priority: notificationPriorityEnum('priority').notNull().default('medium'),
-  // ... other fields
+    .references(() => users.id, { onDeleteextensions
 });
 ```
 

@@ -22,13 +22,7 @@ package "Database" {
   entity "users\n(pgTable)" as DB_Users {
     id: uuid
     name: text
-    email: text
-    avatar: text
-    ...
-  }
-
-  DB_Notifications }o--|| DB_Users : references
-}
+    email: textocks
 
 package "Shared Types" {
   class "TBaseEntity" as TBaseEntity {

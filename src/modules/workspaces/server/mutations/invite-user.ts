@@ -95,6 +95,22 @@ export async function inviteUser(formData: FormData): Promise<TBaseMutationRespo
 		// TODO: Send actual email notification
 		// await sendInvitationEmail(email, inviteUrl, workspace);
 
+		// After creating invitation
+		await createNotification({
+			userId: asUUID(invitedUserId), // If user exists
+			type: 'workspace_invite',
+			title: `Invitation to join ${workspace.title}`,
+			message: `You've been invited to join the workspace "${workspace.title}"`,
+			priority: 'high',
+			actionUrl: inviteUrl,
+			actionLabel: 'Accept Invitation',
+			metadata: {
+				workspaceId: workspace.id,
+				inviterId: session.id,
+			},
+			actorId: asUUID(session.id),
+		});
+
 		return {
 			success: true,
 			message: 'Invitation sent successfully',
