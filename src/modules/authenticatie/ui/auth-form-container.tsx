@@ -1,19 +1,16 @@
-'use client';
-
 import { RegisterForm } from '@/app/(auth)/register/register-form';
 import { Waves } from '@/components/effects/waves';
 import { login } from '@/modules/authenticatie/server/mutations/login';
-import { GitHubLoginButton } from '@/modules/authenticatie/ui/github-login';
 import { toast } from '@/shared/components/toast';
-import { Button } from '@/shared/components/ui/button';
-import { Card, CardContent } from '@/shared/components/ui/card';
-import { Input } from '@/shared/components/ui/input';
-import { Label } from '@/shared/components/ui/label';
 import { useTheme } from 'next-themes';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
+import { Button, Card, CardContent, Input, Label } from 'ui';
 import { cn } from 'utilities';
+import { GitHubLoginButton } from './github-login';
+'use client';
+
 
 function LoginButton() {
 	const { pending } = useFormStatus();
@@ -153,7 +150,7 @@ export function AuthFormContainer({
 
 									<div className="grid grid-cols-3 gap-4">
 										<GitHubLoginButton className="w-full" />
-										<Button
+								9999999999999999999999999	<Button
 											variant="outline"
 											className="w-full"
 											onClick={() => console.log('Login with Google')}

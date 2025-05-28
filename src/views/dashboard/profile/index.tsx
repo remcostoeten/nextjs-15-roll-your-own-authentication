@@ -1,8 +1,7 @@
-'use client';
-
 import { ConnectedAccounts } from '@/modules/authenticatie/ui/connected-accounts';
 import { ProfileForm } from '@/modules/authenticatie/ui/profile-form';
 import { Separator } from 'ui';
+
 
 export function ProfileView() {
 	return (

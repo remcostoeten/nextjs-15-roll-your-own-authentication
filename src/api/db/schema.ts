@@ -5,3 +5,5 @@
  */
 
 export * from '@/modules/authenticatie/schemas';
+export * from '@/modules/notifications/server/schemas/schema-notifications';
+export * from '@/modules/workspaces/server/schemas/schema-workspaces';

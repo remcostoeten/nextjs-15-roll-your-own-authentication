@@ -4,11 +4,10 @@ import { getGithubCommits } from '@/api/queries/get-github-commits';
 import { DottedBackground } from '@/components/effects/dotted-bg';
 import { Waves } from '@/components/effects/waves';
 import { AnimatedContent, AnimatedText } from '@/shared/components/effects/animated-content';
-import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/ui/popover';
-import { Skeleton } from '@/shared/components/ui/skeleton';
 import NumberFlow from '@number-flow/react';
 import { GitCommit, GitFork, GitPullRequest, Star, TreePalmIcon } from 'lucide-react';
 import { Suspense, useEffect, useState } from 'react';
+import { Popover, PopoverContent, PopoverTrigger, Skeleton } from 'ui';
 
 type TGitHubCommit = {
 	commit: {

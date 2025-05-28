@@ -1,21 +1,18 @@
-'use client';
-
+'use client'
 import { Waves } from '@/components/effects/waves';
 import { register } from '@/modules/authenticatie/server/mutations/register';
 import { DiscordLoginButton } from '@/modules/authenticatie/ui/discord-login';
 import { GitHubLoginButton } from '@/modules/authenticatie/ui/github-login';
 import { GoogleLoginButton } from '@/modules/authenticatie/ui/google-login';
 import { toast } from '@/shared/components/toast';
-import { Button } from '@/shared/components/ui/button';
-import { Card, CardContent } from '@/shared/components/ui/card';
-import { Input } from '@/shared/components/ui/input';
-import { Label } from '@/shared/components/ui/label';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { useFormStatus } from 'react-dom';
+import { Button, Card, CardContent, Input, Label } from 'ui';
 import { cn } from 'utilities';
+
 
 function RegisterButton() {
 	const { pending } = useFormStatus();
