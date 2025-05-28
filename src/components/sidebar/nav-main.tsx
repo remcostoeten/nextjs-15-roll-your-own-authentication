@@ -76,7 +76,6 @@ export function NavMain({
             )
           }
 
-          // If item has no sub-items, render as simple link
           const isActive = pathname === item.url
           return (
             <SidebarMenuItem key={item.title}>

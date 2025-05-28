@@ -31,7 +31,7 @@ import {
 } from "@/shared/components/ui/sidebar"
 import { Button } from "ui"
 
-export function TeamSwitcher({
+export function WorkspaceSwitcher({
   workspaces,
 }: {
   workspaces: TWorkspaceWithOwner[]

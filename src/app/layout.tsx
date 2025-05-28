@@ -1,5 +1,6 @@
 import { Providers } from '@/components/providers';
 import { ThemeProvider, ThemeSwitcher } from '@/modules/landing/components';
+import { SidebarProvider } from '@/shared/components/ui';
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -19,12 +20,14 @@ export default function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning className="dark">
 			<body className={inter.className}>
-				<ThemeProvider>
+			<SidebarProvider>
+						<ThemeProvider>
 					<Providers>
 						<main className="min-h-screen">{children}</main>
 						<ThemeSwitcher />
 					</Providers>
 				</ThemeProvider>
+			</SidebarProvider>
 			</body>
 		</html>
 	);

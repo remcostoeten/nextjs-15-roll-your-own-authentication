@@ -1,4 +1,5 @@
 import { getSession } from '@/modules/authenticatie/helpers/session';
+import { DevTools } from '@/modules/authenticatie/ui/dev-tools';
 import { getUserWorkspaces } from '@/modules/workspaces/server/queries/get-user-workspaces';
 import { getWorkspaceMembers } from '@/modules/workspaces/server/queries/get-workspace-members';
 import { WorkspaceSettingsEnhanced } from '@/modules/workspaces/ui/workspace-settings-enhanced';
@@ -49,6 +50,7 @@ export default async function WorkspaceSettingsPage({ searchParams }: WorkspaceS
 					userRole={currentWorkspace.userRole}
 				/>
 			</div>
+			<DevTools />
 		</div>
 	);
 }

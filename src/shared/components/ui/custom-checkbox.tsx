@@ -5,8 +5,8 @@ import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { useId } from 'react';
 
-export type tSplashCheckbox = {
-	checked: boolean;
+export type TProps = {
+checked: boolean;
 	onChange: () => void;
 	size?: number;
 	color?: string;
@@ -34,12 +34,17 @@ export const CustomCheckbox = ({
 	size = 24,
 	color = '#866efb',
 	variant = 'round',
-}: tSplashCheckbox) => {
+}: TProps) => {
 	const id = useId();
 
+	const width = Number(size) || 24;
+	const iconSize = width * 0.6;
+	const iconTop = width * 0.2;
+	const iconLeft = width * 0.17;
+
 	return (
-		<div className="relative" style={{ width: size, height: size }}>
-			<div className="relative" style={{ width: size, height: size }}>
+		<div className="relative" style={{ width, height: width }}>
+			<div className="relative" style={{ width, height: width }}>
 				<input
 					type="checkbox"
 					id={id}
@@ -62,21 +67,22 @@ export const CustomCheckbox = ({
 						variant === 'round' ? 'rounded-full' : 'rounded-[6px]'
 					)}
 					style={{
-						width: size,
-						height: size,
+						width,
+						height: width,
 					}}
 				/>
 				<svg
 					className="absolute z-20 pointer-events-none"
 					viewBox="0 0 15 14"
-					width={size * 0.6}
-					height={size * 0.6}
+					width={String(iconSize)}
+					height={String(iconSize)}
 					style={{
-						top: size * 0.2,
-						left: size * 0.17,
+						top: `${iconTop}px`,
+						left: `${iconLeft}px`,
 					}}
 					fill="none"
 				>
+				<title>svg</title>
 					<motion.path
 						d="M2 8.36364L6.23077 12L13 2"
 						stroke="#fff"
@@ -94,8 +100,8 @@ export const CustomCheckbox = ({
 				</svg>
 			</div>
 
-			{/* Goo filter defs */}
-			<svg className="absolute w-0 h-0">
+			<svg className="absolute w-0 h-0" >
+				<title>svg</title>
 				<defs>
 					<filter id="goo-12">
 						<feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
