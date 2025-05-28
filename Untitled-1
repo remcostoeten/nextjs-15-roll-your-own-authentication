@@ -1,0 +1,231 @@
+## API
+
+Next.JS/React applications seen in YouTube video's often follow a very simple pattern which works for toy projects but does not scale. Everyone who has real working experience beyond small agencies knows that the default structure we see a lot is not used often.
+
+We make use of server actions exclusively. The only API routes we have are the oAuth2 callbacks and a route for getting the user object into memory. We make use of a repository pattern, often seen implemented via classes but we kept things functional to keep it familiar, although classes are seen a lot in large scale production and have their place. Repositories are a layer between server actions (mutations, queries) and the database. A repository may never be called on the client directly.
+
+## UML Flow Diagram Request
+
+Generate a comprehensive UML diagram that illustrates the architectural flow of our Next.js application, focusing on:
+
+1. Base types and interfaces (starting with our TBaseEntity and common types)
+2. Repository layer implementation (functional approach)
+3. Service layer that orchestrates repository calls
+4. Server actions (mutations and queries) that expose functionality to the client
+5. React hooks that consume server actions
+6. React components that use these hooks
+
+Show the data flow from database to UI with proper layering, and highlight how:
+- Type safety is maintained across all layers
+- Server/client boundaries are respected
+- The repository pattern isolates database operations
+- Server actions provide a clean API for client consumption
+
+Additionally, please include:
+- Data transformation flow showing how data changes from DB schema → Repository → Service → Client
+- Error handling paths showing how errors propagate through the layers
+- Authentication context integration with server actions via getSession()
+- Both query (read) and mutation (write) flows to show the complete data lifecycle
+- How this pattern is replicated across different modules while maintaining independence
+
+Include specific examples from our notifications module, which demonstrates the complete flow from database schema to UI components.
+
+## Diagram Types to Include
+
+1. **Component Diagram**: Showing high-level components and their relationships
+2. **Sequence Diagram**: Illustrating data and control flow during key operations
+3. **Layer Diagram**: Visualizing separation between database, server, and client layers
+4. **Class/Type Diagram**: Showing relationships between data types across layers
+5. **Package Diagram**: Demonstrating module organization and dependencies
+
+Please create these diagrams using standard UML notation, with a focus on clarity and accuracy.
+
+## Project Snippets for Reference
+
+### 1. Base Types
+```typescript
+// src/shared/types/base.ts
+export type TBaseEntity = {
+  id: UUID;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+// src/modules/notifications/types.ts
+export type TNotification = TBaseEntity & {
+  userId: UUID;
+  type: TNotificationType;
+  title: string;
+  message: string;
+  read: boolean;
+  archived: boolean;
+  priority: TNotificationPriority;
+  actionUrl?: string;
+  actionLabel?: string;
+  metadata?: Record<string, unknown>;
+  actorId?: UUID;
+  expiresAt?: Date;
+};
+```
+
+### 2. Database Schema
+```typescript
+// src/modules/notifications/server/schemas/schema-notifications.ts
+export const notifications = pgTable('notifications', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  type: notificationTypeEnum('type').notNull(),
+  title: text('title').notNull(),
+  message: text('message').notNull(),
+  read: boolean('read').notNull().default(false),
+  archived: boolean('archived').notNull().default(false),
+  priority: notificationPriorityEnum('priority').notNull().default('medium'),
+  // ... other fields
+});
+```
+
+### 3. Repository Layer
+```typescript
+// src/modules/notifications/server/repositories/notification-repository.ts
+export function notificationRepository() {
+  return {
+    async create(data: TCreateNotificationInput): Promise<TNotification> {
+      const [notification] = await db
+        .insert(notifications)
+        .values({
+          userId: data.userId,
+          type: data.type,
+          title: data.title,
+          message: data.message,
+          // ... other fields
+        })
+        .returning();
+
+      return {
+        ...notification,
+        id: asUUID(notification.id),
+        // ... transform other fields
+      };
+    },
+
+    async findByUserId(
+      userId: UUID,
+      options: TGetNotificationsOptions = {}
+    ): Promise<TNotificationWithActor[]> {
+      // Implementation
+    },
+
+    // ... other repository methods
+  };
+}
+```
+
+### 4. Service Layer
+```typescript
+// src/modules/notifications/server/services/notification-service.ts
+export function createNotification(
+  data: TCreateNotificationInput
+): Promise<TNotificationWithActor> {
+  const repository = notificationRepository();
+  return repository.create(data).then(notification => {
+    // Additional logic
+    return notification as TNotificationWithActor;
+  });
+}
+
+export const notificationService = {
+  createNotification,
+  getUserNotifications,
+  markAsRead,
+  markAllAsRead,
+  archiveNotifications,
+  getNotificationStats,
+};
+```
+
+### 5. Server Actions
+```typescript
+// src/modules/notifications/server/queries/get-notifications.ts
+'use server';
+
+export async function getUserNotifications(
+  options: TGetNotificationsOptions = {}
+): Promise<TNotificationWithActor[]> {
+  try {
+    const session = await getSession();
+
+    if (!session?.id) {
+      return [];
+    }
+
+    const notifications = await NotificationService.getUserNotifications(
+      asUUID(session.id),
+      options
+    );
+
+    return notifications;
+  } catch (error) {
+    console.error('Error fetching notifications:', error);
+    return [];
+  }
+}
+```
+
+### 6. React Hooks
+```typescript
+// src/modules/notifications/hooks/use-notifications.ts
+'use client';
+
+export function useNotifications(initialOptions: TGetNotificationsOptions = {}) {
+  const [notifications, setNotifications] = useState<TNotificationWithActor[]>([]);
+  const [stats, setStats] = useState<TNotificationStats | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchNotifications = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const data = await getUserNotifications(options);
+      setNotifications(data);
+      // ... other logic
+    } catch (err) {
+      // Error handling
+    } finally {
+      setIsLoading(false);
+    }
+  }, [options]);
+
+  // ... other hook methods and state management
+
+  return {
+    notifications,
+    stats,
+    isLoading,
+    error,
+    markAsRead,
+    markAllAsRead,
+    archiveNotifications,
+    fetchNotifications,
+    // ... other returned values
+  };
+}
+```
+
+### 7. React Components
+```typescript
+// src/modules/notifications/components/notification-detail.tsx
+'use client';
+
+export function NotificationDetail({ notification, onBack }: NotificationDetailProps) {
+  const { markAsRead, archiveNotifications } = useNotifications({});
+
+  useEffect(() => {
+    if (!notification.read) {
+      markAsRead([notification.id]);
+    }
+  }, [notification, markAsRead]);
+
+  // Component implementation
+}
+```
