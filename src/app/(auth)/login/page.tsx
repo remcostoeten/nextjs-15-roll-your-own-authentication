@@ -1,9 +1,9 @@
+import { Suspense } from 'react';
+import { LoginForm } from './login-form';
+import { Button, Input, Label } from 'ui';
 // // app/(auth)/login/page.tsx
 // "use client"
 // import { login } from "@/modules/authenticatie/server/mutations/login"
-// import { Button } from "@/shared/components/ui/button"
-// import { Input } from "@/shared/components/ui/input"
-// import { Label } from "@/shared/components/ui/label"
 // import Form from "next/form"
 // import Link from "next/link"
 // import { useRouter } from "next/navigation"
@@ -58,8 +58,6 @@
 //     </Form>
 //   )
 // }
-import { Suspense } from 'react';
-import { LoginForm } from './login-form';
 
 export default function LoginPage() {
 	return (

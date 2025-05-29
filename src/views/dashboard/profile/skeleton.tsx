@@ -1,7 +1,5 @@
-import { ConnectedAccountsSkeleton } from '@/modules/authenticatie/ui/connected-accounts-skeleton';
-import { ProfileFormSkeleton } from '@/modules/authenticatie/ui/profile-form-skeleton';
-import { Skeleton } from '@/shared/components/ui/skeleton';
 import { Separator } from 'ui';
+import { ConnectedAccountsSkeleton, ProfileFormSkeleton, Skeleton } from 'ui';
 
 export function ProfileViewSkeleton() {
 	return (

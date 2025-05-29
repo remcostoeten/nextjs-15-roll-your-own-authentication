@@ -67,29 +67,185 @@ export function DashboardView() {
 	};
 
 	return (
-		<div className="space-y-6">
-			<div className="bg-background bbb shadow-sm rounded-lg p-6">
-				<h2 className="text-2xl font-bold text-gray-900">Welcome, {auth.user.email}!</h2>
-				<p className="mt-2 text-gray-600">
-					You are logged in as: <span className="font-medium">{auth.user.role}</span>
+		<div className="space-y-8">
+			{/* Welcome Section */}
+			<div className="space-y-2">
+				<h1 className="text-3xl font-bold tracking-tight">Welcome back!</h1>
+				<p className="text-muted-foreground">
+					Here's what's happening with your projects today.
 				</p>
 			</div>
 
-			<div className="bgdark-lighttext  bglight-darktext bbb shadow-sm rounded-lg p-6 contain">
-				<h3 className="text-lg font-semibold text-foreground mb-4">Quick Actions</h3>
-				<div className="space-y-4">
-					<button
-						onClick={() => router.push('/dashboard/profile')}
-						className="w-full bg-background border text-foreground px-4 py-2 rounded-lg transition-colors text-left"
-					>
-						Edit Profile
-					</button>
-					<button
-						onClick={handleLogout}
-						className="w-full bg-red-50 hover:bg-red-100 text-red-700 px-4 py-2 rounded-lg transition-colors text-left"
-					>
-						Logout
-					</button>
+			{/* Stats Grid */}
+			<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+				<div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+					<div className="flex flex-row items-center justify-between space-y-0 pb-2">
+						<h3 className="tracking-tight text-sm font-medium">Total Projects</h3>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth="2"
+							className="h-4 w-4 text-muted-foreground"
+						>
+							<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+							<circle cx="9" cy="7" r="4" />
+							<path d="m22 21-3-3m0 0a5.5 5.5 0 1 0-7.78-7.78 5.5 5.5 0 0 0 7.78 7.78Z" />
+						</svg>
+					</div>
+					<div className="space-y-1">
+						<div className="text-2xl font-bold">12</div>
+						<p className="text-xs text-muted-foreground">+2 from last month</p>
+					</div>
+				</div>
+
+				<div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+					<div className="flex flex-row items-center justify-between space-y-0 pb-2">
+						<h3 className="tracking-tight text-sm font-medium">Active Tasks</h3>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth="2"
+							className="h-4 w-4 text-muted-foreground"
+						>
+							<path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+						</svg>
+					</div>
+					<div className="space-y-1">
+						<div className="text-2xl font-bold">24</div>
+						<p className="text-xs text-muted-foreground">+4 from yesterday</p>
+					</div>
+				</div>
+
+				<div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+					<div className="flex flex-row items-center justify-between space-y-0 pb-2">
+						<h3 className="tracking-tight text-sm font-medium">Team Members</h3>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth="2"
+							className="h-4 w-4 text-muted-foreground"
+						>
+							<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+							<circle cx="9" cy="7" r="4" />
+							<path d="m22 21-3-3m0 0a5.5 5.5 0 1 0-7.78-7.78 5.5 5.5 0 0 0 7.78 7.78Z" />
+						</svg>
+					</div>
+					<div className="space-y-1">
+						<div className="text-2xl font-bold">8</div>
+						<p className="text-xs text-muted-foreground">+1 this week</p>
+					</div>
+				</div>
+
+				<div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+					<div className="flex flex-row items-center justify-between space-y-0 pb-2">
+						<h3 className="tracking-tight text-sm font-medium">Completion Rate</h3>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth="2"
+							className="h-4 w-4 text-muted-foreground"
+						>
+							<path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+						</svg>
+					</div>
+					<div className="space-y-1">
+						<div className="text-2xl font-bold">89%</div>
+						<p className="text-xs text-muted-foreground">+5% from last week</p>
+					</div>
+				</div>
+			</div>
+
+			{/* Main Content Grid */}
+			<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
+				{/* Recent Activity */}
+				<div className="col-span-4 rounded-lg border bg-card text-card-foreground shadow-sm">
+					<div className="p-6">
+						<h3 className="text-lg font-semibold">Recent Activity</h3>
+						<p className="text-sm text-muted-foreground">Your latest project updates</p>
+					</div>
+					<div className="p-6 pt-0">
+						<div className="space-y-4">
+							{[
+								{ action: "Created new task", project: "Website Redesign", time: "2 hours ago" },
+								{ action: "Updated project status", project: "Mobile App", time: "4 hours ago" },
+								{ action: "Added team member", project: "API Development", time: "1 day ago" },
+								{ action: "Completed milestone", project: "Database Migration", time: "2 days ago" },
+							].map((activity, index) => (
+								<div key={index} className="flex items-center space-x-4">
+									<div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+									<div className="flex-1 space-y-1">
+										<p className="text-sm font-medium">{activity.action}</p>
+										<p className="text-xs text-muted-foreground">{activity.project}</p>
+									</div>
+									<div className="text-xs text-muted-foreground">{activity.time}</div>
+								</div>
+							))}
+						</div>
+					</div>
+				</div>
+
+				{/* Quick Actions */}
+				<div className="col-span-3 rounded-lg border bg-card text-card-foreground shadow-sm">
+					<div className="p-6">
+						<h3 className="text-lg font-semibold">Quick Actions</h3>
+						<p className="text-sm text-muted-foreground">Common tasks and shortcuts</p>
+					</div>
+					<div className="p-6 pt-0">
+						<div className="space-y-3">
+							<button
+								onClick={() => router.push('/dashboard/projects')}
+								className="w-full flex items-center justify-between p-3 rounded-lg border hover:bg-accent transition-colors"
+							>
+								<span className="text-sm font-medium">Create New Project</span>
+								<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+								</svg>
+							</button>
+							<button
+								onClick={() => router.push('/dashboard/tasks')}
+								className="w-full flex items-center justify-between p-3 rounded-lg border hover:bg-accent transition-colors"
+							>
+								<span className="text-sm font-medium">Add New Task</span>
+								<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+								</svg>
+							</button>
+							<button
+								onClick={() => router.push('/dashboard/members')}
+								className="w-full flex items-center justify-between p-3 rounded-lg border hover:bg-accent transition-colors"
+							>
+								<span className="text-sm font-medium">Invite Team Member</span>
+								<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+								</svg>
+							</button>
+							<button
+								onClick={() => router.push('/dashboard/profile')}
+								className="w-full flex items-center justify-between p-3 rounded-lg border hover:bg-accent transition-colors"
+							>
+								<span className="text-sm font-medium">Edit Profile</span>
+								<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+								</svg>
+							</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

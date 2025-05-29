@@ -1,9 +1,10 @@
 'use client';
 
 import { RegisterForm } from '@/app/(auth)/register/register-form';
-import { GitHubLoginButton } from '@/modules/authenticatie/ui/github-login';
-import { GoogleLoginButton } from '@/modules/authenticatie/ui/google-login';
 import { toast } from '@/shared/components/toast';
+import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
+import { GitHubLoginButton, GoogleLoginButton } from 'ui';
 import {
 	Card,
 	CardContent,
@@ -11,8 +12,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/shared/components/ui/card';
-import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
 
 export function RegisterView() {
 	const searchParams = useSearchParams();

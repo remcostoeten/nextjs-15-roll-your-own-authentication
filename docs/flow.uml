@@ -1,0 +1,253 @@
+@startuml
+' Define types more completely
+package "Database" {
+  entity "notifications\n(pgTable)" as DB_Notifications {
+    id: uuid
+    userId: uuid
+    type: notificationTypeEnum
+    title: text
+    message: text
+    read: boolean
+    archived: boolean
+    priority: notificationPriorityEnum
+    actionUrl: text
+    actionLabel: text
+    metadata: jsonb
+    actorId: uuid
+    expiresAt: timestamp
+    createdAt: timestamp
+    updatedAt: timestamp
+  }
+
+  entity "users\n(pgTable)" as DB_Users {
+    id: uuid
+    name: text
+    email: text
+    avatar: text
+    ...
+  }
+
+  DB_Notifications }o--|| DB_Users : references
+}
+
+package "Shared Types" {
+  class "TBaseEntity" as TBaseEntity {
+    id: UUID
+    createdAt: Date
+    updatedAt: Date
+  }
+
+  class "TNotification" as TNotification {
+    userId: UUID
+    type: TNotificationType
+    title: string
+    message: string
+    read: boolean
+    archived: boolean
+    priority: TNotificationPriority
+    actionUrl?: string
+    actionLabel?: string
+    metadata?: Record<string, unknown>
+    actorId?: UUID
+    expiresAt?: Date
+  }
+
+  class "TNotificationWithActor" as TNotificationWithActor {
+    actor?: {
+      id: UUID
+      name: string
+      email: string
+      avatar?: string
+    }
+  }
+
+  TNotification --|> TBaseEntity : extends
+  TNotificationWithActor --|> TNotification : extends
+}
+
+package "Authentication" {
+  class "Session" as Session {
+    id: UUID
+    user: User
+    expiresAt: Date
+  }
+
+  class "getSession()" as GetSession {
+    +Promise<Session | null>
+  }
+}
+
+package "Repository Layer\n(server only)" {
+  class "notificationRepository()" as Repo {
+    +create(data: TCreateNotificationInput): Promise<TNotification>
+    +findByUserId(userId, options): Promise<TNotificationWithActor[]>
+    +markAsRead(notificationIds: UUID[]): Promise<void>
+    +markAllAsRead(userId: UUID): Promise<void>
+    +archive(notificationIds: UUID[]): Promise<void>
+    +getStats(userId: UUID): Promise<TNotificationStats>
+  }
+}
+
+package "Service Layer\n(server only)" {
+  class "notificationService" as Service {
+    +createNotification(data): Promise<TNotificationWithActor>
+    +getUserNotifications(userId, options): Promise<TNotificationWithActor[]>
+    +markAsRead(notificationIds: UUID[]): Promise<void>
+    +markAllAsRead(userId: UUID): Promise<void>
+    +archiveNotifications(notificationIds: UUID[]): Promise<void>
+    +getNotificationStats(userId: UUID): Promise<TNotificationStats>
+  }
+}
+
+package "Server Actions\n(server only)" {
+  class "getUserNotifications(options)" as GetNotificationsAction {
+    +Promise<TNotificationWithActor[]>
+  }
+
+  class "getNotificationStats()" as GetStatsAction {
+    +Promise<TNotificationStats | null>
+  }
+
+  class "markNotificationsAsRead(ids)" as MarkReadAction {
+    +Promise<TBaseMutationResponse<void>>
+  }
+
+  class "archiveNotifications(ids)" as ArchiveAction {
+    +Promise<TBaseMutationResponse<void>>
+  }
+}
+
+package "React Hooks\n(client only)" {
+  class "useNotifications(initialOptions)" as Hook {
+    +notifications: TNotificationWithActor[]
+    +stats: TNotificationStats
+    +isLoading: boolean
+    +error: Error | null
+    +markAsRead(ids: string[]): Promise<TBaseMutationResponse<void>>
+    +markAllAsRead(): Promise<TBaseMutationResponse<void>>
+    +archiveNotifications(ids: string[]): Promise<TBaseMutationResponse<void>>
+    +fetchNotifications(): Promise<void>
+    +fetchStats(): Promise<void>
+  }
+}
+
+package "React Components\n(client only)" {
+  class "NotificationDetail" as NotificationDetail {
+    +notification: TNotificationWithActor
+    +onBack(): void
+  }
+
+  class "NotificationsList" as NotificationsList {
+    +notifications: TNotificationWithActor[]
+    +onSelectNotification(notification): void
+  }
+
+  class "NotificationBadge" as NotificationBadge {
+    +count: number
+  }
+
+  NotificationsList --> NotificationDetail : selects
+}
+
+' Data flow arrows - Query path
+DB_Notifications --> Repo : SQL/ORM\n(DB access)
+Repo --> Service : TNotification\n(Type-safe)
+GetSession --> GetNotificationsAction : provides user context
+Service --> GetNotificationsAction : TNotificationWithActor[]\n(Type-safe)
+GetNotificationsAction --> Hook : TNotificationWithActor[]\n(Type-safe\nvia fetch/async)
+Hook --> NotificationsList : notifications
+Hook --> NotificationBadge : count
+
+' Data flow arrows - Mutation path
+NotificationDetail --> Hook : markAsRead(id)
+Hook --> MarkReadAction : ids
+MarkReadAction --> GetSession : auth check
+MarkReadAction --> Service : notificationIds
+Service --> Repo : notificationIds
+Repo --> DB_Notifications : SQL UPDATE
+
+' Error handling path
+Repo ..> Service : throws errors
+Service ..> GetNotificationsAction : catches & logs errors
+GetNotificationsAction ..> Hook : returns empty array
+Hook ..> NotificationsList : shows error state
+
+' Data transformation
+note bottom of Repo
+  Data Transformation:
+  - DB → Repository: Raw DB records to typed entities
+  - String IDs → UUID objects via asUUID()
+  - JSON strings → parsed objects
+end note
+
+' Boundaries
+rectangle "Server Boundary" {
+  Repo
+  Service
+  GetNotificationsAction
+  MarkReadAction
+  GetStatsAction
+  ArchiveAction
+  GetSession
+}
+
+rectangle "Client Boundary" {
+  Hook
+  NotificationDetail
+  NotificationsList
+  NotificationBadge
+}
+
+' Module independence
+package "Other Modules" {
+  class "workspaceRepository()" as WorkspaceRepo
+  class "workspaceService" as WorkspaceService
+  class "useWorkspaces()" as WorkspaceHook
+}
+
+WorkspaceRepo -[hidden]-> Repo
+WorkspaceService -[hidden]-> Service
+WorkspaceHook -[hidden]-> Hook
+
+note bottom of WorkspaceRepo
+  Each module follows the same pattern:
+  - Repository → Service → Server Actions → Hooks → Components
+  - Independent implementation but consistent pattern
+  - Shared base types (TBaseEntity)
+end note
+
+' Notes for boundaries and type safety
+note left of Repo
+  Repository pattern:
+  - Isolates DB logic
+  - Never called from client
+  - Handles data transformation
+  - Returns fully typed entities
+end note
+
+note right of GetNotificationsAction
+  Server actions:
+  - Only API exposed to client
+  - Type-safe return values
+  - No direct DB access
+  - Handles authentication
+  - Error boundaries
+end note
+
+note right of Hook
+  React hooks:
+  - Consume server actions
+  - Never call repository/service directly
+  - Type-safe via shared types
+  - Handle loading/error states
+  - Cache management
+end note
+
+note right of NotificationDetail
+  React components:
+  - Use hooks for data/actions
+  - UI rendering only
+  - No direct API calls
+end note
+
+@enduml

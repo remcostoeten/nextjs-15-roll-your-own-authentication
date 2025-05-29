@@ -28,8 +28,9 @@ export async function login(formData: FormData): Promise<TAuthMutationResponse> 
 			id: user.id,
 			email: user.email,
 			role: user.role,
-			name: user.name || undefined,
+			...(user.name && { name: user.name }),
 		});
+
 		return {
 			success: true,
 			user,
@@ -41,7 +42,7 @@ export async function login(formData: FormData): Promise<TAuthMutationResponse> 
 		if (error instanceof Error) {
 			return {
 				success: false,
-				error: error.message,
+				error: error.message, 
 			};
 		}
 		return {

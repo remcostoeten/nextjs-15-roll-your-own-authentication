@@ -1,25 +1,42 @@
 'use server';
 
-import { db } from 'db';
-import { eq } from 'drizzle-orm';
-import { users } from 'schema';
 import { getSession } from '../../helpers/session';
+import { userRepository } from '../repositories/user-repository';
+import { TAuthUser } from '../../types';
 
-export async function getCurrentUser() {
-	const session = await getSession();
-	if (!session) return null;
+export async function getCurrentUser(): Promise<{
+  user?: Partial<TAuthUser>;
+  success: boolean;
+  error?: string;
+}> {
+  try {
+    const session = await getSession();
 
-	const [user] = await db
-		.select({
-			id: users.id,
-			email: users.email,
-			role: users.role,
-			name: users.name,
-			avatar: users.avatar,
-			createdAt: users.createdAt,
-		})
-		.from(users)
-		.where(eq(users.id, session.id));
+    if (!session?.id) {
+      return { success: false, error: 'Not authenticated' };
+    }
 
-	return user ?? null;
+    const user = await userRepository().findById(session.id);
+
+    if (!user) {
+      return { success: false, error: 'User not found' };
+    }
+
+    // Return user data without sensitive information
+    return {
+      success: true,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        avatar: user.avatar,
+        role: user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      }
+    };
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    return { success: false, error: 'Failed to fetch user data' };
+  }
 }

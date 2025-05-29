@@ -1,21 +1,19 @@
-'use client';
-
+'use client'
 import { Waves } from '@/components/effects/waves';
+import { Logo } from '@/components/logo';
 import { register } from '@/modules/authenticatie/server/mutations/register';
 import { DiscordLoginButton } from '@/modules/authenticatie/ui/discord-login';
 import { GitHubLoginButton } from '@/modules/authenticatie/ui/github-login';
 import { GoogleLoginButton } from '@/modules/authenticatie/ui/google-login';
 import { toast } from '@/shared/components/toast';
-import { Button } from '@/shared/components/ui/button';
-import { Card, CardContent } from '@/shared/components/ui/card';
-import { Input } from '@/shared/components/ui/input';
-import { Label } from '@/shared/components/ui/label';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { useFormStatus } from 'react-dom';
+import { Button, Card, CardContent, Input, Label } from 'ui';
 import { cn } from 'utilities';
+
 
 function RegisterButton() {
 	const { pending } = useFormStatus();
@@ -29,7 +27,6 @@ function RegisterButton() {
 
 export function RegisterForm({ className, ...props }: React.ComponentProps<'div'>) {
 	const formRef = useRef<HTMLFormElement>(null);
-	const { theme } = useTheme();
 	const searchParams = useSearchParams();
 
 	useEffect(() => {
@@ -79,6 +76,9 @@ export function RegisterForm({ className, ...props }: React.ComponentProps<'div'
 	return (
 		<div className={cn('flex min-h-screen items-center justify-center', className)} {...props}>
 			<div className="w-full max-w-[720px] px-4">
+				<div className="flex justify-center mb-6">
+					<Logo />
+				</div>
 				<Card className="overflow-hidden py-0">
 					<CardContent className="grid p-0 md:grid-cols-2 h-full">
 						<form

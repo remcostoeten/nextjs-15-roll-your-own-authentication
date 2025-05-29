@@ -4,7 +4,7 @@ import { Header } from '@/components/header';
 import GlowingBento from '@/modules/landing/components/glowing-bento';
 import { Flex } from '@/shared/components/flex';
 import { Container } from 'ui';
-import FeaturesSection from '../modules/landing/components/features';
+import { FeaturesSection } from '../modules/landing/components/features';
 
 export default function HomePage() {
 	return (
