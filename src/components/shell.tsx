@@ -20,6 +20,7 @@ import {
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { ThemeToggle } from './theme-toggle';
 
 interface DashboardShellProps {
   children: React.ReactNode;
@@ -93,8 +94,8 @@ export function DashboardShell({ children }: DashboardShellProps) {
         </div>
         <ThemeToggle />
         <Avatar className="h-8 w-8">
-          <AvatarImage src="" alt={auth.user?.email || ""} />
-          <AvatarFallback>{auth.user?.email?.charAt(0).toUpperCase() || "U"}</AvatarFallback>
+          <AvatarImage src="" alt={auth.status === 'authenticated' ? auth.user.email : ""} />
+          <AvatarFallback>{auth.status === 'authenticated' ? auth.user.email?.charAt(0).toUpperCase() || "U" : "U"}</AvatarFallback>
         </Avatar>
       </header>
 
@@ -134,12 +135,12 @@ export function DashboardShell({ children }: DashboardShellProps) {
           <div className="sticky bottom-0 border-t bg-background p-4">
             <div className="flex items-center gap-3">
               <Avatar className="h-9 w-9">
-                <AvatarImage src="" alt={auth.user?.email || ""} />
-                <AvatarFallback>{auth.user?.email?.charAt(0).toUpperCase() || "U"}</AvatarFallback>
+                <AvatarImage src="" alt={auth.status === 'authenticated' ? auth.user.email : ""} />
+                <AvatarFallback>{auth.status === 'authenticated' ? auth.user.email?.charAt(0).toUpperCase() || "U" : "U"}</AvatarFallback>
               </Avatar>
               <div className="flex-1 overflow-hidden">
-                <div className="text-sm font-medium leading-none">{auth.user?.name || auth.user?.email}</div>
-                <div className="text-xs text-muted-foreground truncate">{auth.user?.email}</div>
+                <div className="text-sm font-medium leading-none">{auth.status === 'authenticated' ? (auth.user.name || auth.user.email) : ""}</div>
+                <div className="text-xs text-muted-foreground truncate">{auth.status === 'authenticated' ? auth.user.email : ""}</div>
               </div>
               <Button variant="ghost" size="icon" onClick={handleLogout}>
                 <LogOut className="h-5 w-5" />

@@ -2,8 +2,8 @@
 
 import { getSession } from '@/modules/authenticatie/helpers/session';
 import { TBaseMutationResponse } from '@/shared/types/base';
-import { UUID, asUUID } from '@/shared/types/common';
-import { NotificationService } from '../services/notification-service';
+import { asUUID } from '@/shared/types/common';
+import { notificationService } from '../services/notification-service';
 
 export async function markNotificationsAsRead(
   notificationIds: string[]
@@ -15,7 +15,7 @@ export async function markNotificationsAsRead(
       return { success: false, error: 'Unauthorized' };
     }
 
-    await NotificationService.markAsRead(notificationIds.map(id => asUUID(id)));
+    await notificationService.markAsRead(notificationIds.map(id => asUUID(id)));
 
     return {
       success: true,
@@ -35,7 +35,7 @@ export async function markAllNotificationsAsRead(): Promise<TBaseMutationRespons
       return { success: false, error: 'Unauthorized' };
     }
 
-    await NotificationService.markAllAsRead(asUUID(session.id));
+    await notificationService.markAllAsRead(asUUID(session.id));
 
     return {
       success: true,

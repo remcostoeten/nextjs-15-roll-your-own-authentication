@@ -221,14 +221,28 @@ function ToastInitializer() {
 }
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
-	const [toasts, setToasts] = useState<Toast[]>([]);
+	const [toasts, setToasts] = useState<TToast[]>([]);
+	const [isReady, setIsReady] = useState(false);
+
+	// Set isReady to true after component mounts
+	useEffect(() => {
+		setIsReady(true);
+	}, []);
 
 	const addToast = useCallback(
 		(message: string, type: ToastType = 'neutral', duration = 5000) => {
 			const id = Math.random().toString(36).substring(2, 9);
-			setToasts((prev) => [...prev, { id, message, type, duration, visible: true }]);
+			// Only update state if component is mounted
+			if (isReady) {
+				setToasts((prev) => [...prev, { id, message, type, duration, visible: true }]);
+			} else {
+				// If component isn't mounted yet, schedule the toast for the next tick
+				setTimeout(() => {
+					setToasts((prev) => [...prev, { id, message, type, duration, visible: true }]);
+				}, 0);
+			}
 		},
-		[]
+		[isReady]
 	);
 
 	const removeToast = useCallback((id: string) => {

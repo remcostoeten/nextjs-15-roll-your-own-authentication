@@ -4,11 +4,16 @@ import {
 	BookOpen,
 	Bot,
 	Frame,
+	Home,
 	type LucideIcon,
 	Map as MapIcon,
 	PieChart,
 	Settings2,
 	SquareTerminal,
+	Users,
+	User,
+	FolderOpen,
+	CheckSquare,
 } from 'lucide-react';
 import type * as React from 'react';
 
@@ -65,67 +70,40 @@ const data = {
 	],
 	navMain: [
 		{
-			title: 'Playground',
-			url: '#',
-			icon: SquareTerminal,
+			title: 'Dashboard',
+			url: '/dashboard',
+			icon: Home,
 			isActive: true,
-			items: [
-				{
-					title: 'History',
-					url: '#',
-				},
-				{
-					title: 'Starred',
-					url: '#',
-				},
-			],
 		},
 		{
-			title: 'Models',
-			url: '#',
-			icon: Bot,
-			items: [
-				{
-					title: 'Genesis',
-					url: '#',
-				},
-				{
-					title: 'Explorer',
-					url: '#',
-				},
-				{
-					title: 'Quantum',
-					url: '#',
-				},
-			],
+			title: 'Projects',
+			url: '/dasfhboard/projects',
+			icon: FolderOpen,
 		},
 		{
-			title: 'Documentation',
-			url: '#',
-			icon: BookOpen,
-			items: [
-				{
-					title: 'Introduction',
-					url: '#',
-				},
-				{
-					title: 'Get Started',
-					url: '#',
-				},
-				{
-					title: 'Tutorials',
-					url: '#',
-				},
-				{
-					title: 'Changelog',
-					url: '#',
-				},
-			],
+			title: 'Tasks',
+			url: '/dashboard/tasks',
+			icon: CheckSquare,
+		},
+		{
+			title: 'Members',
+			url: '/dashboard/members',
+			icon: Users,
 		},
 		{
 			title: 'Settings',
-			url: '/dashboard/profile',
+			url: '/dashboard/settings',
 			icon: Settings2,
+			items: [
+				{
+					title: 'Profile',
+					url: '/dashboard/profile',
+				},
+				{
+					title: 'Workspace',
+					url: '/dashboard/settings',
+				},
+			],
 		},
 	] as NavItem[],
 	projects: [

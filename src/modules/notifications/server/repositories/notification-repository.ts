@@ -1,8 +1,8 @@
 import { UUID, asUUID } from '@/shared/types/common';
 import { db } from 'db';
 import { and, count, desc, eq, gt, inArray, isNull, sql } from 'drizzle-orm';
-import { notifications, users } from 'schema';
-import { TCreateNotificationInput, TGetNotificationsOptions, TNotification, TNotificationStats, TNotificationWithActor } from '../../types';
+import { notifications, notificationPreferences, users } from 'schema';
+import { TCreateNotificationInput, TGetNotificationsOptions, TNotification, TNotificationPreferences, TNotificationPreferencesInput, TNotificationStats, TNotificationWithActor } from '../../types';
 
 export function notificationRepository() {
   return {
@@ -122,6 +122,100 @@ export function notificationRepository() {
         );
 
       return result[0];
+    },
+
+    async savePreferences(userId: UUID, preferences: TNotificationPreferencesInput): Promise<TNotificationPreferences> {
+      // First try to update existing preferences
+      const existing = await db
+        .select()
+        .from(notificationPreferences)
+        .where(eq(notificationPreferences.userId, userId))
+        .limit(1);
+
+      if (existing.length > 0) {
+        // Update existing preferences
+        const [updated] = await db
+          .update(notificationPreferences)
+          .set({
+            ...preferences,
+            updatedAt: new Date(),
+          })
+          .where(eq(notificationPreferences.userId, userId))
+          .returning();
+
+        return {
+          ...updated,
+          id: asUUID(updated.id),
+          userId: asUUID(updated.userId),
+        };
+      } else {
+        // Create new preferences
+        const [created] = await db
+          .insert(notificationPreferences)
+          .values({
+            userId,
+            ...preferences,
+          })
+          .returning();
+
+        return {
+          ...created,
+          id: asUUID(created.id),
+          userId: asUUID(created.userId),
+        };
+      }
+    },
+
+    async getPreferences(userId: UUID): Promise<TNotificationPreferences | null> {
+      const result = await db
+        .select()
+        .from(notificationPreferences)
+        .where(eq(notificationPreferences.userId, userId))
+        .limit(1);
+
+      if (result.length === 0) {
+        return null;
+      }
+
+      const preferences = result[0];
+      return {
+        ...preferences,
+        id: asUUID(preferences.id),
+        userId: asUUID(preferences.userId),
+      };
+    },
+
+    async getOrCreatePreferences(userId: UUID): Promise<TNotificationPreferences> {
+      const existing = await this.getPreferences(userId);
+
+      if (existing) {
+        return existing;
+      }
+
+      // Create default preferences
+      const [created] = await db
+        .insert(notificationPreferences)
+        .values({
+          userId,
+          taskUpdates: true,
+          projectUpdates: true,
+          teamMessages: true,
+          securityAlerts: true,
+          workspaceInvites: true,
+          mentions: true,
+          comments: true,
+          fileShares: true,
+          systemNotifications: true,
+          emailNotifications: false,
+          pushNotifications: true,
+        })
+        .returning();
+
+      return {
+        ...created,
+        id: asUUID(created.id),
+        userId: asUUID(created.userId),
+      };
     },
   };
 }

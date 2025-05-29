@@ -3,7 +3,7 @@
 import { getSession } from '@/modules/authenticatie/helpers/session';
 import { asUUID } from '@/shared/types/common';
 import { TGetNotificationsOptions, TNotificationWithActor } from '../../types';
-import { NotificationService } from '../services/notification-service';
+import { notificationService } from '../services/notification-service';
 
 export async function getUserNotifications(
   options: TGetNotificationsOptions = {}
@@ -15,7 +15,7 @@ export async function getUserNotifications(
       return [];
     }
 
-    const notifications = await NotificationService.getUserNotifications(
+    const notifications = await notificationService.getUserNotifications(
       asUUID(session.id),
       options
     );

@@ -6,8 +6,9 @@ import { redirect } from 'next/navigation';
 export default async function WorkspaceOnboardingPage({
 	searchParams,
 }: {
-	searchParams?: { force?: string };
+	searchParams: Promise<{ force?: string }>;
 }) {
+	const params = await searchParams;
 	const session = await getSession();
 	if (!session) {
 		redirect('/login');
@@ -15,7 +16,7 @@ export default async function WorkspaceOnboardingPage({
 
 	// Check if user already has workspaces (unless force parameter is used)
 	const workspaces = await getUserWorkspaces();
-	const forceAccess = searchParams?.force === 'true';
+	const forceAccess = params?.force === 'true';
 
 	if (workspaces.length > 0 && !forceAccess) {
 		redirect('/dashboard');

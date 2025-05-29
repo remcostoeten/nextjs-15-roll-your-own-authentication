@@ -2,7 +2,7 @@
 
 import { TAuthUser } from "@/modules/authenticatie/types"
 import { noop } from "@/shared/utilities/noop"
-import { ReactNode, createContext, experimental_taintUniqueValue, useContext, useMemo } from "react"
+import { ReactNode, createContext, useContext, useMemo } from "react"
 
 type UserContextType = {
   user: TAuthUser | null
@@ -20,20 +20,8 @@ export function UserProvider({
   user: TAuthUser | null
   isLoading?: boolean
 }) {
-  // Protect sensitive user data from being passed to client components
-  if (user?.id) {
-    try {
-      // Only in server components where this API is available
-      experimental_taintUniqueValue(
-        'User session data should not be directly passed to client components',
-        user,
-        user.id
-      )
-    } catch (e) {
-      // Silently fail if not in server component
-      noop()
-    }
-  }
+  // Note: experimental_taintUniqueValue is not available in this React version
+  // This would be used to protect sensitive user data in server components
 
   // Memoize the context value to prevent unnecessary re-renders
   const value = useMemo(() => ({

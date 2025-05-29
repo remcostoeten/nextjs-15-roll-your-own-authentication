@@ -55,3 +55,37 @@ export type TGetNotificationsOptions = {
   types?: TNotificationType[];
   includeArchived?: boolean;
 };
+
+export type TNotificationPreferences = {
+  id: UUID;
+  userId: UUID;
+  taskUpdates: boolean;
+  projectUpdates: boolean;
+  teamMessages: boolean;
+  securityAlerts: boolean;
+  workspaceInvites: boolean;
+  mentions: boolean;
+  comments: boolean;
+  fileShares: boolean;
+  systemNotifications: boolean;
+  emailNotifications: boolean;
+  pushNotifications: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type TUpdateNotificationPreferences = Omit<TNotificationPreferences, 'id' | 'userId' | 'createdAt' | 'updatedAt'>;
+
+export type TNotificationPreferencesInput = {
+  taskUpdates: boolean;
+  projectUpdates: boolean;
+  teamMessages: boolean;
+  securityAlerts: boolean;
+  workspaceInvites?: boolean;
+  mentions?: boolean;
+  comments?: boolean;
+  fileShares?: boolean;
+  systemNotifications?: boolean;
+  emailNotifications?: boolean;
+  pushNotifications?: boolean;
+};

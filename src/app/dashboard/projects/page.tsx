@@ -1,24 +1,32 @@
 import { redirect } from 'next/navigation';
 import { getSession } from '@/modules/authenticatie/helpers/session';
+import { getUserWorkspaces } from '@/modules/workspaces/server/queries/get-user-workspaces';
 import { getWorkspaceProjects } from '@/modules/projects/server/queries/get-workspace-projects';
 import { ProjectsList } from '@/modules/projects/ui/projects-list';
 
 type PageProps = {
-	searchParams: { workspace?: string };
+	searchParams: Promise<{ workspace?: string }>;
 };
 
 export default async function ProjectsPage({ searchParams }: PageProps) {
+	const params = await searchParams;
 	const session = await getSession();
 	if (!session) {
 		redirect('/login');
 	}
 
-	const workspaceId = searchParams.workspace;
-	if (!workspaceId) {
-		redirect('/dashboard');
+	const workspaces = await getUserWorkspaces();
+	if (workspaces.length === 0) {
+		redirect('/onboarding/workspace');
 	}
 
-	const projects = await getWorkspaceProjects(workspaceId);
+	// Find current workspace from search params or default to first
+	const workspaceId = params?.workspace;
+	const currentWorkspace = workspaceId
+		? workspaces.find(w => w.id === workspaceId) || workspaces[0]
+		: workspaces[0];
+
+	const projects = await getWorkspaceProjects(currentWorkspace.id);
 
 	return (
 		<div className="flex flex-col h-full">
@@ -29,7 +37,7 @@ export default async function ProjectsPage({ searchParams }: PageProps) {
 						Manage your workspace projects and track progress
 					</p>
 				</div>
-				<ProjectsList initialProjects={projects} workspaceId={workspaceId} />
+				<ProjectsList initialProjects={projects} workspaceId={currentWorkspace.id} />
 			</div>
 		</div>
 	);

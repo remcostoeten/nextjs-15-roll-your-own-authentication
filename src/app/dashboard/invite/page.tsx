@@ -4,10 +4,11 @@ import { InviteMemberForm } from '@/modules/workspaces/ui/invite-member-form';
 import { redirect } from 'next/navigation';
 
 interface InvitePageProps {
-	searchParams?: { workspace?: string };
+	searchParams: Promise<{ workspace?: string }>;
 }
 
 export default async function InvitePage({ searchParams }: InvitePageProps) {
+	const params = await searchParams;
 	const session = await getSession();
 	if (!session) {
 		redirect('/login');
@@ -19,7 +20,7 @@ export default async function InvitePage({ searchParams }: InvitePageProps) {
 	}
 
 	// Find current workspace from search params or default to first
-	const workspaceId = searchParams?.workspace;
+	const workspaceId = params?.workspace;
 	const currentWorkspace = workspaceId
 		? workspaces.find(w => w.id === workspaceId) || workspaces[0]
 		: workspaces[0];

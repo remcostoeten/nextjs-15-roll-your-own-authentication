@@ -56,10 +56,7 @@ export function SlideTransition({
           }
         `}
 			</style>
-			<ViewTransition
-				name={name}
-				className={cn(`${name}-enter-slide-${startName}`, `${name}-exit-slide-${endName}`)}
-			>
+			<ViewTransition name={name}>
 				{children}
 			</ViewTransition>
 		</>

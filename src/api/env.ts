@@ -11,8 +11,7 @@ export const env = createEnv({
 		ADMIN_EMAIL: z.string().email(),
 
 		// Node
-		NODE_ENV: z.enum(['development', 'production', 'test']),
-
+		NODE_ENV: z.enum(['development', 'production']),
 		// GitHub OAuth
 		GITHUB_CLIENT_ID: z.string(),
 		GITHUB_CLIENT_SECRET: z.string(),

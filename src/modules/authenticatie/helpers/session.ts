@@ -25,7 +25,7 @@ export async function createSession(user: {
 		sub: user.id,
 		email: user.email,
 		role: user.role,
-		name: user.name,
+		...(user.name && { name: user.name }),
 	});
 
 	const expiresAt = new Date();

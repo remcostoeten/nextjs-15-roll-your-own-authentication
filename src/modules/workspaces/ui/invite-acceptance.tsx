@@ -1,9 +1,10 @@
-import { useState, useTransition } from 'react';
+'use client';
+
+import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { acceptInvite } from '../server/mutations/accept-invite';
 import { toast } from '@/shared/components/toast';
 import { Button, Icons } from 'ui';
-'use client';
 
 
 interface InviteAcceptanceProps {
@@ -34,7 +35,7 @@ export function InviteAcceptance({ invite, token }: InviteAcceptanceProps) {
 		startTransition(async () => {
 			try {
 				const result = await acceptInvite(token);
-				
+
 				if (result.success) {
 					toast.success('Successfully joined the workspace!');
 					router.push(`/dashboard?workspace=${invite.workspace.id}`);
@@ -100,14 +101,14 @@ export function InviteAcceptance({ invite, token }: InviteAcceptanceProps) {
 						</>
 					)}
 				</Button>
-				
+
 				<Button
 					onClick={handleDecline}
 					variant="ghost"
 					className="w-full text-white/60 hover:text-white hover:bg-white/5"
 					disabled={isPending}
 				>
-					<Icons.x className="w-4 h-4 mr-2" />
+					<Icons.close className="w-4 h-4 mr-2" />
 					Decline
 				</Button>
 			</div>

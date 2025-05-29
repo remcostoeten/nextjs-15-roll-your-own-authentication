@@ -51,16 +51,16 @@ export function BlurIn({
 		show: {
 			...defaultVariants.show,
 			transition: {
-				...defaultVariants.show.transition,
-				delay,
 				duration,
+				delay,
+				ease: 'easeOut',
 			},
 		},
 		exit: {
 			...defaultVariants.exit,
 			transition: {
-				...defaultVariants.exit.transition,
 				duration,
+				ease: 'easeOut',
 			},
 		},
 	};

@@ -6,15 +6,16 @@ import { eq, and, isNull } from 'drizzle-orm';
 import { InviteAcceptance } from '@/modules/workspaces/ui/invite-acceptance';
 
 interface InvitePageProps {
-	params: { token: string };
+	params: Promise<{ token: string }>;
 }
 
 export default async function InvitePage({ params }: InvitePageProps) {
+	const { token } = await params;
 	const session = await getSession();
-	
+
 	// If not logged in, redirect to login with return URL
 	if (!session) {
-		redirect(`/login?redirect=/invite/${params.token}`);
+		redirect(`/login?redirect=/invite/${token}`);
 	}
 
 	// Get the invite details
@@ -40,7 +41,7 @@ export default async function InvitePage({ params }: InvitePageProps) {
 		.from(workspaceInvites)
 		.innerJoin(workspaces, eq(workspaces.id, workspaceInvites.workspaceId))
 		.innerJoin(users, eq(users.id, workspaceInvites.invitedBy))
-		.where(eq(workspaceInvites.token, params.token));
+		.where(eq(workspaceInvites.token, token));
 
 	if (!invite) {
 		return (
@@ -107,9 +108,9 @@ export default async function InvitePage({ params }: InvitePageProps) {
 	return (
 		<div className="min-h-screen bg-[rgb(8,8,8)] flex items-center justify-center p-4">
 			<div className="w-full max-w-md">
-				<InviteAcceptance 
+				<InviteAcceptance
 					invite={invite}
-					token={params.token}
+					token={token}
 				/>
 			</div>
 		</div>

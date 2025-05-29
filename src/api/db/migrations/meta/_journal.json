@@ -29,6 +29,20 @@
       "when": 1748383860590,
       "tag": "0003_mushy_pestilence",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1748476973825,
+      "tag": "0004_uneven_ares",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1748478026988,
+      "tag": "0005_easy_joystick",
+      "breakpoints": true
     }
   ]
 }

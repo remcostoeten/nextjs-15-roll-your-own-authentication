@@ -3,11 +3,11 @@ import { TasksList } from '@/modules/tasks/ui/tasks-list';
 import { getUserWorkspaces } from '@/modules/workspaces/server/queries/get-user-workspaces';
 import { redirect } from 'next/navigation';
 
-interface TasksPageProps {
-	searchParams?: Promise<{ workspace?: string; project?: string; status?: string }>;
-}
+type PageProps = {
+	searchParams: Promise<{ workspace?: string }>;
+};
 
-export default async function TasksPage({ searchParams }: TasksPageProps) {
+export default async function TasksPage({ searchParams }: PageProps) {
 	const resolvedSearchParams = await searchParams;
 	const session = await getSession();
 	if (!session) {
@@ -19,14 +19,11 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
 		redirect('/onboarding/workspace');
 	}
 
-	// Find current workspace from search params or default to first
 	const workspaceId = resolvedSearchParams?.workspace;
 	const currentWorkspace = workspaceId
 		? workspaces.find(w => w.id === workspaceId) || workspaces[0]
 		: workspaces[0];
 
-	// TODO: Get tasks from database
-	// For now, we'll use mock data
 	const mockTasks = [
 		{
 			id: '1',
@@ -115,10 +112,6 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
 				<TasksList
 					initialTasks={mockTasks}
 					workspace={currentWorkspace}
-					filters={{
-						project: resolvedSearchParams?.project,
-						status: resolvedSearchParams?.status,
-					}}
 				/>
 			</div>
 		</div>

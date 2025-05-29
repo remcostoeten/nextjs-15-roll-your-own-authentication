@@ -6,10 +6,11 @@ import { WorkspaceSettingsEnhanced } from '@/modules/workspaces/ui/workspace-set
 import { redirect } from 'next/navigation';
 
 interface WorkspaceSettingsPageProps {
-	searchParams?: { workspace?: string };
+	searchParams: Promise<{ workspace?: string }>;
 }
 
 export default async function WorkspaceSettingsPage({ searchParams }: WorkspaceSettingsPageProps) {
+	const params = await searchParams;
 	const session = await getSession();
 	if (!session) {
 		redirect('/login');
@@ -21,7 +22,7 @@ export default async function WorkspaceSettingsPage({ searchParams }: WorkspaceS
 	}
 
 	// Find current workspace from search params or default to first
-	const workspaceId = searchParams?.workspace;
+	const workspaceId = params?.workspace;
 	const currentWorkspace = workspaceId
 		? workspaces.find(w => w.id === workspaceId) || workspaces[0]
 		: workspaces[0];

@@ -3,7 +3,7 @@
 import { getSession } from '@/modules/authenticatie/helpers/session';
 import { TBaseMutationResponse } from '@/shared/types/base';
 import { asUUID } from '@/shared/types/common';
-import { NotificationService } from '../services/notification-service';
+import { notificationService } from '../services/notification-service';
 
 export async function archiveNotifications(
   notificationIds: string[]
@@ -15,7 +15,7 @@ export async function archiveNotifications(
       return { success: false, error: 'Unauthorized' };
     }
 
-    await NotificationService.archiveNotifications(notificationIds.map(id => asUUID(id)));
+    await notificationService.archiveNotifications(notificationIds.map(id => asUUID(id)));
 
     return {
       success: true,

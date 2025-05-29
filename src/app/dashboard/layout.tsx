@@ -10,7 +10,7 @@ export default async function DashboardLayout({
 	children,
 	searchParams,
 }: {
-	children: PageProps
+	children: React.ReactNode
 	searchParams?: { workspace?: string; bypass?: string };
 }) {
 	const session = await getSession();
@@ -25,7 +25,6 @@ export default async function DashboardLayout({
 		redirect('/onboarding/workspace');
 	}
 
-	// Find current workspace from search params or default to first (if any workspaces exist)
 	const workspaceId = searchParams?.workspace;
 	const currentWorkspace = workspaces.length > 0
 		? (workspaceId ? workspaces.find(w => w.id === workspaceId) || workspaces[0] : workspaces[0])

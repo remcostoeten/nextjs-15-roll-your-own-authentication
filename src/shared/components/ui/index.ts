@@ -24,3 +24,7 @@ export * from './skeleton';
 export * from './spinner';
 export * from './switch';
 export * from './tooltip';
+
+// Export skeleton components from auth module
+export { ProfileFormSkeleton } from '@/modules/authenticatie/ui/profile-form-skeleton';
+export { ConnectedAccountsSkeleton } from '@/modules/authenticatie/ui/connected-accounts-skeleton';

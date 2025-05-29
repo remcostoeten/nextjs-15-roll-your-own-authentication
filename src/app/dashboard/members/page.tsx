@@ -4,11 +4,11 @@ import { getWorkspaceMembers } from '@/modules/workspaces/server/queries/get-wor
 import { MembersList } from '@/modules/workspaces/ui/members-list';
 import { redirect } from 'next/navigation';
 
-interface MembersPageProps {
-	searchParams?: Promise<{ workspace?: string }>;
-}
+type TProps = {
+	searchParams: Promise<{ workspace?: string }>;
+};
 
-export default async function MembersPage({ searchParams }: MembersPageProps) {
+export default async function MembersPage({ searchParams }: TProps) {
 	const resolvedSearchParams = await searchParams;
 	const session = await getSession();
 	if (!session) {
@@ -20,13 +20,10 @@ export default async function MembersPage({ searchParams }: MembersPageProps) {
 		redirect('/onboarding/workspace');
 	}
 
-	// Find current workspace from search params or default to first
 	const workspaceId = resolvedSearchParams?.workspace;
 	const currentWorkspace = workspaceId
 		? workspaces.find(w => w.id === workspaceId) || workspaces[0]
 		: workspaces[0];
-
-	// Get workspace members
 	const members = await getWorkspaceMembers(currentWorkspace.id);
 
 	return (
@@ -42,7 +39,7 @@ export default async function MembersPage({ searchParams }: MembersPageProps) {
 				<MembersList
 					members={members}
 					workspace={currentWorkspace}
-					userRole={currentWorkspace.userRole}
+					userRole={currentWorkspace.userRole || 'member'}
 				/>
 			</div>
 		</div>

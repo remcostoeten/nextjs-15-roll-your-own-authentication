@@ -16,11 +16,16 @@ export async function createNotification(
       return { success: false, error: 'Unauthorized' };
     }
 
-    const notification = await notificationService.createNotification({
+    const notificationData: TCreateNotificationInput = {
       userId: asUUID(session.id),
       ...data,
-      expiresAt: data.expiresAt ? new Date(data.expiresAt as any) : undefined,
-    });
+    };
+
+    if (data.expiresAt) {
+      notificationData.expiresAt = new Date(data.expiresAt as any);
+    }
+
+    const notification = await notificationService.createNotification(notificationData);
 
     return {
       success: true,

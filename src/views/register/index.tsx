@@ -1,10 +1,10 @@
+'use client';
+
 import { RegisterForm } from '@/app/(auth)/register/register-form';
 import { toast } from '@/shared/components/toast';
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { GitHubLoginButton, GoogleLoginButton } from 'ui';
-'use client';
-
 import {
 	Card,
 	CardContent,

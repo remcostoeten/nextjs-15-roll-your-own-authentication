@@ -1,5 +1,6 @@
 import { ConnectedAccounts } from '@/modules/authenticatie/ui/connected-accounts';
 import { ProfileForm } from '@/modules/authenticatie/ui/profile-form';
+import { NotificationSettings } from '@/modules/notifications/components/notification-settings';
 import { Separator } from 'ui';
 
 
@@ -12,6 +13,9 @@ export function ProfileView() {
 				</div>
 				<Separator />
 				<ProfileForm />
+				<Separator />
+				<NotificationSettings />
+				<Separator />
 				<ConnectedAccounts />
 			</div>
 		</div>

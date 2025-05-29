@@ -11,9 +11,9 @@ export function useAuth() {
 	useEffect(() => {
 		async function fetchUser() {
 			try {
-				const user = await getCurrentUser();
-				if (user?.id) {
-					setState({ status: 'authenticated', user: user as TAuthUser });
+				const result = await getCurrentUser();
+				if (result.success && result.user?.id) {
+					setState({ status: 'authenticated', user: result.user as TAuthUser });
 				} else {
 					setState({ status: 'unauthenticated' });
 				}
