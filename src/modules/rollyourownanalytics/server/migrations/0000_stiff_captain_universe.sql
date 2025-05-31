@@ -1,0 +1,102 @@
+CREATE TABLE `analytics_events` (
+	`id` text PRIMARY KEY NOT NULL,
+	`project_id` text NOT NULL,
+	`session_id` text NOT NULL,
+	`type` text NOT NULL,
+	`name` text,
+	`url` text NOT NULL,
+	`pathname` text NOT NULL,
+	`referrer` text,
+	`title` text,
+	`user_agent` text,
+	`country` text,
+	`city` text,
+	`region` text,
+	`timezone` text,
+	`language` text,
+	`device` text,
+	`browser` text,
+	`os` text,
+	`screen_width` integer,
+	`screen_height` integer,
+	`viewport_width` integer,
+	`viewport_height` integer,
+	`timestamp` integer NOT NULL,
+	`duration` integer,
+	`scroll_depth` real,
+	`exit_page` integer DEFAULT false,
+	`bounced` integer DEFAULT false,
+	`utm_source` text,
+	`utm_medium` text,
+	`utm_campaign` text,
+	`utm_term` text,
+	`utm_content` text,
+	`metadata` text,
+	`created_at` integer DEFAULT (unixepoch())
+);
+--> statement-breakpoint
+CREATE TABLE `analytics_funnels` (
+	`id` text PRIMARY KEY NOT NULL,
+	`project_id` text NOT NULL,
+	`name` text NOT NULL,
+	`description` text,
+	`steps` text NOT NULL,
+	`is_active` integer DEFAULT true,
+	`created_at` integer DEFAULT (unixepoch()),
+	`updated_at` integer DEFAULT (unixepoch())
+);
+--> statement-breakpoint
+CREATE TABLE `analytics_goals` (
+	`id` text PRIMARY KEY NOT NULL,
+	`project_id` text NOT NULL,
+	`name` text NOT NULL,
+	`description` text,
+	`type` text NOT NULL,
+	`conditions` text NOT NULL,
+	`value` real,
+	`is_active` integer DEFAULT true,
+	`created_at` integer DEFAULT (unixepoch()),
+	`updated_at` integer DEFAULT (unixepoch())
+);
+--> statement-breakpoint
+CREATE TABLE `analytics_projects` (
+	`id` text PRIMARY KEY NOT NULL,
+	`name` text NOT NULL,
+	`domain` text NOT NULL,
+	`public_key` text NOT NULL,
+	`is_active` integer DEFAULT true,
+	`settings` text,
+	`created_at` integer DEFAULT (unixepoch()),
+	`updated_at` integer DEFAULT (unixepoch())
+);
+--> statement-breakpoint
+CREATE TABLE `analytics_sessions` (
+	`id` text PRIMARY KEY NOT NULL,
+	`project_id` text NOT NULL,
+	`user_id` text,
+	`visitor_id` text NOT NULL,
+	`user_agent` text,
+	`ip_address` text,
+	`country` text,
+	`city` text,
+	`region` text,
+	`timezone` text,
+	`language` text,
+	`device` text,
+	`browser` text,
+	`os` text,
+	`referrer` text,
+	`utm_source` text,
+	`utm_medium` text,
+	`utm_campaign` text,
+	`utm_term` text,
+	`utm_content` text,
+	`started_at` integer NOT NULL,
+	`ended_at` integer,
+	`duration` integer,
+	`pageviews` integer DEFAULT 0,
+	`events` integer DEFAULT 0,
+	`bounced` integer DEFAULT false,
+	`created_at` integer DEFAULT (unixepoch()),
+	`updated_at` integer DEFAULT (unixepoch())
+);

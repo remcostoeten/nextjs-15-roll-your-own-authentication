@@ -15,3 +15,4 @@ export * from '@/modules/notifications/server/schemas/schema-notifications';
 export * from '@/modules/workspaces/server/schemas/schema-workspaces';
 export * from '@/modules/projects/server/schemas/schema-projects';
 export * from '@/modules/tasks/server/schemas/schema-tasks';
+export * from '@/modules/rollyourownanalytics/server/schemas/schema-analytics';

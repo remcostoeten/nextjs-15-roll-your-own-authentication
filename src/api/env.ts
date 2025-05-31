@@ -4,7 +4,9 @@ import { z } from 'zod';
 export const env = createEnv({
 	server: {
 		// Database
-		DATABASE_URL: z.string().url(),
+		DATABASE_URL: z.string(),
+		TURSO_DATABASE_URL: z.string(),
+		TURSO_AUTH_TOKEN: z.string(),
 
 		// Authentication
 		JWT_SECRET: z.string().min(32),
@@ -25,6 +27,8 @@ export const env = createEnv({
 	},
 	runtimeEnv: {
 		DATABASE_URL: process.env.DATABASE_URL,
+		TURSO_DATABASE_URL: process.env.TURSO_DATABASE_URL,
+		TURSO_AUTH_TOKEN: process.env.TURSO_AUTH_TOKEN,
 		JWT_SECRET: process.env.JWT_SECRET,
 		ADMIN_EMAIL: process.env.ADMIN_EMAIL,
 		NODE_ENV: process.env.NODE_ENV,
