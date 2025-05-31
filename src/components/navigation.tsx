@@ -1,6 +1,5 @@
 'use client';
 
-import { GlowingEffect } from '@/components/effects/glowing-effect';
 import { Flex } from '@/shared/components/flex';
 import {
 	Accordion,
@@ -24,7 +23,6 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from '@/shared/components/ui/sheet';
-import { motion } from 'framer-motion';
 import { Book, Menu, Sunset, Trees, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { Container } from 'ui';
@@ -54,42 +52,16 @@ const renderMenuItem = (item: MenuItem) => {
 	if (!item.items) {
 		return (
 			<NavigationMenuItem key={item.title}>
-				{/* <Link href={item.url}  passHref> */}
 				<NavigationMenuLink className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50 relative">
 					{item.title}
-					<div className="absolute inset-0 opacity-0 group-hover:opacity-100">
-						<GlowingEffect
-							variant="default"
-							blur={10}
-							spread={20}
-							glow={true}
-							disabled={false}
-							movementDuration={1}
-							borderWidth={1}
-						/>
-					</div>
 				</NavigationMenuLink>
-				{/* </Lin/k> */}
 			</NavigationMenuItem>
 		);
 	}
 
 	return (
 		<NavigationMenuItem key={item.title}>
-			<NavigationMenuTrigger className="relative group">
-				{item.title}
-				<div className="absolute inset-0 opacity-0 group-hover:opacity-100">
-					<GlowingEffect
-						variant="default"
-						blur={10}
-						spread={20}
-						glow={true}
-						disabled={false}
-						movementDuration={1}
-						borderWidth={1}
-					/>
-				</div>
-			</NavigationMenuTrigger>
+			<NavigationMenuTrigger className="relative group">{item.title}</NavigationMenuTrigger>
 			<NavigationMenuContent>
 				<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
 					{item.items.map((subItem) => (
@@ -99,17 +71,6 @@ const renderMenuItem = (item: MenuItem) => {
 									href={subItem.url}
 									className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground relative group/item"
 								>
-									<div className="absolute inset-0 opacity-0 group-hover/item:opacity-100">
-										<GlowingEffect
-											variant="default"
-											blur={8}
-											spread={15}
-											glow={true}
-											disabled={false}
-											movementDuration={0.8}
-											borderWidth={1}
-										/>
-									</div>
 									<div className="flex items-center gap-2 text-sm font-medium leading-none">
 										{subItem.icon}
 										{subItem.title}
@@ -136,37 +97,13 @@ const renderMobileMenuItem = (item: MenuItem) => {
 				className="flex h-10 items-center justify-between rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50 relative group"
 			>
 				{item.title}
-				<div className="absolute inset-0 opacity-0 group-hover:opacity-100">
-					<GlowingEffect
-						variant="default"
-						blur={8}
-						spread={15}
-						glow={true}
-						disabled={false}
-						movementDuration={0.8}
-						borderWidth={1}
-					/>
-				</div>
 			</a>
 		);
 	}
 
 	return (
 		<AccordionItem key={item.title} value={item.title}>
-			<AccordionTrigger className="relative group">
-				{item.title}
-				<div className="absolute inset-0 opacity-0 group-hover:opacity-100">
-					<GlowingEffect
-						variant="default"
-						blur={8}
-						spread={15}
-						glow={true}
-						disabled={false}
-						movementDuration={0.8}
-						borderWidth={1}
-					/>
-				</div>
-			</AccordionTrigger>
+			<AccordionTrigger className="relative group">{item.title}</AccordionTrigger>
 			<AccordionContent>
 				<div className="flex flex-col gap-2 pl-4">
 					{item.items.map((subItem) => (
@@ -177,17 +114,6 @@ const renderMobileMenuItem = (item: MenuItem) => {
 						>
 							{subItem.icon}
 							{subItem.title}
-							<div className="absolute inset-0 opacity-0 group-hover:opacity-100">
-								<GlowingEffect
-									variant="default"
-									blur={8}
-									spread={15}
-									glow={true}
-									disabled={false}
-									movementDuration={0.8}
-									borderWidth={1}
-								/>
-							</div>
 						</a>
 					))}
 				</div>
@@ -249,40 +175,19 @@ const Navbar = ({
 		<section className="py-4">
 			<Container>
 				<nav className="hidden justify-between lg:flex items-center">
-					<motion.div
-						initial={{ opacity: 0, x: -20 }}
-						animate={{ opacity: 1, x: 0 }}
-						transition={{ duration: 0.6, ease: 'easeOut' }}
-					>
+					<div>
 						<Flex center gap="md">
 							<Logo />
 							<Flex center>
 								<NavigationMenu>
 									<NavigationMenuList>
-										{menu.map((item, index) => (
-											<motion.div
-												key={item.title}
-												initial={{ opacity: 0, y: -10 }}
-												animate={{ opacity: 1, y: 0 }}
-												transition={{
-													duration: 0.5,
-													delay: 0.1 + index * 0.1,
-													ease: 'easeOut',
-												}}
-											>
-												{renderMenuItem(item)}
-											</motion.div>
-										))}
+										{menu.map((item) => renderMenuItem(item))}
 									</NavigationMenuList>
 								</NavigationMenu>
 							</Flex>
 						</Flex>
-					</motion.div>
-					<motion.div
-						initial={{ opacity: 0, x: 20 }}
-						animate={{ opacity: 1, x: 0 }}
-						transition={{ duration: 0.6, delay: 0.3, ease: 'easeOut' }}
-					>
+					</div>
+					<div>
 						<Flex gap="md" start>
 							<Button
 								asChild
@@ -290,43 +195,17 @@ const Navbar = ({
 								size="sm"
 								className="rounded-none relative group max-h-[35px] min-h-[35px]"
 							>
-								<Link href={auth.login.url}>
-									{auth.login.text}
-									<div className="absolute inset-0 opacity-0 group-hover:opacity-100">
-										<GlowingEffect
-											variant="default"
-											blur={8}
-											spread={15}
-											glow={true}
-											disabled={false}
-											movementDuration={0.8}
-											borderWidth={1}
-										/>
-									</div>
-								</Link>
+								<Link href={auth.login.url}>{auth.login.text}</Link>
 							</Button>
 							<Button
 								className="rounded-none relative group max-h-[33px] min-h-[33px] font-semibold"
 								asChild
 								size="sm"
 							>
-								<Link href={auth.signup.url}>
-									{auth.signup.text}
-									<div className="absolute inset-0 opacity-0 group-hover:opacity-100">
-										<GlowingEffect
-											variant="default"
-											blur={8}
-											spread={15}
-											glow={true}
-											disabled={false}
-											movementDuration={0.8}
-											borderWidth={1}
-										/>
-									</div>
-								</Link>
+								<Link href={auth.signup.url}>{auth.signup.text}</Link>
 							</Button>
 						</Flex>
-					</motion.div>
+					</div>
 				</nav>
 				<div className="lg:hidden flex justify-between items-center gap-4">
 					<Flex center gap="md">
@@ -335,17 +214,6 @@ const Navbar = ({
 							<SheetTrigger asChild>
 								<Button variant="outline" size="icon" className="relative group">
 									<Menu className="size-4" />
-									<div className="absolute inset-0 opacity-0 group-hover:opacity-100">
-										<GlowingEffect
-											variant="default"
-											blur={8}
-											spread={15}
-											glow={true}
-											disabled={false}
-											movementDuration={0.8}
-											borderWidth={1}
-										/>
-									</div>
 								</Button>
 							</SheetTrigger>
 							<SheetContent className="overflow-y-auto">
@@ -371,17 +239,6 @@ const Navbar = ({
 													href={link.url}
 												>
 													{link.name}
-													<div className="absolute inset-0 opacity-0 group-hover:opacity-100">
-														<GlowingEffect
-															variant="default"
-															blur={8}
-															spread={15}
-															glow={true}
-															disabled={false}
-															movementDuration={0.8}
-															borderWidth={1}
-														/>
-													</div>
 												</a>
 											))}
 										</div>
@@ -392,36 +249,10 @@ const Navbar = ({
 											variant="outline"
 											className="relative group max-h-[50px] min-h-[50px]"
 										>
-											<a href={auth.login.url}>
-												{auth.login.text}
-												<div className="absolute inset-0 opacity-0 group-hover:opacity-100">
-													<GlowingEffect
-														variant="default"
-														blur={8}
-														spread={15}
-														glow={true}
-														disabled={false}
-														movementDuration={0.8}
-														borderWidth={1}
-													/>
-												</div>
-											</a>
+											<a href={auth.login.url}>{auth.login.text}</a>
 										</Button>
 										<Button asChild className="relative group">
-											<a href={auth.signup.url}>
-												{auth.signup.text}
-												<div className="absolute inset-0 opacity-0 group-hover:opacity-100">
-													<GlowingEffect
-														variant="default"
-														blur={8}
-														spread={15}
-														glow={true}
-														disabled={false}
-														movementDuration={0.8}
-														borderWidth={1}
-													/>
-												</div>
-											</a>
+											<a href={auth.signup.url}>{auth.signup.text}</a>
 										</Button>
 									</Flex>
 								</Flex>

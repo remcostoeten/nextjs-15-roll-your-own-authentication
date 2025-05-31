@@ -85,7 +85,9 @@ export function InviteMemberForm({ workspace }: InviteMemberFormProps) {
 						<select
 							id="role"
 							value={inviteRole}
-							onChange={(e) => setInviteRole(e.target.value as 'admin' | 'member' | 'viewer')}
+							onChange={(e) =>
+								setInviteRole(e.target.value as 'admin' | 'member' | 'viewer')
+							}
 							className="w-full px-3 py-2 border border-input bg-background rounded-md"
 						>
 							<option value="viewer">Viewer - Can view projects and tasks</option>

@@ -6,9 +6,7 @@ import { getSession } from '@/modules/authenticatie/helpers/session';
 import { TBaseMutationResponse } from '@/shared/types/base';
 import { eq, and } from 'drizzle-orm';
 
-export async function deleteWorkspace(
-	workspaceId: string
-): Promise<TBaseMutationResponse> {
+export async function deleteWorkspace(workspaceId: string): Promise<TBaseMutationResponse> {
 	try {
 		const session = await getSession();
 		if (!session) {
@@ -40,9 +38,7 @@ export async function deleteWorkspace(
 		}
 
 		// Delete the workspace (cascade will handle members, invites, etc.)
-		await db
-			.delete(workspaces)
-			.where(eq(workspaces.id, workspaceId));
+		await db.delete(workspaces).where(eq(workspaces.id, workspaceId));
 
 		return {
 			success: true,

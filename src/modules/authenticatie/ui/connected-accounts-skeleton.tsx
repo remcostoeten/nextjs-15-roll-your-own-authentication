@@ -1,11 +1,5 @@
 import { Skeleton } from '@/shared/components/ui/skeleton';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from 'ui';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'ui';
 
 export function ConnectedAccountsSkeleton() {
 	return (

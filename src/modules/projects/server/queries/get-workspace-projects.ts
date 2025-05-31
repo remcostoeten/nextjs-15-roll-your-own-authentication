@@ -71,4 +71,3 @@ export async function getWorkspaceProjects(workspaceId: string): Promise<TProjec
 		return [];
 	}
 }
-

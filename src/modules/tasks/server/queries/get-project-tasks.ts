@@ -68,15 +68,12 @@ export async function getProjectTasks(projectId: string): Promise<TTaskWithDetai
 			})
 			.from(tasks)
 			.innerJoin(users, eq(users.id, tasks.createdBy))
-			.leftJoin(
-				sql`${users} as assignee`,
-				sql`assignee.id = ${tasks.assigneeId}`
-			)
+			.leftJoin(sql`${users} as assignee`, sql`assignee.id = ${tasks.assigneeId}`)
 			.innerJoin(projects, eq(projects.id, tasks.projectId))
 			.where(eq(tasks.projectId, projectId))
 			.orderBy(tasks.createdAt);
 
-		return projectTasks.map(task => ({
+		return projectTasks.map((task) => ({
 			...task,
 			assignee: task.assignee.id ? task.assignee : null,
 		}));

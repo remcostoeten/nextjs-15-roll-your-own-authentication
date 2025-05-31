@@ -19,7 +19,7 @@ import {
 	DialogContent,
 	DialogDescription,
 	DialogHeader,
-	DialogTitle
+	DialogTitle,
 } from 'ui';
 
 import { CheckCircle2, PlusCircle } from 'lucide-react';
@@ -34,8 +34,10 @@ export function ConnectedAccounts() {
 
 	// Available providers
 	const availableProviders: TOAuthProvider[] = ['github', 'google', 'discord'];
-	const connectedProviders = accounts.map(account => account.provider);
-	const unconnectedProviders = availableProviders.filter(provider => !connectedProviders.includes(provider));
+	const connectedProviders = accounts.map((account) => account.provider);
+	const unconnectedProviders = availableProviders.filter(
+		(provider) => !connectedProviders.includes(provider)
+	);
 
 	useEffect(() => {
 		async function loadAccounts() {
@@ -129,7 +131,9 @@ export function ConnectedAccounts() {
 									<div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
 										{account.provider === 'google' && <GoogleIcon size="20" />}
 										{account.provider === 'github' && <GithubIcon size="20" />}
-										{account.provider === 'discord' && <DiscordIcon size="20" />}
+										{account.provider === 'discord' && (
+											<DiscordIcon size="20" />
+										)}
 									</div>
 									<div>
 										<div className="flex items-center gap-2">
@@ -140,11 +144,14 @@ export function ConnectedAccounts() {
 										</div>
 										<p className="text-xs text-muted-foreground">
 											Connected on{' '}
-											{new Date(account.createdAt).toLocaleDateString(undefined, {
-												year: 'numeric',
-												month: 'short',
-												day: 'numeric'
-											})}
+											{new Date(account.createdAt).toLocaleDateString(
+												undefined,
+												{
+													year: 'numeric',
+													month: 'short',
+													day: 'numeric',
+												}
+											)}
 										</p>
 									</div>
 								</div>
@@ -167,9 +174,15 @@ export function ConnectedAccounts() {
 							>
 								<div className="flex items-center gap-4">
 									<div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary">
-										{provider === 'google' && <GoogleIcon size="20\" color="currentColor" />}
-										{provider === 'github' && <GithubIcon size="20\" color="currentColor" />}
-										{provider === 'discord' && <DiscordIcon size="20\" color="currentColor" />}
+										{provider === 'google' && (
+											<GoogleIcon size="20\" color="currentColor" />
+										)}
+										{provider === 'github' && (
+											<GithubIcon size="20\" color="currentColor" />
+										)}
+										{provider === 'discord' && (
+											<DiscordIcon size="20\" color="currentColor" />
+										)}
 									</div>
 									<div>
 										<p className="font-medium capitalize text-muted-foreground group-hover:text-foreground transition-colors">
@@ -195,7 +208,9 @@ export function ConnectedAccounts() {
 						{/* Show message if no providers available */}
 						{accounts.length === 0 && unconnectedProviders.length === 0 && (
 							<div className="rounded-lg border border-border p-4 bg-background">
-								<p className="text-sm text-muted-foreground text-center py-6">No OAuth providers available</p>
+								<p className="text-sm text-muted-foreground text-center py-6">
+									No OAuth providers available
+								</p>
 							</div>
 						)}
 					</div>
@@ -217,7 +232,6 @@ export function ConnectedAccounts() {
 		</>
 	);
 }
-
 
 interface SvgIconProps extends React.SVGProps<SVGSVGElement> {
 	size?: string | number;

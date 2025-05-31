@@ -6,23 +6,23 @@ import { TGetNotificationsOptions, TNotificationWithActor } from '../../types';
 import { notificationService } from '../services/notification-service';
 
 export async function getUserNotifications(
-  options: TGetNotificationsOptions = {}
+	options: TGetNotificationsOptions = {}
 ): Promise<TNotificationWithActor[]> {
-  try {
-    const session = await getSession();
-    
-    if (!session?.id) {
-      return [];
-    }
+	try {
+		const session = await getSession();
 
-    const notifications = await notificationService.getUserNotifications(
-      asUUID(session.id),
-      options
-    );
+		if (!session?.id) {
+			return [];
+		}
 
-    return notifications;
-  } catch (error) {
-    console.error('Error fetching notifications:', error);
-    return [];
-  }
+		const notifications = await notificationService.getUserNotifications(
+			asUUID(session.id),
+			options
+		);
+
+		return notifications;
+	} catch (error) {
+		console.error('Error fetching notifications:', error);
+		return [];
+	}
 }

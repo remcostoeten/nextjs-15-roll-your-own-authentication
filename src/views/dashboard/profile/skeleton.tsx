@@ -10,12 +10,12 @@ export function ProfileViewSkeleton() {
 					<Skeleton className="h-8 w-20 mb-2" />
 					<Skeleton className="h-4 w-80" />
 				</div>
-				
+
 				<Separator />
-				
+
 				{/* Profile Form Skeleton */}
 				<ProfileFormSkeleton />
-				
+
 				{/* Connected Accounts Skeleton */}
 				<ConnectedAccountsSkeleton />
 			</div>

@@ -182,18 +182,38 @@ export function DashboardView() {
 					<div className="p-6 pt-0">
 						<div className="space-y-4">
 							{[
-								{ action: "Created new task", project: "Website Redesign", time: "2 hours ago" },
-								{ action: "Updated project status", project: "Mobile App", time: "4 hours ago" },
-								{ action: "Added team member", project: "API Development", time: "1 day ago" },
-								{ action: "Completed milestone", project: "Database Migration", time: "2 days ago" },
+								{
+									action: 'Created new task',
+									project: 'Website Redesign',
+									time: '2 hours ago',
+								},
+								{
+									action: 'Updated project status',
+									project: 'Mobile App',
+									time: '4 hours ago',
+								},
+								{
+									action: 'Added team member',
+									project: 'API Development',
+									time: '1 day ago',
+								},
+								{
+									action: 'Completed milestone',
+									project: 'Database Migration',
+									time: '2 days ago',
+								},
 							].map((activity, index) => (
 								<div key={index} className="flex items-center space-x-4">
 									<div className="w-2 h-2 bg-blue-500 rounded-full"></div>
 									<div className="flex-1 space-y-1">
 										<p className="text-sm font-medium">{activity.action}</p>
-										<p className="text-xs text-muted-foreground">{activity.project}</p>
+										<p className="text-xs text-muted-foreground">
+											{activity.project}
+										</p>
 									</div>
-									<div className="text-xs text-muted-foreground">{activity.time}</div>
+									<div className="text-xs text-muted-foreground">
+										{activity.time}
+									</div>
 								</div>
 							))}
 						</div>
@@ -213,8 +233,18 @@ export function DashboardView() {
 								className="w-full flex items-center justify-between p-3 rounded-lg border hover:bg-accent transition-colors"
 							>
 								<span className="text-sm font-medium">Create New Project</span>
-								<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+								<svg
+									className="h-4 w-4"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M12 4v16m8-8H4"
+									/>
 								</svg>
 							</button>
 							<button
@@ -222,8 +252,18 @@ export function DashboardView() {
 								className="w-full flex items-center justify-between p-3 rounded-lg border hover:bg-accent transition-colors"
 							>
 								<span className="text-sm font-medium">Add New Task</span>
-								<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+								<svg
+									className="h-4 w-4"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M12 4v16m8-8H4"
+									/>
 								</svg>
 							</button>
 							<button
@@ -231,8 +271,18 @@ export function DashboardView() {
 								className="w-full flex items-center justify-between p-3 rounded-lg border hover:bg-accent transition-colors"
 							>
 								<span className="text-sm font-medium">Invite Team Member</span>
-								<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+								<svg
+									className="h-4 w-4"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M12 4v16m8-8H4"
+									/>
 								</svg>
 							</button>
 							<button
@@ -240,8 +290,18 @@ export function DashboardView() {
 								className="w-full flex items-center justify-between p-3 rounded-lg border hover:bg-accent transition-colors"
 							>
 								<span className="text-sm font-medium">Edit Profile</span>
-								<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+								<svg
+									className="h-4 w-4"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+									/>
 								</svg>
 							</button>
 						</div>

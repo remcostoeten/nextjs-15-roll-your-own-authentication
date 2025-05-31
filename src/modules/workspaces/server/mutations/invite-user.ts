@@ -5,7 +5,10 @@ import { TBaseMutationResponse } from '@/shared/types/base';
 import { randomBytes } from 'crypto';
 import { db } from 'db';
 import { and, eq } from 'drizzle-orm';
-import { users, workspaceInvites, workspaceMembers } from 'schema';
+import { users, workspaceInvites, workspaceMembers, workspaces } from 'schema';
+import { notificationService } from '@/modules/notifications/server/services/notification-service';
+import { notificationTemplates } from '@/modules/notifications/server/helpers/notification-templates';
+import { asUUID } from '@/shared/types/common';
 
 export async function inviteUser(formData: FormData): Promise<TBaseMutationResponse> {
 	try {
@@ -42,12 +45,7 @@ export async function inviteUser(formData: FormData): Promise<TBaseMutationRespo
 			.select()
 			.from(workspaceMembers)
 			.innerJoin(users, eq(users.id, workspaceMembers.userId))
-			.where(
-				and(
-					eq(workspaceMembers.workspaceId, workspaceId),
-					eq(users.email, email)
-				)
-			);
+			.where(and(eq(workspaceMembers.workspaceId, workspaceId), eq(users.email, email)));
 
 		if (existingMember.length > 0) {
 			return { success: false, error: 'User is already a member of this workspace' };
@@ -84,7 +82,9 @@ export async function inviteUser(formData: FormData): Promise<TBaseMutationRespo
 		});
 
 		// For development: Log the invitation link
-		const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001'}/invite/${token}`;
+		const inviteUrl = `${
+			process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001'
+		}/invite/${token}`;
 		console.log('\n🎉 WORKSPACE INVITATION CREATED!');
 		console.log('================================');
 		console.log(`📧 Email: ${email}`);
@@ -96,20 +96,32 @@ export async function inviteUser(formData: FormData): Promise<TBaseMutationRespo
 		// await sendInvitationEmail(email, inviteUrl, workspace);
 
 		// After creating invitation
-		await createNotification({
-			userId: asUUID(invitedUserId), // If user exists
-			type: 'workspace_invite',
-			title: `Invitation to join ${workspace.title}`,
-			message: `You've been invited to join the workspace "${workspace.title}"`,
-			priority: 'high',
-			actionUrl: inviteUrl,
-			actionLabel: 'Accept Invitation',
-			metadata: {
-				workspaceId: workspace.id,
-				inviterId: session.id,
-			},
-			actorId: asUUID(session.id),
-		});
+		// Get workspace info for notification
+		const [workspace] = await db
+			.select({
+				id: workspaces.id,
+				title: workspaces.title,
+			})
+			.from(workspaces)
+			.where(eq(workspaces.id, workspaceId));
+
+		// Check if user exists with this email
+		const [invitedUser] = await db
+			.select({ id: users.id })
+			.from(users)
+			.where(eq(users.email, email));
+
+		if (invitedUser) {
+			const notificationData = notificationTemplates.workspaceInvitation(
+				asUUID(invitedUser.id),
+				workspace.title,
+				inviteUrl,
+				asUUID(session.id),
+				workspace.id
+			);
+
+			await notificationService.createNotification(notificationData);
+		}
 
 		return {
 			success: true,

@@ -6,23 +6,23 @@ import { asUUID } from '@/shared/types/common';
 import { notificationService } from '../services/notification-service';
 
 export async function archiveNotifications(
-  notificationIds: string[]
+	notificationIds: string[]
 ): Promise<TBaseMutationResponse<void>> {
-  try {
-    const session = await getSession();
-    
-    if (!session?.id) {
-      return { success: false, error: 'Unauthorized' };
-    }
+	try {
+		const session = await getSession();
 
-    await notificationService.archiveNotifications(notificationIds.map(id => asUUID(id)));
+		if (!session?.id) {
+			return { success: false, error: 'Unauthorized' };
+		}
 
-    return {
-      success: true,
-      message: 'Notifications archived successfully',
-    };
-  } catch (error) {
-    console.error('Error archiving notifications:', error);
-    return { success: false, error: 'Failed to archive notifications' };
-  }
+		await notificationService.archiveNotifications(notificationIds.map((id) => asUUID(id)));
+
+		return {
+			success: true,
+			message: 'Notifications archived successfully',
+		};
+	} catch (error) {
+		console.error('Error archiving notifications:', error);
+		return { success: false, error: 'Failed to archive notifications' };
+	}
 }

@@ -24,7 +24,7 @@ export default async function WorkspaceSettingsPage({ searchParams }: WorkspaceS
 	// Find current workspace from search params or default to first
 	const workspaceId = params?.workspace;
 	const currentWorkspace = workspaceId
-		? workspaces.find(w => w.id === workspaceId) || workspaces[0]
+		? workspaces.find((w) => w.id === workspaceId) || workspaces[0]
 		: workspaces[0];
 
 	// Check if user has admin permissions

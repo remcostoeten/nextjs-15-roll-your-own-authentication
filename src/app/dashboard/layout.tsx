@@ -3,14 +3,25 @@ import { getSession } from '@/modules/authenticatie/helpers/session';
 import { WorkspaceProvider } from '@/modules/workspaces/hooks/use-workspace';
 import { getUserWorkspaces } from '@/modules/workspaces/server/queries/get-user-workspaces';
 import { redirect } from 'next/navigation';
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Separator, SidebarInset, SidebarProvider, SidebarTrigger } from 'ui';
-import { UserProviderWrapper } from "./user-provider-wrapper";
+import {
+	Breadcrumb,
+	BreadcrumbItem,
+	BreadcrumbLink,
+	BreadcrumbList,
+	BreadcrumbPage,
+	BreadcrumbSeparator,
+	Separator,
+	SidebarInset,
+	SidebarProvider,
+	SidebarTrigger,
+} from 'ui';
+import { UserProviderWrapper } from './user-provider-wrapper';
 
 export default async function DashboardLayout({
 	children,
 	searchParams,
 }: {
-	children: React.ReactNode
+	children: React.ReactNode;
 	searchParams?: { workspace?: string; bypass?: string };
 }) {
 	const session = await getSession();
@@ -26,15 +37,15 @@ export default async function DashboardLayout({
 	}
 
 	const workspaceId = searchParams?.workspace;
-	const currentWorkspace = workspaces.length > 0
-		? (workspaceId ? workspaces.find(w => w.id === workspaceId) || workspaces[0] : workspaces[0])
-		: null;
+	const currentWorkspace =
+		workspaces.length > 0
+			? workspaceId
+				? workspaces.find((w) => w.id === workspaceId) || workspaces[0]
+				: workspaces[0]
+			: null;
 
 	return (
-		<WorkspaceProvider
-			initialWorkspace={currentWorkspace}
-			initialWorkspaces={workspaces}
-		>
+		<WorkspaceProvider initialWorkspace={currentWorkspace} initialWorkspaces={workspaces}>
 			<SidebarProvider>
 				<UserProviderWrapper>
 					<AppSidebar />
@@ -46,7 +57,9 @@ export default async function DashboardLayout({
 								<Breadcrumb>
 									<BreadcrumbList>
 										<BreadcrumbItem>
-											<BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+											<BreadcrumbLink href="/dashboard">
+												Dashboard
+											</BreadcrumbLink>
 										</BreadcrumbItem>
 										<BreadcrumbSeparator />
 										<BreadcrumbItem>

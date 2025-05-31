@@ -7,7 +7,6 @@ import { Button, Icons } from 'ui';
 import { useWorkspace } from '../hooks/use-workspace';
 import { createWorkspace } from '../server/mutations/create-workspace';
 
-
 export function WorkspaceSwitcher() {
 	const { currentWorkspace, workspaces, switchWorkspace, refreshWorkspaces } = useWorkspace();
 	const [isOpen, setIsOpen] = useState(false);
@@ -56,15 +55,14 @@ export function WorkspaceSwitcher() {
 				className="w-full justify-between h-auto p-3 hover:bg-white/5"
 			>
 				<div className="flex items-center space-x-3">
-					<div className="flex-shrink-0 text-2xl">
-						{currentWorkspace.emoji}
-					</div>
+					<div className="flex-shrink-0 text-2xl">{currentWorkspace.emoji}</div>
 					<div className="flex-1 text-left">
 						<div className="font-medium text-white truncate">
 							{currentWorkspace.title}
 						</div>
 						<div className="text-sm text-white/60">
-							{currentWorkspace.memberCount} member{currentWorkspace.memberCount !== 1 ? 's' : ''}
+							{currentWorkspace.memberCount} member
+							{currentWorkspace.memberCount !== 1 ? 's' : ''}
 						</div>
 					</div>
 				</div>
@@ -87,15 +85,14 @@ export function WorkspaceSwitcher() {
 								}`}
 							>
 								<div className="flex items-center space-x-3">
-									<div className="flex-shrink-0 text-xl">
-										{workspace.emoji}
-									</div>
+									<div className="flex-shrink-0 text-xl">{workspace.emoji}</div>
 									<div className="flex-1 text-left">
 										<div className="font-medium text-white truncate">
 											{workspace.title}
 										</div>
 										<div className="text-sm text-white/60">
-											{workspace.memberCount} member{workspace.memberCount !== 1 ? 's' : ''}
+											{workspace.memberCount} member
+											{workspace.memberCount !== 1 ? 's' : ''}
 										</div>
 									</div>
 								</div>

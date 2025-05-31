@@ -1,4 +1,4 @@
-import { TBaseUser, TBaseEntity } from "@/shared/types/base";
+import { TBaseUser, TBaseEntity } from '@/shared/types/base';
 
 export type TWorkspace = TBaseWorkspace & {
 	owner: Pick<TBaseUser, 'id' | 'name' | 'email' | 'avatar'>;

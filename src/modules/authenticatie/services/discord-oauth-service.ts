@@ -30,7 +30,7 @@ export class DiscordOAuthService extends OAuth2Service {
 			id: data.id,
 			email: data.email,
 			name: data.global_name || data.username,
-			avatar: data.avatar 
+			avatar: data.avatar
 				? `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`
 				: null,
 			provider: 'discord',

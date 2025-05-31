@@ -71,7 +71,8 @@ export default async function InvitePage({ params }: InvitePageProps) {
 					<div className="text-6xl mb-4">⏰</div>
 					<h1 className="text-2xl font-bold text-white mb-2">Invitation Expired</h1>
 					<p className="text-white/60 mb-6">
-						This invitation has expired. Please ask {invite.inviter.name} to send you a new invitation.
+						This invitation has expired. Please ask {invite.inviter.name} to send you a
+						new invitation.
 					</p>
 					<a
 						href="/dashboard"
@@ -108,10 +109,7 @@ export default async function InvitePage({ params }: InvitePageProps) {
 	return (
 		<div className="min-h-screen bg-[rgb(8,8,8)] flex items-center justify-center p-4">
 			<div className="w-full max-w-md">
-				<InviteAcceptance
-					invite={invite}
-					token={token}
-				/>
+				<InviteAcceptance invite={invite} token={token} />
 			</div>
 		</div>
 	);

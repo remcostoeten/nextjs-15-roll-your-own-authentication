@@ -5,7 +5,6 @@ import { useState, useTransition } from 'react';
 import { Button, Icons } from 'ui';
 import { createWorkspace } from '../server/mutations/create-workspace';
 
-
 const WORKSPACE_TEMPLATES = [
 	{ emoji: '🏢', name: 'Company', description: 'For business and corporate projects' },
 	{ emoji: '🚀', name: 'Startup', description: 'For fast-moving startup projects' },
@@ -80,7 +79,10 @@ export function WorkspaceOnboardingForm() {
 
 			{/* Workspace Name */}
 			<div>
-				<label htmlFor="workspaceName" className="block text-sm font-medium text-white mb-2">
+				<label
+					htmlFor="workspaceName"
+					className="block text-sm font-medium text-white mb-2"
+				>
 					Workspace name
 				</label>
 				<input

@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { Waves } from '@/components/effects/waves';
 import { Logo } from '@/components/logo';
 import { register } from '@/modules/authenticatie/server/mutations/register';
@@ -13,7 +13,6 @@ import { useEffect, useRef } from 'react';
 import { useFormStatus } from 'react-dom';
 import { Button, Card, CardContent, Input, Label } from 'ui';
 import { cn } from 'utilities';
-
 
 function RegisterButton() {
 	const { pending } = useFormStatus();
@@ -161,8 +160,8 @@ export function RegisterForm({ className, ...props }: React.ComponentProps<'div'
 				</Card>
 
 				<div className="mt-4 text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
-					By clicking continue, you agree to our <Link href="#">Terms of Service</Link> and{' '}
-					<Link href="#">Privacy Policy</Link>.
+					By clicking continue, you agree to our <Link href="#">Terms of Service</Link>{' '}
+					and <Link href="#">Privacy Policy</Link>.
 				</div>
 			</div>
 		</div>

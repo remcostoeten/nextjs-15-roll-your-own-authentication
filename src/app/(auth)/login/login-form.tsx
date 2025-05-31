@@ -1,4 +1,3 @@
-
 'use client';
 import { Waves } from '@/components/effects/waves';
 import { login } from '@/modules/authenticatie/server/mutations/login';

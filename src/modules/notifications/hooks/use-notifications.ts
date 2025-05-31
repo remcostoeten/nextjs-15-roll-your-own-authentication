@@ -2,7 +2,10 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { archiveNotifications } from '../server/mutations/archive-notifications';
-import { markAllNotificationsAsRead, markNotificationsAsRead } from '../server/mutations/mark-as-read';
+import {
+	markAllNotificationsAsRead,
+	markNotificationsAsRead,
+} from '../server/mutations/mark-as-read';
 import { getNotificationStats } from '../server/queries/get-notification-stats';
 import { getUserNotifications } from '../server/queries/get-notifications';
 import { TGetNotificationsOptions, TNotificationStats, TNotificationWithActor } from '../types';

@@ -39,12 +39,7 @@ export async function inviteMember(
 			.select()
 			.from(workspaceMembers)
 			.innerJoin(users, eq(users.id, workspaceMembers.userId))
-			.where(
-				and(
-					eq(workspaceMembers.workspaceId, workspaceId),
-					eq(users.email, email)
-				)
-			);
+			.where(and(eq(workspaceMembers.workspaceId, workspaceId), eq(users.email, email)));
 
 		if (existingMember.length > 0) {
 			return { success: false, error: 'User is already a member of this workspace' };

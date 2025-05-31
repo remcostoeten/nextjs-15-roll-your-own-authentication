@@ -3,13 +3,13 @@ import { env } from 'env';
 type TEnv = 'development' | 'production';
 
 type TIfEnvOptions =
-  | TEnv
-  | TEnv[]
-  | {
-      env?: TEnv | TEnv[];
-      flag?: keyof typeof env;
-      value?: string | boolean;
-    };
+	| TEnv
+	| TEnv[]
+	| {
+			env?: TEnv | TEnv[];
+			flag?: keyof typeof env;
+			value?: string | boolean;
+	  };
 
 /**
  * Checks if the current environment or a specific env flag matches given criteria.
@@ -18,30 +18,31 @@ type TIfEnvOptions =
  * @returns {boolean} True if conditions match the current environment.
  */
 export function ifEnv(options: TIfEnvOptions): boolean {
-  const currentEnv = env.NODE_ENV;
+	const currentEnv = env.NODE_ENV;
 
-  if (typeof options === 'string' || Array.isArray(options)) {
-    return Array.isArray(options) ? options.includes(currentEnv) : currentEnv === options;
-  }
+	if (typeof options === 'string' || Array.isArray(options)) {
+		return Array.isArray(options) ? options.includes(currentEnv) : currentEnv === options;
+	}
 
-  let matches = true;
+	let matches = true;
 
-  if (options.env) {
-    matches =
-      Array.isArray(options.env) ? options.env.includes(currentEnv) : currentEnv === options.env;
-  }
+	if (options.env) {
+		matches = Array.isArray(options.env)
+			? options.env.includes(currentEnv)
+			: currentEnv === options.env;
+	}
 
-  if (options.flag) {
-    const flagValue = (env as Record<string, any>)[options.flag];
+	if (options.flag) {
+		const flagValue = (env as Record<string, any>)[options.flag];
 
-    if (options.value !== undefined) {
-      matches = matches && flagValue === options.value;
-    } else {
-      matches = matches && !!flagValue;
-    }
-  }
+		if (options.value !== undefined) {
+			matches = matches && flagValue === options.value;
+		} else {
+			matches = matches && !!flagValue;
+		}
+	}
 
-  return matches;
+	return matches;
 }
 
 /**

@@ -12,12 +12,11 @@ import { updateMemberRole } from '../server/mutations/update-member-role';
 import { updateWorkspace } from '../server/mutations/update-workspace';
 import { TWorkspaceMember, TWorkspaceMemberRole, TWorkspaceWithOwner } from '../types';
 
-
-type TProps =	 {
+type TProps = {
 	workspace: TWorkspaceWithOwner;
 	members: TWorkspaceMember[];
 	userRole: TWorkspaceMemberRole;
-}
+};
 
 export function WorkspaceSettingsEnhanced({ workspace, members, userRole }: TProps) {
 	const [activeTab, setActiveTab] = useState<'general' | 'members' | 'danger'>('general');
@@ -62,7 +61,11 @@ export function WorkspaceSettingsEnhanced({ workspace, members, userRole }: TPro
 
 	// Handle workspace deletion
 	const handleDeleteWorkspace = async () => {
-		if (!confirm(`Are you sure you want to delete "${workspace.title}"? This action cannot be undone.`)) {
+		if (
+			!confirm(
+				`Are you sure you want to delete "${workspace.title}"? This action cannot be undone.`
+			)
+		) {
 			return;
 		}
 
@@ -183,12 +186,13 @@ export function WorkspaceSettingsEnhanced({ workspace, members, userRole }: TPro
 	const tabs = [
 		{ id: 'general', name: 'General', icon: Icons.settings },
 		{ id: 'members', name: 'Members', icon: Icons.users },
-		...(userRole === 'owner' ? [{ id: 'danger', name: 'Danger Zone', icon: Icons.alertTriangle }] : []),
+		...(userRole === 'owner'
+			? [{ id: 'danger', name: 'Danger Zone', icon: Icons.alertTriangle }]
+			: []),
 	] as const;
 
 	return (
 		<div className="bg-[rgb(15,15,15)] border border-[rgb(28,28,28)] rounded-lg">
-
 			{/* Tab Navigation */}
 			<div className="border-b border-[rgb(28,28,28)]">
 				<nav className="flex space-x-8 px-6">
@@ -198,7 +202,9 @@ export function WorkspaceSettingsEnhanced({ workspace, members, userRole }: TPro
 							<button
 								key={tab.id}
 								type="button"
-								onClick={() => setActiveTab(tab.id as 'general' | 'members' | 'danger')}
+								onClick={() =>
+									setActiveTab(tab.id as 'general' | 'members' | 'danger')
+								}
 								className={`flex items-center space-x-2 py-4 border-b-2 font-medium text-sm transition-colors ${
 									activeTab === tab.id
 										? 'border-white text-white'
@@ -218,7 +224,9 @@ export function WorkspaceSettingsEnhanced({ workspace, members, userRole }: TPro
 				{activeTab === 'general' && (
 					<div className="space-y-6">
 						<div className="flex items-center justify-between">
-							<h3 className="text-lg font-semibold text-white">Workspace Information</h3>
+							<h3 className="text-lg font-semibold text-white">
+								Workspace Information
+							</h3>
 							{['owner', 'admin'].includes(userRole) && (
 								<Button
 									onClick={() => setIsEditing(!isEditing)}
@@ -250,7 +258,12 @@ export function WorkspaceSettingsEnhanced({ workspace, members, userRole }: TPro
 										<input
 											type="text"
 											value={editForm.title}
-											onChange={(e) => setEditForm(prev => ({ ...prev, title: e.target.value }))}
+											onChange={(e) =>
+												setEditForm((prev) => ({
+													...prev,
+													title: e.target.value,
+												}))
+											}
 											className="w-full px-3 py-2 bg-[rgb(21,21,21)] border border-[rgb(28,28,28)] rounded-lg text-white"
 											required
 										/>
@@ -262,7 +275,12 @@ export function WorkspaceSettingsEnhanced({ workspace, members, userRole }: TPro
 										<input
 											type="text"
 											value={editForm.emoji}
-											onChange={(e) => setEditForm(prev => ({ ...prev, emoji: e.target.value }))}
+											onChange={(e) =>
+												setEditForm((prev) => ({
+													...prev,
+													emoji: e.target.value,
+												}))
+											}
 											className="w-full px-3 py-2 bg-[rgb(21,21,21)] border border-[rgb(28,28,28)] rounded-lg text-white"
 											required
 										/>
@@ -274,7 +292,12 @@ export function WorkspaceSettingsEnhanced({ workspace, members, userRole }: TPro
 									</label>
 									<textarea
 										value={editForm.description}
-										onChange={(e) => setEditForm(prev => ({ ...prev, description: e.target.value }))}
+										onChange={(e) =>
+											setEditForm((prev) => ({
+												...prev,
+												description: e.target.value,
+											}))
+										}
 										rows={3}
 										className="w-full px-3 py-2 bg-[rgb(21,21,21)] border border-[rgb(28,28,28)] rounded-lg text-white resize-none"
 									/>
@@ -345,7 +368,9 @@ export function WorkspaceSettingsEnhanced({ workspace, members, userRole }: TPro
 				{activeTab === 'members' && (
 					<div className="space-y-6">
 						<div className="flex items-center justify-between">
-							<h3 className="text-lg font-semibold text-white">Members ({members.length})</h3>
+							<h3 className="text-lg font-semibold text-white">
+								Members ({members.length})
+							</h3>
 							{['owner', 'admin'].includes(userRole) && (
 								<Button
 									onClick={() => setIsInviting(true)}
@@ -359,7 +384,10 @@ export function WorkspaceSettingsEnhanced({ workspace, members, userRole }: TPro
 
 						{/* Invite Form */}
 						{isInviting && (
-							<form onSubmit={handleInviteUser} className="bg-[rgb(21,21,21)] border border-[rgb(28,28,28)] rounded-lg p-4">
+							<form
+								onSubmit={handleInviteUser}
+								className="bg-[rgb(21,21,21)] border border-[rgb(28,28,28)] rounded-lg p-4"
+							>
 								<h4 className="font-medium text-white mb-4">Invite New Member</h4>
 								<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 									<div className="md:col-span-2">
@@ -436,8 +464,12 @@ export function WorkspaceSettingsEnhanced({ workspace, members, userRole }: TPro
 											)}
 										</div>
 										<div>
-											<div className="font-medium text-white">{member.user.name}</div>
-											<div className="text-sm text-white/60">{member.user.email}</div>
+											<div className="font-medium text-white">
+												{member.user.name}
+											</div>
+											<div className="text-sm text-white/60">
+												{member.user.email}
+											</div>
 										</div>
 									</div>
 									<div className="flex items-center space-x-3">
@@ -445,7 +477,12 @@ export function WorkspaceSettingsEnhanced({ workspace, members, userRole }: TPro
 										{userRole === 'owner' && member.role !== 'owner' ? (
 											<select
 												value={member.role}
-												onChange={(e) => handleUpdateRole(member.userId, e.target.value as TWorkspaceMemberRole)}
+												onChange={(e) =>
+													handleUpdateRole(
+														member.userId,
+														e.target.value as TWorkspaceMemberRole
+													)
+												}
 												className="px-2 py-1 bg-[rgb(28,28,28)] text-white/80 text-xs rounded border-none"
 												disabled={isPending}
 											>
@@ -464,17 +501,23 @@ export function WorkspaceSettingsEnhanced({ workspace, members, userRole }: TPro
 										)}
 
 										{/* Actions */}
-										{member.role !== 'owner' && ['owner', 'admin'].includes(userRole) && (
-											<Button
-												onClick={() => handleRemoveMember(member.userId, member.user.name)}
-												variant="ghost"
-												size="sm"
-												className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
-												disabled={isPending}
-											>
-												<Icons.trash className="h-4 w-4" />
-											</Button>
-										)}
+										{member.role !== 'owner' &&
+											['owner', 'admin'].includes(userRole) && (
+												<Button
+													onClick={() =>
+														handleRemoveMember(
+															member.userId,
+															member.user.name
+														)
+													}
+													variant="ghost"
+													size="sm"
+													className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+													disabled={isPending}
+												>
+													<Icons.trash className="h-4 w-4" />
+												</Button>
+											)}
 									</div>
 								</div>
 							))}
@@ -504,7 +547,8 @@ export function WorkspaceSettingsEnhanced({ workspace, members, userRole }: TPro
 							<div className="border border-red-500/20 bg-red-500/5 rounded-lg p-4">
 								<h4 className="font-medium text-red-400 mb-2">Delete Workspace</h4>
 								<p className="text-white/60 text-sm mb-4">
-									Once you delete a workspace, there is no going back. All data, projects, and members will be permanently removed.
+									Once you delete a workspace, there is no going back. All data,
+									projects, and members will be permanently removed.
 								</p>
 								<Button
 									onClick={handleDeleteWorkspace}

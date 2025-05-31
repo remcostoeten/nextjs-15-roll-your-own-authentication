@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { Activity, AlertCircle, CheckCircle2, Clock, Cpu, Database, Shield } from 'lucide-react';
 import {
 	CartesianGrid,
@@ -89,12 +88,7 @@ const performanceData = [
 
 export function ActivityFeed() {
 	return (
-		<motion.div
-			initial={{ opacity: 0, y: 20 }}
-			animate={{ opacity: 1, y: 0 }}
-			transition={{ duration: 0.5 }}
-			className="w-full max-w-7xl mx-auto px-4 py-8"
-		>
+		<div className="w-full max-w-7xl mx-auto px-4 py-8">
 			<div className="mb-8">
 				<h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
 					System Monitor
@@ -107,12 +101,9 @@ export function ActivityFeed() {
 
 			{/* System Health Grid */}
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-				{systemHealth.map((metric, index) => (
-					<motion.div
+				{systemHealth.map((metric) => (
+					<div
 						key={metric.name}
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: index * 0.1 }}
 						className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg"
 					>
 						<div className="flex items-center justify-between mb-4">
@@ -127,18 +118,13 @@ export function ActivityFeed() {
 							{metric.value}
 						</h3>
 						<p className="text-sm text-gray-600 dark:text-gray-400">{metric.name}</p>
-					</motion.div>
+					</div>
 				))}
 			</div>
 
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
 				{/* Performance Chart */}
-				<motion.div
-					initial={{ opacity: 0, x: -20 }}
-					animate={{ opacity: 1, x: 0 }}
-					transition={{ delay: 0.2 }}
-					className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg"
-				>
+				<div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg">
 					<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
 						System Performance
 					</h3>
@@ -194,25 +180,18 @@ export function ActivityFeed() {
 							</LineChart>
 						</ResponsiveContainer>
 					</div>
-				</motion.div>
+				</div>
 
 				{/* Activity Stream */}
-				<motion.div
-					initial={{ opacity: 0, x: 20 }}
-					animate={{ opacity: 1, x: 0 }}
-					transition={{ delay: 0.3 }}
-					className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg"
-				>
+				<div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg">
 					<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
 						<Activity className="w-5 h-5 mr-2" />
 						Live Activity Stream
 					</h3>
 					<div className="space-y-4">
 						{recentActivity.map((activity) => (
-							<motion.div
+							<div
 								key={activity.id}
-								initial={{ opacity: 0, x: -10 }}
-								animate={{ opacity: 1, x: 0 }}
 								className="flex items-start space-x-4 p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50"
 							>
 								<div
@@ -241,11 +220,11 @@ export function ActivityFeed() {
 										{activity.timestamp}
 									</p>
 								</div>
-							</motion.div>
+							</div>
 						))}
 					</div>
-				</motion.div>
+				</div>
 			</div>
-		</motion.div>
+		</div>
 	);
 }
