@@ -1,149 +1,153 @@
-'use client';
+"use client"
 
-import { toast } from '@/shared/components/toast';
-import { ChevronDown } from 'lucide-react';
-import { useState } from 'react';
-import { Button, Icons } from 'ui';
-import { useWorkspace } from '../hooks/use-workspace';
-import { createWorkspace } from '../server/mutations/create-workspace';
+import { Check, ChevronsUpDown, Plus, Building2, Users, Crown, Shield, User } from "lucide-react"
+import { useState } from "react"
+
+import { Button } from "@/shared/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/shared/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback } from "@/shared/components/ui/avatar"
+import { Badge } from "@/shared/components/ui/badge"
+import { useWorkspace } from "../hooks/use-workspace"
+
+const getRoleIcon = (role: string) => {
+  switch (role) {
+    case "owner":
+      return <Crown className="h-3 w-3 text-amber-500" />
+    case "admin":
+      return <Shield className="h-3 w-3 text-blue-500" />
+    case "member":
+      return <User className="h-3 w-3 text-gray-500" />
+    default:
+      return <User className="h-3 w-3 text-gray-500" />
+  }
+}
+
+const getRoleBadgeVariant = (role: string) => {
+  switch (role) {
+    case "owner":
+      return "default"
+    case "admin":
+      return "secondary"
+    case "member":
+      return "outline"
+    default:
+      return "outline"
+  }
+}
 
 export function WorkspaceSwitcher() {
-	const { currentWorkspace, workspaces, switchWorkspace, refreshWorkspaces } = useWorkspace();
-	const [isOpen, setIsOpen] = useState(false);
-	const [isCreating, setIsCreating] = useState(false);
+  const { currentWorkspace, workspaces, switchWorkspace, isLoading } = useWorkspace()
+  const [open, setOpen] = useState(false)
 
-	const handleCreateWorkspace = async (formData: FormData) => {
-		setIsCreating(true);
-		try {
-			const result = await createWorkspace(formData);
-			if (result.success && result.data) {
-				await refreshWorkspaces();
-				switchWorkspace(result.data);
-				toast.success('Workspace created successfully');
-				setIsOpen(false);
-			} else {
-				toast.error(result.error || 'Failed to create workspace');
-			}
-		} catch (error) {
-			toast.error('Failed to create workspace');
-		} finally {
-			setIsCreating(false);
-		}
-	};
+  if (isLoading) {
+    return (
+      <div className="flex items-center gap-2 px-2 py-1.5">
+        <div className="h-8 w-8 rounded-lg bg-muted animate-pulse" />
+        <div className="flex-1 space-y-1">
+          <div className="h-3 bg-muted rounded animate-pulse" />
+          <div className="h-2 bg-muted rounded w-2/3 animate-pulse" />
+        </div>
+      </div>
+    )
+  }
 
-	if (!currentWorkspace) {
-		return (
-			<div className="flex items-center justify-center p-4">
-				<div className="text-center space-y-4">
-					<p className="text-white/60">No workspace selected</p>
-					<Button
-						onClick={() => setIsOpen(true)}
-						className="bg-white text-black hover:bg-white/90"
-					>
-						Create Workspace
-					</Button>
-				</div>
-			</div>
-		);
-	}
+  if (!currentWorkspace) {
+    return (
+      <div className="flex items-center gap-2 px-2 py-1.5 text-muted-foreground">
+        <Building2 className="h-8 w-8" />
+        <span className="text-sm">No workspace selected</span>
+      </div>
+    )
+  }
 
-	return (
-		<div className="relative">
-			<Button
-				onClick={() => setIsOpen(!isOpen)}
-				variant="ghost"
-				className="w-full justify-between h-auto p-3 hover:bg-white/5"
-			>
-				<div className="flex items-center space-x-3">
-					<div className="flex-shrink-0 text-2xl">{currentWorkspace.emoji}</div>
-					<div className="flex-1 text-left">
-						<div className="font-medium text-white truncate">
-							{currentWorkspace.title}
-						</div>
-						<div className="text-sm text-white/60">
-							{currentWorkspace.memberCount} member
-							{currentWorkspace.memberCount !== 1 ? 's' : ''}
-						</div>
-					</div>
-				</div>
-				<ChevronDown className="h-4 w-4 text-white/60" />
-			</Button>
-
-			{isOpen && (
-				<div className="absolute top-full left-0 right-0 mt-1 bg-[rgb(15,15,15)] border border-[rgb(28,28,28)] rounded-lg shadow-lg z-50">
-					<div className="p-2 space-y-1">
-						{workspaces.map((workspace) => (
-							<Button
-								key={workspace.id}
-								onClick={() => {
-									switchWorkspace(workspace);
-									setIsOpen(false);
-								}}
-								variant="ghost"
-								className={`w-full justify-start h-auto p-3 hover:bg-white/5 ${
-									workspace.id === currentWorkspace.id ? 'bg-white/10' : ''
-								}`}
-							>
-								<div className="flex items-center space-x-3">
-									<div className="flex-shrink-0 text-xl">{workspace.emoji}</div>
-									<div className="flex-1 text-left">
-										<div className="font-medium text-white truncate">
-											{workspace.title}
-										</div>
-										<div className="text-sm text-white/60">
-											{workspace.memberCount} member
-											{workspace.memberCount !== 1 ? 's' : ''}
-										</div>
-									</div>
-								</div>
-								{workspace.id === currentWorkspace.id && (
-									<Icons.check className="h-4 w-4 text-white ml-2" />
-								)}
-							</Button>
-						))}
-					</div>
-
-					<div className="border-t border-[rgb(28,28,28)] p-2">
-						<form action={handleCreateWorkspace} className="space-y-3">
-							<div className="flex space-x-2">
-								<input
-									name="emoji"
-									type="text"
-									placeholder="🏢"
-									maxLength={2}
-									className="w-12 bg-[rgb(21,21,21)] border border-[rgb(28,28,28)] rounded px-2 py-1 text-center text-white"
-									defaultValue="🏢"
-								/>
-								<input
-									name="title"
-									type="text"
-									placeholder="New Workspace"
-									required
-									className="flex-1 bg-[rgb(21,21,21)] border border-[rgb(28,28,28)] rounded px-3 py-1 text-white placeholder:text-white/40"
-								/>
-							</div>
-							<Button
-								type="submit"
-								disabled={isCreating}
-								className="w-full bg-white text-black hover:bg-white/90"
-								size="sm"
-							>
-								{isCreating ? (
-									<>
-										<Icons.spinner className="w-4 h-4 animate-spin mr-2" />
-										Creating...
-									</>
-								) : (
-									<>
-										<Icons.plus className="w-4 h-4 mr-2" />
-										Create Workspace
-									</>
-								)}
-							</Button>
-						</form>
-					</div>
-				</div>
-			)}
-		</div>
-	);
+  return (
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          role="combobox"
+          aria-expanded={open}
+          className="w-full justify-between h-auto p-2 hover:bg-accent/50 transition-colors"
+        >
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <Avatar className="h-8 w-8 rounded-lg border-2 border-background shadow-sm">
+              <AvatarFallback className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold text-sm">
+                {currentWorkspace.emoji || currentWorkspace.title.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col items-start min-w-0 flex-1">
+              <div className="flex items-center gap-2 w-full">
+                <span className="font-medium text-sm truncate">{currentWorkspace.title}</span>
+                {getRoleIcon(currentWorkspace.userRole)}
+              </div>
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                <Users className="h-3 w-3" />
+                <span>
+                  {currentWorkspace.memberCount} member{currentWorkspace.memberCount !== 1 ? "s" : ""}
+                </span>
+              </div>
+            </div>
+          </div>
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-[280px] p-2" align="start">
+        <DropdownMenuLabel className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
+          Your Workspaces
+        </DropdownMenuLabel>
+        <div className="space-y-1">
+          {workspaces.map((workspace) => (
+            <DropdownMenuItem
+              key={workspace.id}
+              onClick={() => {
+                switchWorkspace(workspace)
+                setOpen(false)
+              }}
+              className="flex items-center gap-3 p-2 cursor-pointer rounded-md"
+            >
+              <Avatar className="h-8 w-8 rounded-lg border border-border">
+                <AvatarFallback className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold text-sm">
+                  {workspace.emoji || workspace.title.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-sm truncate">{workspace.title}</span>
+                  {workspace.id === currentWorkspace.id && <Check className="h-4 w-4 text-primary" />}
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Users className="h-3 w-3" />
+                    <span>
+                      {workspace.memberCount} member{workspace.memberCount !== 1 ? "s" : ""}
+                    </span>
+                  </div>
+                  <Badge variant={getRoleBadgeVariant(workspace.userRole)} className="text-xs px-1.5 py-0.5 h-auto">
+                    {workspace.userRole}
+                  </Badge>
+                </div>
+              </div>
+            </DropdownMenuItem>
+          ))}
+        </div>
+        <DropdownMenuSeparator className="my-2" />
+        <DropdownMenuItem className="flex items-center gap-3 p-2 cursor-pointer rounded-md">
+          <div className="h-8 w-8 rounded-lg border-2 border-dashed border-muted-foreground/25 flex items-center justify-center">
+            <Plus className="h-4 w-4 text-muted-foreground" />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-medium text-sm">Create Workspace</span>
+            <span className="text-xs text-muted-foreground">Start a new workspace</span>
+          </div>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
 }

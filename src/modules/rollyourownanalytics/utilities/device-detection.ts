@@ -67,5 +67,3 @@ function getOperatingSystem(userAgent: string): string {
 	if (userAgent.includes('Linux')) return 'Linux';
 	return 'Unknown';
 }
-
-

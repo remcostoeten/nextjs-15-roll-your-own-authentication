@@ -4,7 +4,7 @@ import { getSession } from '@/modules/authenticatie/helpers/session';
 import { TBaseMutationResponse } from '@/shared/types/base';
 import { randomBytes } from 'crypto';
 import { db } from 'db';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { users, workspaceInvites, workspaceMembers, workspaces } from 'schema';
 import { notificationService } from '@/modules/notifications/server/services/notification-service';
 import { notificationTemplates } from '@/modules/notifications/server/helpers/notification-templates';
@@ -20,6 +20,7 @@ export async function inviteUser(formData: FormData): Promise<TBaseMutationRespo
 		const workspaceId = formData.get('workspaceId') as string;
 		const email = formData.get('email') as string;
 		const role = formData.get('role') as 'admin' | 'member' | 'viewer';
+		const message = formData.get('message') as string;
 
 		if (!workspaceId || !email || !role) {
 			return { success: false, error: 'Missing required fields' };
@@ -59,7 +60,7 @@ export async function inviteUser(formData: FormData): Promise<TBaseMutationRespo
 				and(
 					eq(workspaceInvites.workspaceId, workspaceId),
 					eq(workspaceInvites.email, email),
-					eq(workspaceInvites.acceptedAt, null)
+					isNull(workspaceInvites.acceptedAt)
 				)
 			);
 
@@ -84,7 +85,7 @@ export async function inviteUser(formData: FormData): Promise<TBaseMutationRespo
 		// For development: Log the invitation link
 		const inviteUrl = `${
 			process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001'
-		}/invite/${token}`;
+		}/dashboard/invite/${token}`;
 		console.log('\n🎉 WORKSPACE INVITATION CREATED!');
 		console.log('================================');
 		console.log(`📧 Email: ${email}`);
@@ -105,6 +106,16 @@ export async function inviteUser(formData: FormData): Promise<TBaseMutationRespo
 			.from(workspaces)
 			.where(eq(workspaces.id, workspaceId));
 
+		// Get inviter's information
+		const [inviter] = await db
+			.select({
+				id: users.id,
+				email: users.email,
+				name: users.name
+			})
+			.from(users)
+			.where(eq(users.id, session.id));
+
 		// Check if user exists with this email
 		const [invitedUser] = await db
 			.select({ id: users.id })
@@ -117,7 +128,9 @@ export async function inviteUser(formData: FormData): Promise<TBaseMutationRespo
 				workspace.title,
 				inviteUrl,
 				asUUID(session.id),
-				workspace.id
+				inviter.email,
+				workspace.id,
+				message || undefined
 			);
 
 			await notificationService.createNotification(notificationData);

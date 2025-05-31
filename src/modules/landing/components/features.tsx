@@ -70,14 +70,14 @@ export function FeaturesSection() {
 	return (
 		<section className="mx-auto grid max-w-7xl relativ ">
 			<div className="absolute inset-0 border-t pointer-events-none !border-l !border-r" />
-		<div className="absolute pointer-events-none inset-0 border-l border-r z-10" />
-		<div className="grid md:grid-cols-2 border-l border-r">
+			<div className="absolute pointer-events-none inset-0 border-l border-r z-10" />
+			<div className="grid md:grid-cols-2 border-l border-r">
 				<div>
 					<div className="p-6 sm:p-12 space-y-6">
 						<span className="text-muted-foreground flex items-center gap-2">
 							<MapIcon className="size-4" size="xl" />
 							<Text as="span">
-								<i className='mr-[2px]'>R</i>oll your own analytics
+								<i className="mr-[2px]">R</i>oll your own analytics
 							</Text>
 						</span>
 						<Text size="xl">
@@ -92,9 +92,7 @@ export function FeaturesSection() {
 								<Text as="span" className="text-lg">
 									🇨🇩
 								</Text>
-								<Text as="span">
-									Last connection from DR Congo
-								</Text>
+								<Text as="span">Last connection from DR Congo</Text>
 							</div>
 						</div>
 
@@ -106,43 +104,42 @@ export function FeaturesSection() {
 				</div>
 
 				<div className="relative py-4 z-10 space-y-6">
-					<div className="p-6 sm:p-12 space-y-6">	
+					<div className="p-6 sm:p-12 space-y-6">
 						<span className="text-muted-foreground flex items-center gap-2">
-						<MessageCircle className="size-4" />
-						<Text as="span">
-							Developer Support
+							<MessageCircle className="size-4" />
+							<Text as="span">Developer Support</Text>
+						</span>
+
+						<Text className="text-pretty hyphens-auto" size="xl">
+							Get help from our team of developers and designers. We're here to help
+							you build the best possible experience for your users.
 						</Text>
-					</span>
 
-					<Text className="text-pretty hyphens-auto" size="xl">
-						Get help from our team of developers and designers. We're here to help you
-						build the best possible experience for your users.
-					</Text>
+						<div aria-hidden className="flex flex-col gap-8 pt-6">
+							<div className="w-3/5">
+								<time className="text-muted-foreground text-xs opacity-70">
+									<Text>Sat 22 Feb</Text>
+								</time>
+								<div className="mt-1.5 border p-3 text-xs bg-background/80 backdrop-blur-sm rounded-2xl rounded-tl-none shadow-lg">
+									<Text>Hey, I'm having trouble with my account.</Text>
+								</div>
+							</div>
 
-					<div aria-hidden className="flex flex-col gap-8 pt-6">
-						<div className="w-3/5">
-							<time className="text-muted-foreground text-xs opacity-70">
-								<Text>Sat 22 Feb</Text>
-							</time>
-							<div className="mt-1.5 border p-3 text-xs bg-background/80 backdrop-blur-sm rounded-2xl rounded-tl-none shadow-lg">
-								<Text>
-									Hey, I'm having trouble with my account.
+							<div className="ml-auto w-3/5">
+								<div className="bg-primary/90 p-3 text-xs text-primary-foreground rounded-2xl rounded-tr-none shadow-lg backdrop-blur-sm">
+									<Text>
+										Our authentication system provides secure user management
+										with complete customization options.
+									</Text>
+								</div>
+								<Text
+									as="span"
+									className="block text-right text-muted-foreground text-xs opacity-70"
+								>
+									Now
 								</Text>
 							</div>
 						</div>
-
-						<div className="ml-auto w-3/5">
-							<div className="bg-primary/90 p-3 text-xs text-primary-foreground rounded-2xl rounded-tr-none shadow-lg backdrop-blur-sm">
-								<Text>
-									Our authentication system provides secure user
-									management with complete customization options.
-								</Text>
-							</div>
-							<Text as="span" className="block text-right text-muted-foreground text-xs opacity-70">
-								Now
-							</Text>
-						</div>
-					</div>
 					</div>
 				</div>
 			</div>
@@ -237,10 +234,7 @@ function MonitoringChart() {
 				onMouseLeave={handleMouseLeave}
 			>
 				<CartesianGrid vertical={false} />
-				<ChartTooltip
-					cursor={false}
-					content={<ChartTooltipContent indicator="dot" />}
-				/>
+				<ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
 				<Area
 					dataKey="mobile"
 					type="natural"
@@ -261,4 +255,4 @@ function MonitoringChart() {
 		</ChartContainer>
 	);
 }
-``
+``;

@@ -1,5 +1,6 @@
 import { AppSidebar } from '@/components/sidebar/app-sidebar';
 import { getSession } from '@/modules/authenticatie/helpers/session';
+import { NotificationsDropdown } from '@/modules/notifications/components/notifications-dropdown';
 import { WorkspaceProvider } from '@/modules/workspaces/hooks/use-workspace';
 import { getUserWorkspaces } from '@/modules/workspaces/server/queries/get-user-workspaces';
 import { redirect } from 'next/navigation';
@@ -67,6 +68,9 @@ export default async function DashboardLayout({
 										</BreadcrumbItem>
 									</BreadcrumbList>
 								</Breadcrumb>
+							</div>
+							<div className="ml-auto px-4">
+								<NotificationsDropdown />
 							</div>
 						</header>
 						<div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>

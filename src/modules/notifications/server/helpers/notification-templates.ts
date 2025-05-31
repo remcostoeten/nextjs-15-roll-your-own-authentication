@@ -22,18 +22,29 @@ function workspaceInvitation(
 	workspaceTitle: string,
 	inviteUrl: string,
 	actorId?: UUID,
-	workspaceId?: string
+	actorEmail?: string,
+	workspaceId?: string,
+	customMessage?: string
 ): TCreateNotificationInput {
+	const baseMessage = `You've been invited to join the workspace "${workspaceTitle}"${actorEmail ? ` by ${actorEmail}` : ''}`;
+	const fullMessage = customMessage ? `${baseMessage}\n\nPersonal message: "${customMessage}"` : baseMessage;
+
 	return {
 		userId,
 		type: 'workspace_invite',
 		title: `Invitation to join ${workspaceTitle}`,
-		message: `You've been invited to join the workspace "${workspaceTitle}"`,
+		message: fullMessage,
 		priority: 'high',
 		actionUrl: inviteUrl,
 		actionLabel: 'Accept Invitation',
-		metadata: workspaceId ? { workspaceId } : undefined,
-		actorId,
+		metadata: {
+			workspaceId,
+			actorEmail,
+			customMessage,
+			inviterEmail: actorEmail
+		},
+		...(actorEmail && { actorEmail }),
+		...(actorId && { actorId }),
 	};
 }
 
@@ -55,7 +66,7 @@ function workspaceJoined(
 		actionUrl: `/workspaces/${workspaceId}`,
 		actionLabel: 'Go to Workspace',
 		metadata: { workspaceId },
-		actorId,
+		...(actorId && { actorId }),
 	};
 }
 

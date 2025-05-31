@@ -25,5 +25,6 @@ export * from './switch';
 export * from './tooltip';
 export * from './autosize-tetxarea';
 export * from './badge';
+export  * from './tabs';
 export { ProfileFormSkeleton } from '@/modules/authenticatie/ui/profile-form-skeleton';
 export { ConnectedAccountsSkeleton } from '@/modules/authenticatie/ui/connected-accounts-skeleton';

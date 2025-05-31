@@ -1,9 +1,3 @@
-export { AnalyticsProvider, useAnalytics } from './analytics-provider'
-export { AnalyticsTracker } from './analytics-tracker'
-export { AnalyticsDashboard } from './analytics-dashboard'
-export { AnalyticsSetup } from './analytics-setup'
-export { AnalyticsOverview } from './analytics-overview'
-export { AnalyticsPages } from './analytics-pages'
-export { AnalyticsGeo } from './analytics-geo'
-export { AnalyticsEvents } from './analytics-events'
-export { AnalyticsRealtime } from './analytics-realtime'
+export { AnalyticsProvider, useAnalytics } from './analytics-provider';
+export { AnalyticsTracker } from './analytics-tracker';
+export { AnalyticsSetup } from './analytics-setup';

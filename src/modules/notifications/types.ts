@@ -24,11 +24,12 @@ export type TNotification = TBaseEntity & {
 	read: boolean;
 	archived: boolean;
 	priority: TNotificationPriority;
-	actionUrl?: string;
-	actionLabel?: string;
+	actionUrl?: string | undefined;
+	actionLabel?: string | undefined;
 	metadata?: Record<string, unknown>;
-	actorId?: UUID;
-	expiresAt?: Date;
+	actorId?: UUID | undefined;
+	expiresAt?: Date | null;
+	actorEmail?: string | undefined;
 };
 
 export type TNotificationWithActor = TNotification & {
@@ -36,8 +37,8 @@ export type TNotificationWithActor = TNotification & {
 		id: UUID;
 		name: string;
 		email: string;
-		avatar?: string;
-	};
+		avatar?: string | undefined;
+	} | undefined;
 };
 
 export type TCreateNotificationInput = Omit<

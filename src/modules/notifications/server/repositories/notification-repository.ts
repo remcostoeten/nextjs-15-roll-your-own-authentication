@@ -1,6 +1,6 @@
 import { UUID, asUUID } from '@/shared/types/common';
 import { db } from 'db';
-import { and, count, desc, eq, gt, inArray, isNull, sql } from 'drizzle-orm';
+import { and, count, desc, eq, gt, inArray, isNull, or, sql } from 'drizzle-orm';
 import { notifications, notificationPreferences, users } from 'schema';
 import {
 	TCreateNotificationInput,
@@ -38,6 +38,9 @@ export function notificationRepository() {
 				id: asUUID(notification.id),
 				userId: asUUID(notification.userId),
 				actorId: notification.actorId ? asUUID(notification.actorId) : undefined,
+				actorEmail: data.actorEmail,
+				actionUrl: notification.actionUrl || undefined,
+				actionLabel: notification.actionLabel || undefined,
 				metadata: notification.metadata
 					? typeof notification.metadata === 'string'
 						? JSON.parse(notification.metadata)
@@ -70,7 +73,7 @@ export function notificationRepository() {
 						options.types?.length
 							? inArray(notifications.type, options.types)
 							: undefined,
-						isNull(notifications.expiresAt).or(gt(notifications.expiresAt, new Date()))
+						or(isNull(notifications.expiresAt), gt(notifications.expiresAt, new Date()))
 					)
 				)
 				.orderBy(desc(notifications.createdAt))
@@ -84,12 +87,15 @@ export function notificationRepository() {
 				id: asUUID(notification.id),
 				userId: asUUID(notification.userId),
 				actorId: notification.actorId ? asUUID(notification.actorId) : undefined,
+				actionUrl: notification.actionUrl || undefined,
+				actionLabel: notification.actionLabel || undefined,
+				actorEmail: actor?.email,
 				metadata: notification.metadata
 					? typeof notification.metadata === 'string'
 						? JSON.parse(notification.metadata)
 						: notification.metadata
 					: undefined,
-				actor: actor.id
+				actor: actor?.id
 					? {
 							id: asUUID(actor.id),
 							name: actor.name || '',
@@ -135,7 +141,7 @@ export function notificationRepository() {
 					and(
 						eq(notifications.userId, userId),
 						eq(notifications.archived, false),
-						isNull(notifications.expiresAt).or(gt(notifications.expiresAt, new Date()))
+						or(isNull(notifications.expiresAt), gt(notifications.expiresAt, new Date()))
 					)
 				);
 

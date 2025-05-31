@@ -1,55 +1,55 @@
 {
-  "version": "7",
-  "dialect": "postgresql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "7",
-      "when": 1748114483227,
-      "tag": "0000_tan_namor",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1748114638269,
-      "tag": "0001_salty_vengeance",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1748383376898,
-      "tag": "0002_familiar_switch",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1748383860590,
-      "tag": "0003_mushy_pestilence",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1748476973825,
-      "tag": "0004_uneven_ares",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1748478026988,
-      "tag": "0005_easy_joystick",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1748707325639,
-      "tag": "0006_dapper_tomorrow_man",
-      "breakpoints": true
-    }
-  ]
+	"version": "7",
+	"dialect": "postgresql",
+	"entries": [
+		{
+			"idx": 0,
+			"version": "7",
+			"when": 1748114483227,
+			"tag": "0000_tan_namor",
+			"breakpoints": true
+		},
+		{
+			"idx": 1,
+			"version": "7",
+			"when": 1748114638269,
+			"tag": "0001_salty_vengeance",
+			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "7",
+			"when": 1748383376898,
+			"tag": "0002_familiar_switch",
+			"breakpoints": true
+		},
+		{
+			"idx": 3,
+			"version": "7",
+			"when": 1748383860590,
+			"tag": "0003_mushy_pestilence",
+			"breakpoints": true
+		},
+		{
+			"idx": 4,
+			"version": "7",
+			"when": 1748476973825,
+			"tag": "0004_uneven_ares",
+			"breakpoints": true
+		},
+		{
+			"idx": 5,
+			"version": "7",
+			"when": 1748478026988,
+			"tag": "0005_easy_joystick",
+			"breakpoints": true
+		},
+		{
+			"idx": 6,
+			"version": "7",
+			"when": 1748707325639,
+			"tag": "0006_dapper_tomorrow_man",
+			"breakpoints": true
+		}
+	]
 }

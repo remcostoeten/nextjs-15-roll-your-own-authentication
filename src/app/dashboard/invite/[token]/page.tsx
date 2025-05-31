@@ -15,7 +15,7 @@ export default async function InvitePage({ params }: InvitePageProps) {
 
 	// If not logged in, redirect to login with return URL
 	if (!session) {
-		redirect(`/login?redirect=/invite/${token}`);
+		redirect(`/login?redirect=/dashboard/invite/${token}`);
 	}
 
 	// Get the invite details

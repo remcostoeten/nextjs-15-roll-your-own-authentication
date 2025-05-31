@@ -1,252 +1,250 @@
-'use client'
+'use client';
 
-import { useEffect, useRef, useState } from 'react'
-import { usePathname } from 'next/navigation'
-import { TAnalyticsConfig } from '@/modules/rollyourownanalytics/types'
+import { useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { TAnalyticsConfig } from '@/modules/rollyourownanalytics/types';
 import {
-  getVisitorId,
-  getSessionId,
-  getDeviceInfo,
-  getPageMetrics,
-  startPageTracking,
-  updateSessionTimestamp,
-  setupEventListeners
-} from '@/modules/rollyourownanalytics/utilities'
+	getVisitorId,
+	getSessionId,
+	getDeviceInfo,
+	getPageMetrics,
+	startPageTracking,
+	updateSessionTimestamp,
+	setupEventListeners,
+} from '@/modules/rollyourownanalytics/utilities';
 
-// Client-side API functions
 async function trackPageview(data: any) {
-  try {
-    const response = await fetch('/api/analytics/pageview', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    })
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-    return await response.json()
-  } catch (error) {
-    console.error('Failed to track pageview:', error)
-    throw error
-  }
+	try {
+		const response = await fetch('/api/analytics/pageview', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(data),
+		});
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+		return await response.json();
+	} catch (error) {
+		console.error('Failed to track pageview:', error);
+		throw error;
+	}
 }
 
 async function trackPageLeave(data: any) {
-  try {
-    const response = await fetch('/api/analytics/page-leave', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    })
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-    return await response.json()
-  } catch (error) {
-    console.error('Failed to track page leave:', error)
-    throw error
-  }
+	try {
+		const response = await fetch('/api/analytics/page-leave', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(data),
+		});
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+		return await response.json();
+	} catch (error) {
+		console.error('Failed to track page leave:', error);
+		throw error;
+	}
 }
 
 async function trackEvent(data: any) {
-  try {
-    const response = await fetch('/api/analytics/event', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    })
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-    return await response.json()
-  } catch (error) {
-    console.error('Failed to track event:', error)
-    throw error
-  }
+	try {
+		const response = await fetch('/api/analytics/track', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(data),
+		});
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+		return await response.json();
+	} catch (error) {
+		console.error('Failed to track event:', error);
+		throw error;
+	}
 }
 
 type TProps = {
-  config: TAnalyticsConfig
-}
+	config: TAnalyticsConfig;
+};
 
 export function AnalyticsTracker({ config }: TProps) {
-  const pathname = usePathname()
-  const [isInitialized, setIsInitialized] = useState(false)
-  const visitorIdRef = useRef<string>('')
-  const sessionIdRef = useRef<string>('')
-  const cleanupRef = useRef<(() => void) | null>(null)
-  const lastPathnameRef = useRef<string>('')
+	const pathname = usePathname();
+	const [isInitialized, setIsInitialized] = useState(false);
+	const visitorIdRef = useRef<string>('');
+	const sessionIdRef = useRef<string>('');
+	const cleanupRef = useRef<(() => void) | null>(null);
+	const lastPathnameRef = useRef<string>('');
 
-  useEffect(() => {
-    if (!config.projectId || isInitialized) return
+	useEffect(() => {
+		if (!config.projectId || isInitialized) return;
 
-    // Check if Do Not Track is enabled and we should respect it
-    if (config.respectDnt && navigator.doNotTrack === '1') {
-      return
-    }
+		// Check if Do Not Track is enabled and we should respect it
+		if (config.respectDnt && navigator.doNotTrack === '1') {
+			return;
+		}
 
-    visitorIdRef.current = getVisitorId()
-    sessionIdRef.current = getSessionId()
-    setIsInitialized(true)
+		visitorIdRef.current = getVisitorId();
+		sessionIdRef.current = getSessionId();
+		setIsInitialized(true);
 
-    if (config.debug) {
-      console.log('Analytics initialized:', {
-        projectId: config.projectId,
-        visitorId: visitorIdRef.current,
-        sessionId: sessionIdRef.current,
-      })
-    }
-  }, [config, isInitialized])
+		if (config.debug) {
+			console.log('Analytics initialized:', {
+				projectId: config.projectId,
+				visitorId: visitorIdRef.current,
+				sessionId: sessionIdRef.current,
+			});
+		}
+	}, [config, isInitialized]);
 
-  useEffect(() => {
-    if (!isInitialized || !config.trackPageviews) return
+	useEffect(() => {
+		if (!isInitialized || !config.trackPageviews) return;
 
-    const currentUrl = window.location.href
-    const deviceInfo = getDeviceInfo()
+		const currentUrl = window.location.href;
+		const deviceInfo = getDeviceInfo();
 
-    // Track page leave for previous page
-    if (lastPathnameRef.current && lastPathnameRef.current !== pathname) {
-      const metrics = getPageMetrics()
-      trackPageLeave({
-        projectId: config.projectId,
-        sessionId: sessionIdRef.current,
-        url: window.location.origin + lastPathnameRef.current,
-        duration: metrics.duration,
-        scrollDepth: metrics.scrollDepth,
-      }).catch(error => {
-        if (config.debug) {
-          console.error('Failed to track page leave:', error)
-        }
-      })
-    }
+		// Track page leave for previous page
+		if (lastPathnameRef.current && lastPathnameRef.current !== pathname) {
+			const metrics = getPageMetrics();
+			trackPageLeave({
+				projectId: config.projectId,
+				sessionId: sessionIdRef.current,
+				url: window.location.origin + lastPathnameRef.current,
+				duration: metrics.duration,
+				scrollDepth: metrics.scrollDepth,
+			}).catch((error) => {
+				if (config.debug) {
+					console.error('Failed to track page leave:', error);
+				}
+			});
+		}
 
-    // Track new pageview
-    trackPageview({
-      projectId: config.projectId,
-      sessionId: sessionIdRef.current,
-      visitorId: visitorIdRef.current,
-      url: currentUrl,
-      title: document.title,
-      referrer: document.referrer || undefined,
-      device: deviceInfo.device,
-      browser: deviceInfo.browser,
-      os: deviceInfo.os,
-      screenWidth: deviceInfo.screenWidth,
-      screenHeight: deviceInfo.screenHeight,
-      viewportWidth: deviceInfo.viewportWidth,
-      viewportHeight: deviceInfo.viewportHeight,
-      language: navigator.language,
-    }).catch(error => {
-      if (config.debug) {
-        console.error('Failed to track pageview:', error)
-      }
-    })
+		trackPageview({
+			projectId: config.projectId,
+			sessionId: sessionIdRef.current,
+			visitorId: visitorIdRef.current,
+			url: currentUrl,
+			title: document.title,
+			referrer: document.referrer || undefined,
+			device: deviceInfo.device,
+			browser: deviceInfo.browser,
+			os: deviceInfo.os,
+			screenWidth: deviceInfo.screenWidth,
+			screenHeight: deviceInfo.screenHeight,
+			viewportWidth: deviceInfo.viewportWidth,
+			viewportHeight: deviceInfo.viewportHeight,
+			language: navigator.language,
+		}).catch((error) => {
+			if (config.debug) {
+				console.error('Failed to track pageview:', error);
+			}
+		});
 
-    // Start page tracking for duration and scroll depth
-    startPageTracking()
-    
-    // Update session timestamp
-    updateSessionTimestamp()
+		// Start page tracking for duration and scroll depth
+		startPageTracking();
 
-    lastPathnameRef.current = pathname
+		// Update session timestamp
+		updateSessionTimestamp();
 
-    if (config.debug) {
-      console.log('Pageview tracked:', { pathname, url: currentUrl })
-    }
-  }, [pathname, isInitialized, config])
+		lastPathnameRef.current = pathname;
 
-  useEffect(() => {
-    if (!isInitialized) return
+		if (config.debug) {
+			console.log('Pageview tracked:', { pathname, url: currentUrl });
+		}
+	}, [pathname, isInitialized, config]);
 
-    const trackEventAction = (type: string, data?: Record<string, any>) => {
-      trackEvent({
-        projectId: config.projectId,
-        sessionId: sessionIdRef.current,
-        type: type as any,
-        name: data?.tagName || type,
-        url: window.location.href,
-        pathname: window.location.pathname,
-        title: document.title,
-        metadata: data,
-      }).catch(error => {
-        if (config.debug) {
-          console.error('Failed to track event:', error)
-        }
-      })
+	useEffect(() => {
+		if (!isInitialized) return;
 
-      if (config.debug) {
-        console.log('Event tracked:', { type, data })
-      }
-    }
+		const trackEventAction = (type: string, data?: Record<string, any>) => {
+			trackEvent({
+				projectId: config.projectId,
+				sessionId: sessionIdRef.current,
+				type: type as any,
+				name: data?.tagName || type,
+				url: window.location.href,
+				pathname: window.location.pathname,
+				title: document.title,
+				metadata: data,
+			}).catch((error) => {
+				if (config.debug) {
+					console.error('Failed to track event:', error);
+				}
+			});
 
-    // Set up automatic event listeners
-    const cleanupFunctions: (() => void)[] = []
+			if (config.debug) {
+				console.log('Event tracked:', { type, data });
+			}
+		};
 
-    if (config.trackClicks || config.trackForms || config.trackErrors) {
-      const cleanup = setupEventListeners(trackEventAction)
-      cleanupFunctions.push(cleanup)
-    }
+		// Set up automatic event listeners
+		const cleanupFunctions: (() => void)[] = [];
 
-    // Track page visibility changes
-    function handleVisibilityChange() {
-      if (document.visibilityState === 'hidden') {
-        const metrics = getPageMetrics()
-        trackPageLeave({
-          projectId: config.projectId,
-          sessionId: sessionIdRef.current,
-          url: window.location.href,
-          duration: metrics.duration,
-          scrollDepth: metrics.scrollDepth,
-        }).catch(error => {
-          if (config.debug) {
-            console.error('Failed to track page leave on visibility change:', error)
-          }
-        })
-      }
-    }
+		if (config.trackClicks || config.trackForms || config.trackErrors) {
+			const cleanup = setupEventListeners(trackEventAction);
+			cleanupFunctions.push(cleanup);
+		}
 
-    document.addEventListener('visibilitychange', handleVisibilityChange)
-    cleanupFunctions.push(() => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-    })
+		// Track page visibility changes
+		function handleVisibilityChange() {
+			if (document.visibilityState === 'hidden') {
+				const metrics = getPageMetrics();
+				trackPageLeave({
+					projectId: config.projectId,
+					sessionId: sessionIdRef.current,
+					url: window.location.href,
+					duration: metrics.duration,
+					scrollDepth: metrics.scrollDepth,
+				}).catch((error) => {
+					if (config.debug) {
+						console.error('Failed to track page leave on visibility change:', error);
+					}
+				});
+			}
+		}
 
-    // Track page unload
-    function handleBeforeUnload() {
-      const metrics = getPageMetrics()
-      // Use sendBeacon for reliable tracking on page unload
-      if (navigator.sendBeacon) {
-        const data = JSON.stringify({
-          projectId: config.projectId,
-          sessionId: sessionIdRef.current,
-          url: window.location.href,
-          duration: metrics.duration,
-          scrollDepth: metrics.scrollDepth,
-        })
-        navigator.sendBeacon('/api/analytics/page-leave', data)
-      }
-    }
+		document.addEventListener('visibilitychange', handleVisibilityChange);
+		cleanupFunctions.push(() => {
+			document.removeEventListener('visibilitychange', handleVisibilityChange);
+		});
 
-    window.addEventListener('beforeunload', handleBeforeUnload)
-    cleanupFunctions.push(() => {
-      window.removeEventListener('beforeunload', handleBeforeUnload)
-    })
+		// Track page unload
+		function handleBeforeUnload() {
+			const metrics = getPageMetrics();
+			// Use sendBeacon for reliable tracking on page unload
+			if (navigator.sendBeacon) {
+				const data = JSON.stringify({
+					projectId: config.projectId,
+					sessionId: sessionIdRef.current,
+					url: window.location.href,
+					duration: metrics.duration,
+					scrollDepth: metrics.scrollDepth,
+				});
+				navigator.sendBeacon('/api/analytics/page-leave', data);
+			}
+		}
 
-    // Periodic session update (every 30 seconds)
-    const sessionUpdateInterval = setInterval(() => {
-      updateSessionTimestamp()
-    }, 30000)
+		window.addEventListener('beforeunload', handleBeforeUnload);
+		cleanupFunctions.push(() => {
+			window.removeEventListener('beforeunload', handleBeforeUnload);
+		});
 
-    cleanupFunctions.push(() => {
-      clearInterval(sessionUpdateInterval)
-    })
+		// Periodic session update (every 30 seconds)
+		const sessionUpdateInterval = setInterval(() => {
+			updateSessionTimestamp();
+		}, 30000);
 
-    cleanupRef.current = () => {
-      cleanupFunctions.forEach(cleanup => cleanup())
-    }
+		cleanupFunctions.push(() => {
+			clearInterval(sessionUpdateInterval);
+		});
 
-    return cleanupRef.current
-  }, [isInitialized, config])
+		cleanupRef.current = () => {
+			cleanupFunctions.forEach((cleanup) => cleanup());
+		};
 
-  // This component doesn't render anything
-  return null
+		return cleanupRef.current;
+	}, [isInitialized, config]);
+
+	// This component doesn't render anything
+	return null;
 }
