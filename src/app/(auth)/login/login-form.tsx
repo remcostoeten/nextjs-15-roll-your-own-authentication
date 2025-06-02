@@ -15,6 +15,9 @@ import { Form, FormProvider } from 'react-hook-form';
 import { Button, Card, CardContent, Input, Label, Spinner } from 'ui';
 import { cn } from 'utilities';
 
+/**
+ * Renders a submit button for the login form, displaying a loading spinner and "Logging in..." text when the form submission is pending.
+ */
 function LoginButton() {
 	const { pending } = useFormStatus();
 
@@ -32,6 +35,13 @@ function LoginButton() {
 	);
 }
 
+/**
+ * Renders the login form with email, password, and social login options, handling authentication and user feedback.
+ *
+ * Displays toast notifications for login success or failure, processes URL query parameters for error messages, and cleans up the URL after displaying messages. Includes links to registration, Terms of Service, and Privacy Policy.
+ *
+ * @param className - Optional additional CSS class names for the container.
+ */
 export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
 	const formRef = useRef<HTMLFormElement>(null);
 	const { theme } = useTheme();

@@ -31,6 +31,15 @@ import {
 } from '@/shared/components/ui/sidebar';
 import { Button } from 'ui';
 
+/**
+ * Displays a workspace switcher menu and dialog for creating new workspaces within the sidebar.
+ *
+ * Allows users to view, switch between, and create workspaces. Presents a dropdown menu listing all available workspaces and provides a modal dialog for creating a new workspace with a name, emoji, and optional description. Notifies users of success or failure during workspace creation.
+ *
+ * @param workspaces - The list of available workspaces to display in the switcher menu.
+ *
+ * @returns The sidebar workspace switcher UI, or `null` if no current workspace is set.
+ */
 export function WorkspaceSwitcher({
 	workspaces,
 }: {

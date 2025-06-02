@@ -20,6 +20,13 @@ import {
 } from '@/shared/components/ui/sidebar';
 import { usePathname } from 'next/navigation';
 
+/**
+ * Renders a sidebar navigation menu with support for collapsible submenus and active state indication.
+ *
+ * Displays a list of navigation items, each optionally containing sub-items. Items with sub-items are rendered as collapsible menus, while others are rendered as direct navigation links. The active state is determined by the current URL path.
+ *
+ * @param items - The navigation items to display, each with a title, URL, optional icon, optional active state, and optional sub-items.
+ */
 export function NavMain({
 	items,
 }: {

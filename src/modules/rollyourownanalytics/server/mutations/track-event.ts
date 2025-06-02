@@ -8,6 +8,14 @@ import type { TAnalyticsEvent } from '../../types';
 import { analyticsDb } from '../db/connection';
 import { getGeoLocation, parseUtmParams } from '../../utilities';
 
+/**
+ * Tracks an analytics event by enriching partial event data with request headers, geolocation, and UTM parameters, then stores it in the database.
+ *
+ * Constructs a complete analytics event, inserts it into the `analyticsEvents` table, and updates or creates the corresponding session record.
+ *
+ * @param eventData - Partial analytics event data to be tracked.
+ * @returns An object indicating success with the event ID, or failure with an error message.
+ */
 export async function trackEvent(eventData: Partial<TAnalyticsEvent>) {
 	try {
 		const headersList = await headers();
@@ -61,6 +69,13 @@ export async function trackEvent(eventData: Partial<TAnalyticsEvent>) {
 	}
 }
 
+/**
+ * Updates or creates an analytics session record based on the provided event.
+ *
+ * If a session matching the event's session ID and project ID exists, updates its timestamps and increments the pageview or event count. Otherwise, creates a new session record initialized with details from the event.
+ *
+ * @param event - The analytics event used to update or create the session.
+ */
 async function updateSession(event: TAnalyticsEvent) {
 	const existingSession = await analyticsDb
 		.select()

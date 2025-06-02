@@ -4,6 +4,13 @@ import { TUserRole } from '@/shared/types/base';
 import { asUUID } from '@/shared/types/common';
 import { ReactNode } from 'react';
 
+/**
+ * Wraps child components with a user context provider, supplying user data from the current session if available.
+ *
+ * If a session exists, constructs a user object with session details and default values for missing fields; otherwise, provides `null` as the user.
+ *
+ * @param children - React nodes to be rendered within the user context.
+ */
 export async function UserProviderWrapper({ children }: { children: ReactNode }) {
 	const session = await getSession();
 

@@ -3,6 +3,14 @@
 import type { TAnalyticsEvent } from '../../types';
 import { trackEvent } from './track-event';
 
+/**
+ * Tracks a pageview analytics event with the provided session, visitor, and page information.
+ *
+ * Constructs a standardized pageview event and forwards it for analytics tracking.
+ *
+ * @param data - Object containing project, session, visitor, and page details to be logged.
+ * @returns A promise resolving to the result of the analytics event tracking.
+ */
 export async function trackPageview(data: {
 	projectId: string;
 	sessionId: string;

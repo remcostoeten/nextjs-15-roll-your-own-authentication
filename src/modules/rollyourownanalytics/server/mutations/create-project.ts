@@ -4,6 +4,12 @@ import { analyticsProjects } from '../schemas/schema-analytics';
 import type { TAnalyticsProject } from '../../types';
 import { analyticsDb } from '../db/connection';
 
+/**
+ * Creates a new analytics project with a unique ID and public key, and inserts it into the database.
+ *
+ * @param data - Object containing the project's name, domain, and optional settings.
+ * @returns An object indicating success and the created project, or an error message if creation fails.
+ */
 export async function createProject(data: {
 	name: string;
 	domain: string;

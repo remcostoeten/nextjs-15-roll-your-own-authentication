@@ -18,6 +18,16 @@ import {
 } from 'ui';
 import { UserProviderWrapper } from './user-provider-wrapper';
 
+/**
+ * Provides the main layout for dashboard pages, handling user authentication, workspace selection, and context providers.
+ *
+ * Redirects unauthenticated users to the login page and users without workspaces to the workspace onboarding page, unless bypassed via query parameters. Wraps the dashboard content with workspace, sidebar, and user context providers, and renders the sidebar, header with breadcrumbs and notifications, and the main content area.
+ *
+ * @param children - The content to display within the dashboard layout.
+ * @param searchParams - Optional query parameters for selecting a workspace or bypassing workspace checks.
+ *
+ * @returns The dashboard layout JSX structure.
+ */
 export default async function DashboardLayout({
 	children,
 	searchParams,

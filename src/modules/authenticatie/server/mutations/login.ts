@@ -4,6 +4,14 @@ import { createSession } from '@/modules/authenticatie/helpers/session';
 import { userRepository } from '@/modules/authenticatie/server/repositories/user-repository';
 import type { TAuthMutationResponse } from '../../types';
 
+/**
+ * Authenticates a user using credentials from the provided form data.
+ *
+ * Attempts to validate the user's email and password, creates a session on success, and returns an authentication response.
+ *
+ * @param formData - The form data containing user credentials.
+ * @returns An authentication response indicating success or failure, with user details and redirect information on success.
+ */
 export async function login(formData: FormData): Promise<TAuthMutationResponse> {
 	const email = formData.get('email')?.toString();
 	const password = formData.get('password')?.toString();

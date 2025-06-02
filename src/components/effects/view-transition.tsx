@@ -3,6 +3,20 @@
 import { unstable_ViewTransition as ViewTransition } from 'react';
 import { cn } from 'utilities';
 
+/**
+ * Applies a slide animation to its children during view transitions.
+ *
+ * Wraps content with a slide-in and slide-out animation, configurable by direction, distance, and duration, using the experimental view transition API.
+ *
+ * @param name - Identifier for the transition animation.
+ * @param children - Content to be animated during the transition.
+ * @param direction - Direction of the slide animation, either 'horizontal' or 'vertical'. Defaults to 'horizontal'.
+ * @param distance - Pixel distance for the slide movement. Defaults to 100.
+ * @param duration - Duration of the animation in milliseconds. Defaults to 200.
+ *
+ * @remark
+ * Relies on the experimental `unstable_ViewTransition` API and may not be supported in all environments.
+ */
 export function SlideTransition({
 	name,
 	children,

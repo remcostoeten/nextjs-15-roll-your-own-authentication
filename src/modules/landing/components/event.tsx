@@ -10,6 +10,17 @@ export type TActivityItem = {
 	detailsIcon?: ReactNode
 }
 
+/**
+ * Displays an event item with an icon and title, revealing additional analytics details and a details icon on hover with animated transitions.
+ *
+ * @param title - The main event title to display.
+ * @param icon - The icon shown alongside the event title.
+ * @param analyticsDetails - Additional details shown when the item is hovered.
+ * @param detailsIcon - Icon displayed with the analytics details.
+ *
+ * @remark
+ * The `forceHover` prop is accepted but not currently used; hover state is controlled by mouse events.
+ */
 export function EventItem({
 	title = 'Last connection from DR Congo',
 	icon = '🇨🇩',

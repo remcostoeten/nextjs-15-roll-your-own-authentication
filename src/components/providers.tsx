@@ -14,7 +14,13 @@ import { ThemeProvider } from './theme-provider';
 // 	respectDnt: true,
 // 	cookieless: false,
 // 	debug: process.env.NODE_ENV === 'development',
-// };
+/**
+ * Wraps child components with toast notification and theming context providers.
+ *
+ * Ensures that all nested components have access to toast notifications and theme settings.
+ *
+ * @param children - The React nodes to be rendered within the providers.
+ */
 
 export function Providers({ children }: { children: React.ReactNode }) {
 	return (

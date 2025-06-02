@@ -5,8 +5,11 @@ import { asUUID } from '@/shared/types/common';
 import { notificationService } from '../services/notification-service';
 
 /**
- * Creates test notifications for the current user
- * This is useful for testing the notification system
+ * Generates and creates multiple test notifications for the currently authenticated user.
+ *
+ * @returns An object indicating success or failure. On success, includes the number of created notifications and their details; on failure, includes an error message.
+ *
+ * @throws {Error} If the user is not authenticated.
  */
 export async function createTestNotifications() {
 	try {

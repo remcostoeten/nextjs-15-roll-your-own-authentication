@@ -36,7 +36,12 @@ type TChartData = {
     top_layer: number;
 };
 
-// Custom hook for intersection observer
+/**
+ * Sets up an Intersection Observer on a referenced div to track its visibility within the viewport.
+ *
+ * @param options - Optional Intersection Observer options to customize threshold and root margin.
+ * @returns An object containing a `ref` to assign to a div, a boolean `isIntersecting` indicating current visibility, and a boolean `hasBeenVisible` indicating if the element has ever been visible.
+ */
 function useIntersectionObserver(options = {}) {
     const [isIntersecting, setIsIntersecting] = useState(false);
     const [hasBeenVisible, setHasBeenVisible] = useState(false);
@@ -72,6 +77,11 @@ function useIntersectionObserver(options = {}) {
     return { ref, isIntersecting, hasBeenVisible };
 }
 
+/**
+ * Displays a popover with details of a GitHub commit, including message, author, and formatted date.
+ *
+ * @param commit - The commit data to display in the popover.
+ */
 function CommitPopover({ commit }: { commit: TGitHubCommit }) {
     return (
         <div className="bg-background dark:bg-muted absolute bottom-full mb-3 w-max max-w-sm rounded-md border px-3 py-2 text-xs font-medium shadow-md shadow-zinc-950/5 opacity-0 transition-all duration-300 group-hover:opacity-100 transform group-hover:-translate-y-2 ease-[cubic-bezier(0.4,0,0.2,1)]">
@@ -101,7 +111,14 @@ function CommitPopover({ commit }: { commit: TGitHubCommit }) {
     );
 }
 
-// Feature Block Component
+/**
+ * Renders a container for feature content with optional custom styling.
+ *
+ * @param children - The content to display inside the feature block.
+ * @param className - Additional CSS classes to apply to the container.
+ *
+ * @remark The `delay` prop is accepted for compatibility but is not used.
+ */
 function FeatureBlock({
     children,
     className = '',
@@ -117,6 +134,11 @@ function FeatureBlock({
     );
 }
 
+/**
+ * Displays a feature-rich section with interactive UI blocks, GitHub commit statistics, and a real-time monitoring chart.
+ *
+ * Fetches recent GitHub commits on mount, processes them into daily commit counts, and visualizes this data in a layered area chart. The section includes interactive feature highlights, developer support information, and a popover showing details of the latest commit.
+ */
 export default function FeaturesSection() {
     const [commits, setCommits] = useState<TGitHubCommit[]>([]);
     const [chartData, setChartData] = useState<TChartData[]>([]);

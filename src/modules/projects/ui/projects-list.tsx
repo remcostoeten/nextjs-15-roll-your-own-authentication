@@ -11,6 +11,14 @@ type ProjectsListProps = {
 	workspaceId: string;
 };
 
+/**
+ * Displays and manages a list of projects within a workspace, including project creation.
+ *
+ * Renders a grid of project cards with details, allows users to create new projects via a form, and provides feedback on creation success or failure.
+ *
+ * @param initialProjects - The initial list of projects to display.
+ * @param workspaceId - The identifier of the current workspace.
+ */
 export function ProjectsList({ initialProjects, workspaceId }: ProjectsListProps) {
 	const [projects, setProjects] = useState(initialProjects);
 	const [showCreateForm, setShowCreateForm] = useState(false);

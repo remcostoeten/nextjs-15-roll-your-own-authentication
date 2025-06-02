@@ -6,6 +6,11 @@ import { ChevronRight, Search, Settings } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { Button, Separator } from 'ui';
 
+/**
+ * Renders the dashboard header with breadcrumb navigation, search, notifications, and settings controls.
+ *
+ * The header displays a breadcrumb trail based on the current URL path, a sidebar trigger, and action buttons for search, notifications, and settings. It adapts responsively to different screen sizes.
+ */
 export function DashboardHeader() {
 	const pathname = usePathname();
 

@@ -23,7 +23,11 @@ const tursoClient = createClient({
 export const db = drizzle(pgPool, { schema: mainSchema });
 export const analyticsDb = drizzleSqlite(tursoClient, { schema: analyticsSchema });
 
-// Helper function to ensure connections are properly closed
+/**
+ * Closes both the PostgreSQL pool and Turso client connections.
+ *
+ * Use this function to ensure all database resources are properly released before application shutdown.
+ */
 export async function closeConnections() {
 	await pgPool.end();
 	await tursoClient.close();

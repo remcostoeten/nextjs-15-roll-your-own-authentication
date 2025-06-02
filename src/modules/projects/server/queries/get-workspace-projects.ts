@@ -6,6 +6,14 @@ import { getSession } from '@/modules/authenticatie/helpers/session';
 import { TProjectWithDetails } from '../../types';
 import { eq, and, sql } from 'drizzle-orm';
 
+/**
+ * Retrieves detailed information about all projects in a workspace that the current user has access to.
+ *
+ * Returns an array of project objects with owner details, workspace metadata, and task counts. If the user is not authenticated or is not a member of the workspace, an empty array is returned.
+ *
+ * @param workspaceId - The ID of the workspace whose projects are to be retrieved.
+ * @returns An array of projects with detailed information, or an empty array if the user lacks access.
+ */
 export async function getWorkspaceProjects(workspaceId: string): Promise<TProjectWithDetails[]> {
 	const session = await getSession();
 	if (!session) return [];

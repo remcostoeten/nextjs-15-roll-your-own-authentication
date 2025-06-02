@@ -11,6 +11,9 @@ import { cn } from 'utilities';
 import { GitHubLoginButton } from './github-login';
 ('use client');
 
+/**
+ * Renders a submit button for the login form, displaying a loading state when the form is submitting.
+ */
 function LoginButton() {
 	const { pending } = useFormStatus();
 
@@ -25,6 +28,13 @@ interface AuthFormContainerProps extends React.ComponentProps<'div'> {
 	defaultMode?: 'login' | 'register';
 }
 
+/**
+ * Renders an authentication form container with login and registration modes, handling form submission, UI transitions, and toast notifications.
+ *
+ * Displays login and registration forms with animated transitions, supports social login buttons, and shows toast messages based on URL query parameters. The component adapts its visual effects based on the current theme and provides links to terms and privacy policies.
+ *
+ * @param defaultMode - The initial mode to display, either 'login' or 'register'.
+ */
 export function AuthFormContainer({
 	className,
 	defaultMode = 'login',

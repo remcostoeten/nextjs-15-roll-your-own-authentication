@@ -14,6 +14,9 @@ import { useFormStatus } from 'react-dom';
 import { Button, Card, CardContent, Input, Label } from 'ui';
 import { cn } from 'utilities';
 
+/**
+ * Renders a submit button for the registration form that displays a loading state while the form is submitting.
+ */
 function RegisterButton() {
 	const { pending } = useFormStatus();
 
@@ -24,6 +27,13 @@ function RegisterButton() {
 	);
 }
 
+/**
+ * Renders the user registration form with client-side validation, server-side registration, error handling, and social login options.
+ *
+ * Displays toast notifications based on URL query parameters and registration outcomes. On successful registration, shows a success message and redirects if a redirect URL is provided. On failure, displays an error message and resets the form.
+ *
+ * @param className - Optional additional CSS class names for the container.
+ */
 export function RegisterForm({ className, ...props }: React.ComponentProps<'div'>) {
 	const formRef = useRef<HTMLFormElement>(null);
 	const searchParams = useSearchParams();

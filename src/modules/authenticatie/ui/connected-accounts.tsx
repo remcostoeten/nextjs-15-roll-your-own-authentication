@@ -27,6 +27,11 @@ import { generateGitHubAuthUrl } from '../server/mutations/github-login';
 import { generateGoogleAuthUrl } from '../server/mutations/google-login';
 import { SetPasswordForm } from './set-password-form';
 
+/**
+ * Displays and manages the user's connected OAuth accounts, allowing linking and unlinking of GitHub, Google, and Discord accounts.
+ *
+ * Renders a list of currently connected accounts with options to unlink, and a list of available providers to connect. If unlinking requires a password, prompts the user to set one before proceeding.
+ */
 export function ConnectedAccounts() {
 	const [accounts, setAccounts] = useState<TOAuthAccount[]>([]);
 	const [isLoading, setIsLoading] = useState(true);

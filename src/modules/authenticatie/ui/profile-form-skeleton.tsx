@@ -1,6 +1,11 @@
 import { Skeleton } from '@/shared/components/ui/skeleton';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from 'ui';
 
+/**
+ * Renders a skeleton placeholder for a profile form during loading states.
+ *
+ * Displays skeleton elements representing the structure of a profile form, including fields for name, email, current password, new password, and action buttons.
+ */
 export function ProfileFormSkeleton() {
 	return (
 		<Card>

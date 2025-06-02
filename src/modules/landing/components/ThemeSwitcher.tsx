@@ -3,6 +3,11 @@
 import { Moon, MoonIcon, Sun, SunDim } from 'lucide-react';
 import { useTheme } from './ThemeProvider';
 
+/**
+ * Renders a UI component that allows users to switch between available themes.
+ *
+ * Displays a set of theme buttons, each with an icon and label, enabling users to select and apply a different theme.
+ */
 export function ThemeSwitcher() {
 	const { theme, setTheme } = useTheme();
 

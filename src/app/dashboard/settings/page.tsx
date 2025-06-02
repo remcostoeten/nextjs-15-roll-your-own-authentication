@@ -9,6 +9,14 @@ interface WorkspaceSettingsPageProps {
 	searchParams: Promise<{ workspace?: string }>;
 }
 
+/**
+ * Renders the workspace settings page for an authenticated user.
+ *
+ * Redirects to the login page if the user is not authenticated, to the onboarding page if the user has no workspaces, and to the dashboard if the user lacks admin permissions in the selected workspace. Displays the workspace settings interface for the current workspace, including member management and preferences.
+ *
+ * @param searchParams - A promise resolving to search parameters, optionally containing a workspace ID.
+ * @returns The workspace settings page as a React component.
+ */
 export default async function WorkspaceSettingsPage({ searchParams }: WorkspaceSettingsPageProps) {
 	const params = await searchParams;
 	const session = await getSession();

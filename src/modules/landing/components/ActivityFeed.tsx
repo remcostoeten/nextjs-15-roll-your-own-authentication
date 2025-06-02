@@ -86,6 +86,11 @@ const performanceData = [
 	{ time: '23:59', latency: 170, load: 55 },
 ];
 
+/**
+ * Displays a system monitoring dashboard with real-time health metrics, performance chart, and activity stream.
+ *
+ * Renders system health indicators, a performance line chart, and a live feed of recent system activities using static data arrays.
+ */
 export function ActivityFeed() {
 	return (
 		<div className="w-full max-w-7xl mx-auto px-4 py-8">
