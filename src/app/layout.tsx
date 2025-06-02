@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en" suppressHydrationWarning className="dark">
-			<body className={inter.className} suppressHydrationWarning>
+			<body className="overflow-x-hidden" suppressHydrationWarning>
 				<SidebarProvider>
 					<ThemeProvider>
 						<Providers>
