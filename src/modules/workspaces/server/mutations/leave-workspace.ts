@@ -6,9 +6,7 @@ import { getSession } from '@/modules/authenticatie/helpers/session';
 import { TBaseMutationResponse } from '@/shared/types/base';
 import { eq, and } from 'drizzle-orm';
 
-export async function leaveWorkspace(
-	workspaceId: string
-): Promise<TBaseMutationResponse> {
+export async function leaveWorkspace(workspaceId: string): Promise<TBaseMutationResponse> {
 	try {
 		const session = await getSession();
 		if (!session) {
@@ -32,9 +30,9 @@ export async function leaveWorkspace(
 
 		// Prevent owner from leaving (they must transfer ownership or delete workspace)
 		if (membership.role === 'owner') {
-			return { 
-				success: false, 
-				error: 'Workspace owners cannot leave. Transfer ownership or delete the workspace instead.' 
+			return {
+				success: false,
+				error: 'Workspace owners cannot leave. Transfer ownership or delete the workspace instead.',
 			};
 		}
 

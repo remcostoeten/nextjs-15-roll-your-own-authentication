@@ -8,7 +8,7 @@ export type UUID = string & { readonly _brand: unique symbol };
  * @param id - String ID to cast to UUID
  */
 export function asUUID(id: string): UUID {
-  return id as UUID;
+	return id as UUID;
 }
 
 /**
@@ -16,16 +16,16 @@ export function asUUID(id: string): UUID {
  * Uses the native crypto API when available
  */
 export function createUUID(): UUID {
-  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-    return crypto.randomUUID() as UUID;
-  }
+	if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+		return crypto.randomUUID() as UUID;
+	}
 
-  // Fallback implementation for environments without crypto.randomUUID
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  }) as UUID;
+	// Fallback implementation for environments without crypto.randomUUID
+	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+		const r = (Math.random() * 16) | 0;
+		const v = c === 'x' ? r : (r & 0x3) | 0x8;
+		return v.toString(16);
+	}) as UUID;
 }
 
 /**
@@ -33,6 +33,6 @@ export function createUUID(): UUID {
  * @param id - String to check
  */
 export function isUUID(id: string): id is UUID {
-  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-  return uuidRegex.test(id);
+	const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+	return uuidRegex.test(id);
 }

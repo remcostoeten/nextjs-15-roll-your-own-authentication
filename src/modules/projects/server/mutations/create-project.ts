@@ -7,7 +7,9 @@ import { TBaseMutationResponse } from '@/shared/types/base';
 import { TBaseProject } from '../../types';
 import { and, eq } from 'drizzle-orm';
 
-export async function createProject(formData: FormData): Promise<TBaseMutationResponse<TBaseProject>> {
+export async function createProject(
+	formData: FormData
+): Promise<TBaseMutationResponse<TBaseProject>> {
 	try {
 		const session = await getSession();
 		if (!session) {

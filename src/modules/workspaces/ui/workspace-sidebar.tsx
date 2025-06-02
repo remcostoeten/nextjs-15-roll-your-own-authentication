@@ -7,8 +7,7 @@ import { logout } from '@/modules/authenticatie/server/mutations/logout';
 import { useTransition } from 'react';
 import { toast } from '@/shared/components/toast';
 import { Button, Icons } from 'ui';
-'use client';
-
+('use client');
 
 const navigation = [
 	{
@@ -73,11 +72,15 @@ export function WorkspaceSidebar() {
 					{navigation.map((item) => {
 						const isActive = pathname === item.href;
 						const Icon = item.icon;
-						
+
 						return (
 							<li key={item.name}>
 								<Link
-									href={currentWorkspace ? `${item.href}?workspace=${currentWorkspace.id}` : item.href}
+									href={
+										currentWorkspace
+											? `${item.href}?workspace=${currentWorkspace.id}`
+											: item.href
+									}
 									className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
 										isActive
 											? 'bg-white text-black'
@@ -109,9 +112,7 @@ export function WorkspaceSidebar() {
 								<p className="text-sm font-medium text-white truncate">
 									{auth.user.name || 'User'}
 								</p>
-								<p className="text-xs text-white/60 truncate">
-									{auth.user.email}
-								</p>
+								<p className="text-xs text-white/60 truncate">{auth.user.email}</p>
 							</div>
 						)}
 					</div>

@@ -19,15 +19,15 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en" suppressHydrationWarning className="dark">
-			<body className={inter.className}>
-			<SidebarProvider>
-						<ThemeProvider>
-					<Providers>
-						<main className="min-h-screen">{children}</main>
-						<ThemeSwitcher />
-					</Providers>
-				</ThemeProvider>
-			</SidebarProvider>
+			<body className="overflow-x-hidden" suppressHydrationWarning>
+				<SidebarProvider>
+					<ThemeProvider>
+						<Providers>
+							<main className="min-h-screen">{children}</main>
+							<ThemeSwitcher />
+						</Providers>
+					</ThemeProvider>
+				</SidebarProvider>
 			</body>
 		</html>
 	);

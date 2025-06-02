@@ -1,11 +1,21 @@
----
-title: Project Architecture & Development Guidelines (Functional Repositories)
-description: A comprehensive guide to the project's structure, architecture patterns, performance optimizations, and authentication implementation, emphasizing functional repositories and simplified data access.
----
-
 # Project Architecture & Development Guidelines (Functional Repositories)
 
-This document outlines the guidelines for structuring the project, implementing architectural patterns, optimizing performance, and handling authentication. Adhering to these guidelines is crucial for building a scalable, maintainable, and performable application. This version utilizes a functional approach for repositories and simplifies the project structure by focusing on queries and mutations directly within modules.
+This is a nextjs project, app router version 15 and react 19.  It is a note / snippet storage  app. 
+
+### Database & api
+
+This project runs on sqlite, turso. Via drizzle-orm. We have strong s eperation of concerns, each module has its own schema, which we import into the main schema which sits at src/api/db/schema.ts. The schema can be imported via the alias `schema`. The db can be imported  via the alias `db`.
+
+We follow a repository pattern, but we use functions instead of classes. The repositories are located in the `repositories` folder within each module. The repositories are responsible for all database access. The repositories are called by the server actions, which are located in the `queries` and `mutations` folders within each module. The server actions are called by the client via server actions. The server actions are responsible for all business logic. The server actions do not have any database access. The server actions
+
+Repositories <> queries/mutations (also known as serrver actions) <> hooks <> components
+
+We never use API routes.
+
+### Authentication
+
+This is custom rolled, jwt + sessions. The Reference the module authentication.
+
 
 ## 🔧 Project Structure Rules
 
@@ -34,12 +44,6 @@ Use a clear domain-driven folder structure:
 *   `src/schema/`: Drizzle schemas only (can be used for partial schemas within modules).
 *   `src/hooks/`: Custom React hooks (auth state, effects).
 
-## 🧱 Architecture Patterns
-
-<Note>
-  Prefer building custom solutions for core functionalities like caching, rate limiting, and authentication whenever possible.
-</Note>
-
 ### ✅ Patterns to Follow
 
 *   Use functional programming.
@@ -63,225 +67,3 @@ Use a clear domain-driven folder structure:
 *   Avoid framework/library-specific naming (e.g., no `supabase.ts` or `prisma.ts`).
 *   Design features to be portable across projects with minimal changes.
 *   Emphasize shared components and hooks for consistency.
-
-### ❌ Anti-patterns to Avoid
-
-*   Don't use `getServerSideProps`, `useEffect` for data fetching. Interact with data through functional repositories in server actions (`queries` or `mutations`) or other server-side contexts.
-*   Don't call JWT functions on the client.
-*   Don't use classes or class-based architecture for application logic.
-*   Don't hardcode provider logic outside the `PROVIDERS` map.
-*   Don't use magic strings for role checks (e.g., use `isAdmin`).
-*   Don't bundle large libraries in the initial JS payload.
-*   Don't load non-critical fonts eagerly.
-*   Don't use client-side navigation for critical paths.
-*   Don't implement heavy computations without memoization.
-*   Don't load full libraries when only parts are needed.
-*   Don't add comments except if the logic is **REALLY complicated and vague**.
-*   **Don't directly access the database (using `db`) outside of functional repository implementations.**
-*   Do not create a `lib` folder, or `helpers` or `utilities` folders. Place shared functional code within the `src/shared` directory.
-
-## 🔑 OAuth Guidelines
-
-*   All OAuth callback URIs should resolve to: `http://localhost:3000?provider=xyz`
-*   Provider tokens should always be exchanged server-side.
-*   Extract email fallback from providers that don't send it directly.
-
-## 🔐 Authentication Logic
-
-*   A user is considered admin if their email matches `process.env.ADMIN_EMAIL`.
-*   The session is created server-side via a mutation function that interacts with an authentication repository.
-*   Session must persist across page reloads and logouts must be handled via a mutation (not a route), which will interact with the authentication repository.
-*   We are building a custom-rolled authentication with JWT (using Jose), sessions, and an ORM, encapsulated within functional authentication repositories.
-
-## 🚀 Performance Optimization Rules
-
-### Font Loading:
-
-*   Use local fonts over Google Fonts when possible.
-*   Set `display: 'optional'` for primary fonts to prevent CLS.
-*   Set `display: 'swap'` for secondary fonts.
-*   Preload only critical fonts.
-*   Use `woff2` format for best compression.
-*   Include comprehensive font fallbacks.
-
-### Bundle Optimization:
-
-*   Keep First Load JS under 70kb for instant hydration.
-*   Use dynamic imports for non-critical components.
-*   Split metadata into static and dynamic parts.
-*   Implement proper code splitting boundaries.
-*   Avoid large dependencies in shared layouts.
-*   Use route segments for granular chunking.
-
-### Image Optimization:
-
-*   Use `next/image` with `priority` for LCP images.
-*   Implement blur placeholder for images.
-*   Preload critical images.
-*   Use responsive `sizes` attribute.
-*   Optimize image formats (WebP/AVIF).
-
-### Component Optimization:
-
-*   Use `React.memo()` for expensive renders.
-*   Implement proper suspense boundaries.
-*   Keep component bundles under 50kb.
-*   Use CSS Modules for scoped styling.
-*   Implement proper lazy loading boundaries.
-
-## 📚 Naming Conventions
-
-1.  **File Names:**
-    *   Use **kebab-case** for all filenames.
-    *   Single-function files: One file per function (e.g., `get-user.ts`).
-    *   Each folder has an `index.ts` for exports.
-2.  **Imports:**
-    *   Use aliases for clarity and simplicity (e.g., `ui`, `db`). Note that `db` will primarily be used within functional repository implementations.
-3.  **Components:**
-    *   Components are named in PascalCase.
-4.  **Types:**
-    *   Prefer **types** over interfaces where possible.
-    *   Generic types (e.g., `PageProps`) are stored in `src/shared/types/`.
-5.  **Repositories:**
-    *   Functional repository files should follow the kebab-case convention (e.g., `user-repository.ts`).
-    *   Repository functions within these files should be clearly named to indicate their purpose (e.g., `getUserById`, `createUser`).
-
-## ✨ Tech Stack
-
-*   Zustand (state management)
-*   Framer Motion (animations)
-*   Radix/Shadcn (UI components, though custom-built solutions are preferred)
-*   TailwindCSS (styling)
-*   Zod (validation)
-*   Drizzle ORM / Drizzle-Kit (default ORM, but swappable)
-*   Postgres (database, though interchangeable with equivalent solutions)
-*   Jose (JWT handling)
-*   Prism or another syntax highlighter (if needed)
-*   Icon library of choice
-*   Nuqs (if needed)
-
-## 📝 Markdown Guidelines
-
-The following guidelines are for writing content in Markdown and MDX format:
-
-*   Use frontmatter to define the title and description.
-*   The first heading on the page should be an `<h1>` tag that matches the title in the frontmatter.
-*   Use Fumadocs components (if applicable) for enhanced UI elements (refer to <http://fumadocs.vercel.app/docs/ui/markdown>).
-*   Use standard Markdown code fences for code examples and specify the language for syntax highlighting.
-*   Use Markdown links for internal and external navigation: `\[Link Text](url)`.
-*   Place images in the `/public` directory and reference them using relative paths.
-*   Use `Note`, `Tip`, `Important`, `Warning`, and `Danger` components to highlight important information.
-
-## Examples
-
-### Module Structure with Functional Repositories
-
-```text
-src/
-├── api/
-│   ├── db/
-│   │   ├── index.ts         # Database connection
-│   │   └── schemas/
-│   │       └── index.ts     # Main schema exports
-│   └── env.ts               # t3 env setup
-├── modules/
-│   └── authentication /
-│       ├── queries/         # Server action query functions interacting with repositories
-│       │   ├── index.ts
-│       │   └── get-authenticated-user.ts # Calls Auth Repository query
-│       ├── mutations/       # Server action mutation functions interacting with repositories
-│       │   ├── index.ts
-│       │   ├── create-new-user.ts      # Calls Auth Repository mutation
-│       │   └── update-user-profile.ts # Calls Auth Repository mutation
-│       ├── models/
-│       │   ├── z.user.ts    # Zod validation
-│       │   └── z.session.ts
-│       ├── repositories/
-│       │   └── authentication-repository.ts # Functional authentication data access logic
-│       ├── state/
-│       │   └── use-auth-state.ts
-│       └── hooks/
-│           ├── use-auth.ts
-│           └── use-permissions.ts
-├── shared/
-│   ├── components/
-│   │   └── ui/
-│   │       └── index.ts     # Shadcn component exports
-│   ├── state/
-│   ├── utils/
-│   └── types/
-├── components/              # Singular-use components
-├── app/                     # Rendering views
-│   └── <page-name>/
-│       └── page.tsx
-└── views/                   # UI composition for pages
-    └── <page-name>/
-        └── index.tsx
-```
-
-### Example of a functional repository
-
-```typescript
-import { db } from 'db';
-import { users, sessions } from '@/api/db/schemas'; // Import necessary schemas
-
-export function authenticationRepository() {
-  return {
-    getUserByEmail: async (email: string) => {
-      const user = await db.query.users.findFirst({
-        where: (users, { eq }) => eq(users.email, email),
-      });
-      return user;
-    },
-
-    createUser: async (userData: typeof users.$inferInsert) => {
-      const [newUser] = await db.insert(users).values(userData).returning();
-      return newUser;
-    },
-
-    // Add functional methods for creating sessions, deleting sessions, etc.
-    createSession: async (sessionData: typeof sessions.$inferInsert) => {
-      const [newSession] = await db.insert(sessions).values(sessionData).returning();
-      return newSession;
-    },
-  };
-}
-```
-
-### Example Mutation Function Using a Functional Repository (src/modules/authenticatie/mutations/create-new-user.ts)
-
-```typescript
-'use server';
-
-import { z } from 'zod';
-import { authenticationRepository } from '@/modules/authenticatie/repositories/authentication-repository';
-import { createUserSchema } from '@/modules/authenticatie/models/z.user';
-
-export async function createNewUser(formData: FormData) {
-  const data = Object.fromEntries(formData.entries());
-  const parsedData = createUserSchema.parse(data);
-
-  const hashedPassword = parsedData.password; // Replace with actual hashing
-
-  try {
-    const newUser = await authenticationRepository().createUser({
-      email: parsedData.email,
-      hashedPassword: hashedPassword,
-      // Add other user properties
-    });
-
-    if (newUser) {
-      // Session creation logic should be here or called from here,
-      // potentially interacting with the repository or a related function.
-      await authenticationRepository().createSession({ userId: newUser.id /* other session data */ });
-      return { success: true, user: { id: newUser.id, email: newUser.email } };
-    } else {
-      return { success: false, error: 'Failed to create user.' };
-    }
-  } catch (error) {
-    console.error('Error creating user:', error);
-    return { success: false, error: 'An error occurred during user creation.' };
-  }
-}
-
-```

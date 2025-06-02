@@ -6,7 +6,6 @@ import { acceptInvite } from '../server/mutations/accept-invite';
 import { toast } from '@/shared/components/toast';
 import { Button, Icons } from 'ui';
 
-
 interface InviteAcceptanceProps {
 	invite: {
 		id: string;
@@ -56,16 +55,10 @@ export function InviteAcceptance({ invite, token }: InviteAcceptanceProps) {
 		<div className="bg-[rgb(15,15,15)] border border-[rgb(28,28,28)] rounded-lg p-6">
 			<div className="text-center mb-6">
 				<div className="text-4xl mb-4">{invite.workspace.emoji}</div>
-				<h1 className="text-2xl font-bold text-white mb-2">
-					You're invited to join
-				</h1>
-				<h2 className="text-xl text-white/80 mb-2">
-					{invite.workspace.title}
-				</h2>
+				<h1 className="text-2xl font-bold text-white mb-2">You're invited to join</h1>
+				<h2 className="text-xl text-white/80 mb-2">{invite.workspace.title}</h2>
 				{invite.workspace.description && (
-					<p className="text-white/60 text-sm">
-						{invite.workspace.description}
-					</p>
+					<p className="text-white/60 text-sm">{invite.workspace.description}</p>
 				)}
 			</div>
 

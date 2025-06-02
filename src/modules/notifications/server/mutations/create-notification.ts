@@ -7,33 +7,33 @@ import { TCreateNotificationInput, TNotificationWithActor } from '../../types';
 import { notificationService } from '../services/notification-service';
 
 export async function createNotification(
-  data: Omit<TCreateNotificationInput, 'userId'>
+	data: Omit<TCreateNotificationInput, 'userId'>
 ): Promise<TBaseMutationResponse<TNotificationWithActor>> {
-  try {
-    const session = await getSession();
+	try {
+		const session = await getSession();
 
-    if (!session?.id) {
-      return { success: false, error: 'Unauthorized' };
-    }
+		if (!session?.id) {
+			return { success: false, error: 'Unauthorized' };
+		}
 
-    const notificationData: TCreateNotificationInput = {
-      userId: asUUID(session.id),
-      ...data,
-    };
+		const notificationData: TCreateNotificationInput = {
+			userId: asUUID(session.id),
+			...data,
+		};
 
-    if (data.expiresAt) {
-      notificationData.expiresAt = new Date(data.expiresAt as any);
-    }
+		if (data.expiresAt) {
+			notificationData.expiresAt = new Date(data.expiresAt as any);
+		}
 
-    const notification = await notificationService.createNotification(notificationData);
+		const notification = await notificationService.createNotification(notificationData);
 
-    return {
-      success: true,
-      data: notification,
-      message: 'Notification created successfully',
-    };
-  } catch (error) {
-    console.error('Error creating notification:', error);
-    return { success: false, error: 'Failed to create notification' };
-  }
+		return {
+			success: true,
+			data: notification,
+			message: 'Notification created successfully',
+		};
+	} catch (error) {
+		console.error('Error creating notification:', error);
+		return { success: false, error: 'Failed to create notification' };
+	}
 }

@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { useId } from 'react';
 
 export type TProps = {
-checked: boolean;
+	checked: boolean;
 	onChange: () => void;
 	size?: number;
 	color?: string;
@@ -82,7 +82,7 @@ export const CustomCheckbox = ({
 					}}
 					fill="none"
 				>
-				<title>svg</title>
+					<title>svg</title>
 					<motion.path
 						d="M2 8.36364L6.23077 12L13 2"
 						stroke="#fff"
@@ -100,7 +100,7 @@ export const CustomCheckbox = ({
 				</svg>
 			</div>
 
-			<svg className="absolute w-0 h-0" >
+			<svg className="absolute w-0 h-0">
 				<title>svg</title>
 				<defs>
 					<filter id="goo-12">

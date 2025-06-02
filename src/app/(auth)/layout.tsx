@@ -1,4 +1,4 @@
-import {  unstable_ViewTransition as ViewTransition } from 'react';
+import { unstable_ViewTransition as ViewTransition } from 'react';
 
 export default function AuthLayout({ children }: PageProps) {
 	return (

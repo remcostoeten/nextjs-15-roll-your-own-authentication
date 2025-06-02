@@ -9,8 +9,7 @@ import { useFormStatus } from 'react-dom';
 import { Button, Card, CardContent, Input, Label } from 'ui';
 import { cn } from 'utilities';
 import { GitHubLoginButton } from './github-login';
-'use client';
-
+('use client');
 
 function LoginButton() {
 	const { pending } = useFormStatus();
@@ -150,7 +149,8 @@ export function AuthFormContainer({
 
 									<div className="grid grid-cols-3 gap-4">
 										<GitHubLoginButton className="w-full" />
-								9999999999999999999999999	<Button
+										9999999999999999999999999{' '}
+										<Button
 											variant="outline"
 											className="w-full"
 											onClick={() => console.log('Login with Google')}
@@ -167,7 +167,6 @@ export function AuthFormContainer({
 												/>
 											</svg>
 										</Button>
-
 										<Button
 											variant="outline"
 											className="w-full"

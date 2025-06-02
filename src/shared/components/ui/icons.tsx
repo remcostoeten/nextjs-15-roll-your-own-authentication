@@ -33,7 +33,7 @@ import {
 	Twitter,
 	User,
 	Users,
-	X
+	X,
 } from 'lucide-react';
 
 export type TIcon = LucideIcon;

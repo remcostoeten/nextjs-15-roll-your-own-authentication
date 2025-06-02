@@ -86,10 +86,13 @@ export async function updateWorkspace(
 			})
 			.from(workspaces)
 			.innerJoin(users, eq(users.id, workspaces.ownerId))
-			.innerJoin(workspaceMembers, and(
-				eq(workspaceMembers.workspaceId, workspaces.id),
-				eq(workspaceMembers.userId, session.id)
-			))
+			.innerJoin(
+				workspaceMembers,
+				and(
+					eq(workspaceMembers.workspaceId, workspaces.id),
+					eq(workspaceMembers.userId, session.id)
+				)
+			)
 			.where(eq(workspaces.id, workspaceId));
 
 		return {

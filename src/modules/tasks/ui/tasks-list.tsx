@@ -7,7 +7,6 @@ import { Icons } from '@/shared/components/ui/icons';
 import { useMemo, useState } from 'react';
 import { TTaskPriority, TTaskStatus, TTaskWithDetails } from '../types';
 
-
 interface TasksListProps {
 	initialTasks: TTaskWithDetails[];
 	workspace: TWorkspaceWithOwner;
@@ -27,7 +26,7 @@ export function TasksList({ initialTasks, workspace, filters }: TasksListProps) 
 
 	// Filter tasks based on current filters
 	const filteredTasks = useMemo(() => {
-		return tasks.filter(task => {
+		return tasks.filter((task) => {
 			if (statusFilter !== 'all' && task.status !== statusFilter) return false;
 			if (priorityFilter !== 'all' && task.priority !== priorityFilter) return false;
 			if (filters?.project && task.projectId !== filters.project) return false;
@@ -44,7 +43,7 @@ export function TasksList({ initialTasks, workspace, filters }: TasksListProps) 
 			cancelled: [],
 		};
 
-		filteredTasks.forEach(task => {
+		filteredTasks.forEach((task) => {
 			groups[task.status].push(task);
 		});
 
@@ -151,10 +150,18 @@ export function TasksList({ initialTasks, workspace, filters }: TasksListProps) 
 						<CardContent className="p-4">
 							<div className="flex items-center justify-between">
 								<div>
-									<p className="text-sm text-white/60">{statusLabels[status as TTaskStatus]}</p>
-									<p className="text-2xl font-bold text-white">{statusTasks.length}</p>
+									<p className="text-sm text-white/60">
+										{statusLabels[status as TTaskStatus]}
+									</p>
+									<p className="text-2xl font-bold text-white">
+										{statusTasks.length}
+									</p>
 								</div>
-								<div className={`w-3 h-3 rounded-full ${getStatusColor(status as TTaskStatus).split(' ')[0]}`} />
+								<div
+									className={`w-3 h-3 rounded-full ${
+										getStatusColor(status as TTaskStatus).split(' ')[0]
+									}`}
+								/>
 							</div>
 						</CardContent>
 					</Card>
@@ -167,9 +174,15 @@ export function TasksList({ initialTasks, workspace, filters }: TasksListProps) 
 					<div key={status} className="space-y-4">
 						<div className="flex items-center justify-between">
 							<h3 className="font-medium text-white flex items-center gap-2">
-								<div className={`w-3 h-3 rounded-full ${getStatusColor(status as TTaskStatus).split(' ')[0]}`} />
+								<div
+									className={`w-3 h-3 rounded-full ${
+										getStatusColor(status as TTaskStatus).split(' ')[0]
+									}`}
+								/>
 								{statusLabels[status as TTaskStatus]}
-								<span className="text-white/60 text-sm">({statusTasks.length})</span>
+								<span className="text-white/60 text-sm">
+									({statusTasks.length})
+								</span>
 							</h3>
 						</div>
 
@@ -188,7 +201,11 @@ export function TasksList({ initialTasks, workspace, filters }: TasksListProps) 
 													<h4 className="font-medium text-white text-sm line-clamp-2">
 														{task.title}
 													</h4>
-													<PriorityIcon className={`h-4 w-4 ${getPriorityColor(task.priority)} flex-shrink-0`} />
+													<PriorityIcon
+														className={`h-4 w-4 ${getPriorityColor(
+															task.priority
+														)} flex-shrink-0`}
+													/>
 												</div>
 
 												{/* Task description */}
@@ -200,7 +217,9 @@ export function TasksList({ initialTasks, workspace, filters }: TasksListProps) 
 
 												{/* Project badge */}
 												<div className="flex items-center gap-2">
-													<span className="text-xs">{task.project.emoji}</span>
+													<span className="text-xs">
+														{task.project.emoji}
+													</span>
 													<span className="text-xs text-white/60 truncate">
 														{task.project.title}
 													</span>
@@ -220,7 +239,9 @@ export function TasksList({ initialTasks, workspace, filters }: TasksListProps) 
 																	/>
 																) : (
 																	<span className="text-xs text-white font-medium">
-																		{task.assignee.name.charAt(0).toUpperCase()}
+																		{task.assignee.name
+																			.charAt(0)
+																			.toUpperCase()}
 																	</span>
 																)}
 															</div>
@@ -230,7 +251,9 @@ export function TasksList({ initialTasks, workspace, filters }: TasksListProps) 
 													{/* Due date */}
 													{task.dueDate && (
 														<div className="text-xs text-white/60">
-															{new Date(task.dueDate).toLocaleDateString()}
+															{new Date(
+																task.dueDate
+															).toLocaleDateString()}
 														</div>
 													)}
 												</div>
@@ -251,9 +274,8 @@ export function TasksList({ initialTasks, workspace, filters }: TasksListProps) 
 					<h3 className="text-lg font-medium text-white mb-2">No tasks found</h3>
 					<p className="text-white/60 mb-6">
 						{tasks.length === 0
-							? "Create your first task to get started organizing your work."
-							: "Try adjusting your filters to see more tasks."
-						}
+							? 'Create your first task to get started organizing your work.'
+							: 'Try adjusting your filters to see more tasks.'}
 					</p>
 					<Button
 						onClick={() => setShowCreateForm(true)}

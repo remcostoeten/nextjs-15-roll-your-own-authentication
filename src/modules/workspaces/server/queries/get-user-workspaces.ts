@@ -38,7 +38,7 @@ export async function getUserWorkspaces(): Promise<TWorkspaceWithOwner[]> {
 			.where(eq(workspaceMembers.userId, session.id))
 			.orderBy(workspaces.createdAt);
 
-		return userWorkspaces.map(workspace => ({
+		return userWorkspaces.map((workspace) => ({
 			...workspace,
 			memberCount: workspace.memberCount,
 			owner: {

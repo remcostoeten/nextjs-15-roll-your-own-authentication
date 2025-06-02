@@ -2,7 +2,10 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { archiveNotifications } from '../server/mutations/archive-notifications';
-import { markAllNotificationsAsRead, markNotificationsAsRead } from '../server/mutations/mark-as-read';
+import {
+	markAllNotificationsAsRead,
+	markNotificationsAsRead,
+} from '../server/mutations/mark-as-read';
 import { getNotificationStats } from '../server/queries/get-notification-stats';
 import { getUserNotifications } from '../server/queries/get-notifications';
 import { TGetNotificationsOptions, TNotificationStats, TNotificationWithActor } from '../types';
@@ -73,3 +76,43 @@ export function useNotifications(initialOptions: TGetNotificationsOptions = {}) 
       return result;
     } catch (err) {
       console.error('Failed to mark all notifications as read:',
+        err);
+      return { success: false, error: 'Failed to mark all notifications as read' };
+    }
+  }, [fetchStats]);
+
+  const archive = useCallback(async (ids: string[]) => {
+    try {
+      const result = await archiveNotifications(ids);
+      if (result.success) {
+        // Update local state
+        setNotifications(prev =>
+          prev.filter(notification => !ids.includes(notification.id))
+        );
+        // Refresh stats
+        fetchStats();
+      }
+      return result;
+    } catch (err) {
+      console.error('Failed to archive notifications:', err);
+      return { success: false, error: 'Failed to archive notifications' };
+    }
+  }, [fetchStats]);
+
+  useEffect(() => {
+    fetchNotifications();
+    fetchStats();
+  }, [fetchNotifications, fetchStats, options]);
+
+  return {
+    notifications,
+    stats,
+    isLoading,
+    error,
+    markAsRead,
+    markAllAsRead,
+    archive,
+    fetchNotifications,
+    fetchStats,
+  };
+}

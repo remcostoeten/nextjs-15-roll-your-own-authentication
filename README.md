@@ -1,4 +1,9 @@
-# Architecture RYOA (Roll Your Own Architecture)
+## ryoa - roll your own authentication -
+_Showcasing you that rollin' your own auth is not that hard._
+
+We also rolled our own analytics in here 😉
+
+The main application runs on a postgres database via drizzle-orm. For the analytics I opted for a seperate database being libsql (turso).
 
 A modern, type-safe, and modular application architecture built with Next.js, focusing on clean separation of concerns and maintainable code structure.
 

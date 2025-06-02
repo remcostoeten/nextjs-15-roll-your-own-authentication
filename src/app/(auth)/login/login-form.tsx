@@ -1,17 +1,18 @@
-
 'use client';
 import { Waves } from '@/components/effects/waves';
 import { login } from '@/modules/authenticatie/server/mutations/login';
 import { DiscordLoginButton } from '@/modules/authenticatie/ui/discord-login';
 import { GitHubLoginButton } from '@/modules/authenticatie/ui/github-login';
 import { GoogleLoginButton } from '@/modules/authenticatie/ui/google-login';
+import { Flex } from '@/shared/components/flex';
 import { toast } from '@/shared/components/toast';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { useFormStatus } from 'react-dom';
-import { Button, Card, CardContent, Input, Label } from 'ui';
+import { Form, FormProvider } from 'react-hook-form';
+import { Button, Card, CardContent, Input, Label, Spinner } from 'ui';
 import { cn } from 'utilities';
 
 function LoginButton() {
@@ -19,7 +20,14 @@ function LoginButton() {
 
 	return (
 		<Button type="submit" disabled={pending} className="w-full">
-			{pending ? 'Logging in...' : 'Login'}
+			{pending ? (
+				<Flex center gap="xs">
+					<Spinner size="md" color="white" />
+					Logging in...
+				</Flex>
+			) : (
+				'Login'
+			)}
 		</Button>
 	);
 }
@@ -82,7 +90,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 									Welcome back
 								</h1>
 								<p className="text-balance text-muted-foreground">
-									Login to your Acme Inc account
+									Login to your ryoa panel
 								</p>
 							</div>
 

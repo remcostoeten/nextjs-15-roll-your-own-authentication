@@ -1,12 +1,5 @@
 import { Skeleton } from '@/shared/components/ui/skeleton';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from 'ui';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from 'ui';
 
 export function ProfileFormSkeleton() {
 	return (
@@ -26,25 +19,25 @@ export function ProfileFormSkeleton() {
 						<Skeleton className="h-4 w-12" />
 						<Skeleton className="h-10 w-full" />
 					</div>
-					
+
 					{/* Email field */}
 					<div className="space-y-2">
 						<Skeleton className="h-4 w-12" />
 						<Skeleton className="h-10 w-full" />
 					</div>
-					
+
 					{/* Current Password field */}
 					<div className="space-y-2">
 						<Skeleton className="h-4 w-32" />
 						<Skeleton className="h-10 w-full" />
 					</div>
-					
+
 					{/* New Password field */}
 					<div className="space-y-2">
 						<Skeleton className="h-4 w-28" />
 						<Skeleton className="h-10 w-full" />
 					</div>
-					
+
 					{/* Submit button */}
 					<Skeleton className="h-10 w-32" />
 				</div>
@@ -52,7 +45,7 @@ export function ProfileFormSkeleton() {
 			<CardFooter className="flex flex-col items-start gap-4">
 				{/* Link */}
 				<Skeleton className="h-4 w-48" />
-				
+
 				{/* Delete button */}
 				<Skeleton className="h-10 w-32" />
 			</CardFooter>

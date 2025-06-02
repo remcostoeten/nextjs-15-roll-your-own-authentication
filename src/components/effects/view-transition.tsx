@@ -56,9 +56,7 @@ export function SlideTransition({
           }
         `}
 			</style>
-			<ViewTransition name={name}>
-				{children}
-			</ViewTransition>
+			<ViewTransition name={name}>{children}</ViewTransition>
 		</>
 	);
 }

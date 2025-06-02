@@ -42,7 +42,7 @@ export async function login(formData: FormData): Promise<TAuthMutationResponse> 
 		if (error instanceof Error) {
 			return {
 				success: false,
-				error: error.message, 
+				error: error.message,
 			};
 		}
 		return {

@@ -22,7 +22,7 @@ export default async function MembersPage({ searchParams }: TProps) {
 
 	const workspaceId = resolvedSearchParams?.workspace;
 	const currentWorkspace = workspaceId
-		? workspaces.find(w => w.id === workspaceId) || workspaces[0]
+		? workspaces.find((w) => w.id === workspaceId) || workspaces[0]
 		: workspaces[0];
 	const members = await getWorkspaceMembers(currentWorkspace.id);
 

@@ -3,7 +3,6 @@ import { ProfileForm } from '@/modules/authenticatie/ui/profile-form';
 import { NotificationSettings } from '@/modules/notifications/components/notification-settings';
 import { Separator } from 'ui';
 
-
 export function ProfileView() {
 	return (
 		<div className="container mx-auto py-10">

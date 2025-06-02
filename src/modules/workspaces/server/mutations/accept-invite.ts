@@ -17,12 +17,7 @@ export async function acceptInvite(token: string): Promise<TBaseMutationResponse
 		const [invite] = await db
 			.select()
 			.from(workspaceInvites)
-			.where(
-				and(
-					eq(workspaceInvites.token, token),
-					eq(workspaceInvites.acceptedAt, null)
-				)
-			);
+			.where(and(eq(workspaceInvites.token, token), eq(workspaceInvites.acceptedAt, null)));
 
 		if (!invite) {
 			return { success: false, error: 'Invalid or expired invitation' };
@@ -81,4 +76,3 @@ export async function acceptInvite(token: string): Promise<TBaseMutationResponse
 		return { success: false, error: 'Failed to accept invitation' };
 	}
 }
-

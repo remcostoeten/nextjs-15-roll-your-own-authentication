@@ -1,19 +1,14 @@
 'use client';
 
 import {
-	BookOpen,
-	Bot,
+	Bell, Bot,
 	Frame,
 	Home,
 	type LucideIcon,
 	Map as MapIcon,
 	PieChart,
-	Settings2,
-	SquareTerminal,
-	Users,
-	User,
-	FolderOpen,
-	CheckSquare,
+	Settings2, Users, FolderOpen,
+	CheckSquare
 } from 'lucide-react';
 import type * as React from 'react';
 
@@ -76,8 +71,13 @@ const data = {
 			isActive: true,
 		},
 		{
+			title: 'Notifications',
+			url: '/dashboard/notifications',
+			icon: Bell,
+		},
+		{
 			title: 'Projects',
-			url: '/dasfhboard/projects',
+			url: '/dashboard/projects',
 			icon: FolderOpen,
 		},
 		{
@@ -89,6 +89,11 @@ const data = {
 			title: 'Members',
 			url: '/dashboard/members',
 			icon: Users,
+		},
+		{
+			title: 'Analytics',
+			url: '/dashboard/analytics',
+			icon: Bot,
 		},
 		{
 			title: 'Settings',

@@ -5,14 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { EyeIcon, EyeOffIcon, KeyRound, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import {
-	Button, Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage, Input
-} from 'ui';
+import { Button, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from 'ui';
 import { z } from 'zod';
 import { setPassword } from '../server/mutations/set-password';
 
@@ -36,7 +29,7 @@ export function SetPasswordForm({ onSuccess }: TProps) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [showPassword, setShowPassword] = useState({
 		password: false,
-		confirmPassword: false
+		confirmPassword: false,
 	});
 
 	const form = useForm<FormValues>({
@@ -84,7 +77,7 @@ export function SetPasswordForm({ onSuccess }: TProps) {
 							<div className="relative">
 								<FormControl>
 									<Input
-										type={showPassword.password ? "text" : "password"}
+										type={showPassword.password ? 'text' : 'password'}
 										placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
 										{...field}
 										className="pr-10"
@@ -93,7 +86,12 @@ export function SetPasswordForm({ onSuccess }: TProps) {
 								<button
 									type="button"
 									className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-									onClick={() => setShowPassword({...showPassword, password: !showPassword.password})}
+									onClick={() =>
+										setShowPassword({
+											...showPassword,
+											password: !showPassword.password,
+										})
+									}
 								>
 									{showPassword.password ? (
 										<EyeOffIcon className="h-4 w-4" />
@@ -115,7 +113,7 @@ export function SetPasswordForm({ onSuccess }: TProps) {
 							<div className="relative">
 								<FormControl>
 									<Input
-										type={showPassword.confirmPassword ? "text" : "password"}
+										type={showPassword.confirmPassword ? 'text' : 'password'}
 										placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
 										{...field}
 										className="pr-10"
@@ -124,7 +122,12 @@ export function SetPasswordForm({ onSuccess }: TProps) {
 								<button
 									type="button"
 									className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-									onClick={() => setShowPassword({...showPassword, confirmPassword: !showPassword.confirmPassword})}
+									onClick={() =>
+										setShowPassword({
+											...showPassword,
+											confirmPassword: !showPassword.confirmPassword,
+										})
+									}
 								>
 									{showPassword.confirmPassword ? (
 										<EyeOffIcon className="h-4 w-4" />
@@ -137,11 +140,7 @@ export function SetPasswordForm({ onSuccess }: TProps) {
 						</FormItem>
 					)}
 				/>
-				<Button
-					type="submit"
-					className="w-full mt-6"
-					disabled={isLoading}
-				>
+				<Button type="submit" className="w-full mt-6" disabled={isLoading}>
 					{isLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />

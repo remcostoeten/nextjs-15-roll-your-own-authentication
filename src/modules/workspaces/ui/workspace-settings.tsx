@@ -3,8 +3,7 @@ import { useState, useTransition } from 'react';
 import { inviteUser } from '../server/mutations/invite-user';
 import { TWorkspaceMember, TWorkspaceMemberRole, TWorkspaceWithOwner } from '../types';
 import { Button, Icons } from 'ui';
-'use client';
-
+('use client');
 
 interface WorkspaceSettingsProps {
 	workspace: TWorkspaceWithOwner;
@@ -52,7 +51,9 @@ export function WorkspaceSettings({ workspace, members, userRole }: WorkspaceSet
 	const tabs = [
 		{ id: 'general', name: 'General', icon: Icons.settings },
 		{ id: 'members', name: 'Members', icon: Icons.users },
-		...(userRole === 'owner' ? [{ id: 'danger', name: 'Danger Zone', icon: Icons.alertTriangle }] : []),
+		...(userRole === 'owner'
+			? [{ id: 'danger', name: 'Danger Zone', icon: Icons.alertTriangle }]
+			: []),
 	] as const;
 
 	return (
@@ -85,7 +86,9 @@ export function WorkspaceSettings({ workspace, members, userRole }: WorkspaceSet
 				{activeTab === 'general' && (
 					<div className="space-y-6">
 						<div>
-							<h3 className="text-lg font-semibold text-white mb-4">Workspace Information</h3>
+							<h3 className="text-lg font-semibold text-white mb-4">
+								Workspace Information
+							</h3>
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 								<div>
 									<label className="block text-sm font-medium text-white mb-2">
@@ -131,7 +134,9 @@ export function WorkspaceSettings({ workspace, members, userRole }: WorkspaceSet
 				{activeTab === 'members' && (
 					<div className="space-y-6">
 						<div className="flex items-center justify-between">
-							<h3 className="text-lg font-semibold text-white">Members ({members.length})</h3>
+							<h3 className="text-lg font-semibold text-white">
+								Members ({members.length})
+							</h3>
 							{['owner', 'admin'].includes(userRole) && (
 								<Button
 									onClick={() => setIsInviting(true)}
@@ -145,7 +150,10 @@ export function WorkspaceSettings({ workspace, members, userRole }: WorkspaceSet
 
 						{/* Invite Form */}
 						{isInviting && (
-							<form onSubmit={handleInviteUser} className="bg-[rgb(21,21,21)] border border-[rgb(28,28,28)] rounded-lg p-4">
+							<form
+								onSubmit={handleInviteUser}
+								className="bg-[rgb(21,21,21)] border border-[rgb(28,28,28)] rounded-lg p-4"
+							>
 								<h4 className="font-medium text-white mb-4">Invite New Member</h4>
 								<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 									<div className="md:col-span-2">
@@ -222,8 +230,12 @@ export function WorkspaceSettings({ workspace, members, userRole }: WorkspaceSet
 											)}
 										</div>
 										<div>
-											<div className="font-medium text-white">{member.user.name}</div>
-											<div className="text-sm text-white/60">{member.user.email}</div>
+											<div className="font-medium text-white">
+												{member.user.name}
+											</div>
+											<div className="text-sm text-white/60">
+												{member.user.email}
+											</div>
 										</div>
 									</div>
 									<div className="flex items-center space-x-3">
@@ -247,7 +259,8 @@ export function WorkspaceSettings({ workspace, members, userRole }: WorkspaceSet
 							<div className="border border-red-500/20 bg-red-500/5 rounded-lg p-4">
 								<h4 className="font-medium text-red-400 mb-2">Delete Workspace</h4>
 								<p className="text-white/60 text-sm mb-4">
-									Once you delete a workspace, there is no going back. Please be certain.
+									Once you delete a workspace, there is no going back. Please be
+									certain.
 								</p>
 								<Button
 									variant="destructive"

@@ -23,7 +23,7 @@ export default async function ProjectsPage({ searchParams }: PageProps) {
 	// Find current workspace from search params or default to first
 	const workspaceId = params?.workspace;
 	const currentWorkspace = workspaceId
-		? workspaces.find(w => w.id === workspaceId) || workspaces[0]
+		? workspaces.find((w) => w.id === workspaceId) || workspaces[0]
 		: workspaces[0];
 
 	const projects = await getWorkspaceProjects(currentWorkspace.id);
@@ -42,4 +42,3 @@ export default async function ProjectsPage({ searchParams }: PageProps) {
 		</div>
 	);
 }
-

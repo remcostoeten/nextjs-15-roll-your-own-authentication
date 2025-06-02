@@ -8,12 +8,11 @@ import { removeMember } from '../server/mutations/remove-member';
 import { updateMemberRole } from '../server/mutations/update-member-role';
 import { TWorkspaceMember, TWorkspaceMemberRole, TWorkspaceWithOwner } from '../types';
 
-
-type TMembersList  = {
+type TMembersList = {
 	members: TWorkspaceMember[];
 	workspace: TWorkspaceWithOwner;
 	userRole: TWorkspaceMemberRole;
-}
+};
 
 export function MembersList({ members, workspace, userRole }: TMembersList) {
 	const [isInviting, setIsInviting] = useState(false);
@@ -156,7 +155,11 @@ export function MembersList({ members, workspace, userRole }: TMembersList) {
 									</label>
 									<select
 										value={inviteRole}
-										onChange={(e) => setInviteRole(e.target.value as 'admin' | 'member' | 'viewer')}
+										onChange={(e) =>
+											setInviteRole(
+												e.target.value as 'admin' | 'member' | 'viewer'
+											)
+										}
 										className="w-full px-3 py-2 bg-[rgb(21,21,21)] border border-[rgb(28,28,28)] rounded-lg text-white focus:outline-none focus:border-white/40"
 									>
 										<option value="viewer">Viewer</option>
@@ -221,7 +224,9 @@ export function MembersList({ members, workspace, userRole }: TMembersList) {
 										)}
 									</div>
 									<div>
-										<h3 className="font-medium text-white">{member.user.name}</h3>
+										<h3 className="font-medium text-white">
+											{member.user.name}
+										</h3>
 										<p className="text-sm text-white/60">{member.user.email}</p>
 									</div>
 								</div>
@@ -235,8 +240,15 @@ export function MembersList({ members, workspace, userRole }: TMembersList) {
 								{userRole === 'owner' && member.role !== 'owner' ? (
 									<select
 										value={member.role}
-										onChange={(e) => handleUpdateRole(member.userId, e.target.value as TWorkspaceMemberRole)}
-										className={`px-3 py-1 text-xs font-medium rounded-full border ${getRoleColor(member.role)} bg-transparent`}
+										onChange={(e) =>
+											handleUpdateRole(
+												member.userId,
+												e.target.value as TWorkspaceMemberRole
+											)
+										}
+										className={`px-3 py-1 text-xs font-medium rounded-full border ${getRoleColor(
+											member.role
+										)} bg-transparent`}
 										disabled={isPending}
 									>
 										<option value="viewer">Viewer</option>
@@ -244,23 +256,30 @@ export function MembersList({ members, workspace, userRole }: TMembersList) {
 										<option value="admin">Admin</option>
 									</select>
 								) : (
-									<span className={`px-3 py-1 text-xs font-medium rounded-full border ${getRoleColor(member.role)}`}>
+									<span
+										className={`px-3 py-1 text-xs font-medium rounded-full border ${getRoleColor(
+											member.role
+										)}`}
+									>
 										{member.role.charAt(0).toUpperCase() + member.role.slice(1)}
 									</span>
 								)}
 
 								{/* Actions */}
-								{member.role !== 'owner' && ['owner', 'admin'].includes(userRole) && (
-									<Button
-										onClick={() => handleRemoveMember(member.userId, member.user.name)}
-										variant="ghost"
-										size="sm"
-										className="text-red-400 hover:text-red-300 hover:bg-red-500/10 h-8 w-8 p-0"
-										disabled={isPending}
-									>
-										<Icons.trash className="h-4 w-4" />
-									</Button>
-								)}
+								{member.role !== 'owner' &&
+									['owner', 'admin'].includes(userRole) && (
+										<Button
+											onClick={() =>
+												handleRemoveMember(member.userId, member.user.name)
+											}
+											variant="ghost"
+											size="sm"
+											className="text-red-400 hover:text-red-300 hover:bg-red-500/10 h-8 w-8 p-0"
+											disabled={isPending}
+										>
+											<Icons.trash className="h-4 w-4" />
+										</Button>
+									)}
 							</div>
 
 							{/* Member since */}

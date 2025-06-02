@@ -31,9 +31,11 @@ type WorkspaceProviderProps = {
 export function WorkspaceProvider({
 	children,
 	initialWorkspace = null,
-	initialWorkspaces = []
+	initialWorkspaces = [],
 }: WorkspaceProviderProps) {
-	const [currentWorkspace, setCurrentWorkspace] = useState<TWorkspaceWithOwner | null>(initialWorkspace);
+	const [currentWorkspace, setCurrentWorkspace] = useState<TWorkspaceWithOwner | null>(
+		initialWorkspace
+	);
 	const [workspaces, setWorkspaces] = useState<TWorkspaceWithOwner[]>(initialWorkspaces);
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -54,7 +56,10 @@ export function WorkspaceProvider({
 				setWorkspaces(data.workspaces || []);
 
 				// If current workspace is not in the list, switch to first available
-				if (currentWorkspace && !data.workspaces?.find((w: TWorkspaceWithOwner) => w.id === currentWorkspace.id)) {
+				if (
+					currentWorkspace &&
+					!data.workspaces?.find((w: TWorkspaceWithOwner) => w.id === currentWorkspace.id)
+				) {
 					const firstWorkspace = data.workspaces?.[0];
 					if (firstWorkspace) {
 						switchWorkspace(firstWorkspace);
@@ -72,14 +77,13 @@ export function WorkspaceProvider({
 
 	// Load workspace from sessionStorage on mount
 	useEffect(() => {
-		const savedWorkspaceId = typeof window !== 'undefined'
-			? sessionStorage.getItem('currentWorkspaceId')
-			: null;
+		const savedWorkspaceId =
+			typeof window !== 'undefined' ? sessionStorage.getItem('currentWorkspaceId') : null;
 
 		if (savedWorkspaceId && workspaces.length > 0) {
-			const savedWorkspace = workspaces.find(w => w.id === savedWorkspaceId);
+			const savedWorkspace = workspaces.find((w) => w.id === savedWorkspaceId);
 			if (savedWorkspace) {
-				setCurrentWorkspace(prev => {
+				setCurrentWorkspace((prev) => {
 					if (!prev || prev.id !== savedWorkspaceId) {
 						return savedWorkspace;
 					}
@@ -87,7 +91,7 @@ export function WorkspaceProvider({
 				});
 			}
 		} else if (workspaces.length > 0) {
-			setCurrentWorkspace(prev => {
+			setCurrentWorkspace((prev) => {
 				if (!prev) {
 					return workspaces[0];
 				}

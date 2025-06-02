@@ -66,9 +66,9 @@ export async function updateMemberRole(
 		// Update the member's role
 		await db
 			.update(workspaceMembers)
-			.set({ 
+			.set({
 				role: newRole,
-				updatedAt: new Date()
+				updatedAt: new Date(),
 			})
 			.where(
 				and(

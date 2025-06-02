@@ -14,6 +14,7 @@ interface InviteMemberFormProps {
 export function InviteMemberForm({ workspace }: InviteMemberFormProps) {
 	const [inviteEmail, setInviteEmail] = useState('');
 	const [inviteRole, setInviteRole] = useState<'admin' | 'member' | 'viewer'>('member');
+	const [inviteMessage, setInviteMessage] = useState('');
 	const [isPending, startTransition] = useTransition();
 	const [lastInviteUrl, setLastInviteUrl] = useState<string | null>(null);
 	const router = useRouter();
@@ -32,6 +33,7 @@ export function InviteMemberForm({ workspace }: InviteMemberFormProps) {
 				formData.append('workspaceId', workspace.id);
 				formData.append('email', inviteEmail.trim());
 				formData.append('role', inviteRole);
+				formData.append('message', inviteMessage.trim());
 
 				const result = await inviteUser(formData);
 
@@ -85,13 +87,28 @@ export function InviteMemberForm({ workspace }: InviteMemberFormProps) {
 						<select
 							id="role"
 							value={inviteRole}
-							onChange={(e) => setInviteRole(e.target.value as 'admin' | 'member' | 'viewer')}
+							onChange={(e) =>
+								setInviteRole(e.target.value as 'admin' | 'member' | 'viewer')
+							}
 							className="w-full px-3 py-2 border border-input bg-background rounded-md"
 						>
 							<option value="viewer">Viewer - Can view projects and tasks</option>
 							<option value="member">Member - Can create and edit projects</option>
 							<option value="admin">Admin - Can manage workspace and members</option>
 						</select>
+					</div>
+
+					<div className="space-y-2">
+						<label htmlFor="message" className="text-sm font-medium">
+							Custom Message
+						</label>
+						<textarea
+							id="message"
+							value={inviteMessage}
+							onChange={(e) => setInviteMessage(e.target.value)}
+							placeholder="Optional: Add a personal message to the invitation"
+							className="w-full px-3 py-2 border border-input bg-background rounded-md"
+						/>
 					</div>
 
 					<div className="flex items-center space-x-3 pt-4">

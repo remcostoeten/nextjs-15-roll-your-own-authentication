@@ -1,11 +1,10 @@
-'use client'
+'use client';
 
 import { TProjectWithDetails } from '@/modules/workspaces/types';
 import { toast } from '@/shared/components/toast';
 import { useState, useTransition } from 'react';
 import { Button, Card, CardContent, CardHeader, CardTitle, Icons } from 'ui';
 import { createProject } from '../server/mutations/create-project';
-
 
 type ProjectsListProps = {
 	initialProjects: TProjectWithDetails[];
@@ -33,7 +32,7 @@ export function ProjectsList({ initialProjects, workspaceId }: ProjectsListProps
 						taskCount: 0,
 						completedTaskCount: 0,
 					};
-					setProjects(prev => [newProject, ...prev]);
+					setProjects((prev) => [newProject, ...prev]);
 					setShowCreateForm(false);
 					toast.success('Project created successfully');
 				} else {
@@ -135,12 +134,17 @@ export function ProjectsList({ initialProjects, workspaceId }: ProjectsListProps
 										{project.title}
 									</CardTitle>
 								</div>
-								<div className={`px-2 py-1 rounded-full text-xs font-medium ${
-									project.status === 'active' ? 'bg-green-500/20 text-green-400' :
-									project.status === 'completed' ? 'bg-blue-500/20 text-blue-400' :
-									project.status === 'on_hold' ? 'bg-yellow-500/20 text-yellow-400' :
-									'bg-gray-500/20 text-gray-400'
-								}`}>
+								<div
+									className={`px-2 py-1 rounded-full text-xs font-medium ${
+										project.status === 'active'
+											? 'bg-green-500/20 text-green-400'
+											: project.status === 'completed'
+											  ? 'bg-blue-500/20 text-blue-400'
+											  : project.status === 'on_hold'
+												  ? 'bg-yellow-500/20 text-yellow-400'
+												  : 'bg-gray-500/20 text-gray-400'
+									}`}
+								>
 									{project.status.replace('_', ' ')}
 								</div>
 							</div>
