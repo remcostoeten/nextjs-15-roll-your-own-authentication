@@ -12,6 +12,11 @@ const navigationItems = [
 	{ name: 'Contact', href: '#contact' },
 ];
 
+/**
+ * Renders a responsive navigation header with dynamic styling based on scroll position and a toggleable mobile menu.
+ *
+ * The navigation includes a logo, navigation links, and a "Get Started" button. On smaller screens, navigation links are accessible via a mobile menu that can be opened or closed.
+ */
 export function Navigation() {
 	const [isScrolled, setIsScrolled] = useState(false);
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

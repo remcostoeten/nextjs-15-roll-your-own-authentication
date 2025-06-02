@@ -13,6 +13,11 @@ import { useNotifications } from '@/modules/notifications/hooks/use-notification
 import { TNotificationPriority, TNotificationType } from '@/modules/notifications/types';
 import { CheckCheck, Archive, Search, Filter, Bell } from 'lucide-react';
 
+/**
+ * Displays and manages user notifications with filtering, searching, and tabbed views.
+ *
+ * Provides an interface for viewing notifications by status (all, unread, archived), filtering by type and priority, and searching by title or message. Users can mark all notifications as read or archive all unread notifications. Summary statistics and dynamic filtering are included.
+ */
 export default function NotificationsPage() {
 	const [activeTab, setActiveTab] = useState('all');
 	const [searchQuery, setSearchQuery] = useState('');

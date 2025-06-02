@@ -2,6 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAnalyticsMetrics } from '@/modules/rollyourownanalytics/server/queries/get-analytics-metrics';
 import type { TAnalyticsFilter } from '@/modules/rollyourownanalytics/types';
 
+/**
+ * Handles GET requests to retrieve analytics metrics based on query parameters.
+ *
+ * Extracts the required `projectId` and optional filter parameters from the request URL. Returns analytics metrics as a JSON response or an error message if the request is invalid or processing fails.
+ *
+ * @param request - The incoming HTTP request containing query parameters for filtering analytics metrics.
+ * @returns A JSON response with analytics metrics or an error message.
+ */
 export async function GET(request: NextRequest) {
 	try {
 		const { searchParams } = new URL(request.url);

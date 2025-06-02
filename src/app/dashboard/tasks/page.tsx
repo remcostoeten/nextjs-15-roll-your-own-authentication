@@ -7,6 +7,15 @@ type PageProps = {
 	searchParams: Promise<{ workspace?: string }>;
 };
 
+/**
+ * Renders the main tasks page, displaying a list of tasks for the user's current workspace.
+ *
+ * Redirects to the login page if the user is not authenticated, or to the workspace onboarding page if the user has no workspaces.
+ *
+ * @param searchParams - A promise resolving to an object that may contain a workspace identifier to select the current workspace.
+ *
+ * @returns The tasks page UI for the selected or default workspace.
+ */
 export default async function TasksPage({ searchParams }: PageProps) {
 	const resolvedSearchParams = await searchParams;
 	const session = await getSession();

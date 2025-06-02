@@ -26,6 +26,13 @@ interface DashboardShellProps {
 	children: React.ReactNode;
 }
 
+/**
+ * Provides a responsive dashboard layout with sidebar navigation, header, and main content area.
+ *
+ * Renders navigation links, user information, and logout functionality. The sidebar can be toggled on mobile devices and automatically closes on route changes. The main content area displays a contextual title and description based on the current route.
+ *
+ * @param children - The content to display within the dashboard's main area.
+ */
 export function DashboardShell({ children }: DashboardShellProps) {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 	const pathname = usePathname();

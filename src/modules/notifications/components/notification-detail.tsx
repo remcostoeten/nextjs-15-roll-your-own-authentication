@@ -22,6 +22,14 @@ interface NotificationDetailProps {
 	onBack: () => void;
 }
 
+/**
+ * Displays detailed information about a single notification, including its title, message, metadata, and available actions.
+ *
+ * Marks the notification as read when viewed and allows the user to archive it or navigate back.
+ *
+ * @param notification - The notification object to display details for.
+ * @param onBack - Callback invoked when the user navigates back or after archiving the notification.
+ */
 export function NotificationDetail({ notification, onBack }: NotificationDetailProps) {
 	const { markAsRead, archiveNotifications } = useNotifications({});
 

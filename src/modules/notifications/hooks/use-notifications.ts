@@ -10,6 +10,14 @@ import { getNotificationStats } from '../server/queries/get-notification-stats';
 import { getUserNotifications } from '../server/queries/get-notifications';
 import { TGetNotificationsOptions, TNotificationStats, TNotificationWithActor } from '../types';
 
+/**
+ * React hook for managing user notifications, including fetching, marking as read, archiving, and retrieving notification statistics.
+ *
+ * Provides state and operations for notification data, loading and error status, and notification statistics. Exposes functions to mark notifications as read, mark all as read, archive notifications, and refresh notification data and stats.
+ *
+ * @param initialOptions - Optional options for fetching notifications on initialization.
+ * @returns An object containing the current notifications, notification statistics, loading and error state, and functions for notification operations.
+ */
 export function useNotifications(initialOptions: TGetNotificationsOptions = {}) {
   const [notifications, setNotifications] = useState<TNotificationWithActor[]>([]);
   const [stats, setStats] = useState<TNotificationStats | null>(null);

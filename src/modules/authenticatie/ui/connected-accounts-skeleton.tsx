@@ -1,6 +1,11 @@
 import { Skeleton } from '@/shared/components/ui/skeleton';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'ui';
 
+/**
+ * Displays a skeleton placeholder for the connected accounts section while account data is loading.
+ *
+ * Renders a card with skeleton elements representing the title, description, and a list of three account items, each with placeholders for provider icon, name, connection date, and action button.
+ */
 export function ConnectedAccountsSkeleton() {
 	return (
 		<Card>

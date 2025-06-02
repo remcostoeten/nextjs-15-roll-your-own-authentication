@@ -23,6 +23,15 @@ type TProps = {
 	metrics: Array<{ label: string; value: string | number }>;
 };
 
+/**
+ * Renders a debug information bar displaying labeled metrics, visible only in non-production environments.
+ *
+ * @param metrics - An array of objects containing a `label` and a `value` to display.
+ *
+ * @returns A styled debug bar with metrics, or `null` in production.
+ *
+ * @remark The debug bar is not rendered when `NODE_ENV` is set to 'production'.
+ */
 export function DebugBar({ metrics }: TProps) {
 	if (process.env.NODE_ENV === 'production') return null;
 
@@ -50,6 +59,11 @@ export function DebugBar({ metrics }: TProps) {
 	);
 }
 
+/**
+ * Renders a user interface for viewing and updating notification preferences.
+ *
+ * Displays categorized notification settings with toggle switches, allows users to modify their preferences, and provides a save button to persist changes. Shows a debug bar with metrics in non-production environments.
+ */
 export function NotificationSettings() {
 	const auth = useAuth();
 	const [settings, setSettings] = useState<TNotificationPreferencesInput>({

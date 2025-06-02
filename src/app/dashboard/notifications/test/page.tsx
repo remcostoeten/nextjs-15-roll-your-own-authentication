@@ -6,6 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui
 import { createSampleNotifications } from '@/modules/notifications/utils/create-sample-notifications';
 import { toast } from '@/shared/components/toast';
 
+/**
+ * React page component for testing the notification system by creating sample notifications.
+ *
+ * Renders a UI that allows users to generate multiple sample notifications of various types and priorities, displaying feedback on the creation process and listing the notification types available for testing.
+ */
 export default function NotificationsTestPage() {
 	const [isCreating, setIsCreating] = useState(false);
 

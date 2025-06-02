@@ -12,6 +12,13 @@ import {
 	TNotificationWithActor,
 } from '../../types';
 
+/**
+ * Provides methods to manage notifications and notification preferences in the database.
+ *
+ * Includes functionality to create notifications, query notifications for a user with filtering and pagination, mark notifications as read or archived, retrieve notification statistics, and manage user notification preferences.
+ *
+ * @returns An object with methods for notification and preference management.
+ */
 export function notificationRepository() {
 	return {
 		async create(data: TCreateNotificationInput): Promise<TNotification> {

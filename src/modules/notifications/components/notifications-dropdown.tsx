@@ -11,6 +11,13 @@ import { useNotifications } from '../hooks/use-notifications';
 import { Badge } from '@/shared/components/ui/badge';
 import { cn } from '@/shared/utilities';
 
+/**
+ * Displays a notification bell icon with a dropdown popover showing recent notifications.
+ *
+ * The bell icon animates when new unread notifications arrive. When the dropdown is closed, any unread notifications are automatically marked as read. The dropdown includes a scrollable list of notifications or an empty state, and provides options to view all notifications or close the dropdown.
+ *
+ * @remark The unread badge displays "99+" if the unread count exceeds 99.
+ */
 export function NotificationsDropdown() {
 	const [open, setOpen] = useState(false);
 	const [isJiggling, setIsJiggling] = useState(false);

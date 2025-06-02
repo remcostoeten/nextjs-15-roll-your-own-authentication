@@ -7,6 +7,14 @@ import { TBaseMutationResponse } from '@/shared/types/base';
 import { TBaseProject } from '../../types';
 import { and, eq } from 'drizzle-orm';
 
+/**
+ * Creates a new project within a specified workspace using provided form data.
+ *
+ * Validates user authentication and workspace membership before creating the project. Returns a response indicating success or failure, along with relevant project data or error messages.
+ *
+ * @param formData - The form data containing project details such as workspace ID, title, description, and emoji.
+ * @returns An object indicating the result of the operation, including the created project data on success.
+ */
 export async function createProject(
 	formData: FormData
 ): Promise<TBaseMutationResponse<TBaseProject>> {

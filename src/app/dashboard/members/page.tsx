@@ -8,6 +8,14 @@ type TProps = {
 	searchParams: Promise<{ workspace?: string }>;
 };
 
+/**
+ * Server component that displays and manages members of the user's current workspace.
+ *
+ * Redirects unauthenticated users to the login page and users without workspaces to the onboarding flow. Selects the current workspace based on the `workspace` query parameter or defaults to the first available workspace. Renders a list of members for the selected workspace.
+ *
+ * @param searchParams - A promise resolving to an object that may contain a `workspace` query parameter to select the workspace.
+ * @returns A React element displaying the workspace members and management interface.
+ */
 export default async function MembersPage({ searchParams }: TProps) {
 	const resolvedSearchParams = await searchParams;
 	const session = await getSession();

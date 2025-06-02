@@ -35,7 +35,9 @@ CONTENT_WIDTH = 60
 STATE_FILE = Path.home() / ".turso_gen_state.json"
 
 def print_ascii_header():
-    """Print a beautiful ASCII header with version and update info."""
+    """
+    Prints a colored ASCII art header with script version and last update information, centered within a decorative box.
+    """
     # Prepare the version and timestamp line
     version_text = f"Version: {SCRIPT_VERSION}"
     last_updated_text = f"Last Updated: {LAST_UPDATED_TIMESTAMP}"
@@ -83,39 +85,77 @@ def print_ascii_header():
 """)
 
 def print_step(step_num, total_steps, message):
-    """Print a formatted step with progress indicator."""
+    """
+    Displays a formatted progress step with a visual indicator and message.
+    
+    Args:
+        step_num: The current step number in the process.
+        total_steps: The total number of steps in the process.
+        message: The message to display for the current step.
+    """
     progress = "█" * step_num + "░" * (total_steps - step_num)
     print(f"\n{Colors.BOLD}{Colors.OKBLUE}[{step_num}/{total_steps}]{Colors.ENDC} {Colors.CYAN}[{progress}]{Colors.ENDC} {Colors.BOLD}{message}{Colors.ENDC}")
 
 def print_success(message):
-    """Print a success message with checkmark."""
+    """
+    Prints a success message with a green checkmark icon.
+    """
     print(f"{Colors.OKGREEN}✅ {message}{Colors.ENDC}")
 
 def print_error(message):
-    """Print an error message with X mark."""
+    """
+    Prints an error message prefixed with an X mark in red color to the terminal.
+    """
     print(f"{Colors.FAIL}❌ {message}{Colors.ENDC}")
 
 def print_warning(message):
-    """Print a warning message with warning icon."""
+    """
+    Prints a warning message to the terminal with a warning icon and yellow color.
+    """
     print(f"{Colors.WARNING}⚠️  {message}{Colors.ENDC}")
 
 def print_info(message):
-    """Print an info message with info icon."""
+    """
+    Prints an informational message with a cyan info icon to the terminal.
+    """
     print(f"{Colors.OKCYAN}ℹ️  {message}{Colors.ENDC}")
 
 def print_section_divider(title):
-    """Print a section divider with title, respecting CONTENT_WIDTH."""
+    """
+    Prints a colored section divider box with a centered title in the terminal.
+    
+    The divider uses the fixed CONTENT_WIDTH for consistent formatting.
+    """
     divider = "═" * CONTENT_WIDTH
     print(f"\n{Colors.PURPLE}╔{divider}╗")
     print(f"║{Colors.BOLD}{Colors.WHITE}{title.center(CONTENT_WIDTH)}{Colors.ENDC}{Colors.PURPLE}║")
     print(f"╚{divider}╝{Colors.ENDC}")
 
 def print_env_vars_box(db_url, auth_token, db_name):
-    """Print environment variables in a beautiful, perfectly aligned box."""
+    """
+    Displays the generated database credentials in a formatted, colorized box.
+    
+    Args:
+        db_url: The database connection URL.
+        auth_token: The authentication token for the database.
+        db_name: The name of the generated database.
+    
+    The output includes the database name, creation timestamp, URL, and token, with values truncated and aligned for readability.
+    """
     print_section_divider("🔐 GENERATED CREDENTIALS")
 
     def create_padded_line(text_to_pad, total_width):
         # Calculate padding needed. Remove color codes for length calculation.
+        """
+        Pads a string with spaces on the right to reach a specified total width, ignoring ANSI color codes in length calculation.
+        
+        Args:
+            text_to_pad: The string to pad, which may include ANSI color codes.
+            total_width: The desired total width of the padded string, excluding color codes.
+        
+        Returns:
+            The input string with added spaces on the right to match the specified width.
+        """
         plain_text = re.sub(r'\033\[[0-9;]*m', '', text_to_pad)
         padding = total_width - len(plain_text)
         return f"{text_to_pad}{' ' * max(0, padding)}" # Ensure padding is not negative
@@ -157,7 +197,12 @@ def print_env_vars_box(db_url, auth_token, db_name):
 
 
 def print_footer(db_name):
-    """Print a beautiful, perfectly aligned footer."""
+    """
+    Prints a formatted footer box with success messages, clipboard info, a personalized sign-off, and instructions for deleting the generated Turso database.
+    
+    Args:
+        db_name: The name of the Turso database, used in the displayed deletion command.
+    """
     line1_raw = "🎉 SUCCESS! Your Turso database is ready to use! 🎉"
     line2_raw = "📋 Credentials copied to clipboard"
     line3_raw = "🔧 Ready to paste into your .env file"
@@ -210,12 +255,25 @@ def print_footer(db_name):
 """)
 
 def run_command(command, timeout=30):
-    """Run a shell command and return its output and error (if any)."""
+    """
+    Executes a shell command with a timeout and returns its output, error message, and exit code.
+    
+    Args:
+        command: The shell command to execute.
+        timeout: Maximum time in seconds to wait for the command to complete.
+    
+    Returns:
+        A tuple containing the command's standard output, standard error, and exit code.
+    """
     result = subprocess.run(command, shell=True, capture_output=True, text=True, timeout=timeout)
     return result.stdout.strip(), result.stderr.strip(), result.returncode
 
 def save_last_generated_db(db_name):
-    """Saves the last generated database name to a state file."""
+    """
+    Saves the provided database name as the last generated database in the state file.
+    
+    If the state file cannot be written, a warning is displayed.
+    """
     try:
         with open(STATE_FILE, "w") as f:
             json.dump({"last_generated_db": db_name}, f)
@@ -223,7 +281,12 @@ def save_last_generated_db(db_name):
         print_warning(f"Could not save state file: {e}")
 
 def read_last_generated_db():
-    """Reads the last generated database name from the state file."""
+    """
+    Retrieves the name of the last generated database from the local state file.
+    
+    Returns:
+        The database name as a string if found and readable, otherwise None.
+    """
     if not STATE_FILE.exists():
         return None
     try:
@@ -237,7 +300,15 @@ def read_last_generated_db():
         return None
 
 def delete_database(db_name):
-    """Deletes a Turso database."""
+    """
+    Deletes a Turso database by name using the Turso CLI.
+    
+    Args:
+        db_name: The name of the database to delete.
+    
+    Returns:
+        True if the database was deleted successfully, False otherwise.
+    """
     print_info(f"Attempting to delete database: {Colors.CYAN}{db_name}{Colors.ENDC}")
     command = f"turso db destroy {db_name} --yes" # --yes confirms deletion
     
@@ -256,7 +327,11 @@ def delete_database(db_name):
         return False
 
 def delete_last_generated_db():
-    """Handler for the --delete-generation flag."""
+    """
+    Deletes the last generated Turso database recorded in the state file.
+    
+    Reads the last generated database name from the state file, attempts to delete it using the Turso CLI, and removes the state file upon successful deletion. Exits with an error if no database is found or if deletion fails.
+    """
     print_section_divider("🗑️ Delete Last Generated Database")
     db_name = read_last_generated_db()
     if not db_name:
@@ -274,7 +349,13 @@ def delete_last_generated_db():
         sys.exit(1) # Exit if deletion failed
 
 def interactive_delete():
-    """Provides an interactive UI to delete databases."""
+    """
+    Launches an interactive terminal UI for selecting and deleting Turso databases.
+    
+    Fetches the list of databases from the Turso CLI, displays them with numbered options,
+    prompts the user to select databases for deletion, confirms the action, and deletes
+    the selected databases. Handles invalid input, user cancellation, and deletion errors.
+    """
     print_section_divider("🗑️ Interactive Database Deletion")
     print_info("Fetching list of databases...")
 
@@ -366,7 +447,11 @@ def interactive_delete():
 
 
 def check_dependencies():
-    """Check if required dependencies are installed."""
+    """
+    Verifies that the Turso CLI and clipboard functionality are available on the system.
+    
+    Checks for the presence of the Turso CLI in the system PATH and validates clipboard operations using pyperclip. Exits the script if the Turso CLI is missing, and prints warnings if clipboard functionality is unavailable or limited.
+    """
     print_step(1, 6, "Checking system dependencies...")
     turso_output, turso_error, turso_code = run_command("turso --version")
     if turso_code != 0:
@@ -391,6 +476,11 @@ def check_dependencies():
 
 
 def main():
+    """
+    Coordinates the creation of a new Turso database, displays credentials, and manages deletion workflows via command-line arguments.
+    
+    Handles dependency checks, Turso CLI authentication, database creation, credential retrieval, and token generation. Supports writing credentials to an environment file, copying them to the clipboard, and deleting databases either non-interactively (last generated) or interactively (user selection). Provides a rich terminal UI with colored output and robust error handling.
+    """
     script_name = os.path.basename(sys.argv[0])
     parser = argparse.ArgumentParser(
         description=f'{Colors.BOLD}{Colors.YELLOW}Turso Database & Token Generator{Colors.ENDC} - Automate Turso DB tasks.',

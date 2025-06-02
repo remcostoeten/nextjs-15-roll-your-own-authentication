@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { trackPageLeave } from '@/modules/rollyourownanalytics/server/mutations/track-page-leave';
 
+/**
+ * Handles POST requests to track when a user leaves a page.
+ *
+ * Parses the request body for page leave analytics data, validates required fields, and records the event. Returns a JSON response with the tracking result or an error message.
+ *
+ * @returns A {@link NextResponse} containing the tracking result or an error message.
+ */
 export async function POST(request: NextRequest) {
 	try {
 		const body = await request.json();

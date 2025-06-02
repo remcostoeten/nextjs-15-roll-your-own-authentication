@@ -5,6 +5,12 @@ import { TBaseMutationResponse } from '@/shared/types/base';
 import { asUUID } from '@/shared/types/common';
 import { notificationService } from '../services/notification-service';
 
+/**
+ * Marks the specified notifications as read for the current user.
+ *
+ * @param notificationIds - An array of notification IDs to mark as read.
+ * @returns A mutation response indicating success or failure of the operation.
+ */
 export async function markNotificationsAsRead(
 	notificationIds: string[]
 ): Promise<TBaseMutationResponse<void>> {
@@ -27,6 +33,11 @@ export async function markNotificationsAsRead(
 	}
 }
 
+/**
+ * Marks all notifications as read for the currently authenticated user.
+ *
+ * @returns A mutation response indicating whether all notifications were successfully marked as read.
+ */
 export async function markAllNotificationsAsRead(): Promise<TBaseMutationResponse<void>> {
 	try {
 		const session = await getSession();

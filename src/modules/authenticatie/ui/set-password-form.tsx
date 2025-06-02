@@ -25,6 +25,13 @@ type TProps = {
 	onSuccess?: () => void;
 };
 
+/**
+ * Renders a form for setting a new password with confirmation and validation.
+ *
+ * Displays two password fields with visibility toggles and validates that both entries match and meet minimum requirements. On successful submission, resets the form, shows a success message, and optionally invokes a callback.
+ *
+ * @param onSuccess - Optional callback invoked after the password is successfully set.
+ */
 export function SetPasswordForm({ onSuccess }: TProps) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [showPassword, setShowPassword] = useState({

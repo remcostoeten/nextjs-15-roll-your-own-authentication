@@ -12,6 +12,13 @@ export const metadata: Metadata = {
 	description: 'A clean Next.js authentication demo with login and registration',
 };
 
+/**
+ * Defines the root layout for the application, setting up global providers and theming context.
+ *
+ * Wraps all pages with sidebar, theme, and additional providers, and applies global styles and settings.
+ *
+ * @param children - The content to be rendered within the main layout.
+ */
 export default function RootLayout({
 	children,
 }: {

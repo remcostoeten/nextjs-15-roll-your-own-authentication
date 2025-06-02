@@ -8,6 +8,14 @@ type PageProps = {
 	searchParams: Promise<{ workspace?: string }>;
 };
 
+/**
+ * Renders the projects management page for the current user's workspace.
+ *
+ * Redirects to the login page if the user is not authenticated, or to workspace onboarding if the user has no workspaces. Displays a list of projects for the selected or default workspace.
+ *
+ * @param searchParams - A promise resolving to search parameters, optionally containing a workspace ID.
+ * @returns The projects page as a React element.
+ */
 export default async function ProjectsPage({ searchParams }: PageProps) {
 	const params = await searchParams;
 	const session = await getSession();

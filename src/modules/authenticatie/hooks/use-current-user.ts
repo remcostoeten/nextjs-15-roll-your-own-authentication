@@ -4,6 +4,13 @@ import { useCallback, useEffect, useState } from 'react';
 import { TAuthUser } from '../types';
 import { getCurrentUser } from '../server/queries/get-current-user';
 
+/**
+ * React hook for accessing and managing the current authenticated user's state.
+ *
+ * Provides the current user data, loading status, error message, and a function to refetch user information.
+ *
+ * @returns An object containing the current user (`user`), loading state (`isLoading`), error message (`error`), and a `refetch` function to reload user data.
+ */
 export function useCurrentUser() {
 	const [user, setUser] = useState<Partial<TAuthUser> | null>(null);
 	const [isLoading, setIsLoading] = useState(true);

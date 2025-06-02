@@ -3,6 +3,13 @@
 import { createNotification } from '../server/mutations/create-notification';
 import { TNotificationType, TNotificationPriority } from '../types';
 
+/**
+ * Creates a set of predefined sample notifications for demonstration or testing purposes.
+ *
+ * Iterates through a list of sample notification objects and attempts to create each one using the notification creation mutation. Returns an array containing the result of each creation attempt, with error objects included for any failures.
+ *
+ * @returns An array of results for each sample notification creation, where each element is either a successful response or an error object indicating failure.
+ */
 export async function createSampleNotifications() {
 	const sampleNotifications = [
 		{

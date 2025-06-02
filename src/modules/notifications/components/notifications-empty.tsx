@@ -1,5 +1,10 @@
 import { Bell } from 'lucide-react';
 
+/**
+ * Displays a centered message indicating that there are no notifications.
+ *
+ * Renders a bell icon, a heading, and a brief message to inform the user they are up to date.
+ */
 export function NotificationsEmpty() {
 	return (
 		<div className="flex flex-col items-center justify-center p-8 text-center">

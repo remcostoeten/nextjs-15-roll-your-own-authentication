@@ -12,6 +12,13 @@ interface NotificationsListProps {
 	notifications: TNotificationWithActor[];
 }
 
+/**
+ * Displays a list of notifications with icons, metadata, and actionable UI elements.
+ *
+ * Each notification shows its type-specific icon, title, priority, read status, message, actor information, optional personal message, action link, and relative timestamp.
+ *
+ * @param notifications - Array of notification objects with associated actor and metadata.
+ */
 export function NotificationsList({ notifications }: NotificationsListProps) {
 	const getIcon = (type: string) => {
 		switch (type) {

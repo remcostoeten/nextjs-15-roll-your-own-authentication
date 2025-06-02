@@ -30,6 +30,13 @@ import {
 
 import { AlertCircle, CheckCircle, Loader2, User } from 'lucide-react';
 
+/**
+ * Renders a user profile form for updating personal details, changing the password, and deleting the account.
+ *
+ * Displays the authenticated user's name and email, allows updating these fields, and provides password change functionality with visibility toggles. Includes a confirmation dialog for account deletion. All actions provide real-time feedback and error handling via toast notifications.
+ *
+ * @returns The profile management form UI for authenticated users, or `null` if not authenticated.
+ */
 export function ProfileForm() {
 	const auth = useAuth();
 	const [isPending, startTransition] = useTransition();

@@ -20,6 +20,13 @@ import {
 } from '@/shared/components/ui/sidebar';
 import Link from 'next/link';
 
+/**
+ * Renders a sidebar group labeled "Projects" with a list of project navigation items and a "More" menu option.
+ *
+ * Each project item displays its icon and name, links to the project's URL, and includes a dropdown menu with actions such as viewing, sharing, or deleting the project. Dropdown menu positioning adapts for mobile and desktop views.
+ *
+ * @param projects - Array of project objects, each containing a name, URL, and icon component.
+ */
 export function NavProjects({
 	projects,
 }: {

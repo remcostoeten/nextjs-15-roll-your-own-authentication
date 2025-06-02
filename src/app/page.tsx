@@ -6,6 +6,11 @@ import { Flex } from '@/shared/components/flex';
 import { Container } from 'ui';
 import  FeaturesSection from '../modules/landing/components/features';
 
+/**
+ * Renders the main home page layout with a header and a features section inside styled containers.
+ *
+ * @returns The JSX structure for the home page.
+ */
 export default function HomePage() {
 	return (
 		<>

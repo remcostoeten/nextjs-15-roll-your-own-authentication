@@ -9,6 +9,11 @@ interface InvitePageProps {
 	params: Promise<{ token: string }>;
 }
 
+/**
+ * Handles workspace invitation acceptance and renders the appropriate UI based on invitation status and user authentication.
+ *
+ * Redirects unauthenticated users to the login page with a return URL. Displays different messages if the invitation is invalid, expired, or already accepted. If the invitation is valid and pending, renders the invitation acceptance component.
+ */
 export default async function InvitePage({ params }: InvitePageProps) {
 	const { token } = await params;
 	const session = await getSession();

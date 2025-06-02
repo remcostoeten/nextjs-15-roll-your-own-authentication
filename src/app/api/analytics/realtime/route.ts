@@ -3,6 +3,13 @@ import { analyticsDb } from '@/modules/rollyourownanalytics/server/db/connection
 import { analyticsSessions } from '@/modules/rollyourownanalytics/server/schemas/schema-analytics';
 import { eq, and, gte, count, sql } from 'drizzle-orm';
 
+/**
+ * Handles GET requests to provide the real-time count of unique visitors for a specified project.
+ *
+ * Extracts the `projectId` from the query parameters and returns the number of distinct visitors with sessions that ended within the last five minutes for that project.
+ *
+ * @returns A JSON response containing the `realtimeVisitors` count, or an error message with the appropriate HTTP status code if the request is invalid or an internal error occurs.
+ */
 export async function GET(request: NextRequest) {
 	try {
 		const { searchParams } = new URL(request.url);

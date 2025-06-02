@@ -96,6 +96,13 @@ const RepoStats = memo(({ stats }: { stats: TRepoStats }) => {
 	);
 });
 
+/**
+ * Displays GitHub repository statistics and recent commit information with interactive UI elements.
+ *
+ * Fetches the latest commits on mount, manages loading and error states, and presents repository stats and the most recent commit in a styled popover and footer.
+ *
+ * @remark If fetching commits fails or returns no data, a fallback commit is displayed to ensure UI stability.
+ */
 export function GitHubStats() {
 	const [commits, setCommits] = useState<TGitHubCommit[]>([]);
 	const [loading, setLoading] = useState(true);

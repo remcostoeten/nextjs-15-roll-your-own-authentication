@@ -2,7 +2,10 @@ import { UUID } from '@/shared/types/common';
 import { TCreateNotificationInput } from '../../types';
 
 /**
- * @description Generates a system welcome notification for a new user.
+ * Creates a medium-priority system notification welcoming a new user to the platform.
+ *
+ * @param userId - The unique identifier of the user to receive the notification.
+ * @returns A notification input object containing the welcome message.
  */
 function welcome(userId: UUID): TCreateNotificationInput {
 	return {
@@ -15,7 +18,18 @@ function welcome(userId: UUID): TCreateNotificationInput {
 }
 
 /**
- * @description Creates a workspace invitation notification for a user.
+ * Generates a high-priority notification inviting a user to join a workspace.
+ *
+ * The notification includes the workspace title, an optional inviter's email, and an optional personalized message. The action URL directs the user to accept the invitation. Metadata contains workspace and inviter details when provided.
+ *
+ * @param userId - The ID of the user receiving the invitation.
+ * @param workspaceTitle - The name of the workspace the user is invited to join.
+ * @param inviteUrl - The URL for the user to accept the invitation.
+ * @param actorId - (Optional) The ID of the user who sent the invitation.
+ * @param actorEmail - (Optional) The email of the user who sent the invitation.
+ * @param workspaceId - (Optional) The ID of the workspace.
+ * @param customMessage - (Optional) A personalized message from the inviter.
+ * @returns A structured notification input for a workspace invitation event.
  */
 function workspaceInvitation(
 	userId: UUID,
@@ -49,7 +63,13 @@ function workspaceInvitation(
 }
 
 /**
- * @description Generates a notification when a user joins a workspace.
+ * Creates a notification indicating that a user has joined a workspace.
+ *
+ * @param userId - The ID of the user who joined the workspace.
+ * @param workspaceTitle - The title of the workspace the user joined.
+ * @param workspaceId - The unique identifier of the workspace.
+ * @param actorId - The ID of the actor who initiated the join, if applicable.
+ * @returns A notification input object for the workspace join event.
  */
 function workspaceJoined(
 	userId: UUID,
